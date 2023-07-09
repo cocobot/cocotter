@@ -1,5 +1,5 @@
 //Create an holder for current robot coordinates
-pub struct PositionRobotCoordinate {
+pub struct RobotCoordinate {
     //store robot position in standardized unit (mm/rad)
     x_mm : f32,                 
     y_mm : f32,
@@ -11,10 +11,10 @@ pub struct PositionRobotCoordinate {
     a_is_precise : bool,
 }
 
-impl PositionRobotCoordinate {
+impl RobotCoordinate {
     //create a new structure from independant data
-    pub fn from(x_mm : f32, y_mm : f32, a_rad : f32) -> PositionRobotCoordinate {
-        PositionRobotCoordinate { x_mm, y_mm, a_rad, x_is_precise: true, y_is_precise: true, a_is_precise: true}
+    pub fn from(x_mm : f32, y_mm : f32, a_rad : f32) -> RobotCoordinate {
+        RobotCoordinate { x_mm, y_mm, a_rad, x_is_precise: true, y_is_precise: true, a_is_precise: true}
     }
 
     //return the x position only
@@ -68,7 +68,7 @@ impl PositionRobotCoordinate {
     }
     
     //copy precision data from an old coordinate structure
-    pub fn copy_precision_from(&mut self, old : &PositionRobotCoordinate) {
+    pub fn copy_precision_from(&mut self, old : &RobotCoordinate) {
         unimplemented!()
     }
 }
@@ -81,8 +81,8 @@ mod tests {
     const X_INIT : f32 = 1.0;
     const Y_INIT : f32 = 2.0;
     const A_INIT : f32 = 3.0;
-    fn prepare_structure_for_test() -> PositionRobotCoordinate {
-        PositionRobotCoordinate::from(X_INIT, Y_INIT, A_INIT)
+    fn prepare_structure_for_test() -> RobotCoordinate {
+        RobotCoordinate::from(X_INIT, Y_INIT, A_INIT)
     }
 
     #[test]
@@ -108,7 +108,7 @@ mod tests {
     #[test]
     fn check_precision_flags() {
         //create initla data
-        let mut position: PositionRobotCoordinate = prepare_structure_for_test();
+        let mut position = prepare_structure_for_test();
 
         //check precision
         let mut cpy_position = prepare_structure_for_test();
