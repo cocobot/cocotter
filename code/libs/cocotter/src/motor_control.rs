@@ -1,6 +1,6 @@
 //define update setpoint error
 pub enum MotorControlUpdateError {
-    InvalidMotorId,
+    InvalidMotorId,             //returned if the current motor control structure does not support the selected motor
     CommunicationError,
 }
 

@@ -37,6 +37,7 @@ impl RegularPosition {
         }
     }
 
+    //compute new position from updated encoder values
     pub fn set_new_encoder_values(&mut self, timestamp_ms: u64, left_encoder: i32, right_encoder: i32) {
         unimplemented!()
     }
