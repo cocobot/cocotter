@@ -1,0 +1,5 @@
+# rust
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
