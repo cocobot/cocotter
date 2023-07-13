@@ -1,0 +1,65 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid 5d801498-1b43-460f-94ff-3d9a085c294b)
+
+  (paper "A4")
+
+  (lib_symbols
+  )
+
+
+  (sheet (at 151.13 50.8) (size 44.45 21.59) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid 13535328-2675-4dea-9285-1c8cfa09fbcc)
+    (property "Sheetname" "Motor driver A" (at 151.13 50.0884 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "motor_driver.kicad_sch" (at 151.13 72.9746 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "asserv_2023"
+        (path "/5d801498-1b43-460f-94ff-3d9a085c294b" (page "2"))
+      )
+    )
+  )
+
+  (sheet (at 151.13 109.22) (size 44.45 21.59) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid bc56816a-c052-4f8b-bb22-2a3f4ad0b2e9)
+    (property "Sheetname" "Motor driver C" (at 151.13 108.5084 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "motor_driver.kicad_sch" (at 151.13 131.3946 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "asserv_2023"
+        (path "/5d801498-1b43-460f-94ff-3d9a085c294b" (page "4"))
+      )
+    )
+  )
+
+  (sheet (at 151.13 80.01) (size 44.45 21.59) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid f06d00d9-f7c6-4dfc-850b-f730b05d7b03)
+    (property "Sheetname" "Motor driver B" (at 151.13 79.2984 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "motor_driver.kicad_sch" (at 151.13 102.1846 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "asserv_2023"
+        (path "/5d801498-1b43-460f-94ff-3d9a085c294b" (page "3"))
+      )
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
