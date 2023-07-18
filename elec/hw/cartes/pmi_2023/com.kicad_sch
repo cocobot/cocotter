@@ -1974,7 +1974,7 @@
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 4e599345-4809-4c3c-8ad3-2b0f420dda4b)
   )
-  (hierarchical_label "vbatt_mon_8.7V" (shape output) (at 91.44 36.83 180) (fields_autoplaced)
+  (hierarchical_label "vbatt_mon_8.7V" (shape input) (at 91.44 36.83 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid 68db7b57-2c7b-4a7e-b3ff-355192aea2c2)
   )
@@ -2094,8 +2094,8 @@
     (pin "1" (uuid 0eabd9ea-f72f-4a82-82cc-8deb33f75a1d))
     (pin "2" (uuid 1d316334-bce3-417c-907f-20f6992cbd8d))
     (pin "3" (uuid 5bd24907-35b2-49ca-9db3-57665fcf31dd))
-    (pin "4" (uuid b3e19f53-3d6c-4f19-83bd-6433fa1bd12b))
-    (pin "4" (uuid b3e19f53-3d6c-4f19-83bd-6433fa1bd12b))
+    (pin "4" (uuid b3e19f53-3d6c-4f19-83bd-6433fa1bd12c))
+    (pin "4" (uuid b3e19f53-3d6c-4f19-83bd-6433fa1bd12c))
     (pin "6" (uuid ae6b73d8-ae9d-4fbc-bfd5-2f01a5e8acfd))
     (instances
       (project "pmi_2023"
