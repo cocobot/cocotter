@@ -25,8 +25,6 @@
     (stroke (width 0.05) (type default)) (layer "F.CrtYd") (tstamp 6a9e2e94-3f9b-49fa-a846-ad6fa01124fe))
   (fp_line (start 1.275 0.7) (end -1.275 0.7)
     (stroke (width 0.05) (type default)) (layer "F.CrtYd") (tstamp 3c709494-ca78-43e3-a9ac-c233a63530b7))
-  (fp_line (start 7.62 -2.54) (end 7.62 2.54)
-    (stroke (width 0.05) (type default)) (layer "F.CrtYd") (tstamp 829e4a4a-8604-494f-a5b4-5b0132f172ee))
   (pad "1" smd roundrect (at -0.75 0) (size 0.8 0.8) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.05)
     (thermal_bridge_angle 45) (tstamp 923aaf13-d003-4347-94aa-3f1f3eebc975))
   (pad "2" smd roundrect (at 0.75 0) (size 0.8 0.8) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.05)
