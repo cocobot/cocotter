@@ -24,7 +24,7 @@ pub trait Trajectory {
     fn goto_xya(&mut self, x_mm : f32, y_mm: f32, a_rad: f32) -> Result<(), TrajectoryOrderError>;
 
     //wait for the end of the current trajectory
-    fn wait_end(&mut self, timeout_ms: Option<u32>) -> Result<(), TrajectoryError>;
+    async fn wait_end(&mut self, timeout_ms: Option<u32>) -> Result<(), TrajectoryError>;
 }
 
 // >>> specific

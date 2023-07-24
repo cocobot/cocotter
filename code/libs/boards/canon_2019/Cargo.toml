@@ -1,0 +1,9 @@
+[package]
+name = "canon_2019"
+version = "2024.0.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+embassy-stm32 = { version = "0.1.0", path = "../../embassy/embassy-stm32", features = ["nightly",  "unstable-pac", "stm32l4s5vi", "time-driver-any", "exti"]  }
