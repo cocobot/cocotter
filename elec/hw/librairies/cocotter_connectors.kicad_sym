@@ -997,7 +997,7 @@
     (property "Value" "con_servo" (at 0 -5.08 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Footprint" "" (at 0 0 0)
+    (property "Footprint" "cocotter_connectors:ana_servo_5V" (at 0 0 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 0 0 0)
