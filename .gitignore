@@ -3,3 +3,10 @@ debug/
 target/
 Cargo.lock
 **/*.rs.bk
+
+
+# kicad
+*-backups
+*.net
+*.bak
+fp-info-cache
