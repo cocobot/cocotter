@@ -309,6 +309,18 @@
       (effects (font (size 1.27 1.27)) (justify left))
       (uuid 4c754b9b-8579-4c2a-a4bd-2a9a83eb2616)
     )
+    (pin "Vmot_left_5V" output (at 276.86 105.41 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid ca11fad8-0606-4ccf-8d08-8ddc18d3510d)
+    )
+    (pin "Vmot_right_5V" output (at 276.86 107.95 0)
+      (effects (font (size 1.27 1.27)) (justify right))
+      (uuid 3e8cb69c-91a5-4df6-b476-dbe8e52a6bb2)
+    )
+    (pin "enable_pw_conv_3v7" output (at 223.52 113.03 180)
+      (effects (font (size 1.27 1.27)) (justify left))
+      (uuid 8a6b4f64-03a3-48d7-864d-7c5dd9454276)
+    )
     (instances
       (project "pmi_2023"
         (path "/334a657f-c66c-4260-9567-14f1c99913d7" (page "6"))
