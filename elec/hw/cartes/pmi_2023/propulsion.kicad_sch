@@ -840,11 +840,11 @@
         )
       )
     )
-    (symbol "power:+3.3V" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
+    (symbol "power:+3V3" (power) (pin_names (offset 0)) (in_bom yes) (on_board yes)
       (property "Reference" "#PWR" (at 0 -3.81 0)
         (effects (font (size 1.27 1.27)) hide)
       )
-      (property "Value" "+3.3V" (at 0 3.556 0)
+      (property "Value" "+3V3" (at 0 3.556 0)
         (effects (font (size 1.27 1.27)))
       )
       (property "Footprint" "" (at 0 0 0)
@@ -856,10 +856,10 @@
       (property "ki_keywords" "global power" (at 0 0 0)
         (effects (font (size 1.27 1.27)) hide)
       )
-      (property "ki_description" "Power symbol creates a global label with name \"+3.3V\"" (at 0 0 0)
+      (property "ki_description" "Power symbol creates a global label with name \"+3V3\"" (at 0 0 0)
         (effects (font (size 1.27 1.27)) hide)
       )
-      (symbol "+3.3V_0_1"
+      (symbol "+3V3_0_1"
         (polyline
           (pts
             (xy -0.762 1.27)
@@ -885,9 +885,9 @@
           (fill (type none))
         )
       )
-      (symbol "+3.3V_1_1"
+      (symbol "+3V3_1_1"
         (pin power_in line (at 0 0 90) (length 0) hide
-          (name "+3.3V" (effects (font (size 1.27 1.27))))
+          (name "+3V3" (effects (font (size 1.27 1.27))))
           (number "1" (effects (font (size 1.27 1.27))))
         )
       )
@@ -1001,6 +1001,9 @@
   (junction (at 45.72 118.11) (diameter 0) (color 0 0 0 0)
     (uuid 2d0d31b2-6b8f-4596-bf50-32e97e73a04d)
   )
+  (junction (at 55.88 49.53) (diameter 0) (color 0 0 0 0)
+    (uuid 2f0be3e3-9c88-438a-8f12-a6503142c3fd)
+  )
   (junction (at 81.28 128.27) (diameter 0) (color 0 0 0 0)
     (uuid 36e8c4f3-a732-4d6f-9693-37db1762f4b5)
   )
@@ -1037,9 +1040,6 @@
   (junction (at 193.04 105.41) (diameter 0) (color 0 0 0 0)
     (uuid 94a7a61b-5bc7-46ce-b93c-fafccf6bb9dd)
   )
-  (junction (at 55.88 125.73) (diameter 0) (color 0 0 0 0)
-    (uuid a2ff5fc6-7a3a-46be-8099-e2de7a21c9af)
-  )
   (junction (at 209.55 53.34) (diameter 0) (color 0 0 0 0)
     (uuid a50cb5bb-d8da-430a-96e3-4ef2ec314b40)
   )
@@ -1055,8 +1055,8 @@
   (junction (at 219.71 49.53) (diameter 0) (color 0 0 0 0)
     (uuid bf9f05ab-3452-43b9-a773-6fb006781b5c)
   )
-  (junction (at 55.88 49.53) (diameter 0) (color 0 0 0 0)
-    (uuid ce3d4f8d-e6f8-4968-853b-c2cbaa8e8450)
+  (junction (at 55.88 125.73) (diameter 0) (color 0 0 0 0)
+    (uuid c34d8fcf-0405-46d5-9607-5bf93c71a4db)
   )
   (junction (at 218.44 127) (diameter 0) (color 0 0 0 0)
     (uuid d09d2fb6-1278-430c-870c-3d37339959d4)
@@ -1681,6 +1681,31 @@
     )
   )
 
+  (symbol (lib_id "power:+3V3") (at 55.88 125.73 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 0acbe9c9-b886-4112-ab6c-7a620765593d)
+    (property "Reference" "#PWR026" (at 55.88 129.54 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 55.88 121.92 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 55.88 125.73 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 55.88 125.73 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 47a80a42-96f8-49e1-9af7-778072dc330e))
+    (instances
+      (project "pmi_2023"
+        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
+          (reference "#PWR026") (unit 1)
+        )
+      )
+    )
+  )
+
   (symbol (lib_id "power:GND") (at 82.55 64.77 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 0c13db22-ee95-42ae-8fce-c7c7fc58b2cc)
@@ -1858,6 +1883,31 @@
     )
   )
 
+  (symbol (lib_id "power:+3V3") (at 55.88 49.53 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 2281714c-0241-4ca2-ac59-65295b1ad1a9)
+    (property "Reference" "#PWR027" (at 55.88 53.34 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 55.88 45.72 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 55.88 49.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 55.88 49.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid f4e6e480-0a00-4063-b327-9ef4e87f74f9))
+    (instances
+      (project "pmi_2023"
+        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
+          (reference "#PWR027") (unit 1)
+        )
+      )
+    )
+  )
+
   (symbol (lib_id "cocotter_resistors:R_1k_0603_1%") (at 198.12 127 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid 280e0505-4ed9-40a8-9248-4e466dc07bfb)
@@ -1913,6 +1963,31 @@
       (project "pmi_2023"
         (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
           (reference "#PWR0107") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:+3V3") (at 181.61 39.37 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 2f584ef8-a4b4-4ba9-b11b-452ffb0ccc4e)
+    (property "Reference" "#PWR028" (at 181.61 43.18 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 181.61 35.56 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 181.61 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 181.61 39.37 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid ab05e379-3cc7-43f8-adaf-356b65f8a028))
+    (instances
+      (project "pmi_2023"
+        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
+          (reference "#PWR028") (unit 1)
         )
       )
     )
@@ -2040,6 +2115,31 @@
       (project "pmi_2023"
         (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
           (reference "C3") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "power:+3V3") (at 241.3 34.29 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 3c747ec7-d671-4751-8ae7-28a14bae60be)
+    (property "Reference" "#PWR030" (at 241.3 38.1 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 241.3 30.48 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 241.3 34.29 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 241.3 34.29 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 1db04e69-14e0-42f3-a6ba-704f7fdfe7a4))
+    (instances
+      (project "pmi_2023"
+        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
+          (reference "#PWR030") (unit 1)
         )
       )
     )
@@ -2268,31 +2368,6 @@
       (project "pmi_2023"
         (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
           (reference "#PWR0114") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+3.3V") (at 55.88 49.53 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 504027ad-183e-4c84-b528-5c1e6b3c20eb)
-    (property "Reference" "#PWR0124" (at 55.88 53.34 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+3.3V" (at 55.88 45.974 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 55.88 49.53 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 55.88 49.53 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid e544ddf4-3b55-4517-b070-8a1d00979256))
-    (instances
-      (project "pmi_2023"
-        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
-          (reference "#PWR0124") (unit 1)
         )
       )
     )
@@ -2771,31 +2846,6 @@
     )
   )
 
-  (symbol (lib_id "power:+3.3V") (at 170.18 116.84 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 7e3789f7-e3e4-45f6-b31c-6c00bcf0b690)
-    (property "Reference" "#PWR0117" (at 170.18 120.65 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+3.3V" (at 170.18 113.284 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 170.18 116.84 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 170.18 116.84 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid b48c2330-298f-42bd-901a-5bf03dcde0e9))
-    (instances
-      (project "pmi_2023"
-        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
-          (reference "#PWR0117") (unit 1)
-        )
-      )
-    )
-  )
-
   (symbol (lib_id "cocotter_resistors:R_0R_0603") (at 232.41 34.29 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp yes)
     (uuid 7eb31263-c51a-4045-a415-67ec19199ee3)
@@ -2913,31 +2963,6 @@
       (project "pmi_2023"
         (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
           (reference "U4") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+3.3V") (at 55.88 125.73 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid 89499a8b-9ecf-4126-b45f-a8216c228d6a)
-    (property "Reference" "#PWR0120" (at 55.88 129.54 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+3.3V" (at 55.88 122.174 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 55.88 125.73 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 55.88 125.73 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 95fe996e-846d-421b-9d79-c3980a27bdd0))
-    (instances
-      (project "pmi_2023"
-        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
-          (reference "#PWR0120") (unit 1)
         )
       )
     )
@@ -3348,6 +3373,31 @@
     )
   )
 
+  (symbol (lib_id "power:+3V3") (at 170.18 116.84 0) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid c65c82e5-e897-441e-ac5d-483c777bf1cc)
+    (property "Reference" "#PWR029" (at 170.18 120.65 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Value" "+3V3" (at 170.18 113.03 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 170.18 116.84 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (at 170.18 116.84 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid 2d48ea95-67cb-41b1-9ace-b70a79388576))
+    (instances
+      (project "pmi_2023"
+        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
+          (reference "#PWR029") (unit 1)
+        )
+      )
+    )
+  )
+
   (symbol (lib_id "cocotter_capacitors:C_100nF_50V_0603") (at 193.04 109.22 0) (unit 1)
     (in_bom yes) (on_board yes) (dnp no) (fields_autoplaced)
     (uuid cc97a626-2229-49ea-b144-a5f0a4a69e31)
@@ -3410,31 +3460,6 @@
       (project "pmi_2023"
         (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
           (reference "R16") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+3.3V") (at 241.3 34.29 0) (mirror y) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid d88b5619-7224-444a-987a-aff2664af718)
-    (property "Reference" "#PWR0112" (at 241.3 38.1 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+3.3V" (at 241.3 30.734 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 241.3 34.29 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 241.3 34.29 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 3ef015b5-7931-4c37-834d-3a94fbbcaaa8))
-    (instances
-      (project "pmi_2023"
-        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
-          (reference "#PWR0112") (unit 1)
         )
       )
     )
@@ -3689,31 +3714,6 @@
       (project "pmi_2023"
         (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
           (reference "TP6") (unit 1)
-        )
-      )
-    )
-  )
-
-  (symbol (lib_id "power:+3.3V") (at 181.61 39.37 0) (unit 1)
-    (in_bom yes) (on_board yes) (dnp no)
-    (uuid f002a6a5-accd-435f-a0e4-2255b4603d21)
-    (property "Reference" "#PWR0103" (at 181.61 43.18 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Value" "+3.3V" (at 181.61 35.814 0)
-      (effects (font (size 1.27 1.27)))
-    )
-    (property "Footprint" "" (at 181.61 39.37 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (at 181.61 39.37 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (pin "1" (uuid 16094ef8-dc49-4041-8bc0-b2ce73a447fb))
-    (instances
-      (project "pmi_2023"
-        (path "/334a657f-c66c-4260-9567-14f1c99913d7/e27753ab-5deb-4e63-8abb-23778f088204"
-          (reference "#PWR0103") (unit 1)
         )
       )
     )
