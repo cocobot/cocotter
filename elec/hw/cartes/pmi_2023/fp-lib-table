@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "cocotter_others")(type "KiCad")(uri "/home/damien/perso/cocotter/elec/hw/librairies/cocotter_others.pretty")(options "")(descr ""))
+)

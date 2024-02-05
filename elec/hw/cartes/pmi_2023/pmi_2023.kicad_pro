@@ -503,6 +503,10 @@
       "sensors"
     ],
     [
+      "5522c3e1-f1e5-442b-950e-511eafd1cc73",
+      "com"
+    ],
+    [
       "76b412a5-2e5b-49f9-bfc4-2fef81997c2b",
       "actuators"
     ],
@@ -511,12 +515,16 @@
       "power_supply"
     ],
     [
-      "fe6aa268-e508-4763-90b7-ed24de9645ca",
+      "70ec626c-1f87-41a0-95c0-5e3c50204455",
       "interface"
     ],
     [
-      "ba564383-0caf-4636-a3ee-abca20a5c08a",
-      "com"
+      "9da1923e-9bb0-4408-8ee2-582c85dcd497",
+      "boards interface"
+    ],
+    [
+      "9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de",
+      "Sensor module"
     ]
   ],
   "text_variables": {}
