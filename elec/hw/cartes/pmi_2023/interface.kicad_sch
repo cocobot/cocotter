@@ -2194,7 +2194,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5267,7 +5267,7 @@
 		)
 		(uuid "20c6ac1d-4ada-4dd6-8848-7f89c26e6297")
 	)
-	(label "esp32_sda_3v3"
+	(label "sda_3v3"
 		(at 149.86 175.26 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5289,7 +5289,7 @@
 		)
 		(uuid "2dc20908-2959-48c7-880c-1f9a99f7500f")
 	)
-	(label "esp32_scl_3v3"
+	(label "scl_3v3"
 		(at 149.86 177.8 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5631,7 +5631,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_M"
 			(at 106.68 144.78 0)
 			(effects
 				(font
@@ -5882,7 +5882,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "0.96 inches, 128x64 pixels, supply [3.3;5V], I2C, SH1106 (or SSD1306) controller"
 			(at 106.68 176.53 0)
 			(effects
 				(font
@@ -5891,7 +5891,7 @@
 				(hide yes)
 			)
 		)
-		(pin ""
+		(pin "1"
 			(uuid "cc314491-c1ad-4bbf-bbc4-6206726198a4")
 		)
 		(pin "2"
@@ -6082,7 +6082,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_M"
 			(at 220.98 157.48 0)
 			(effects
 				(font
@@ -7566,7 +7566,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_M"
 			(at 194.31 157.48 0)
 			(effects
 				(font
@@ -8312,7 +8312,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_M"
 			(at 226.06 130.81 0)
 			(effects
 				(font
@@ -8618,7 +8618,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_M"
 			(at 204.47 157.48 0)
 			(effects
 				(font

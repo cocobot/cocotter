@@ -864,10 +864,10 @@
 						)
 					)
 				)
-				(pin input line
-					(at -7.62 1.27 0)
+				(pin passive line
+					(at -7.62 3.81 0)
 					(length 2.54)
-					(name "RXD"
+					(name "TXD"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -882,17 +882,17 @@
 						)
 					)
 				)
-				(pin passive line
-					(at -7.62 3.81 0)
+				(pin input line
+					(at -7.62 1.27 0)
 					(length 2.54)
-					(name "TXD"
+					(name "RXD"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "4"
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -6000,7 +6000,7 @@
 		(pin "4"
 			(uuid "b3e19f53-3d6c-4f19-83bd-6433fa1bd133")
 		)
-		(pin "4"
+		(pin "5"
 			(uuid "b3e19f53-3d6c-4f19-83bd-6433fa1bd134")
 		)
 		(pin "6"
