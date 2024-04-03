@@ -2809,6 +2809,12 @@
 		(uuid "b5d4e685-4ae9-440e-9b3f-3e9b1a644ec3")
 	)
 	(junction
+		(at 91.44 151.13)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c2077e1a-e02f-4ce9-9762-f6fdc4a939a7")
+	)
+	(junction
 		(at 227.33 50.8)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2958,6 +2964,16 @@
 	)
 	(wire
 		(pts
+			(xy 144.78 127) (xy 144.78 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "018ec849-9c02-4d53-8888-8561eb7351f6")
+	)
+	(wire
+		(pts
 			(xy 96.52 113.03) (xy 96.52 116.84)
 		)
 		(stroke
@@ -3045,6 +3061,16 @@
 			(type default)
 		)
 		(uuid "176c098b-3dcd-4dae-b930-27b0497130f3")
+	)
+	(wire
+		(pts
+			(xy 30.48 151.13) (xy 91.44 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1d5c5739-e047-44c5-8802-4273ba4eab97")
 	)
 	(wire
 		(pts
@@ -3235,6 +3261,16 @@
 			(type dash)
 		)
 		(uuid "4b0384b9-e02a-48cc-9e31-34ad6e0bb3b6")
+	)
+	(wire
+		(pts
+			(xy 144.78 151.13) (xy 91.44 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e286f0e-a6c9-4791-a098-46517b3d9895")
 	)
 	(wire
 		(pts
@@ -3798,6 +3834,16 @@
 	)
 	(wire
 		(pts
+			(xy 91.44 127) (xy 91.44 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c6a8873b-9403-4de0-a5ed-bc28c3aeb231")
+	)
+	(wire
+		(pts
 			(xy 96.52 148.59) (xy 96.52 130.81)
 		)
 		(stroke
@@ -4244,7 +4290,7 @@
 		)
 		(uuid "1242193c-fbb5-4dc0-b03d-a92a9f9d41cc")
 	)
-	(label "ctc_rigth"
+	(label "ctc_right"
 		(at 53.34 184.15 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4688,6 +4734,18 @@
 		)
 		(uuid "2f8cb13c-40bd-421f-ba82-b27cfbc6a524")
 	)
+	(hierarchical_label "tof_irq"
+		(shape output)
+		(at 30.48 151.13 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "3051426b-e171-48b4-ba4e-5c5dca4b29c6")
+	)
 	(hierarchical_label "line_detect_r[0..3]"
 		(shape output)
 		(at 260.35 63.5 0)
@@ -4828,7 +4886,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 227.33 46.99 0)
 			(effects
 				(font
@@ -4846,7 +4904,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 227.33 46.99 0)
 			(effects
 				(font
@@ -4924,7 +4982,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 212.09 30.48 0)
 			(effects
 				(font
@@ -4989,7 +5047,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 187.96 17.78 0)
 			(effects
 				(font
@@ -5053,7 +5111,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 101.6 53.34 0)
 			(effects
 				(font
@@ -5137,7 +5195,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 57.15 22.86 0)
 			(effects
 				(font
@@ -5310,7 +5368,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 148.59 21.59 0)
 			(effects
 				(font
@@ -5328,7 +5386,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 148.59 21.59 0)
 			(effects
 				(font
@@ -5406,7 +5464,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 120.65 135.89 0)
 			(effects
 				(font
@@ -5473,7 +5531,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 35.56 93.98 0)
 			(effects
 				(font
@@ -5569,7 +5627,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 172.72 30.48 0)
 			(effects
 				(font
@@ -5634,7 +5692,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 148.59 43.18 0)
 			(effects
 				(font
@@ -5698,7 +5756,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 140.97 27.94 0)
 			(effects
 				(font
@@ -5781,7 +5839,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 208.28 21.59 0)
 			(effects
 				(font
@@ -5876,7 +5934,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 80.01 184.15 0)
 			(effects
 				(font
@@ -5941,7 +5999,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 109.22 43.18 0)
 			(effects
 				(font
@@ -6006,7 +6064,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 148.59 46.99 0)
 			(effects
 				(font
@@ -6024,7 +6082,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 148.59 46.99 0)
 			(effects
 				(font
@@ -6100,7 +6158,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 219.71 53.34 0)
 			(effects
 				(font
@@ -6183,7 +6241,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 69.85 97.79 0)
 			(effects
 				(font
@@ -6248,7 +6306,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 73.66 19.05 0)
 			(effects
 				(font
@@ -6314,7 +6372,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 187.96 30.48 0)
 			(effects
 				(font
@@ -6380,7 +6438,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 93.98 55.88 0)
 			(effects
 				(font
@@ -6445,7 +6503,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 227.33 43.18 0)
 			(effects
 				(font
@@ -6510,7 +6568,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 33.02 58.42 0)
 			(effects
 				(font
@@ -6575,7 +6633,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 66.04 179.07 0)
 			(effects
 				(font
@@ -6671,7 +6729,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 133.35 30.48 0)
 			(effects
 				(font
@@ -6737,7 +6795,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 227.33 55.88 0)
 			(effects
 				(font
@@ -6802,7 +6860,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 109.22 17.78 0)
 			(effects
 				(font
@@ -6988,7 +7046,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 227.33 17.78 0)
 			(effects
 				(font
@@ -7140,7 +7198,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 187.96 21.59 0)
 			(effects
 				(font
@@ -7158,7 +7216,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 187.96 21.59 0)
 			(effects
 				(font
@@ -7235,7 +7293,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 52.07 40.64 0)
 			(effects
 				(font
@@ -7299,7 +7357,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 219.71 27.94 0)
 			(effects
 				(font
@@ -7382,7 +7440,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 187.96 43.18 0)
 			(effects
 				(font
@@ -7447,7 +7505,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 43.18 97.79 0)
 			(effects
 				(font
@@ -7512,7 +7570,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 109.22 21.59 0)
 			(effects
 				(font
@@ -7530,7 +7588,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 109.22 21.59 0)
 			(effects
 				(font
@@ -7606,7 +7664,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "tof sensor board connector - female"
 			(at 120.65 123.19 0)
 			(effects
 				(font
@@ -7692,7 +7750,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 129.54 46.99 0)
 			(effects
 				(font
@@ -7787,7 +7845,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 187.96 46.99 0)
 			(effects
 				(font
@@ -7805,7 +7863,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 187.96 46.99 0)
 			(effects
 				(font
@@ -7883,7 +7941,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 93.98 30.48 0)
 			(effects
 				(font
@@ -7947,7 +8005,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 140.97 53.34 0)
 			(effects
 				(font
@@ -8032,7 +8090,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 33.02 25.4 0)
 			(effects
 				(font
@@ -8127,7 +8185,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 73.66 26.67 0)
 			(effects
 				(font
@@ -8192,7 +8250,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 90.17 21.59 0)
 			(effects
 				(font
@@ -8288,7 +8346,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 33.02 35.56 0)
 			(effects
 				(font
@@ -8374,7 +8432,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 168.91 46.99 0)
 			(effects
 				(font
@@ -8470,7 +8528,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 187.96 55.88 0)
 			(effects
 				(font
@@ -8537,7 +8595,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 29.21 179.07 0)
 			(effects
 				(font
@@ -8632,7 +8690,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 227.33 21.59 0)
 			(effects
 				(font
@@ -8650,7 +8708,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 227.33 21.59 0)
 			(effects
 				(font
@@ -8727,7 +8785,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 208.28 46.99 0)
 			(effects
 				(font
@@ -8823,7 +8881,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 96.52 113.03 0)
 			(effects
 				(font
@@ -8889,7 +8947,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 55.88 62.23 0)
 			(effects
 				(font
@@ -8975,7 +9033,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 43.18 66.04 0)
 			(effects
 				(font
@@ -9042,7 +9100,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 43.18 93.98 0)
 			(effects
 				(font
@@ -9138,7 +9196,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 227.33 30.48 0)
 			(effects
 				(font
@@ -9204,7 +9262,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 212.09 55.88 0)
 			(effects
 				(font
@@ -9268,7 +9326,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 101.6 27.94 0)
 			(effects
 				(font
@@ -9332,7 +9390,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_ic:SOT-23-5"
+		(property "Footprint" "cocotter_ic:SOT23-5"
 			(at 52.07 33.02 0)
 			(effects
 				(font
@@ -9350,7 +9408,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Low Cost, 250 mA Output,\nSingle-Supply Amplifiers, supply [2.7;6V]"
 			(at 52.07 33.02 0)
 			(effects
 				(font
@@ -9446,7 +9504,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 35.56 113.03 0)
 			(effects
 				(font
@@ -9512,7 +9570,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 133.35 55.88 0)
 			(effects
 				(font
@@ -9577,7 +9635,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 90.17 46.99 0)
 			(effects
 				(font
@@ -9673,7 +9731,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 109.22 55.88 0)
 			(effects
 				(font
@@ -9737,7 +9795,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 180.34 27.94 0)
 			(effects
 				(font
@@ -9820,7 +9878,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 148.59 17.78 0)
 			(effects
 				(font
@@ -9886,7 +9944,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 109.22 30.48 0)
 			(effects
 				(font
@@ -9952,7 +10010,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 172.72 55.88 0)
 			(effects
 				(font
@@ -10097,7 +10155,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 33.02 63.5 0)
 			(effects
 				(font
@@ -10191,7 +10249,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "tof sensor board connector - female"
 			(at 59.69 123.19 0)
 			(effects
 				(font
@@ -10276,7 +10334,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "SMT, detection distance 0.5mm photointerrupter"
 			(at 180.34 53.34 0)
 			(effects
 				(font
@@ -10360,7 +10418,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 148.59 55.88 0)
 			(effects
 				(font
@@ -10425,7 +10483,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 168.91 21.59 0)
 			(effects
 				(font
@@ -10520,7 +10578,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 17.78 184.15 0)
 			(effects
 				(font
@@ -10586,7 +10644,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 59.69 135.89 0)
 			(effects
 				(font
@@ -10728,7 +10786,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 66.04 168.91 0)
 			(effects
 				(font
@@ -10794,7 +10852,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
 			(at 29.21 168.91 0)
 			(effects
 				(font
@@ -10859,7 +10917,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 33.02 40.64 0)
 			(effects
 				(font
@@ -10924,7 +10982,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 109.22 46.99 0)
 			(effects
 				(font
@@ -10942,7 +11000,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 109.22 46.99 0)
 			(effects
 				(font
@@ -11019,7 +11077,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 129.54 21.59 0)
 			(effects
 				(font
@@ -11116,7 +11174,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 50.8 93.98 0)
 			(effects
 				(font
@@ -11212,7 +11270,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
 			(at 148.59 30.48 0)
 			(effects
 				(font
