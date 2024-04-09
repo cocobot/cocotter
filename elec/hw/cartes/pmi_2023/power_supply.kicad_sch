@@ -4413,16 +4413,6 @@
 	)
 	(wire
 		(pts
-			(xy 86.36 116.84) (xy 82.55 116.84)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "250db3e8-1418-4035-b649-927364f42098")
-	)
-	(wire
-		(pts
 			(xy 189.23 102.87) (xy 213.36 102.87)
 		)
 		(stroke
@@ -5020,6 +5010,16 @@
 			(type default)
 		)
 		(uuid "9e2fe878-e96b-4063-90fa-65a118983499")
+	)
+	(wire
+		(pts
+			(xy 86.36 116.84) (xy 90.17 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9e84a121-5a3e-4f1e-bb38-b55bed393123")
 	)
 	(wire
 		(pts
@@ -8982,7 +8982,7 @@
 	)
 	(text_box "LDO : LDL1117S33R\nIout : 730mA\nVout : 3V3\nThot = Tamb + 60°C"
 		(exclude_from_sim no)
-		(at 90.17 113.03 0)
+		(at 90.17 111.76 0)
 		(size 22.86 10.16)
 		(stroke
 			(width 0)

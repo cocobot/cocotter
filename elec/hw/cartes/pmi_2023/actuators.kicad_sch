@@ -3465,6 +3465,16 @@
 	)
 	(wire
 		(pts
+			(xy 220.98 50.8) (xy 232.41 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03f918fc-26c2-4dc9-b1f8-44de0fc1376d")
+	)
+	(wire
+		(pts
 			(xy 97.79 69.85) (xy 114.3 69.85)
 		)
 		(stroke
@@ -3542,16 +3552,6 @@
 			(type default)
 		)
 		(uuid "1bb70423-8f84-4923-af4d-89d1388df11d")
-	)
-	(wire
-		(pts
-			(xy 229.87 45.72) (xy 232.41 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1d49535a-35f5-4e4b-83ae-b4c0698606f0")
 	)
 	(wire
 		(pts
@@ -3745,7 +3745,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 50.8) (xy 213.36 50.8)
+			(xy 194.31 45.72) (xy 222.25 45.72)
 		)
 		(stroke
 			(width 0)
@@ -3932,6 +3932,16 @@
 			(type default)
 		)
 		(uuid "642bd832-85fb-4b48-b853-f1e06757ebc4")
+	)
+	(wire
+		(pts
+			(xy 229.87 45.72) (xy 232.41 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "66d64656-7259-4001-8fab-919fe4bb6cf7")
 	)
 	(wire
 		(pts
@@ -4165,16 +4175,6 @@
 	)
 	(wire
 		(pts
-			(xy 220.98 50.8) (xy 232.41 50.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9fc576cf-9e46-4a92-b402-931bbcc80a8b")
-	)
-	(wire
-		(pts
 			(xy 97.79 72.39) (xy 114.3 72.39)
 		)
 		(stroke
@@ -4355,7 +4355,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 45.72) (xy 222.25 45.72)
+			(xy 194.31 50.8) (xy 213.36 50.8)
 		)
 		(stroke
 			(width 0)
@@ -4658,7 +4658,7 @@
 		)
 		(uuid "8cd42b57-39b0-40ac-bb36-643ee21eb253")
 	)
-	(label "led_RGB_g_3v3"
+	(label "led_RGB_b_3v3"
 		(at 99.06 69.85 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4670,7 +4670,7 @@
 		(uuid "0c753f23-bce7-46cb-95e6-aad4dc992643")
 	)
 	(label "led_RGB_b_3v3"
-		(at 195.58 50.8 0)
+		(at 194.31 45.72 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4758,7 +4758,7 @@
 		(uuid "420818e6-4123-4bbd-a49b-fb431ad91e74")
 	)
 	(label "led_RGB_g_3v3"
-		(at 195.58 45.72 0)
+		(at 194.31 50.8 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4856,7 +4856,7 @@
 		)
 		(uuid "a97e3f85-87e5-4bb1-a7c0-eb00a98ca923")
 	)
-	(label "led_RGB_b_3v3"
+	(label "led_RGB_g_3v3"
 		(at 99.06 72.39 0)
 		(fields_autoplaced yes)
 		(effects
@@ -6492,7 +6492,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_51R_0603_1%")
-		(at 217.17 50.8 90)
+		(at 226.06 45.72 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6500,100 +6500,6 @@
 		(dnp no)
 		(uuid "3168436a-4dfb-439a-9370-ce420d5e380d")
 		(property "Reference" "R75"
-			(at 217.17 48.26 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "51R 1%"
-			(at 217.17 53.34 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 217.17 52.578 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 217.17 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 217.17 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "51R 0603 1% 100mW"
-			(at 217.17 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" ""
-			(at 217.17 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 217.17 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "a3731746-3bba-4aa6-8622-1244ecd60630")
-		)
-		(pin "1"
-			(uuid "6848edf9-8753-44d4-a2d0-80091af04c36")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
-					(reference "R75")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_resistors:R_51R_0603_1%")
-		(at 226.06 45.72 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "345b4323-edcc-407e-a12b-74ce2a10725f")
-		(property "Reference" "R76"
 			(at 226.06 43.18 90)
 			(effects
 				(font
@@ -6656,6 +6562,100 @@
 		)
 		(property "JLCPCB" ""
 			(at 226.06 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "a3731746-3bba-4aa6-8622-1244ecd60630")
+		)
+		(pin "1"
+			(uuid "6848edf9-8753-44d4-a2d0-80091af04c36")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
+					(reference "R75")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_51R_0603_1%")
+		(at 217.17 50.8 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "345b4323-edcc-407e-a12b-74ce2a10725f")
+		(property "Reference" "R76"
+			(at 217.17 48.26 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "51R 1%"
+			(at 217.17 53.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 217.17 52.578 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 217.17 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 217.17 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "51R 0603 1% 100mW"
+			(at 217.17 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 217.17 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" ""
+			(at 217.17 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
