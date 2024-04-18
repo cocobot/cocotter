@@ -1663,7 +1663,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 186.69 118.11 0)
 			(effects
 				(font
@@ -1786,7 +1786,7 @@
 		(dnp no)
 		(uuid "7213e886-5aed-4b90-b52a-7ea3f8312898")
 		(property "Reference" "J49"
-			(at 209.55 61.214 0)
+			(at 210.058 52.324 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1976,7 +1976,7 @@
 		(dnp no)
 		(uuid "eaf58643-c494-4a57-adb0-cdc2e422d0ef")
 		(property "Reference" "J50"
-			(at 225.806 60.706 0)
+			(at 225.806 52.324 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2108,7 +2108,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 173.99 52.07 0)
 			(effects
 				(font

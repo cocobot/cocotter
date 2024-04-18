@@ -624,19 +624,6 @@
 		)
 		(uuid "fd29ae2e-1b1f-440f-baf2-f9c3f944a3ed")
 	)
-	(text "Team color indicator"
-		(exclude_from_sim no)
-		(at 10.16 142.24 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.254)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "9dc4bf84-4bfc-4ba4-9338-393d6d103388")
-	)
 	(label "line_detect_r0"
 		(at 143.51 64.77 0)
 		(fields_autoplaced yes)

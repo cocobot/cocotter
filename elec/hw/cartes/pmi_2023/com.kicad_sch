@@ -49,7 +49,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Unpolarized capacitor"
+			(property "Description" "Unpolarized capacitor tol +/-10%"
 				(at 0 0 0)
 				(effects
 					(font
@@ -59,6 +59,15 @@
 				)
 			)
 			(property "Specification" "100nF 50V X7R 0603 "
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB" "C14663"
 				(at 0 0 0)
 				(effects
 					(font
@@ -150,7 +159,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_capacitors:C_10µF_16V_0805_X5R"
+		(symbol "cocotter_capacitors:C_10µF_25V_0805_X5R"
 			(pin_numbers hide)
 			(pin_names
 				(offset 0.254)
@@ -203,7 +212,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "10µF 25V X5R 0805 "
+			(property "Specification" "10µF 25V X7R 0805 "
 				(at 0 0 0)
 				(effects
 					(font
@@ -218,7 +227,6 @@
 					(font
 						(size 1.27 1.27)
 					)
-					(hide yes)
 				)
 			)
 			(property "ki_keywords" "cap capacitor"
@@ -239,7 +247,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "C_10µF_16V_0805_X5R_0_1"
+			(symbol "C_10µF_25V_0805_X5R_0_1"
 				(polyline
 					(pts
 						(xy -2.032 -0.762) (xy 2.032 -0.762)
@@ -265,7 +273,7 @@
 					)
 				)
 			)
-			(symbol "C_10µF_16V_0805_X5R_1_1"
+			(symbol "C_10µF_25V_0805_X5R_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 2.794)
@@ -1824,7 +1832,7 @@
 					)
 				)
 			)
-			(property "Value" "red, 0603"
+			(property "Value" "white, 0603"
 				(at 0 -2.54 0)
 				(effects
 					(font
@@ -1833,8 +1841,8 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-				(at 0 -3.81 0)
+			(property "Footprint" ""
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1852,7 +1860,7 @@
 				)
 			)
 			(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
-				(at 0 0 0)
+				(at 0 -4.572 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1861,7 +1869,7 @@
 				)
 			)
 			(property "DIGIKEY_REF" ""
-				(at 0 -2.54 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1870,7 +1878,7 @@
 				)
 			)
 			(property "MOUSER_REF" ""
-				(at 0 -2.54 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1879,7 +1887,7 @@
 				)
 			)
 			(property "JLCPCB" "C2290"
-				(at 0 -6.35 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1887,7 +1895,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "White LED diode"
+			(property "ki_keywords" "white LED diode"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1954,7 +1962,25 @@
 					)
 					(fill
 						(type color)
-						(color 255 255 255 1)
+						(color 0 0 0 0)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "K"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
 				)
 				(pin passive line
@@ -1967,25 +1993,7 @@
 							)
 						)
 					)
-					(number "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "C"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2957,6 +2965,14 @@
 					(hide yes)
 				)
 			)
+			(property "JLCPCB" "C25803"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
 			(property "ki_keywords" "R res resistor"
 				(at 0 0 0)
 				(effects
@@ -3044,7 +3060,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "10k"
+			(property "Value" "10k 1%"
 				(at 3.81 -1.27 0)
 				(effects
 					(font
@@ -3095,6 +3111,14 @@
 						(size 1.27 1.27)
 					)
 					(hide yes)
+				)
+			)
+			(property "JLCPCB" "C25804"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -3945,12 +3969,6 @@
 		(uuid "b6f75554-b0d9-4ffb-a514-f2b742b46ca3")
 	)
 	(junction
-		(at 111.76 158.75)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "bbdf3898-de1a-4fce-8e33-974f1d7d6ab5")
-	)
-	(junction
 		(at 39.37 171.45)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4135,16 +4153,6 @@
 			(type default)
 		)
 		(uuid "32ee14ef-e568-4314-a09e-998a86673313")
-	)
-	(wire
-		(pts
-			(xy 175.26 196.85) (xy 175.26 158.75)
-		)
-		(stroke
-			(width 0)
-			(type dash)
-		)
-		(uuid "334a8763-0cab-4cf9-83c5-6a357c85e726")
 	)
 	(wire
 		(pts
@@ -4465,16 +4473,6 @@
 			(type default)
 		)
 		(uuid "691126e0-078d-4a6e-85c7-229a7650dd68")
-	)
-	(wire
-		(pts
-			(xy 111.76 158.75) (xy 175.26 158.75)
-		)
-		(stroke
-			(width 0)
-			(type dash)
-		)
-		(uuid "6b8dd129-2a64-45f6-85be-7124c60ae1e1")
 	)
 	(wire
 		(pts
@@ -5148,28 +5146,6 @@
 		)
 		(uuid "a004f660-37a5-4dbe-869a-6cbb5b62dc88")
 	)
-	(text_box "TODO : \n\nAjouter transceiver CAN"
-		(exclude_from_sim no)
-		(at 121.92 166.37 0)
-		(size 39.37 25.4)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 255 0 0 1)
-		)
-		(effects
-			(font
-				(size 2.54 2.54)
-				(thickness 0.508)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "a7b2ff3d-2156-447d-8a17-2a952b439994")
-	)
 	(text "GPIO3 : pull up au demarrage"
 		(exclude_from_sim no)
 		(at 109.474 36.576 0)
@@ -5203,19 +5179,6 @@
 			(href "https://www.espressif.com/sites/default/files/documentation/esp32-s3_datasheet_en.pdf")
 		)
 		(uuid "3b8b0720-d133-4c35-b5a9-ddf6e54d613f")
-	)
-	(text "CAN interface"
-		(exclude_from_sim no)
-		(at 113.03 162.56 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.254)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "3c705ae6-360d-4f30-820d-123af33f81b8")
 	)
 	(text "ESP32 hardware design guide"
 		(exclude_from_sim no)
@@ -5893,7 +5856,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_10µF_16V_0805_X5R")
+		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 208.28 33.02 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5938,7 +5901,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 208.28 33.02 0)
 			(effects
 				(font
@@ -5947,7 +5910,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 25V X5R 0805 "
+		(property "Specification" "10µF 25V X7R 0805 "
 			(at 208.28 33.02 0)
 			(effects
 				(font
@@ -6078,7 +6041,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 100.33 121.92 0)
 			(effects
 				(font
@@ -6143,7 +6106,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 90.17 73.66 0)
 			(effects
 				(font
@@ -6208,7 +6171,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 100.33 156.21 0)
 			(effects
 				(font
@@ -6386,7 +6349,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 186.69 33.02 0)
 			(effects
 				(font
@@ -6446,7 +6409,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 90.17 193.04 0)
 			(effects
 				(font
@@ -6511,7 +6474,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 232.41 154.94 0)
 			(effects
 				(font
@@ -6673,7 +6636,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 175.26 154.94 0)
 			(effects
 				(font
@@ -6738,7 +6701,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 243.84 154.94 0)
 			(effects
 				(font
@@ -6804,7 +6767,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 208.28 24.13 0)
 			(effects
 				(font
@@ -6869,7 +6832,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 217.17 154.94 0)
 			(effects
 				(font
@@ -6935,7 +6898,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "red, 0603"
+		(property "Value" "white, 0603"
 			(at 31.75 185.42 0)
 			(effects
 				(font
@@ -6962,7 +6925,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
 			(at 29.21 185.42 0)
 			(effects
 				(font
@@ -6998,10 +6961,10 @@
 				(hide yes)
 			)
 		)
-		(pin "C"
+		(pin "2"
 			(uuid "08691e42-2363-42a5-994a-2ad20a29ab35")
 		)
-		(pin "A"
+		(pin "1"
 			(uuid "a01696cb-cd93-41e6-b986-cd76c5512401")
 		)
 		(instances
@@ -7032,7 +6995,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "10k 1%"
 			(at 232.41 127 0)
 			(effects
 				(font
@@ -7252,7 +7215,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 93.98 60.96 0)
 			(effects
 				(font
@@ -7340,7 +7303,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 83.82 148.59 0)
 			(effects
 				(font
@@ -7400,7 +7363,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 39.37 194.31 0)
 			(effects
 				(font
@@ -7466,7 +7429,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "red, 0603"
+		(property "Value" "white, 0603"
 			(at 41.91 185.42 0)
 			(effects
 				(font
@@ -7493,7 +7456,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
 			(at 39.37 185.42 0)
 			(effects
 				(font
@@ -7529,10 +7492,10 @@
 				(hide yes)
 			)
 		)
-		(pin "A"
+		(pin "1"
 			(uuid "5a92485f-7ab1-49ad-8841-4dd754940ebf")
 		)
-		(pin "C"
+		(pin "2"
 			(uuid "955be53d-9c8d-460b-b4af-576c4bdc6725")
 		)
 		(instances
@@ -7562,7 +7525,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 273.05 154.94 0)
 			(effects
 				(font
@@ -7725,7 +7688,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 229.87 83.82 0)
 			(effects
 				(font
@@ -7791,7 +7754,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 238.76 83.82 0)
 			(effects
 				(font
@@ -8151,7 +8114,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 83.82 121.92 0)
 			(effects
 				(font
@@ -8506,7 +8469,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 132.08 24.13 0)
 			(effects
 				(font
@@ -8860,7 +8823,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 208.28 43.18 0)
 			(effects
 				(font
@@ -9156,7 +9119,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 58.42 66.04 0)
 			(effects
 				(font
@@ -9706,7 +9669,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 83.82 156.21 0)
 			(effects
 				(font
@@ -9771,7 +9734,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND_M"
+		(property "Value" "GND"
 			(at 29.21 194.31 0)
 			(effects
 				(font
@@ -10033,7 +9996,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3_m"
+		(property "Value" "+3V3"
 			(at 69.85 66.04 0)
 			(effects
 				(font

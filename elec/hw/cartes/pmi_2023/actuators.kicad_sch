@@ -49,7 +49,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Unpolarized capacitor"
+			(property "Description" "Unpolarized capacitor tol +/-10%"
 				(at 0 0 0)
 				(effects
 					(font
@@ -59,6 +59,15 @@
 				)
 			)
 			(property "Specification" "100nF 50V X7R 0603 "
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB" "C14663"
 				(at 0 0 0)
 				(effects
 					(font
@@ -150,7 +159,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_capacitors:C_10µF_16V_0805_X5R"
+		(symbol "cocotter_capacitors:C_10µF_25V_0805_X5R"
 			(pin_numbers hide)
 			(pin_names
 				(offset 0.254)
@@ -203,7 +212,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "10µF 25V X5R 0805 "
+			(property "Specification" "10µF 25V X7R 0805 "
 				(at 0 0 0)
 				(effects
 					(font
@@ -218,7 +227,6 @@
 					(font
 						(size 1.27 1.27)
 					)
-					(hide yes)
 				)
 			)
 			(property "ki_keywords" "cap capacitor"
@@ -239,7 +247,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "C_10µF_16V_0805_X5R_0_1"
+			(symbol "C_10µF_25V_0805_X5R_0_1"
 				(polyline
 					(pts
 						(xy -2.032 -0.762) (xy 2.032 -0.762)
@@ -265,7 +273,7 @@
 					)
 				)
 			)
-			(symbol "C_10µF_16V_0805_X5R_1_1"
+			(symbol "C_10µF_25V_0805_X5R_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 2.794)
@@ -512,23 +520,23 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "D"
-				(at 0 8.89 0)
+				(at 2.032 6.096 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" ""
-				(at 0 5.08 0)
+			(property "Value" "IN-P32TRRRGB"
+				(at 4.572 -7.874 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" "cocotter_diodes:3528_PLCC-Reverse_mount"
-				(at 0 5.08 0)
+			(property "Footprint" ""
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -537,7 +545,7 @@
 				)
 			)
 			(property "Datasheet" ""
-				(at 0 5.08 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -545,7 +553,16 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "RGB LED, Vf typ red 2.0, Vf typ green 3.2, Vf typ blue 3.2"
+			(property "Description" "RGB LED, reverse mount"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB" "C7288909"
 				(at 0 0 0)
 				(effects
 					(font
@@ -557,7 +574,7 @@
 			(symbol "IN-P32TRRRGB_0_1"
 				(polyline
 					(pts
-						(xy -1.27 -6.35) (xy -1.27 -3.81)
+						(xy -2.54 -6.35) (xy -2.54 -3.81)
 					)
 					(stroke
 						(width 0.254)
@@ -569,7 +586,7 @@
 				)
 				(polyline
 					(pts
-						(xy -1.27 -1.27) (xy -1.27 1.27)
+						(xy -2.54 -1.27) (xy -2.54 1.27)
 					)
 					(stroke
 						(width 0.254)
@@ -581,7 +598,7 @@
 				)
 				(polyline
 					(pts
-						(xy -1.27 3.81) (xy -1.27 6.35)
+						(xy -2.54 3.81) (xy -2.54 6.35)
 					)
 					(stroke
 						(width 0.254)
@@ -593,7 +610,7 @@
 				)
 				(polyline
 					(pts
-						(xy 1.27 0) (xy 2.54 0)
+						(xy 0 0) (xy 1.27 0)
 					)
 					(stroke
 						(width 0)
@@ -605,7 +622,43 @@
 				)
 				(polyline
 					(pts
-						(xy 1.27 5.08) (xy 2.54 5.08) (xy 2.54 -5.08) (xy 1.27 -5.08)
+						(xy 0 5.08) (xy 1.27 5.08) (xy 1.27 -5.08) (xy 0 -5.08)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -4.318 -5.842) (xy -5.842 -7.366) (xy -5.08 -7.366) (xy -5.842 -7.366) (xy -5.842 -6.604)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -4.318 -0.762) (xy -5.842 -2.286) (xy -5.08 -2.286) (xy -5.842 -2.286) (xy -5.842 -1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -4.318 4.318) (xy -5.842 2.794) (xy -5.08 2.794) (xy -5.842 2.794) (xy -5.842 3.556)
 					)
 					(stroke
 						(width 0)
@@ -651,47 +704,11 @@
 						(type none)
 					)
 				)
-				(polyline
-					(pts
-						(xy -1.778 -5.842) (xy -3.302 -7.366) (xy -2.54 -7.366) (xy -3.302 -7.366) (xy -3.302 -6.604)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 4.318) (xy -3.302 2.794) (xy -2.54 2.794) (xy -3.302 2.794) (xy -3.302 3.556)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
 			)
 			(symbol "IN-P32TRRRGB_1_1"
 				(polyline
 					(pts
-						(xy 1.27 -6.35) (xy 1.27 -3.81) (xy -1.27 -5.08) (xy 1.27 -6.35)
+						(xy 0 -6.35) (xy 0 -3.81) (xy -2.54 -5.08) (xy 0 -6.35)
 					)
 					(stroke
 						(width 0.254)
@@ -704,7 +721,7 @@
 				)
 				(polyline
 					(pts
-						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
+						(xy 0 -1.27) (xy 0 1.27) (xy -2.54 0) (xy 0 -1.27)
 					)
 					(stroke
 						(width 0.254)
@@ -717,7 +734,7 @@
 				)
 				(polyline
 					(pts
-						(xy 1.27 3.81) (xy 1.27 6.35) (xy -1.27 5.08) (xy 1.27 3.81)
+						(xy 0 3.81) (xy 0 6.35) (xy -2.54 5.08) (xy 0 3.81)
 					)
 					(stroke
 						(width 0.254)
@@ -729,7 +746,7 @@
 					)
 				)
 				(pin passive line
-					(at -3.81 -5.08 0)
+					(at -5.08 -5.08 0)
 					(length 2.54)
 					(name "C_BLUE"
 						(effects
@@ -747,7 +764,7 @@
 					)
 				)
 				(pin passive line
-					(at -3.81 0 0)
+					(at -5.08 0 0)
 					(length 2.54)
 					(name "C_GREEN"
 						(effects
@@ -765,7 +782,7 @@
 					)
 				)
 				(pin passive line
-					(at -3.81 5.08 0)
+					(at -5.08 5.08 0)
 					(length 2.54)
 					(name "C_RED"
 						(effects
@@ -783,7 +800,7 @@
 					)
 				)
 				(pin passive line
-					(at 5.08 0 180)
+					(at 3.81 0 180)
 					(length 2.54)
 					(name "COM"
 						(effects
@@ -994,7 +1011,7 @@
 					)
 				)
 			)
-			(property "Value" "red, 0603"
+			(property "Value" "white, 0603"
 				(at 0 -2.54 0)
 				(effects
 					(font
@@ -1003,8 +1020,8 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-				(at 0 -3.81 0)
+			(property "Footprint" ""
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1022,7 +1039,7 @@
 				)
 			)
 			(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
-				(at 0 0 0)
+				(at 0 -4.572 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1031,7 +1048,7 @@
 				)
 			)
 			(property "DIGIKEY_REF" ""
-				(at 0 -2.54 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1040,7 +1057,7 @@
 				)
 			)
 			(property "MOUSER_REF" ""
-				(at 0 -2.54 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1049,7 +1066,7 @@
 				)
 			)
 			(property "JLCPCB" "C2290"
-				(at 0 -6.35 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1057,7 +1074,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "White LED diode"
+			(property "ki_keywords" "white LED diode"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1124,7 +1141,25 @@
 					)
 					(fill
 						(type color)
-						(color 255 255 255 1)
+						(color 0 0 0 0)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "K"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
 					)
 				)
 				(pin passive line
@@ -1137,25 +1172,7 @@
 							)
 						)
 					)
-					(number "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "C"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2701,8 +2718,8 @@
 					(justify left)
 				)
 			)
-			(property "Value" "330R 1%"
-				(at 6.35 -1.27 0)
+			(property "Value" "330R"
+				(at 3.81 -1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -2754,7 +2771,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" ""
+			(property "JLCPCB" "C23138"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2850,8 +2867,8 @@
 					(justify left)
 				)
 			)
-			(property "Value" "51R 1%"
-				(at 6.35 -1.27 0)
+			(property "Value" "51R"
+				(at 3.81 -1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -2903,7 +2920,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" ""
+			(property "JLCPCB" "C23197"
 				(at 0 0 0)
 				(effects
 					(font
@@ -5327,7 +5344,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 60.96 166.37 0)
 			(effects
 				(font
@@ -5415,7 +5432,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 60.96 129.54 0)
 			(effects
 				(font
@@ -5458,7 +5475,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_10µF_16V_0805_X5R")
+		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 76.2 149.86 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5502,7 +5519,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 76.2 149.86 0)
 			(effects
 				(font
@@ -5511,7 +5528,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 25V X5R 0805 "
+		(property "Specification" "10µF 25V X7R 0805 "
 			(at 76.2 149.86 0)
 			(effects
 				(font
@@ -5610,7 +5627,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_10µF_16V_0805_X5R")
+		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 223.52 157.48 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5655,7 +5672,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 223.52 157.48 0)
 			(effects
 				(font
@@ -5664,7 +5681,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 25V X5R 0805 "
+		(property "Specification" "10µF 25V X7R 0805 "
 			(at 223.52 157.48 0)
 			(effects
 				(font
@@ -6507,7 +6524,7 @@
 				)
 			)
 		)
-		(property "Value" "51R 1%"
+		(property "Value" "51R"
 			(at 226.06 48.26 90)
 			(effects
 				(font
@@ -6533,7 +6550,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 226.06 45.72 0)
 			(effects
 				(font
@@ -6560,7 +6577,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C23197"
 			(at 226.06 45.72 0)
 			(effects
 				(font
@@ -6601,7 +6618,7 @@
 				)
 			)
 		)
-		(property "Value" "51R 1%"
+		(property "Value" "51R"
 			(at 217.17 53.34 90)
 			(effects
 				(font
@@ -6627,7 +6644,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 217.17 50.8 0)
 			(effects
 				(font
@@ -6654,7 +6671,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C23197"
 			(at 217.17 50.8 0)
 			(effects
 				(font
@@ -7303,7 +7320,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 21.59 129.54 0)
 			(effects
 				(font
@@ -7601,7 +7618,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 21.59 166.37 0)
 			(effects
 				(font
@@ -8048,7 +8065,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 168.91 137.16 0)
 			(effects
 				(font
@@ -8215,7 +8232,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 168.91 99.06 0)
 			(effects
 				(font
@@ -8791,7 +8808,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 87.63 25.4 0)
 			(effects
 				(font
@@ -9623,7 +9640,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_10µF_16V_0805_X5R")
+		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 223.52 119.38 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9668,7 +9685,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 223.52 119.38 0)
 			(effects
 				(font
@@ -9677,7 +9694,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 25V X5R 0805 "
+		(property "Specification" "10µF 25V X7R 0805 "
 			(at 223.52 119.38 0)
 			(effects
 				(font
@@ -10391,7 +10408,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 208.28 99.06 0)
 			(effects
 				(font
@@ -10434,7 +10451,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_10µF_16V_0805_X5R")
+		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 76.2 186.69 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10479,7 +10496,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 76.2 186.69 0)
 			(effects
 				(font
@@ -10488,7 +10505,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 25V X5R 0805 "
+		(property "Specification" "10µF 25V X7R 0805 "
 			(at 76.2 186.69 0)
 			(effects
 				(font
@@ -10718,7 +10735,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_10µF_16V_0805_X5R")
+		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 105.41 25.4 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10763,7 +10780,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Unpolarized capacitor"
 			(at 105.41 25.4 0)
 			(effects
 				(font
@@ -10772,7 +10789,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 25V X5R 0805 "
+		(property "Specification" "10µF 25V X7R 0805 "
 			(at 105.41 25.4 0)
 			(effects
 				(font
@@ -10822,7 +10839,7 @@
 				)
 			)
 		)
-		(property "Value" "330R 1%"
+		(property "Value" "330R"
 			(at 217.17 43.18 90)
 			(effects
 				(font
@@ -10848,7 +10865,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Resistor"
 			(at 217.17 40.64 0)
 			(effects
 				(font
@@ -10875,7 +10892,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C23138"
 			(at 217.17 40.64 0)
 			(effects
 				(font
@@ -11290,24 +11307,23 @@
 	)
 	(symbol
 		(lib_id "cocotter_diodes:IN-P32TRRRGB")
-		(at 236.22 45.72 0)
+		(at 237.49 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "e96733eb-07bb-4f80-b064-82198f7a0125")
 		(property "Reference" "D1"
-			(at 235.204 36.83 0)
+			(at 236.474 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "~"
-			(at 236.22 40.64 0)
+		(property "Value" "IN-P32TRRRGB"
+			(at 241.554 54.356 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11315,7 +11331,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_diodes:3528_PLCC-Reverse_mount"
-			(at 236.22 40.64 0)
+			(at 237.49 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11324,7 +11340,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 236.22 40.64 0)
+			(at 237.49 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11332,8 +11348,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 236.22 45.72 0)
+		(property "Description" "RGB LED, reverse mount"
+			(at 237.49 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C7288909"
+			(at 237.49 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11380,7 +11405,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "red, 0603"
+		(property "Value" "white, 0603"
 			(at 168.91 40.64 0)
 			(effects
 				(font
@@ -11407,7 +11432,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
 			(at 166.37 40.64 0)
 			(effects
 				(font
@@ -11443,10 +11468,10 @@
 				(hide yes)
 			)
 		)
-		(pin "C"
+		(pin "1"
 			(uuid "d2f6a4e2-cbf5-41ab-b83f-b22eedaf90f2")
 		)
-		(pin "A"
+		(pin "2"
 			(uuid "c91dbae2-d1a2-4a3d-8505-ed3e17feb5b1")
 		)
 		(instances
@@ -11666,7 +11691,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "Unpolarized capacitor tol +/-10%"
 			(at 208.28 137.16 0)
 			(effects
 				(font
