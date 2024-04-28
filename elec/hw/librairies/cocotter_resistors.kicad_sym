@@ -508,7 +508,16 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C17471"
 			(at 0 0 0)
 			(effects
 				(font
@@ -753,7 +762,7 @@
 			)
 		)
 		(property "Value" "27k 1%"
-			(at 3.81 -1.27 0)
+			(at 5.08 -1.778 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -796,13 +805,21 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 0 0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C22967"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 			)
 		)
 		(property "ki_keywords" "R res resistor"

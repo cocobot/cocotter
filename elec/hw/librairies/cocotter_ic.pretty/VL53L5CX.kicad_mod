@@ -372,4 +372,15 @@
 		(thermal_bridge_angle 45)
 		(uuid "727a508b-e33b-4220-853a-85755abc5dc8")
 	)
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/VL53L5 3D Model.step"
+		(offset
+			(xyz 1.8 0.1 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
 )

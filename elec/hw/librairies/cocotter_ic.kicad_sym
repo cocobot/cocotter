@@ -436,23 +436,23 @@
 		(in_bom yes)
 		(on_board yes)
 		(property "Reference" "U"
-			(at -4.318 6.604 0)
+			(at -3.81 4.445 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" ""
-			(at 0 0 0)
+		(property "Value" "EESX1321"
+			(at 8.89 5.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 0 0 0)
+		(property "Footprint" "cocotter_ic:EESX1321"
+			(at 8.89 5.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -461,7 +461,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 8.89 5.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -481,7 +481,7 @@
 		(symbol "EESX1321_0_1"
 			(polyline
 				(pts
-					(xy 2.7096 -1.4131) (xy 3.8526 -2.5561)
+					(xy 2.7096 -3.9531) (xy 3.8526 -5.0961)
 				)
 				(stroke
 					(width 0)
@@ -493,7 +493,7 @@
 			)
 			(polyline
 				(pts
-					(xy 2.7096 -1.1591) (xy 3.8526 -0.0161)
+					(xy 2.7096 -3.6991) (xy 3.8526 -2.5561)
 				)
 				(stroke
 					(width 0)
@@ -505,7 +505,7 @@
 			)
 			(polyline
 				(pts
-					(xy 2.7096 2.3969) (xy 3.8526 1.2539)
+					(xy 2.7096 -0.1431) (xy 3.8526 -1.2861)
 				)
 				(stroke
 					(width 0)
@@ -517,7 +517,7 @@
 			)
 			(polyline
 				(pts
-					(xy 2.7096 2.6509) (xy 3.8526 3.7939)
+					(xy 2.7096 0.1109) (xy 3.8526 1.2539)
 				)
 				(stroke
 					(width 0)
@@ -529,7 +529,7 @@
 			)
 			(polyline
 				(pts
-					(xy 2.7096 -0.2701) (xy 2.7096 -2.3021) (xy 2.7096 -2.3021)
+					(xy 2.7096 -2.8101) (xy 2.7096 -4.8421) (xy 2.7096 -4.8421)
 				)
 				(stroke
 					(width 0.3556)
@@ -541,7 +541,7 @@
 			)
 			(polyline
 				(pts
-					(xy 2.7096 3.5399) (xy 2.7096 1.5079) (xy 2.7096 1.5079)
+					(xy 2.7096 0.9999) (xy 2.7096 -1.0321) (xy 2.7096 -1.0321)
 				)
 				(stroke
 					(width 0.3556)
@@ -553,7 +553,7 @@
 			)
 			(polyline
 				(pts
-					(xy 3.8526 -2.5561) (xy 3.8526 -2.5561) (xy 5.1226 -2.5561)
+					(xy 3.8526 -5.0961) (xy 3.8526 -5.0961) (xy 5.1226 -5.0961)
 				)
 				(stroke
 					(width 0)
@@ -565,7 +565,7 @@
 			)
 			(polyline
 				(pts
-					(xy 3.8526 1.2539) (xy 3.8526 1.2539) (xy 5.1226 1.2539)
+					(xy 3.8526 -1.2861) (xy 3.8526 -1.2861) (xy 5.1226 -1.2861)
 				)
 				(stroke
 					(width 0)
@@ -577,7 +577,7 @@
 			)
 			(polyline
 				(pts
-					(xy 3.8526 3.7939) (xy 3.8542 5.6953) (xy 3.8526 5.0639)
+					(xy 3.8526 1.2539) (xy 3.8542 3.1553) (xy 3.8526 2.5239)
 				)
 				(stroke
 					(width 0)
@@ -589,7 +589,7 @@
 			)
 			(polyline
 				(pts
-					(xy 3.7256 -2.4291) (xy 3.4716 -1.9211) (xy 3.2176 -2.1751) (xy 3.7256 -2.4291)
+					(xy 3.7256 -4.9691) (xy 3.4716 -4.4611) (xy 3.2176 -4.7151) (xy 3.7256 -4.9691)
 				)
 				(stroke
 					(width 0)
@@ -601,7 +601,7 @@
 			)
 			(polyline
 				(pts
-					(xy 3.7256 1.3809) (xy 3.4716 1.8889) (xy 3.2176 1.6349) (xy 3.7256 1.3809)
+					(xy 3.7256 -1.1591) (xy 3.4716 -0.6511) (xy 3.2176 -0.9051) (xy 3.7256 -1.1591)
 				)
 				(stroke
 					(width 0)
@@ -615,7 +615,7 @@
 		(symbol "EESX1321_1_1"
 			(polyline
 				(pts
-					(xy -4.445 1.27) (xy -1.905 1.27)
+					(xy -4.445 -1.27) (xy -1.905 -1.27)
 				)
 				(stroke
 					(width 0)
@@ -627,7 +627,7 @@
 			)
 			(polyline
 				(pts
-					(xy 0.635 2.54) (xy 0.254 2.286)
+					(xy 0.635 0) (xy 0.254 -0.254)
 				)
 				(stroke
 					(width 0)
@@ -639,7 +639,7 @@
 			)
 			(polyline
 				(pts
-					(xy 0.635 3.429) (xy 0.254 3.175)
+					(xy 0.635 0.889) (xy 0.254 0.635)
 				)
 				(stroke
 					(width 0)
@@ -651,7 +651,7 @@
 			)
 			(polyline
 				(pts
-					(xy 0.762 -1.143) (xy 0.381 -1.397)
+					(xy 0.762 -3.683) (xy 0.381 -3.937)
 				)
 				(stroke
 					(width 0)
@@ -663,7 +663,7 @@
 			)
 			(polyline
 				(pts
-					(xy 0.762 -0.254) (xy 0.381 -0.508)
+					(xy 0.762 -2.794) (xy 0.381 -3.048)
 				)
 				(stroke
 					(width 0)
@@ -675,7 +675,7 @@
 			)
 			(polyline
 				(pts
-					(xy -3.175 0) (xy -3.175 -2.54) (xy -5.08 -2.54)
+					(xy -3.175 -2.54) (xy -3.175 -5.08) (xy -5.08 -5.08)
 				)
 				(stroke
 					(width 0)
@@ -687,7 +687,7 @@
 			)
 			(polyline
 				(pts
-					(xy -3.175 1.27) (xy -3.1736 0.0001) (xy -5.08 0)
+					(xy -3.175 -1.27) (xy -3.1736 -2.5399) (xy -5.08 -2.54)
 				)
 				(stroke
 					(width 0)
@@ -699,7 +699,7 @@
 			)
 			(polyline
 				(pts
-					(xy -3.175 2.54) (xy -3.175 3.81) (xy -5.08 3.81)
+					(xy -3.175 0) (xy -3.175 1.27) (xy -5.08 1.27)
 				)
 				(stroke
 					(width 0)
@@ -711,7 +711,7 @@
 			)
 			(polyline
 				(pts
-					(xy -4.445 2.54) (xy -3.175 1.27) (xy -1.905 2.54) (xy -4.445 2.54)
+					(xy -4.445 0) (xy -3.175 -1.27) (xy -1.905 0) (xy -4.445 0)
 				)
 				(stroke
 					(width 0)
@@ -723,7 +723,7 @@
 			)
 			(polyline
 				(pts
-					(xy -0.635 2.54) (xy 0.635 2.54) (xy 0.254 2.794) (xy 0.635 2.54)
+					(xy -0.635 0) (xy 0.635 0) (xy 0.254 0.254) (xy 0.635 0)
 				)
 				(stroke
 					(width 0)
@@ -735,7 +735,7 @@
 			)
 			(polyline
 				(pts
-					(xy -0.635 3.429) (xy 0.635 3.429) (xy 0.254 3.683) (xy 0.635 3.429)
+					(xy -0.635 0.889) (xy 0.635 0.889) (xy 0.254 1.143) (xy 0.635 0.889)
 				)
 				(stroke
 					(width 0)
@@ -747,7 +747,7 @@
 			)
 			(polyline
 				(pts
-					(xy -0.508 -1.143) (xy 0.762 -1.143) (xy 0.381 -0.889) (xy 0.762 -1.143)
+					(xy -0.508 -3.683) (xy 0.762 -3.683) (xy 0.381 -3.429) (xy 0.762 -3.683)
 				)
 				(stroke
 					(width 0)
@@ -759,7 +759,7 @@
 			)
 			(polyline
 				(pts
-					(xy -0.508 -0.254) (xy 0.762 -0.254) (xy 0.381 0) (xy 0.762 -0.254)
+					(xy -0.508 -2.794) (xy 0.762 -2.794) (xy 0.381 -2.54) (xy 0.762 -2.794)
 				)
 				(stroke
 					(width 0)
@@ -771,7 +771,7 @@
 			)
 			(polyline
 				(pts
-					(xy 3.8526 -0.0161) (xy 4.4876 -0.0161) (xy 4.4876 4.4289) (xy 3.8526 4.4289)
+					(xy 3.8526 -2.5561) (xy 4.4876 -2.5561) (xy 4.4876 1.8889) (xy 3.8526 1.8889)
 				)
 				(stroke
 					(width 0)
@@ -783,8 +783,8 @@
 			)
 			(polyline
 				(pts
-					(xy -5.08 5.715) (xy -1.27 5.715) (xy -1.27 -1.905) (xy 1.27 -1.905) (xy 1.27 5.715) (xy 5.08 5.715)
-					(xy 5.08 -4.445) (xy -5.08 -4.445) (xy -5.08 5.715) (xy -5.08 5.715)
+					(xy -5.08 3.175) (xy -1.27 3.175) (xy -1.27 -4.445) (xy 1.27 -4.445) (xy 1.27 3.175) (xy 5.08 3.175)
+					(xy 5.08 -6.985) (xy -5.08 -6.985) (xy -5.08 3.175) (xy -5.08 3.175)
 				)
 				(stroke
 					(width 0)
@@ -795,7 +795,7 @@
 				)
 			)
 			(pin input line
-				(at -7.62 3.81 0)
+				(at -7.62 1.27 0)
 				(length 2.54)
 				(name "A"
 					(effects
@@ -813,7 +813,7 @@
 				)
 			)
 			(pin free line
-				(at -7.62 0 0)
+				(at -7.62 -2.54 0)
 				(length 2.54)
 				(name "C1"
 					(effects
@@ -831,7 +831,7 @@
 				)
 			)
 			(pin free line
-				(at -7.62 -2.54 0)
+				(at -7.62 -5.08 0)
 				(length 2.54)
 				(name "C2"
 					(effects
@@ -849,7 +849,7 @@
 				)
 			)
 			(pin open_emitter line
-				(at 7.62 1.27 180)
+				(at 7.62 -1.27 180)
 				(length 2.54)
 				(name "E1"
 					(effects
@@ -867,7 +867,7 @@
 				)
 			)
 			(pin open_emitter line
-				(at 7.62 -2.54 180)
+				(at 7.62 -5.08 180)
 				(length 2.54)
 				(name "E2"
 					(effects
@@ -885,7 +885,7 @@
 				)
 			)
 			(pin power_in line
-				(at 3.81 8.255 270)
+				(at 3.81 5.715 270)
 				(length 2.54)
 				(name "C"
 					(effects
@@ -2750,6 +2750,139 @@
 					)
 				)
 				(number "9"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+	)
+	(symbol "LDL1117S33R"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "U"
+			(at 2.54 6.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LDL1117S33R"
+			(at 7.62 -6.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_ic:SOT-223"
+			(at 0 -1.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 -1.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "LDO 3.3V 1.2A sot233, dropout voltage max 600mV@"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "LDL1117S33R_1_1"
+			(rectangle
+				(start -6.35 5.08)
+				(end 6.35 -5.08)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin passive line
+				(at 0 -7.62 90)
+				(length 2.54)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_out line
+				(at 8.89 2.54 180)
+				(length 2.54)
+				(name "Vout"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -8.89 2.54 0)
+				(length 2.54)
+				(name "Vin"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_out line
+				(at 8.89 0 180)
+				(length 2.54)
+				(name "Vout"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -4705,6 +4838,184 @@
 					)
 				)
 				(number "EP"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+	)
+	(symbol "TLV61070A"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "U"
+			(at 2.54 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "TLV61070A"
+			(at 0 8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_ic:SOT-23-6"
+			(at 0 -1.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/gpn/TLV61070A"
+			(at 0 -1.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "2.5-A Boost Converter with 0.5-V Ultra-low Input Voltage"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "TLV61070A_1_1"
+			(rectangle
+				(start -6.35 7.62)
+				(end 6.35 -7.62)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin power_in line
+				(at 8.89 5.08 180)
+				(length 2.54)
+				(name "SW"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -10.16 90)
+				(length 2.54)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -8.89 -5.08 0)
+				(length 2.54)
+				(name "EN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at 8.89 -5.08 180)
+				(length 2.54)
+				(name "FB"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_out line
+				(at 8.89 2.54 180)
+				(length 2.54)
+				(name "Vout"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -8.89 5.08 0)
+				(length 2.54)
+				(name "Vin"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -7261,6 +7572,387 @@
 					)
 				)
 				(number "C7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+	)
+	(symbol "XRA1200PIG16TR-F"
+		(pin_names
+			(offset 1.016)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "U"
+			(at 5.08 13.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "XRA1200PIG16TR-F"
+			(at 11.43 -11.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_ic:TSSOP-16_4.4x5mm_P0.65mm"
+			(at 26.67 -25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://assets.maxlinear.com/web/documents/xra1200.pdf"
+			(at -12.7 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "8-BIT I2C/SMBUS GPIO EXPANDER"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "701-XRA1200PIG16TR-F "
+			(at 0 -10.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "exar parallel port"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "TSSOP*4.4x7.8mm*P0.65mm*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "XRA1200PIG16TR-F_0_1"
+			(rectangle
+				(start -10.16 12.7)
+				(end 10.16 -10.16)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "XRA1200PIG16TR-F_1_1"
+			(pin input line
+				(at -15.24 -7.62 0)
+				(length 5.08)
+				(name "A0"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 -2.54 180)
+				(length 5.08)
+				(name "P5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "10"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 -5.08 180)
+				(length 5.08)
+				(name "P6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "11"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 -7.62 180)
+				(length 5.08)
+				(name "P7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "12"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin open_collector line
+				(at -15.24 10.16 0)
+				(length 5.08)
+				(name "~{INT}"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "13"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -15.24 2.54 0)
+				(length 5.08)
+				(name "SCL"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "14"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at -15.24 5.08 0)
+				(length 5.08)
+				(name "SDA"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "15"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 17.78 270)
+				(length 5.08)
+				(name "VCC"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "16"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -15.24 -5.08 0)
+				(length 5.08)
+				(name "A1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -15.24 -2.54 0)
+				(length 5.08)
+				(name "A2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 10.16 180)
+				(length 5.08)
+				(name "P0"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 7.62 180)
+				(length 5.08)
+				(name "P1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 5.08 180)
+				(length 5.08)
+				(name "P2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 2.54 180)
+				(length 5.08)
+				(name "P3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 -15.24 90)
+				(length 5.08)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 15.24 0 180)
+				(length 5.08)
+				(name "P4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "9"
 					(effects
 						(font
 							(size 1.27 1.27)
