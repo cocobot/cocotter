@@ -238,7 +238,7 @@
 		(roundrect_rratio 0.25)
 		(uuid "09ae59ba-ea69-485d-b599-029dc219f4d2")
 	)
-	(model "${KICAD6_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-23-3.wrl"
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_transistors.pretty/3d/SOT-23-3.step"
 		(offset
 			(xyz 0 0 0)
 		)
@@ -246,7 +246,7 @@
 			(xyz 1 1 1)
 		)
 		(rotate
-			(xyz 0 0 0)
+			(xyz 0 0 90)
 		)
 	)
 )
