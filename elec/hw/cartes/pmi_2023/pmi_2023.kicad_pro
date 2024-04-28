@@ -451,7 +451,11 @@
       "cocotter_diodes",
       "cocotter_others",
       "cocotter_connectors",
-      "pmi_2023_specific"
+      "pmi_2023_specific",
+      "cocotter_transistors",
+      "export_pmi2023",
+      "lib_export",
+      "cocotter_inductors"
     ],
     "pinned_symbol_libs": [
       "cocotter_resistors",
@@ -462,7 +466,8 @@
       "cocotter_others",
       "pmi_2023_specific",
       "cocotter_transistors",
-      "cocotter_inductors"
+      "cocotter_inductors",
+      "export_pmi"
     ]
   },
   "meta": {
