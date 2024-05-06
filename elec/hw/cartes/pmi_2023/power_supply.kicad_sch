@@ -5,178 +5,6 @@
 	(uuid "56e3802f-a6e5-47a4-b831-c6aadde92940")
 	(paper "A4")
 	(lib_symbols
-		(symbol "Device:Battery_Cell"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "BT"
-				(at 2.54 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "Battery_Cell"
-				(at 2.54 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 1.524 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 1.524 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Single-cell battery"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "battery cell"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Battery_Cell_0_1"
-				(rectangle
-					(start -2.286 1.778)
-					(end 2.286 1.524)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start -1.524 1.016)
-					(end 1.524 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 0.762) (xy 0 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.778) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.762 3.048) (xy 1.778 3.048)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 3.556) (xy 1.27 2.54)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Battery_Cell_1_1"
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "+"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -2.54 90)
-					(length 2.54)
-					(name "-"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_capacitors:C_10µF_25V_0805_X5R"
 			(pin_numbers hide)
 			(pin_names
@@ -245,6 +73,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "cap capacitor"
@@ -1462,7 +1291,7 @@
 				(pin passive line
 					(at -3.81 0 0)
 					(length 2.54)
-					(name "K"
+					(name "C"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1965,6 +1794,178 @@
 				)
 			)
 		)
+		(symbol "cocotter_others:Battery_Cell-18650"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "BT"
+				(at 2.54 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "Battery 18650"
+				(at 2.54 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 1.524 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 1.524 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Single-cell battery 18650 size"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "battery cell 18650"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Battery_Cell-18650_0_1"
+				(rectangle
+					(start -2.286 1.778)
+					(end 2.286 1.524)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -1.524 1.016)
+					(end 1.524 0.508)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0.762) (xy 0 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 1.778) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 3.048) (xy 1.778 3.048)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 3.556) (xy 1.27 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "Battery_Cell-18650_1_1"
+				(pin passive line
+					(at 0 5.08 270)
+					(length 2.54)
+					(name "+"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "-"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_others:JFC2410-2100FS"
 			(pin_names hide)
 			(exclude_from_sim no)
@@ -2311,6 +2312,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -2459,6 +2461,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -9198,7 +9201,7 @@
 		(dnp no)
 		(uuid "06a77db9-c6a0-4b89-9c26-35f3f5f33a05")
 		(property "Reference" "F1"
-			(at 55.88 25.4 0)
+			(at 54.6269 24.9476 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9206,7 +9209,7 @@
 			)
 		)
 		(property "Value" "10A F"
-			(at 63.5 26.67 0)
+			(at 55.8876 28.4779 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9231,7 +9234,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "10A fuse, 125V AC,  6.6mOhms, I²t 118.38 A².s"
 			(at 55.88 26.67 0)
 			(effects
 				(font
@@ -9371,7 +9374,7 @@
 		(fields_autoplaced yes)
 		(uuid "1472a05e-4ce3-4c77-aa31-cbaeaed1ccdc")
 		(property "Reference" "D7"
-			(at 86.36 63.8175 90)
+			(at 86.36 63.8174 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9388,7 +9391,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
+		(property "Footprint" ""
 			(at 82.55 62.23 0)
 			(effects
 				(font
@@ -9407,7 +9410,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
-			(at 82.55 62.23 0)
+			(at 87.122 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9416,7 +9419,7 @@
 			)
 		)
 		(property "DIGIKEY_REF" ""
-			(at 85.09 62.23 0)
+			(at 82.55 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9425,7 +9428,7 @@
 			)
 		)
 		(property "MOUSER_REF" ""
-			(at 85.09 62.23 0)
+			(at 82.55 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9534,7 +9537,7 @@
 		(fields_autoplaced yes)
 		(uuid "15686640-3756-4234-96a3-8a9b983e84e8")
 		(property "Reference" "R110"
-			(at 237.49 107.95 0)
+			(at 237.49 107.9499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9543,7 +9546,7 @@
 			)
 		)
 		(property "Value" "91k 1%"
-			(at 237.49 110.49 0)
+			(at 237.49 110.4899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9631,7 +9634,7 @@
 		(fields_autoplaced yes)
 		(uuid "1a5ee933-fb4d-48d0-8954-6ab90e176391")
 		(property "Reference" "C27"
-			(at 121.92 30.48 0)
+			(at 121.92 30.4799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9640,7 +9643,7 @@
 			)
 		)
 		(property "Value" "10µF 25V"
-			(at 121.92 33.02 0)
+			(at 121.92 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9690,6 +9693,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -10099,7 +10103,7 @@
 		(dnp no)
 		(uuid "2bae4df3-0797-4ffe-9f83-b86494f524b2")
 		(property "Reference" "J5"
-			(at 24.13 67.564 0)
+			(at 25.654 67.564 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10107,14 +10111,14 @@
 			)
 		)
 		(property "Value" "254"
-			(at 24.638 69.596 0)
+			(at 27.94 69.088 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "cocotter_connectors:MY-18650-02"
+		(property "Footprint" ""
 			(at 26.67 69.85 0)
 			(effects
 				(font
@@ -10238,15 +10242,16 @@
 		(dnp yes)
 		(uuid "330d9eaf-c5b6-4355-8922-8c276f520674")
 		(property "Reference" "R103"
-			(at 55.88 29.21 90)
+			(at 54.61 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Value" "0R"
-			(at 59.69 30.48 90)
+			(at 57.15 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10333,7 +10338,7 @@
 		(fields_autoplaced yes)
 		(uuid "335c0c17-1db8-414f-a66a-9cce2739c90b")
 		(property "Reference" "SW8"
-			(at 60.96 60.96 90)
+			(at 60.96 60.9599 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10342,7 +10347,7 @@
 			)
 		)
 		(property "Value" "MSS12C02LS-BB2.0"
-			(at 60.96 63.5 90)
+			(at 60.96 63.4999 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10368,7 +10373,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "100mA max, 12Vdc, 10000 cycles"
 			(at 55.88 62.23 0)
 			(effects
 				(font
@@ -10512,7 +10517,7 @@
 		(fields_autoplaced yes)
 		(uuid "367e3ef1-ee15-449f-80f1-75af26bbe76a")
 		(property "Reference" "R107"
-			(at 166.37 40.64 0)
+			(at 166.37 40.6399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10521,7 +10526,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 166.37 43.18 0)
+			(at 166.37 43.1799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10793,7 +10798,7 @@
 		(fields_autoplaced yes)
 		(uuid "3c77c5ee-2eb3-41f6-9801-2d26cb5e3c5c")
 		(property "Reference" "R113"
-			(at 237.49 154.94 0)
+			(at 237.49 154.9399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10802,7 +10807,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 237.49 157.48 0)
+			(at 237.49 157.4799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11140,7 +11145,7 @@
 		(fields_autoplaced yes)
 		(uuid "51f83528-3517-4e2c-85a4-cac3a48c07e8")
 		(property "Reference" "C39"
-			(at 193.04 105.41 0)
+			(at 193.04 105.4099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11149,7 +11154,7 @@
 			)
 		)
 		(property "Value" "10µF 25V"
-			(at 193.04 107.95 0)
+			(at 193.04 107.9499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11199,6 +11204,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -11299,7 +11305,7 @@
 		(dnp no)
 		(uuid "5bb490e5-df6b-46f3-9b29-b55dee341d0f")
 		(property "Reference" "F2"
-			(at 29.21 20.32 0)
+			(at 27.9569 21.1376 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11307,7 +11313,7 @@
 			)
 		)
 		(property "Value" "10A F"
-			(at 29.21 25.4 0)
+			(at 29.2176 24.6679 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11332,7 +11338,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "10A fuse, 125V AC,  6.6mOhms, I²t 118.38 A².s"
 			(at 29.21 22.86 0)
 			(effects
 				(font
@@ -11596,7 +11602,7 @@
 		(fields_autoplaced yes)
 		(uuid "73cdccd1-ad6a-4722-af1c-26425dd499fe")
 		(property "Reference" "R66"
-			(at 166.37 33.02 0)
+			(at 166.37 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11605,7 +11611,7 @@
 			)
 		)
 		(property "Value" "68k 1%"
-			(at 166.37 35.56 0)
+			(at 166.37 35.5599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11693,7 +11699,7 @@
 		(fields_autoplaced yes)
 		(uuid "7a456e34-3b4f-4ce0-9346-8d17d283d028")
 		(property "Reference" "R67"
-			(at 237.49 68.58 0)
+			(at 237.49 68.5799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11702,7 +11708,7 @@
 			)
 		)
 		(property "Value" "91k 1%"
-			(at 237.49 71.12 0)
+			(at 237.49 71.1199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12272,7 +12278,7 @@
 		(fields_autoplaced yes)
 		(uuid "a1df6dee-748e-4d45-91aa-3cc8e9cba418")
 		(property "Reference" "R108"
-			(at 237.49 76.2 0)
+			(at 237.49 76.1999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12281,7 +12287,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 237.49 78.74 0)
+			(at 237.49 78.7399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12522,7 +12528,7 @@
 		(fields_autoplaced yes)
 		(uuid "a4266073-01f8-4669-8663-126ce4cae1c5")
 		(property "Reference" "C30"
-			(at 193.04 66.04 0)
+			(at 193.04 66.0399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12531,7 +12537,7 @@
 			)
 		)
 		(property "Value" "10µF 25V"
-			(at 193.04 68.58 0)
+			(at 193.04 68.5799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12581,6 +12587,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -12697,7 +12704,7 @@
 		(fields_autoplaced yes)
 		(uuid "b58acc96-17b6-4bb3-89fd-9d356aebbe59")
 		(property "Reference" "C46"
-			(at 247.65 36.83 0)
+			(at 247.65 36.8299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12706,7 +12713,7 @@
 			)
 		)
 		(property "Value" "10µF 25V"
-			(at 247.65 39.37 0)
+			(at 247.65 39.3699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12785,7 +12792,7 @@
 		(fields_autoplaced yes)
 		(uuid "b81dde83-4256-4df6-b92a-b26516d6f478")
 		(property "Reference" "R111"
-			(at 237.49 115.57 0)
+			(at 237.49 115.5699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12794,7 +12801,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 237.49 118.11 0)
+			(at 237.49 118.1099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12968,7 +12975,7 @@
 		(dnp no)
 		(uuid "bb3014de-87ec-451f-a6e7-0132463449b9")
 		(property "Reference" "J8"
-			(at 24.638 56.642 0)
+			(at 25.654 57.404 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12976,14 +12983,14 @@
 			)
 		)
 		(property "Value" "254"
-			(at 24.892 58.674 0)
+			(at 27.94 58.928 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "cocotter_connectors:MY-18650-02"
+		(property "Footprint" ""
 			(at 26.67 59.69 0)
 			(effects
 				(font
@@ -13238,7 +13245,7 @@
 		(dnp no)
 		(uuid "c66f1417-bde6-4f1b-9393-74f65df4492c")
 		(property "Reference" "C43"
-			(at 256.54 111.76 0)
+			(at 266.954 113.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13247,7 +13254,7 @@
 			)
 		)
 		(property "Value" "47µF 10V"
-			(at 256.54 114.3 0)
+			(at 271.526 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13326,7 +13333,7 @@
 		(fields_autoplaced yes)
 		(uuid "d5ab0bbf-0088-40c1-becf-831937fec5fb")
 		(property "Reference" "C40"
-			(at 193.04 144.78 0)
+			(at 193.04 144.7799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13335,7 +13342,7 @@
 			)
 		)
 		(property "Value" "10µF 25V"
-			(at 193.04 147.32 0)
+			(at 193.04 147.3199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13385,6 +13392,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -13403,6 +13411,75 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:Battery_Cell-18650")
+		(at 29.21 63.5 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "d78a2c27-2a6d-4333-9b79-29afd707dc70")
+		(property "Reference" "BT1"
+			(at 31.75 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Battery 18650"
+			(at 31.75 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 29.21 61.976 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 29.21 61.976 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Single-cell battery 18650 size"
+			(at 29.21 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b79c72eb-2749-41f0-a18c-66563d93d453")
+		)
+		(pin "2"
+			(uuid "fc148f00-3c18-45b1-86dd-9c47841fa397")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "BT1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_resistors:R_0R_0603")
 		(at 55.88 46.99 90)
 		(unit 1)
@@ -13412,15 +13489,16 @@
 		(dnp yes)
 		(uuid "d9af43b5-beb5-46c1-bcb6-7f2cce3b3364")
 		(property "Reference" "R104"
-			(at 55.88 44.45 90)
+			(at 54.61 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Value" "0R"
-			(at 59.69 45.72 90)
+			(at 57.15 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13507,7 +13585,7 @@
 		(fields_autoplaced yes)
 		(uuid "de6618f9-1108-499e-8f8e-2f77774e2810")
 		(property "Reference" "R112"
-			(at 237.49 147.32 0)
+			(at 237.49 147.3199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13516,7 +13594,7 @@
 			)
 		)
 		(property "Value" "91k 1%"
-			(at 237.49 149.86 0)
+			(at 237.49 149.8599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13668,7 +13746,7 @@
 		(dnp no)
 		(uuid "e79fe8c1-3eca-49f2-8379-4bfec1a28d24")
 		(property "Reference" "F3"
-			(at 29.21 27.94 0)
+			(at 27.9569 28.7576 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13676,7 +13754,7 @@
 			)
 		)
 		(property "Value" "10A F"
-			(at 29.21 33.02 0)
+			(at 29.2176 32.2879 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13701,7 +13779,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "10A fuse, 125V AC,  6.6mOhms, I²t 118.38 A².s"
 			(at 29.21 30.48 0)
 			(effects
 				(font
@@ -13810,15 +13888,16 @@
 		(dnp yes)
 		(uuid "e8c94519-932a-4122-a664-9c7b84782c6a")
 		(property "Reference" "R106"
-			(at 55.88 34.29 90)
+			(at 54.61 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Value" "0R"
-			(at 59.69 35.56 90)
+			(at 57.15 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13992,15 +14071,16 @@
 		(dnp yes)
 		(uuid "f707df4c-ba15-4886-8a37-6ec039d86d1b")
 		(property "Reference" "R105"
-			(at 55.88 39.37 90)
+			(at 54.61 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Value" "0R"
-			(at 59.69 40.64 90)
+			(at 57.15 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14077,75 +14157,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:Battery_Cell")
-		(at 29.21 63.5 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(dnp no)
-		(uuid "f73b44d7-1eeb-4566-be9c-30a35a0b9142")
-		(property "Reference" "BT1"
-			(at 33.02 60.3885 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Battery_Cell"
-			(at 31.496 63.754 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 29.21 61.976 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 29.21 61.976 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Single-cell battery"
-			(at 29.21 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "053e454a-8883-425c-9da1-aa789a22135d")
-		)
-		(pin "2"
-			(uuid "eea0c5f3-7f24-4336-a99d-400d86a8f6aa")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
-					(reference "BT1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_resistors:R_1k_0603_1%")
 		(at 59.69 52.07 0)
 		(unit 1)
@@ -14156,7 +14167,7 @@
 		(fields_autoplaced yes)
 		(uuid "f7e6644a-3931-4070-9189-cd894a5aa278")
 		(property "Reference" "R114"
-			(at 62.23 50.8 0)
+			(at 62.23 50.7999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14165,7 +14176,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 62.23 53.34 0)
+			(at 62.23 53.3399 0)
 			(effects
 				(font
 					(size 1.27 1.27)

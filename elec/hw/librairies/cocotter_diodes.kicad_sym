@@ -797,7 +797,7 @@
 			(pin passive line
 				(at -3.81 0 0)
 				(length 2.54)
-				(name "K"
+				(name "C"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -983,7 +983,7 @@
 			(pin passive line
 				(at -3.81 0 0)
 				(length 2.54)
-				(name "K"
+				(name "C"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1160,7 +1160,7 @@
 			(pin passive line
 				(at -3.81 0 0)
 				(length 2.54)
-				(name "K"
+				(name "C"
 					(effects
 						(font
 							(size 1.27 1.27)

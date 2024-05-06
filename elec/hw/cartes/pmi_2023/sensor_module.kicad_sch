@@ -227,6 +227,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "cap capacitor"
@@ -1105,6 +1106,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -1253,6 +1255,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -1325,7 +1328,7 @@
 				)
 			)
 		)
-		(symbol "power:+3.3V"
+		(symbol "pmi_2023_specific:+3V3_m"
 			(power)
 			(pin_numbers hide)
 			(pin_names
@@ -1342,7 +1345,7 @@
 					(hide yes)
 				)
 			)
-			(property "Value" "+3.3V"
+			(property "Value" "+3V3_m"
 				(at 0 3.556 0)
 				(effects
 					(font
@@ -1368,7 +1371,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
 				(at 0 0 0)
 				(effects
 					(font
@@ -1386,7 +1389,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "+3.3V_0_1"
+			(symbol "+3V3_m_0_1"
 				(polyline
 					(pts
 						(xy -0.762 1.27) (xy 0 2.54)
@@ -1424,7 +1427,7 @@
 					)
 				)
 			)
-			(symbol "+3.3V_1_1"
+			(symbol "+3V3_m_1_1"
 				(pin power_in line
 					(at 0 0 90)
 					(length 0)
@@ -1445,127 +1448,7 @@
 				)
 			)
 		)
-		(symbol "power:+3V3"
-			(power)
-			(pin_numbers hide)
-			(pin_names
-				(offset 0) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "#PWR"
-				(at 0 -3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Value" "+3V3"
-				(at 0 3.556 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Power symbol creates a global label with name \"+3V3\""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "+3V3_0_1"
-				(polyline
-					(pts
-						(xy -0.762 1.27) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "+3V3_1_1"
-				(pin power_in line
-					(at 0 0 90)
-					(length 0)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "power:GND"
+		(symbol "pmi_2023_specific:GND_m"
 			(power)
 			(pin_numbers hide)
 			(pin_names
@@ -1582,7 +1465,7 @@
 					(hide yes)
 				)
 			)
-			(property "Value" "GND"
+			(property "Value" "GND_m"
 				(at 0 -3.81 0)
 				(effects
 					(font
@@ -1626,7 +1509,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "GND_0_1"
+			(symbol "GND_m_0_1"
 				(polyline
 					(pts
 						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
@@ -1640,7 +1523,7 @@
 					)
 				)
 			)
-			(symbol "GND_1_1"
+			(symbol "GND_m_1_1"
 				(pin power_in line
 					(at 0 0 270)
 					(length 0)
@@ -3514,6 +3397,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -3601,6 +3485,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -3619,7 +3504,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 242.57 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3637,7 +3522,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 242.57 102.87 0)
 			(effects
 				(font
@@ -3695,7 +3580,7 @@
 		(fields_autoplaced yes)
 		(uuid "27803389-eea3-4a39-8a90-a6e1d9eb258a")
 		(property "Reference" "R45"
-			(at 85.09 38.1 0)
+			(at 85.09 38.0999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3704,7 +3589,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 85.09 40.64 0)
+			(at 85.09 40.6399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3851,6 +3736,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -3879,7 +3765,7 @@
 		(fields_autoplaced yes)
 		(uuid "2d0fde38-a591-4ae4-887a-2985b4d8f929")
 		(property "Reference" "R44"
-			(at 54.61 26.67 0)
+			(at 54.61 26.6699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3888,7 +3774,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 54.61 29.21 0)
+			(at 54.61 29.2099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3966,7 +3852,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 39.37 86.36 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3984,7 +3870,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "+3V3_m"
 			(at 39.37 81.28 0)
 			(effects
 				(font
@@ -4010,7 +3896,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
 			(at 39.37 86.36 0)
 			(effects
 				(font
@@ -4154,7 +4040,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 242.57 86.36 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -4172,7 +4058,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "+3V3_m"
 			(at 242.57 81.28 0)
 			(effects
 				(font
@@ -4198,7 +4084,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
 			(at 242.57 86.36 0)
 			(effects
 				(font
@@ -4229,7 +4115,7 @@
 		(dnp no)
 		(uuid "46ebf253-1783-4740-9054-3772c5f054c9")
 		(property "Reference" "R126"
-			(at 59.69 91.44 0)
+			(at 58.42 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4238,12 +4124,11 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 59.69 97.79 0)
+			(at 60.96 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
@@ -4297,6 +4182,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -4315,7 +4201,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 68.58 55.88 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -4332,7 +4218,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 68.58 59.69 0)
 			(effects
 				(font
@@ -4380,7 +4266,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 125.73 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -4398,7 +4284,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 125.73 102.87 0)
 			(effects
 				(font
@@ -4453,10 +4339,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "4d33ae31-0be3-4b49-a8f4-e831aa9da808")
 		(property "Reference" "C52"
-			(at 229.87 91.4399 0)
+			(at 226.695 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4465,7 +4350,7 @@
 			)
 		)
 		(property "Value" "10µF 25V"
-			(at 229.87 93.9799 0)
+			(at 226.695 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4515,6 +4400,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -4533,7 +4419,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 52.07 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -4551,7 +4437,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 52.07 138.43 0)
 			(effects
 				(font
@@ -4668,6 +4554,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -4695,7 +4582,7 @@
 		(dnp no)
 		(uuid "4fd7e775-a6c5-40e7-93d9-d8aadf03b846")
 		(property "Reference" "R130"
-			(at 176.53 91.44 0)
+			(at 175.26 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4704,12 +4591,11 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 176.53 97.79 0)
+			(at 177.8 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
@@ -4763,6 +4649,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -4781,7 +4668,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 156.21 86.36 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -4799,7 +4686,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "+3V3_m"
 			(at 156.21 81.28 0)
 			(effects
 				(font
@@ -4825,7 +4712,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
 			(at 156.21 86.36 0)
 			(effects
 				(font
@@ -4847,7 +4734,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3V3")
+		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 52.07 22.86 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -4865,7 +4752,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3"
+		(property "Value" "+3V3_m"
 			(at 52.07 17.78 0)
 			(effects
 				(font
@@ -4891,7 +4778,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
 			(at 52.07 22.86 0)
 			(effects
 				(font
@@ -5028,7 +4915,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3.3V")
+		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 125.73 86.36 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5046,7 +4933,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3.3V"
+		(property "Value" "+3V3_m"
 			(at 125.73 81.28 0)
 			(effects
 				(font
@@ -5072,7 +4959,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
 			(at 125.73 86.36 0)
 			(effects
 				(font
@@ -5094,7 +4981,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 68.58 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5111,7 +4998,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 68.58 101.6 0)
 			(effects
 				(font
@@ -5228,6 +5115,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "2"
@@ -5246,7 +5134,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 226.06 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5264,7 +5152,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 226.06 102.87 0)
 			(effects
 				(font
@@ -5312,7 +5200,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 99.06 31.75 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5329,7 +5217,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 99.06 35.56 0)
 			(effects
 				(font
@@ -5377,7 +5265,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 109.22 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5395,7 +5283,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 109.22 102.87 0)
 			(effects
 				(font
@@ -5453,7 +5341,7 @@
 		(fields_autoplaced yes)
 		(uuid "87451a9d-bdf5-4cda-9635-a1ba207da0df")
 		(property "Reference" "R101"
-			(at 93.98 38.1 0)
+			(at 93.98 38.0999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5462,7 +5350,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 93.98 40.64 0)
+			(at 93.98 40.6399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5549,7 +5437,7 @@
 		(dnp no)
 		(uuid "88d0b0e6-5147-4061-a0bd-1fc81531d5d6")
 		(property "Reference" "R125"
-			(at 50.8 91.44 0)
+			(at 49.53 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5558,12 +5446,11 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 50.8 97.79 0)
+			(at 52.07 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
@@ -5617,6 +5504,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -5635,7 +5523,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 180.34 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5653,7 +5541,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 180.34 138.43 0)
 			(effects
 				(font
@@ -5701,7 +5589,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3V3")
+		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 68.58 22.86 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5719,7 +5607,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+3V3"
+		(property "Value" "+3V3_m"
 			(at 68.58 17.78 0)
 			(effects
 				(font
@@ -5745,7 +5633,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
 			(at 68.58 22.86 0)
 			(effects
 				(font
@@ -5854,7 +5742,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 85.09 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5872,7 +5760,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 85.09 138.43 0)
 			(effects
 				(font
@@ -5929,7 +5817,7 @@
 		(dnp no)
 		(uuid "af1ee75d-2353-455e-b819-68e0dc092296")
 		(property "Reference" "R127"
-			(at 54.61 123.19 0)
+			(at 53.34 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5938,12 +5826,11 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 54.61 129.54 0)
+			(at 55.88 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
@@ -5997,6 +5884,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -6015,7 +5903,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 168.91 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6033,7 +5921,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 168.91 138.43 0)
 			(effects
 				(font
@@ -6081,7 +5969,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 201.93 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6099,7 +5987,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 201.93 138.43 0)
 			(effects
 				(font
@@ -6147,7 +6035,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 63.5 133.35 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6165,7 +6053,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 63.5 138.43 0)
 			(effects
 				(font
@@ -6344,7 +6232,7 @@
 		(dnp no)
 		(uuid "d0dc0572-602d-4d71-a4c2-9382c6195278")
 		(property "Reference" "R131"
-			(at 171.196 126.746 0)
+			(at 170.18 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6353,12 +6241,11 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 171.45 129.54 0)
+			(at 172.72 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
@@ -6412,6 +6299,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -6440,7 +6328,7 @@
 		(fields_autoplaced yes)
 		(uuid "db8c2000-1ae9-4ea4-92e3-53db257e438c")
 		(property "Reference" "R124"
-			(at 66.04 127 0)
+			(at 66.04 126.9999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6449,7 +6337,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 66.04 129.54 0)
+			(at 66.04 129.5399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6508,6 +6396,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -6526,7 +6415,7 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
+		(lib_id "pmi_2023_specific:GND_m")
 		(at 185.42 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6543,7 +6432,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "GND"
+		(property "Value" "GND_m"
 			(at 185.42 101.6 0)
 			(effects
 				(font
@@ -6601,7 +6490,7 @@
 		(fields_autoplaced yes)
 		(uuid "e2f6f384-a761-483a-9090-2ef92861be33")
 		(property "Reference" "R38"
-			(at 36.83 26.67 0)
+			(at 36.83 26.6699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6610,7 +6499,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 36.83 29.21 0)
+			(at 36.83 29.2099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6697,7 +6586,7 @@
 		(dnp no)
 		(uuid "e53b20f0-b70f-40f6-992d-8cd93b18f776")
 		(property "Reference" "R129"
-			(at 167.64 91.44 0)
+			(at 166.37 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6706,12 +6595,11 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 167.64 97.79 0)
+			(at 168.91 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
@@ -6765,6 +6653,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -6793,7 +6682,7 @@
 		(fields_autoplaced yes)
 		(uuid "f04514d4-8f14-4acd-b532-bcbbea548337")
 		(property "Reference" "R39"
-			(at 45.72 26.67 0)
+			(at 45.72 26.6699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6802,7 +6691,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 45.72 29.21 0)
+			(at 45.72 29.2099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6890,7 +6779,7 @@
 		(fields_autoplaced yes)
 		(uuid "f6559475-5041-4f7f-a472-47dbbaa72fc4")
 		(property "Reference" "R123"
-			(at 41.91 95.25 0)
+			(at 41.91 95.2499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6899,7 +6788,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 41.91 97.79 0)
+			(at 41.91 97.7899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6958,6 +6847,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"
@@ -6986,7 +6876,7 @@
 		(fields_autoplaced yes)
 		(uuid "fa1299e8-efc8-404e-9536-b29f57e2853b")
 		(property "Reference" "R128"
-			(at 182.88 127 0)
+			(at 182.88 126.9999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6995,7 +6885,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 182.88 129.54 0)
+			(at 182.88 129.5399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7054,6 +6944,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "1"

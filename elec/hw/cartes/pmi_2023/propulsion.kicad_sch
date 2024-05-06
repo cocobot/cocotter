@@ -1370,6 +1370,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -1518,6 +1519,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -1666,6 +1668,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "R res resistor"
@@ -2546,6 +2549,18 @@
 		(color 0 0 0 0)
 		(uuid "ef93fa08-479c-4a1c-aeb9-a4e0ad5193de")
 	)
+	(junction
+		(at 199.39 45.72)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f3564996-6710-477c-841a-4a5a427ee495")
+	)
+	(junction
+		(at 187.96 123.19)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f63a2042-c0d8-47f1-a51b-e4c407588fd8")
+	)
 	(wire
 		(pts
 			(xy 82.55 52.07) (xy 86.36 52.07)
@@ -3088,16 +3103,6 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 120.65) (xy 161.29 120.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6e07a204-98c7-4cbe-bb99-c53cd89993f2")
-	)
-	(wire
-		(pts
 			(xy 45.72 118.11) (xy 86.36 118.11)
 		)
 		(stroke
@@ -3248,6 +3253,16 @@
 	)
 	(wire
 		(pts
+			(xy 172.72 43.18) (xy 184.15 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0d7d1f1-04d8-4f71-93b4-f919c235870a")
+	)
+	(wire
+		(pts
 			(xy 45.72 135.89) (xy 45.72 140.97)
 		)
 		(stroke
@@ -3285,6 +3300,16 @@
 			(type default)
 		)
 		(uuid "ae89d255-0bbf-4f5d-9469-45023469d748")
+	)
+	(wire
+		(pts
+			(xy 161.29 120.65) (xy 172.72 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "afaf701d-9063-41eb-a4ae-0292c10595c1")
 	)
 	(wire
 		(pts
@@ -3345,16 +3370,6 @@
 			(type default)
 		)
 		(uuid "b3ac4f0b-80d4-4579-baeb-626a469261c5")
-	)
-	(wire
-		(pts
-			(xy 184.15 43.18) (xy 172.72 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b9d2b239-c5d3-4b06-85ec-174eb0d3d0f0")
 	)
 	(wire
 		(pts
@@ -3985,7 +4000,7 @@
 		(fields_autoplaced yes)
 		(uuid "07cacc35-a49e-486a-88e5-addc0722006a")
 		(property "Reference" "R14"
-			(at 173.99 134.62 0)
+			(at 173.99 134.6199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3994,7 +4009,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 173.99 137.16 0)
+			(at 173.99 137.1599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4090,7 +4105,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 55.88 121.92 0)
+			(at 55.88 122.174 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4300,7 +4315,7 @@
 		(fields_autoplaced yes)
 		(uuid "0efc9a87-91b6-45be-ab32-03e7bdc4175c")
 		(property "Reference" "R25"
-			(at 220.98 121.92 0)
+			(at 220.98 121.9199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4309,7 +4324,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 220.98 124.46 0)
+			(at 220.98 124.4599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4396,7 +4411,7 @@
 		(dnp no)
 		(uuid "110728c1-4a60-4c54-ba6a-2251b53d79d5")
 		(property "Reference" "TP5"
-			(at 134.62 116.84 90)
+			(at 140.716 118.11 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4404,7 +4419,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 143.51 118.11 90)
+			(at 138.43 116.332 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4429,7 +4444,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "test point"
 			(at 134.62 118.11 0)
 			(effects
 				(font
@@ -4527,7 +4542,7 @@
 		(fields_autoplaced yes)
 		(uuid "227f7202-dea9-46db-9e96-160bfb1dc232")
 		(property "Reference" "R17"
-			(at 190.5 125.73 0)
+			(at 190.5 125.7299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4536,7 +4551,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 190.5 128.27 0)
+			(at 190.5 128.2699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4632,7 +4647,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 55.88 45.72 0)
+			(at 55.88 45.974 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4689,7 +4704,7 @@
 		(fields_autoplaced yes)
 		(uuid "280e0505-4ed9-40a8-9248-4e466dc07bfb")
 		(property "Reference" "R19"
-			(at 200.66 125.73 0)
+			(at 200.66 125.7299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4698,7 +4713,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 200.66 128.27 0)
+			(at 200.66 128.2699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4859,7 +4874,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 181.61 35.56 0)
+			(at 181.61 35.814 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4916,7 +4931,7 @@
 		(fields_autoplaced yes)
 		(uuid "33b3cb71-d97e-4bbf-aaeb-56090c08cec1")
 		(property "Reference" "R5"
-			(at 54.61 182.88 0)
+			(at 54.61 182.8799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4925,7 +4940,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 54.61 185.42 0)
+			(at 54.61 185.4199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5078,7 +5093,7 @@
 		(fields_autoplaced yes)
 		(uuid "38f470a3-670c-4de1-9a34-ff190dda5f27")
 		(property "Reference" "R26"
-			(at 222.25 44.45 0)
+			(at 222.25 44.4499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5087,7 +5102,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 222.25 46.99 0)
+			(at 222.25 46.9899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5175,7 +5190,7 @@
 		(fields_autoplaced yes)
 		(uuid "3bdeb9d3-3472-40f3-8567-f6c2ddebeefe")
 		(property "Reference" "C3"
-			(at 107.95 29.21 0)
+			(at 107.95 29.2099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5184,7 +5199,7 @@
 			)
 		)
 		(property "Value" "100nF 50V"
-			(at 107.95 31.75 0)
+			(at 107.95 31.7499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5271,7 +5286,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 241.3 30.48 0)
+			(at 241.3 30.734 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5328,7 +5343,7 @@
 		(fields_autoplaced yes)
 		(uuid "3cfc487a-6e02-469b-8a65-7b261ed3a095")
 		(property "Reference" "Q1"
-			(at 87.63 177.8 0)
+			(at 87.63 176.5299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5337,11 +5352,12 @@
 			)
 		)
 		(property "Value" "SI2310"
-			(at 83.82 177.8 0)
+			(at 87.63 179.0699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_transistors:SOT-23-3"
@@ -5372,7 +5388,7 @@
 			)
 		)
 		(property "JLCPCB" "C2938374"
-			(at 91.44 178.435 0)
+			(at 83.82 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5409,7 +5425,7 @@
 		(fields_autoplaced yes)
 		(uuid "44de5236-db44-442b-8465-34ca01a5aca5")
 		(property "Reference" "R20"
-			(at 201.93 48.26 0)
+			(at 201.93 48.2599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5418,7 +5434,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 201.93 50.8 0)
+			(at 201.93 50.7999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5506,7 +5522,7 @@
 		(fields_autoplaced yes)
 		(uuid "471c9d18-e34c-4a39-832d-3be7cf5413b2")
 		(property "Reference" "R2"
-			(at 39.37 130.81 0)
+			(at 39.37 130.8099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5515,7 +5531,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 39.37 133.35 0)
+			(at 39.37 133.3499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5795,7 +5811,7 @@
 		(fields_autoplaced yes)
 		(uuid "4e50f4c3-24b7-42df-abe1-22e17fd0faa5")
 		(property "Reference" "C2"
-			(at 59.69 133.35 0)
+			(at 59.69 133.3499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5804,7 +5820,7 @@
 			)
 		)
 		(property "Value" "100nF 50V"
-			(at 59.69 135.89 0)
+			(at 59.69 135.8899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6013,7 +6029,7 @@
 		(fields_autoplaced yes)
 		(uuid "5536471a-3481-48e2-8374-f8a46ae2c798")
 		(property "Reference" "R24"
-			(at 212.09 48.26 0)
+			(at 212.09 48.2599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6022,7 +6038,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 212.09 50.8 0)
+			(at 212.09 50.7999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6167,7 +6183,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_ic:EESX1321")
-		(at 180.34 118.11 0)
+		(at 180.34 120.65 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6176,14 +6192,6 @@
 		(fields_autoplaced yes)
 		(uuid "5d92d1ac-f628-4ef8-a5d7-6da28642e56b")
 		(property "Reference" "U3"
-			(at 180.3613 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "EESX1321"
 			(at 180.3613 129.54 0)
 			(effects
 				(font
@@ -6191,8 +6199,16 @@
 				)
 			)
 		)
+		(property "Value" "EESX1321"
+			(at 180.3613 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property "Footprint" "cocotter_ic:EESX1321"
-			(at 189.23 113.03 0)
+			(at 189.23 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6201,7 +6217,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 189.23 113.03 0)
+			(at 189.23 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6210,7 +6226,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 180.34 118.11 0)
+			(at 180.34 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6321,7 +6337,7 @@
 		(fields_autoplaced yes)
 		(uuid "642cb10d-0aa5-4914-a2ec-21d04389698a")
 		(property "Reference" "R27"
-			(at 222.25 57.15 0)
+			(at 222.25 57.1499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6330,7 +6346,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 222.25 59.69 0)
+			(at 222.25 59.6899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6418,7 +6434,7 @@
 		(fields_autoplaced yes)
 		(uuid "6643fcf3-0ea8-41a3-a9ad-d0fca8389742")
 		(property "Reference" "R23"
-			(at 210.82 134.62 0)
+			(at 210.82 134.6199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6427,7 +6443,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 210.82 137.16 0)
+			(at 210.82 137.1599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6603,7 +6619,7 @@
 		(fields_autoplaced yes)
 		(uuid "69550c77-5d93-45bf-9179-f3cb7ae25ca9")
 		(property "Reference" "R4"
-			(at 48.26 130.81 0)
+			(at 48.26 130.8099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6612,7 +6628,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 48.26 133.35 0)
+			(at 48.26 133.3499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6699,21 +6715,19 @@
 		(dnp no)
 		(uuid "6b9646b5-205f-4453-990b-eb98e10a8b53")
 		(property "Reference" "TP2"
-			(at 95.25 168.91 90)
+			(at 103.378 170.18 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 101.6 170.18 90)
+			(at 99.568 172.212 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
@@ -6734,7 +6748,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "test point"
 			(at 96.52 170.18 0)
 			(effects
 				(font
@@ -6766,7 +6780,7 @@
 		(fields_autoplaced yes)
 		(uuid "6f985c99-d112-434a-ad90-7e1ccb3525ae")
 		(property "Reference" "R28"
-			(at 232.41 44.45 0)
+			(at 232.41 44.4499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6775,7 +6789,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 232.41 46.99 0)
+			(at 232.41 46.9899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6927,7 +6941,7 @@
 		(dnp no)
 		(uuid "6fb7aa17-669f-4080-8b87-b430854b86cb")
 		(property "Reference" "TP4"
-			(at 133.35 43.18 90)
+			(at 139.7 44.45 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6935,7 +6949,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 142.24 44.45 90)
+			(at 136.906 46.99 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6960,7 +6974,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "test point"
 			(at 133.35 44.45 0)
 			(effects
 				(font
@@ -7315,7 +7329,7 @@
 		(fields_autoplaced yes)
 		(uuid "851cf438-a236-4958-89e2-b8638255bca6")
 		(property "Reference" "C8"
-			(at 208.28 30.48 0)
+			(at 208.28 30.4799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7324,7 +7338,7 @@
 			)
 		)
 		(property "Value" "100nF 50V"
-			(at 208.28 33.02 0)
+			(at 208.28 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7459,7 +7473,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_ic:EESX1321")
-		(at 191.77 40.64 0)
+		(at 191.77 43.18 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7468,14 +7482,6 @@
 		(fields_autoplaced yes)
 		(uuid "89455f3a-890f-43bc-81a4-04a0347193c3")
 		(property "Reference" "U4"
-			(at 191.7913 49.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "EESX1321"
 			(at 191.7913 52.07 0)
 			(effects
 				(font
@@ -7483,8 +7489,16 @@
 				)
 			)
 		)
+		(property "Value" "EESX1321"
+			(at 191.7913 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property "Footprint" "cocotter_ic:EESX1321"
-			(at 200.66 35.56 0)
+			(at 200.66 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7493,7 +7507,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 200.66 35.56 0)
+			(at 200.66 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7502,7 +7516,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 191.77 40.64 0)
+			(at 191.77 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7688,7 +7702,7 @@
 			)
 		)
 		(property "Value" "3k3 1%"
-			(at 86.36 134.62 0)
+			(at 86.106 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8103,7 +8117,7 @@
 		(fields_autoplaced yes)
 		(uuid "a5d3ede4-7327-4e21-b003-b596ac76f5fa")
 		(property "Reference" "R13"
-			(at 163.83 134.62 0)
+			(at 163.83 134.6199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8112,7 +8126,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 163.83 137.16 0)
+			(at 163.83 137.1599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8265,7 +8279,7 @@
 		(fields_autoplaced yes)
 		(uuid "a9d106aa-e366-417a-a0d5-226d73cccabe")
 		(property "Reference" "R22"
-			(at 210.82 121.92 0)
+			(at 210.82 121.9199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8274,7 +8288,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 210.82 124.46 0)
+			(at 210.82 124.4599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8492,21 +8506,19 @@
 		(dnp no)
 		(uuid "bf116d34-f595-41ff-acfb-4f23523858fc")
 		(property "Reference" "TP1"
-			(at 95.25 165.1 90)
+			(at 103.124 166.37 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 101.6 166.37 90)
+			(at 99.568 164.338 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
@@ -8527,7 +8539,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "test point"
 			(at 96.52 166.37 0)
 			(effects
 				(font
@@ -8558,7 +8570,7 @@
 		(dnp no)
 		(uuid "bf45d00f-0d5b-415a-92d2-2704a667cf02")
 		(property "Reference" "TP3"
-			(at 133.35 40.64 90)
+			(at 139.7 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8566,7 +8578,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 142.24 41.91 90)
+			(at 136.652 39.37 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8591,7 +8603,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "test point"
 			(at 133.35 41.91 0)
 			(effects
 				(font
@@ -8631,7 +8643,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 170.18 113.03 0)
+			(at 170.18 113.284 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8688,7 +8700,7 @@
 		(fields_autoplaced yes)
 		(uuid "cc97a626-2229-49ea-b144-a5f0a4a69e31")
 		(property "Reference" "C7"
-			(at 196.85 107.95 0)
+			(at 196.85 107.9499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8697,7 +8709,7 @@
 			)
 		)
 		(property "Value" "100nF 50V"
-			(at 196.85 110.49 0)
+			(at 196.85 110.4899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8776,7 +8788,7 @@
 		(fields_autoplaced yes)
 		(uuid "d42a4fab-75b2-43be-875e-c422c8390cdc")
 		(property "Reference" "R16"
-			(at 185.42 57.15 0)
+			(at 185.42 57.1499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8785,7 +8797,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 185.42 59.69 0)
+			(at 185.42 59.6899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8961,7 +8973,7 @@
 		(fields_autoplaced yes)
 		(uuid "d965c5d9-2327-4ff7-9f64-c57f028b4643")
 		(property "Reference" "C4"
-			(at 107.95 105.41 0)
+			(at 107.95 105.4099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8970,7 +8982,7 @@
 			)
 		)
 		(property "Value" "100nF 50V"
-			(at 107.95 107.95 0)
+			(at 107.95 107.9499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9049,7 +9061,7 @@
 		(fields_autoplaced yes)
 		(uuid "ded8ca65-7585-49b9-afc7-e09febad5d2c")
 		(property "Reference" "R1"
-			(at 39.37 54.61 0)
+			(at 39.37 54.6099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9058,7 +9070,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 39.37 57.15 0)
+			(at 39.37 57.1499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9146,7 +9158,7 @@
 		(fields_autoplaced yes)
 		(uuid "e85d00a6-3a9e-452b-8913-923c8b5d4fd3")
 		(property "Reference" "R18"
-			(at 190.5 134.62 0)
+			(at 190.5 134.6199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9155,7 +9167,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 190.5 137.16 0)
+			(at 190.5 137.1599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9243,7 +9255,7 @@
 		(fields_autoplaced yes)
 		(uuid "eb0a2081-b902-4403-9711-c054bedb1fef")
 		(property "Reference" "R21"
-			(at 201.93 57.15 0)
+			(at 201.93 57.1499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9252,7 +9264,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 201.93 59.69 0)
+			(at 201.93 59.6899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9348,7 +9360,7 @@
 			)
 		)
 		(property "Value" "3k3 1%"
-			(at 87.63 58.42 0)
+			(at 87.63 58.674 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9499,7 +9511,7 @@
 		(dnp no)
 		(uuid "eef28388-9f72-4fe4-9cc3-7b6099da8083")
 		(property "Reference" "TP6"
-			(at 134.62 119.38 90)
+			(at 140.716 120.65 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9507,7 +9519,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 143.51 120.65 90)
+			(at 137.668 122.936 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9532,7 +9544,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "test point"
 			(at 134.62 120.65 0)
 			(effects
 				(font
@@ -9695,7 +9707,7 @@
 		(fields_autoplaced yes)
 		(uuid "fa3c5951-56a4-4537-900b-e842e959c314")
 		(property "Reference" "R15"
-			(at 175.26 57.15 0)
+			(at 175.26 57.1499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9704,7 +9716,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 175.26 59.69 0)
+			(at 175.26 59.6899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9792,7 +9804,7 @@
 		(fields_autoplaced yes)
 		(uuid "fbc33c00-ef6b-4574-b531-49a77194b3da")
 		(property "Reference" "R3"
-			(at 48.26 54.61 0)
+			(at 48.26 54.6099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9801,7 +9813,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 48.26 57.15 0)
+			(at 48.26 57.1499 0)
 			(effects
 				(font
 					(size 1.27 1.27)

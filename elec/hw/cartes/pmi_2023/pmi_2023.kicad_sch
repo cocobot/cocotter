@@ -9,8 +9,8 @@
 			(pin_names
 				(offset 1.016)
 			)
-			(exclude_from_sim no)
-			(in_bom yes)
+			(exclude_from_sim yes)
+			(in_bom no)
 			(on_board yes)
 			(property "Reference" "H"
 				(at 0 5.08 0)
@@ -672,14 +672,14 @@
 		(lib_id "Mechanical:MountingHole")
 		(at 120.65 181.61 0)
 		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
+		(exclude_from_sim yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "49702bee-9a3b-4b30-9ab5-7b1b63728faa")
 		(property "Reference" "H4"
-			(at 123.19 180.34 0)
+			(at 123.19 180.3399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -688,7 +688,7 @@
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 123.19 182.88 0)
+			(at 123.19 182.8799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -696,7 +696,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.1mm"
+		(property "Footprint" ""
 			(at 120.65 181.61 0)
 			(effects
 				(font
@@ -736,14 +736,14 @@
 		(lib_id "Mechanical:MountingHole")
 		(at 120.65 172.72 0)
 		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
+		(exclude_from_sim yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "623f4312-cfed-4bb2-a748-e5aa135445d1")
 		(property "Reference" "H2"
-			(at 123.19 171.45 0)
+			(at 123.19 171.4499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -752,7 +752,7 @@
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 123.19 173.99 0)
+			(at 123.19 173.9899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -760,7 +760,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.1mm"
+		(property "Footprint" ""
 			(at 120.65 172.72 0)
 			(effects
 				(font
@@ -800,14 +800,14 @@
 		(lib_id "Mechanical:MountingHole")
 		(at 97.79 172.72 0)
 		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
+		(exclude_from_sim yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "781f8efb-2d30-4b32-9a49-502979ea24b3")
 		(property "Reference" "H1"
-			(at 100.33 171.45 0)
+			(at 100.33 171.4499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -816,7 +816,7 @@
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 100.33 173.99 0)
+			(at 100.33 173.9899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -824,7 +824,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.1mm"
+		(property "Footprint" ""
 			(at 97.79 172.72 0)
 			(effects
 				(font
@@ -864,14 +864,14 @@
 		(lib_id "Mechanical:MountingHole")
 		(at 97.79 181.61 0)
 		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
+		(exclude_from_sim yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c18f677d-9255-4d8f-bbb4-5d23936c12c1")
 		(property "Reference" "H3"
-			(at 100.33 180.34 0)
+			(at 100.33 180.3399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -880,7 +880,7 @@
 			)
 		)
 		(property "Value" "MountingHole"
-			(at 100.33 182.88 0)
+			(at 100.33 182.8799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -888,7 +888,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_2.1mm"
+		(property "Footprint" ""
 			(at 97.79 181.61 0)
 			(effects
 				(font
