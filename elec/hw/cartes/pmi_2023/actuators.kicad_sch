@@ -845,7 +845,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 				(at 0 0 0)
 				(effects
 					(font
@@ -961,24 +961,6 @@
 					)
 				)
 				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
 					(at 3.81 0 180)
 					(length 2.54)
 					(name "A"
@@ -988,7 +970,25 @@
 							)
 						)
 					)
-					(number "2"
+					(number "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "C"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1022,7 +1022,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1147,24 +1147,6 @@
 					)
 				)
 				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
 					(at 3.81 0 180)
 					(length 2.54)
 					(name "A"
@@ -1174,7 +1156,25 @@
 							)
 						)
 					)
-					(number "2"
+					(number "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "C"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1226,7 +1226,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Light emitting diode, Yellow, Vf=[2V; 2.2V]"
+			(property "Description" "Light emitting diode, Yellow, Vf=[2V; 2.4V]"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1235,8 +1235,8 @@
 					(hide yes)
 				)
 			)
-			(property "DIGIKEY_REF" ""
-				(at 0 -1.27 0)
+			(property "DIGIKEY_REF" "150060YS55040"
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1245,15 +1245,6 @@
 				)
 			)
 			(property "MOUSER_REF" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB" "C2296"
 				(at 0 0 0)
 				(effects
 					(font
@@ -8305,7 +8296,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 			(at 137.16 40.64 0)
 			(effects
 				(font
@@ -8359,10 +8350,10 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
+		(pin "C"
 			(uuid "b99ed7c7-c980-41d6-81d9-8b1426c77ccf")
 		)
-		(pin "1"
+		(pin "A"
 			(uuid "9ea3f31b-8add-4226-abc9-6f6572f745b6")
 		)
 		(instances
@@ -9556,8 +9547,9 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b22dbd10-a948-4f95-affa-d7814bf85b23")
-		(property "Reference" "BATT_WARN1"
+		(property "Reference" "BAT_WARN1"
 			(at 147.066 34.798 0)
+			(do_not_autoplace yes)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9592,7 +9584,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Light emitting diode, Yellow, Vf=[2V; 2.4V]"
 			(at 149.86 40.64 0)
 			(effects
 				(font
@@ -9601,7 +9593,7 @@
 				(hide yes)
 			)
 		)
-		(property "DIGIKEY_REF" ""
+		(property "DIGIKEY_REF" "150060YS55040"
 			(at 151.13 40.64 0)
 			(effects
 				(font
@@ -9637,7 +9629,7 @@
 		(instances
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
-					(reference "BATT_WARN1")
+					(reference "BAT_WARN1")
 					(unit 1)
 				)
 			)
@@ -11403,6 +11395,7 @@
 		(uuid "f2189ddd-864a-4bac-9894-6a64dacb674a")
 		(property "Reference" "BAT_OK1"
 			(at 163.83 40.64 0)
+			(do_not_autoplace yes)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11418,7 +11411,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 			(at 166.37 40.64 0)
 			(effects
 				(font
@@ -11472,10 +11465,10 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
+		(pin "A"
 			(uuid "d2f6a4e2-cbf5-41ab-b83f-b22eedaf90f2")
 		)
-		(pin "2"
+		(pin "C"
 			(uuid "c91dbae2-d1a2-4a3d-8505-ed3e17feb5b1")
 		)
 		(instances

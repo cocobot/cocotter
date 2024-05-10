@@ -381,6 +381,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "ki_keywords" "cap capacitor"
@@ -1164,7 +1165,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1289,24 +1290,6 @@
 					)
 				)
 				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
 					(at 3.81 0 180)
 					(length 2.54)
 					(name "A"
@@ -1316,7 +1299,25 @@
 							)
 						)
 					)
-					(number "2"
+					(number "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "C"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -9391,7 +9392,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 			(at 82.55 62.23 0)
 			(effects
 				(font
@@ -9445,10 +9446,10 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
+		(pin "C"
 			(uuid "211e22ee-89d8-48b4-9e5d-937eac02a56d")
 		)
-		(pin "2"
+		(pin "A"
 			(uuid "71021cdd-266e-473e-8d88-35e9d768bbc6")
 		)
 		(instances

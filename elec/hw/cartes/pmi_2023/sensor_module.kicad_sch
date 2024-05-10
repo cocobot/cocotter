@@ -1030,6 +1030,155 @@
 				)
 			)
 		)
+		(symbol "cocotter_resistors:R_0R_0603"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "0R"
+				(at 3.81 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0603_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "0R 0603 20mOhms max 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB" "C431718"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_0R_0603_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_0R_0603_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_resistors:R_100k_0603_1%"
 			(pin_numbers hide)
 			(pin_names
@@ -1612,12 +1761,6 @@
 		(uuid "5db49096-a3f5-45d1-a717-86273f5ae231")
 	)
 	(junction
-		(at 52.07 22.86)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "685a4cec-ad41-4385-ba75-1c612739ddd7")
-	)
-	(junction
 		(at 93.98 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1628,6 +1771,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6b0d3031-a2b3-4811-9e6f-9cd550b724c2")
+	)
+	(junction
+		(at 68.58 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6ceff166-e0eb-4d4c-bca2-560908547718")
 	)
 	(junction
 		(at 57.15 88.9)
@@ -1658,12 +1807,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8a59e6ad-0553-41da-bc0d-25f02e5e2fd4")
-	)
-	(junction
-		(at 68.58 22.86)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "8ff46ada-63e3-4c13-b3f5-d3fd0e067a30")
 	)
 	(junction
 		(at 180.34 109.22)
@@ -1790,6 +1933,18 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f6f4c6f9-10c9-4659-b020-3d7c8376b7ac")
+	)
+	(junction
+		(at 52.07 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fabf1379-4daf-42b3-b539-0c6778231e84")
+	)
+	(junction
+		(at 34.29 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ff167213-d535-4e6d-aeb6-7d396be2c776")
 	)
 	(junction
 		(at 43.18 22.86)
@@ -2209,6 +2364,16 @@
 	)
 	(wire
 		(pts
+			(xy 17.78 22.86) (xy 22.86 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "533ac9eb-79e5-4e03-ba87-cbf428d3f4ed")
+	)
+	(wire
+		(pts
 			(xy 87.63 129.54) (xy 87.63 132.08)
 		)
 		(stroke
@@ -2436,6 +2601,16 @@
 			(type default)
 		)
 		(uuid "76e0bf9e-a6b1-42d4-a0a5-0ed81f11b981")
+	)
+	(wire
+		(pts
+			(xy 30.48 22.86) (xy 34.29 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7bf92ddd-dbb4-4b0f-9afa-5df638f6d7d2")
 	)
 	(wire
 		(pts
@@ -2686,6 +2861,16 @@
 			(type default)
 		)
 		(uuid "ae2d994d-8617-48fd-a079-2dd4b1817c91")
+	)
+	(wire
+		(pts
+			(xy 52.07 22.86) (xy 68.58 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ae362bdd-117e-4a10-9cd6-5baa87f1d900")
 	)
 	(wire
 		(pts
@@ -3097,18 +3282,6 @@
 		)
 		(uuid "fec3e894-ba5c-425b-86b5-3e4885e469f7")
 	)
-	(text "ajouter ferrite ?"
-		(exclude_from_sim no)
-		(at 97.79 16.764 0)
-		(effects
-			(font
-				(size 3.81 3.81)
-				(thickness 0.762)
-				(bold yes)
-			)
-		)
-		(uuid "e65bc1b7-ac2b-4068-b6c9-0b5d7277d014")
-	)
 	(label "SDA_3v3"
 		(at 165.1 114.3 0)
 		(fields_autoplaced yes)
@@ -3186,6 +3359,17 @@
 		)
 		(uuid "8dcc8908-7f9b-4b33-81d0-9ecdd95a4388")
 	)
+	(label "p3v3_gyro"
+		(at 36.83 22.86 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a76da962-894f-4cbe-ad2e-a4e1d9c14027")
+	)
 	(label "enable_back_tof_3v3"
 		(at 160.02 121.92 0)
 		(fields_autoplaced yes)
@@ -3255,6 +3439,18 @@
 		)
 		(uuid "55bb5c18-db03-4337-a9f5-02447710e01f")
 	)
+	(hierarchical_label "enable_back_tof_3v3"
+		(shape input)
+		(at 160.02 121.92 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "575161fa-2d3d-4f2a-ab68-87050bd2cda4")
+	)
 	(hierarchical_label "tof_irq"
 		(shape output)
 		(at 36.83 106.68 180)
@@ -3315,7 +3511,7 @@
 		)
 		(uuid "d1b012dc-6528-4d86-a315-0e45594a594c")
 	)
-	(hierarchical_label "enable_tof_3v3"
+	(hierarchical_label "enable_front_tof_3v3"
 		(shape input)
 		(at 36.83 121.92 180)
 		(fields_autoplaced yes)
@@ -3326,6 +3522,100 @@
 			(justify right)
 		)
 		(uuid "fb474748-4943-44b9-8183-fda759bcaf7c")
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_0R_0603")
+		(at 26.67 22.86 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "00eef77c-0f4e-46ac-a027-b6baf29f57bf")
+		(property "Reference" "R141"
+			(at 26.67 20.574 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 26.67 22.86 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 26.67 24.638 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 26.67 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 26.67 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 26.67 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 26.67 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C431718"
+			(at 26.67 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "67ff12c5-f271-4a7b-b591-be39f7e1a9b4")
+		)
+		(pin "1"
+			(uuid "daeb7169-e982-4fe4-8b5a-e09109f0f7b8")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "R141")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
@@ -4734,72 +5024,6 @@
 		)
 	)
 	(symbol
-		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 52.07 22.86 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5bfe002b-d2a4-4857-9629-d6d2a7dedcc0")
-		(property "Reference" "#PWR036"
-			(at 52.07 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3_m"
-			(at 52.07 17.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 52.07 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 52.07 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 52.07 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c8a1f4f2-5337-4a2b-b9e9-86fb1bb96ebf")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
-					(reference "#PWR036")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_ic:LSM6DSO32XTR")
 		(at 66.04 41.91 0)
 		(unit 1)
@@ -5589,72 +5813,6 @@
 		)
 	)
 	(symbol
-		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 68.58 22.86 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "9badcc9f-7ce0-44bf-a952-907e02ab13e9")
-		(property "Reference" "#PWR037"
-			(at 68.58 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3_m"
-			(at 68.58 17.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 68.58 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 68.58 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 68.58 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0ad33a1e-3046-4e35-b159-e72eb1bc4699")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
-					(reference "#PWR037")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_capacitors:C_100nF_50V_0603")
 		(at 99.06 26.67 0)
 		(unit 1)
@@ -6095,6 +6253,72 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
 					(reference "#PWR066")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pmi_2023_specific:+3V3_m")
+		(at 17.78 22.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c783acfb-fb16-4840-8953-6d2ffb0fcdb1")
+		(property "Reference" "#PWR036"
+			(at 17.78 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3_m"
+			(at 17.78 17.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 17.78 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 17.78 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
+			(at 17.78 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a90a0291-bc3e-417e-b1b1-2481c4ff64e4")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "#PWR036")
 					(unit 1)
 				)
 			)

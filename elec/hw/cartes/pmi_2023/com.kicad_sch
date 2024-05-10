@@ -712,7 +712,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_connectors:USB4105-GF-A-060"
+		(symbol "cocotter_connectors:USB-TYPE-C-019"
 			(pin_names
 				(offset 1.016)
 			)
@@ -728,7 +728,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "USB4105-GF-A-060"
+			(property "Value" "USB-TYPE-C-019"
 				(at 19.05 19.05 0)
 				(effects
 					(font
@@ -764,7 +764,7 @@
 					(hide yes)
 				)
 			)
-			(property "DIGIKEY_REF" "2073-USB4105-GF-A-060TR-ND"
+			(property "DIGIKEY_REF" ""
 				(at 0 0 0)
 				(effects
 					(font
@@ -773,7 +773,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C2927300"
+			(property "JLCPCB" "C2927039"
 				(at 0 0 0)
 				(effects
 					(font
@@ -782,7 +782,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "usb universal serial bus type-C USB2.0"
+			(property "ki_keywords" "usb universal serial bus type-C USB2.0 3A 1 Surface Mount，Right Angle 16P Female"
 				(at 0 0 0)
 				(effects
 					(font
@@ -800,7 +800,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "USB4105-GF-A-060_0_0"
+			(symbol "USB-TYPE-C-019_0_0"
 				(rectangle
 					(start -0.254 -17.78)
 					(end 0.254 -16.764)
@@ -912,7 +912,7 @@
 					)
 				)
 			)
-			(symbol "USB4105-GF-A-060_0_1"
+			(symbol "USB-TYPE-C-019_0_1"
 				(rectangle
 					(start -10.16 17.78)
 					(end 10.16 -17.78)
@@ -1113,7 +1113,7 @@
 					)
 				)
 			)
-			(symbol "USB4105-GF-A-060_1_1"
+			(symbol "USB-TYPE-C-019_1_1"
 				(pin passive line
 					(at 0 -22.86 90)
 					(length 5.08)
@@ -1893,7 +1893,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2018,24 +2018,6 @@
 					)
 				)
 				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
 					(at 3.81 0 180)
 					(length 2.54)
 					(name "A"
@@ -2045,7 +2027,25 @@
 							)
 						)
 					)
-					(number "2"
+					(number "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "C"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -4402,16 +4402,16 @@
 		(uuid "156d7383-96a0-4b2b-9dbe-d1badf9f9152")
 	)
 	(junction
+		(at 82.55 143.51)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1c07b4b2-d16e-4219-9a49-e498ca0509fe")
+	)
+	(junction
 		(at 186.69 29.21)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1c148b24-cb1a-470f-9fc1-ff8753b680bc")
-	)
-	(junction
-		(at 83.82 143.51)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "1f943cb9-350f-4942-bab3-22d52a4a91b0")
 	)
 	(junction
 		(at 273.05 146.05)
@@ -4444,22 +4444,28 @@
 		(uuid "5825f1bb-4252-4d01-a471-60cc38b0de5d")
 	)
 	(junction
-		(at 100.33 134.62)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "58f55268-c531-42ce-891f-d825c2eb9b8e")
-	)
-	(junction
 		(at 257.81 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6d0bd672-f3b8-43aa-852e-40889e9d6a68")
 	)
 	(junction
+		(at 97.79 134.62)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6fdd7628-5f82-4c71-90a5-a6a45170ba3e")
+	)
+	(junction
 		(at 243.84 140.97)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "79b66e56-16c1-4398-b14d-370d4b157c6f")
+	)
+	(junction
+		(at 80.01 143.51)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8591b510-1ee7-4ee9-9d04-581cbf7d0f2e")
 	)
 	(junction
 		(at 208.28 29.21)
@@ -4547,7 +4553,17 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 153.67) (xy 100.33 152.4)
+			(xy 82.55 143.51) (xy 134.62 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "00db43d7-abdf-48fd-99ea-1b8a26129be7")
+	)
+	(wire
+		(pts
+			(xy 97.79 153.67) (xy 97.79 152.4)
 		)
 		(stroke
 			(width 0)
@@ -4657,7 +4673,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 134.62) (xy 83.82 143.51)
+			(xy 82.55 134.62) (xy 82.55 143.51)
 		)
 		(stroke
 			(width 0)
@@ -4717,7 +4733,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 143.51) (xy 83.82 143.51)
+			(xy 69.85 143.51) (xy 80.01 143.51)
 		)
 		(stroke
 			(width 0)
@@ -4747,7 +4763,7 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 144.78) (xy 100.33 134.62)
+			(xy 97.79 144.78) (xy 97.79 134.62)
 		)
 		(stroke
 			(width 0)
@@ -4887,16 +4903,6 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 134.62) (xy 134.62 134.62)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4ed89807-682b-423a-a146-91ddc81e6160")
-	)
-	(wire
-		(pts
 			(xy 107.95 184.15) (xy 113.03 184.15)
 		)
 		(stroke
@@ -4927,17 +4933,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 143.51) (xy 134.62 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "57113593-f906-44b8-a8f8-94aa818bdab3")
-	)
-	(wire
-		(pts
-			(xy 83.82 143.51) (xy 83.82 144.78)
+			(xy 80.01 143.51) (xy 80.01 144.78)
 		)
 		(stroke
 			(width 0)
@@ -5147,7 +5143,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 153.67) (xy 83.82 152.4)
+			(xy 80.01 153.67) (xy 80.01 152.4)
 		)
 		(stroke
 			(width 0)
@@ -5227,6 +5223,16 @@
 	)
 	(wire
 		(pts
+			(xy 120.65 60.96) (xy 134.62 60.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "95bbacff-3769-4d33-a029-9c5276543d80")
+	)
+	(wire
+		(pts
 			(xy 172.72 149.86) (xy 175.26 149.86)
 		)
 		(stroke
@@ -5244,6 +5250,16 @@
 			(type default)
 		)
 		(uuid "99d3d29c-8625-4755-951e-b57cd15f8a42")
+	)
+	(wire
+		(pts
+			(xy 97.79 134.62) (xy 134.62 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9a8d7dc4-636b-47c1-aa41-1e36c32f6f50")
 	)
 	(wire
 		(pts
@@ -5697,6 +5713,16 @@
 	)
 	(wire
 		(pts
+			(xy 80.01 143.51) (xy 82.55 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f5f0c092-95b8-4b81-b913-e2a3591356b0")
+	)
+	(wire
+		(pts
 			(xy 58.42 71.12) (xy 58.42 73.66)
 		)
 		(stroke
@@ -5765,7 +5791,7 @@
 		)
 		(uuid "fef392a4-ecd1-49d1-afcc-9dc8f59c0537")
 	)
-	(text_box "SW1A : \n  POSx : USB bootloader\n  POSy : USB debug"
+	(text_box "SW1A : \n  POS A : USB bootloader\n  POS B : USB debug"
 		(exclude_from_sim no)
 		(at 220.98 157.48 0)
 		(size 33.02 7.62)
@@ -6279,8 +6305,8 @@
 		)
 		(uuid "508878b8-14b9-4923-b147-bc59dbe11e76")
 	)
-	(hierarchical_label "enable_tof_3v3"
-		(shape input)
+	(hierarchical_label "enable_front_tof_3v3"
+		(shape output)
 		(at 120.65 93.98 180)
 		(fields_autoplaced yes)
 		(effects
@@ -6387,6 +6413,18 @@
 		)
 		(uuid "afa295d7-367e-43fe-b30d-cd36ef182974")
 	)
+	(hierarchical_label "enable_back_tof_3v3"
+		(shape output)
+		(at 120.65 60.96 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "cda78e14-a8cc-4c89-9544-fbfb89e5276c")
+	)
 	(hierarchical_label "conf3_3v3"
 		(shape input)
 		(at 128.27 71.12 180)
@@ -6425,7 +6463,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_100k_0603_1%")
-		(at 100.33 130.81 0)
+		(at 97.79 130.81 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6433,7 +6471,7 @@
 		(dnp yes)
 		(uuid "00dccd09-c42f-4960-9552-81f6877ab488")
 		(property "Reference" "R88"
-			(at 101.6 129.54 0)
+			(at 99.06 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6442,7 +6480,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 104.14 132.08 0)
+			(at 101.6 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6450,7 +6488,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 98.552 130.81 90)
+			(at 96.012 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6459,7 +6497,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 100.33 130.81 0)
+			(at 97.79 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6468,7 +6506,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 100.33 130.81 0)
+			(at 97.79 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6477,7 +6515,7 @@
 			)
 		)
 		(property "Specification" "100k 0603 1% 100mW"
-			(at 100.33 130.81 0)
+			(at 97.79 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6486,7 +6524,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 100.33 130.81 0)
+			(at 97.79 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6495,7 +6533,7 @@
 			)
 		)
 		(property "JLCPCB" "C25803"
-			(at 100.33 130.81 0)
+			(at 97.79 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6780,7 +6818,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 100.33 127 0)
+		(at 97.79 127 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6789,7 +6827,7 @@
 		(fields_autoplaced yes)
 		(uuid "11d59414-e2fb-42bd-bdbb-14756715dbb3")
 		(property "Reference" "#PWR054"
-			(at 100.33 130.81 0)
+			(at 97.79 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6798,7 +6836,7 @@
 			)
 		)
 		(property "Value" "+3V3_m"
-			(at 100.33 121.92 0)
+			(at 97.79 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6806,7 +6844,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 100.33 127 0)
+			(at 97.79 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6815,7 +6853,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 100.33 127 0)
+			(at 97.79 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6824,7 +6862,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 100.33 127 0)
+			(at 97.79 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6912,7 +6950,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
-		(at 100.33 153.67 0)
+		(at 97.79 153.67 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6920,7 +6958,7 @@
 		(dnp no)
 		(uuid "26bbfafc-e253-41b5-8a3c-3a088dc1660b")
 		(property "Reference" "#PWR088"
-			(at 100.33 160.02 0)
+			(at 97.79 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6929,7 +6967,7 @@
 			)
 		)
 		(property "Value" "GND_m"
-			(at 100.33 157.48 0)
+			(at 97.79 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6937,7 +6975,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 100.33 153.67 0)
+			(at 97.79 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6946,7 +6984,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 100.33 153.67 0)
+			(at 97.79 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6955,7 +6993,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 100.33 153.67 0)
+			(at 97.79 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7024,7 +7062,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "0.115A Id, 60V Vds, N-Channel MOSFET, SOT-23"
 			(at 234.95 144.78 0)
 			(effects
 				(font
@@ -7444,109 +7482,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:1N5819WS")
-		(at 256.54 140.97 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "49561cac-e2ec-471f-9d78-d172cb269f2a")
-		(property "Reference" "D2"
-			(at 256.54 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 262.89 139.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_diodes:D_SOD-323F"
-			(at 256.54 145.415 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 256.54 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 256.54 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 256.54 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 256.54 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" "Vfmax=.25V@10mA, Ifmax = 1A, VR max = 40V"
-			(at 256.54 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" "C191023"
-			(at 256.54 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "2446150d-de33-41f8-8ffc-0717fcb63cea")
-		)
-		(pin "2"
-			(uuid "3bf96930-05ef-4070-8ff7-320a9cd42e3d")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "D2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_diodes:white_led_0603")
 		(at 29.21 185.42 90)
 		(unit 1)
@@ -7574,7 +7509,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 			(at 29.21 185.42 0)
 			(effects
 				(font
@@ -7628,10 +7563,10 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
+		(pin "A"
 			(uuid "08691e42-2363-42a5-994a-2ad20a29ab35")
 		)
-		(pin "1"
+		(pin "C"
 			(uuid "a01696cb-cd93-41e6-b986-cd76c5512401")
 		)
 		(instances
@@ -7808,7 +7743,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_100k_0603_1%")
-		(at 83.82 130.81 0)
+		(at 82.55 130.81 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7817,7 +7752,7 @@
 		(fields_autoplaced yes)
 		(uuid "52866bbc-d2cf-41c9-9699-6d67d89d9586")
 		(property "Reference" "R86"
-			(at 86.36 129.5399 0)
+			(at 85.09 129.5399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7826,7 +7761,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 86.36 132.0799 0)
+			(at 85.09 132.0799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7835,7 +7770,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 82.042 130.81 90)
+			(at 80.772 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7844,7 +7779,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 83.82 130.81 0)
+			(at 82.55 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7853,7 +7788,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 83.82 130.81 0)
+			(at 82.55 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7862,7 +7797,7 @@
 			)
 		)
 		(property "Specification" "100k 0603 1% 100mW"
-			(at 83.82 130.81 0)
+			(at 82.55 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7871,7 +7806,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 83.82 130.81 0)
+			(at 82.55 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7880,7 +7815,7 @@
 			)
 		)
 		(property "JLCPCB" "C25803"
-			(at 83.82 130.81 0)
+			(at 82.55 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8087,7 +8022,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_capacitors:C_100nF_50V_0603")
-		(at 83.82 148.59 0)
+		(at 80.01 148.59 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8096,7 +8031,7 @@
 		(fields_autoplaced yes)
 		(uuid "5a529b51-1032-4f75-8b5f-5fc71019a037")
 		(property "Reference" "C32"
-			(at 87.63 147.3199 0)
+			(at 83.82 147.3199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8105,7 +8040,7 @@
 			)
 		)
 		(property "Value" "100nF 50V"
-			(at 87.63 149.8599 0)
+			(at 83.82 149.8599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8114,7 +8049,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
-			(at 84.7852 152.4 0)
+			(at 80.9752 152.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8123,7 +8058,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 83.82 148.59 0)
+			(at 80.01 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8132,7 +8067,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor tol +/-10%"
-			(at 83.82 148.59 0)
+			(at 80.01 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8141,7 +8076,7 @@
 			)
 		)
 		(property "Specification" "100nF 50V X7R 0603 "
-			(at 83.82 148.59 0)
+			(at 80.01 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8150,7 +8085,7 @@
 			)
 		)
 		(property "JLCPCB" "C14663"
-			(at 83.82 148.59 0)
+			(at 80.01 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8427,7 +8362,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
 			(at 39.37 185.42 0)
 			(effects
 				(font
@@ -8481,10 +8416,10 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
+		(pin "A"
 			(uuid "5a92485f-7ab1-49ad-8841-4dd754940ebf")
 		)
-		(pin "2"
+		(pin "C"
 			(uuid "955be53d-9c8d-460b-b4af-576c4bdc6725")
 		)
 		(instances
@@ -10213,7 +10148,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
-		(at 83.82 153.67 0)
+		(at 80.01 153.67 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10221,7 +10156,7 @@
 		(dnp no)
 		(uuid "bfe996ba-28f9-45c0-aa68-3b9facb15257")
 		(property "Reference" "#PWR078"
-			(at 83.82 160.02 0)
+			(at 80.01 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10230,7 +10165,7 @@
 			)
 		)
 		(property "Value" "GND_m"
-			(at 83.82 157.48 0)
+			(at 80.01 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10238,7 +10173,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 83.82 153.67 0)
+			(at 80.01 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10247,7 +10182,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 83.82 153.67 0)
+			(at 80.01 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10256,7 +10191,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 83.82 153.67 0)
+			(at 80.01 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10278,7 +10213,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 83.82 127 0)
+		(at 82.55 127 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10287,7 +10222,7 @@
 		(fields_autoplaced yes)
 		(uuid "c3f7f79f-5254-419a-bd7a-be4180136177")
 		(property "Reference" "#PWR02"
-			(at 83.82 130.81 0)
+			(at 82.55 130.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10296,7 +10231,7 @@
 			)
 		)
 		(property "Value" "+3V3_m"
-			(at 83.82 121.92 0)
+			(at 82.55 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10304,7 +10239,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 83.82 127 0)
+			(at 82.55 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10313,7 +10248,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 83.82 127 0)
+			(at 82.55 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10322,7 +10257,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 83.82 127 0)
+			(at 82.55 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10409,7 +10344,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_connectors:USB4105-GF-A-060")
+		(lib_id "cocotter_connectors:USB-TYPE-C-019")
 		(at 273.05 109.22 0)
 		(mirror y)
 		(unit 1)
@@ -10472,7 +10407,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2927300"
+		(property "JLCPCB" "C2927039"
 			(at 273.05 109.22 0)
 			(effects
 				(font
@@ -10825,109 +10760,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
 					(reference "R136")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_diodes:1N5819WS")
-		(at 256.54 144.78 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d25061cf-381f-44b2-85e8-a7521397a4e3")
-		(property "Reference" "D3"
-			(at 256.54 138.43 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 263.398 143.764 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_diodes:D_SOD-323F"
-			(at 256.54 149.225 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 256.54 144.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 256.54 144.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" "D"
-			(at 256.54 144.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 256.54 144.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" "Vfmax=.25V@10mA, Ifmax = 1A, VR max = 40V"
-			(at 256.54 144.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" "C191023"
-			(at 256.54 144.78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0d014d2a-b5fc-403b-960c-4d4bf0d2c66c")
-		)
-		(pin "2"
-			(uuid "03625753-8a35-4db7-99f0-7387e6bb8528")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "D3")
 					(unit 1)
 				)
 			)
@@ -11619,7 +11451,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_100k_0603_1%")
-		(at 100.33 148.59 0)
+		(at 97.79 148.59 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11628,7 +11460,7 @@
 		(fields_autoplaced yes)
 		(uuid "fff91dfa-868a-4461-9979-863bfb053601")
 		(property "Reference" "R89"
-			(at 102.87 147.3199 0)
+			(at 100.33 147.3199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11637,7 +11469,7 @@
 			)
 		)
 		(property "Value" "100k"
-			(at 102.87 149.8599 0)
+			(at 100.33 149.8599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11646,7 +11478,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 98.552 148.59 90)
+			(at 96.012 148.59 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11655,7 +11487,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 100.33 148.59 0)
+			(at 97.79 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11664,7 +11496,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 100.33 148.59 0)
+			(at 97.79 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11673,7 +11505,7 @@
 			)
 		)
 		(property "Specification" "100k 0603 1% 100mW"
-			(at 100.33 148.59 0)
+			(at 97.79 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11682,7 +11514,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 100.33 148.59 0)
+			(at 97.79 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11691,7 +11523,7 @@
 			)
 		)
 		(property "JLCPCB" "C25803"
-			(at 100.33 148.59 0)
+			(at 97.79 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)

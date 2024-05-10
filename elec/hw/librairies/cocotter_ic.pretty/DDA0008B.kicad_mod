@@ -96,11 +96,11 @@
 		(uuid "3f2aa251-de90-4baa-b52c-29241aa117de")
 	)
 	(fp_arc
-		(start 0.5 -2.5)
-		(mid 0 -2)
-		(end -0.5 -2.5)
+		(start 0.25 -2.5)
+		(mid 0 -2.25)
+		(end -0.25 -2.5)
 		(stroke
-			(width 0.12)
+			(width 0.1)
 			(type default)
 		)
 		(layer "F.SilkS")
