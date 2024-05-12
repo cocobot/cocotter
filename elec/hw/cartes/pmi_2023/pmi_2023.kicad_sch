@@ -954,7 +954,7 @@
 				(justify left top)
 			)
 		)
-		(pin "vbatt_mon_4.35V" output
+		(pin "vbatt_mon_3.45V" output
 			(at 219.71 110.49 180)
 			(effects
 				(font
@@ -1438,7 +1438,7 @@
 			)
 			(uuid "75eba016-70ca-4f42-829b-88ef01f7aaea")
 		)
-		(pin "vbatt_mon_4.35V" input
+		(pin "vbatt_mon_3.45V" input
 			(at 210.82 110.49 0)
 			(effects
 				(font

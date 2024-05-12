@@ -1739,7 +1739,7 @@
 		)
 		(uuid "4fa06fd2-959a-40e9-af77-1584c91552c0")
 	)
-	(hierarchical_label "vbatt_mon_4.35V"
+	(hierarchical_label "vbatt_mon_3.45V"
 		(shape input)
 		(at 256.54 107.95 0)
 		(fields_autoplaced yes)
@@ -2418,7 +2418,7 @@
 			)
 			(uuid "25acb477-3041-4a2b-8721-d692c33cf10a")
 		)
-		(pin "vbatt_mon_4.35V" input
+		(pin "vbatt_mon_3.45V" input
 			(at 166.37 107.95 0)
 			(effects
 				(font

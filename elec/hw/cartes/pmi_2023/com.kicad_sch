@@ -3874,6 +3874,155 @@
 				)
 			)
 		)
+		(symbol "cocotter_resistors:R_91k_0603_1%"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "91k 1%"
+				(at 4.826 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0603_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "91k 0603 1% 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB" "C23265"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_91k_0603_1%_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_91k_0603_1%_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_transistors:2N7002"
 			(pin_names hide)
 			(exclude_from_sim no)
@@ -5791,6 +5940,28 @@
 		)
 		(uuid "fef392a4-ecd1-49d1-afcc-9dc8f59c0537")
 	)
+	(text_box "Vbat_mon voltage :\n- Li-ion : 4.35V max\n- LiFePO4 : 3.45V max\n=>with Li-ion esp32_vbatt_mon max = 2.3V"
+		(exclude_from_sim no)
+		(at 85.09 31.75 0)
+		(size 33.02 11.43)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(italic yes)
+				(color 255 255 255 1)
+			)
+			(justify left top)
+		)
+		(uuid "93403c91-2c4b-47b6-8720-4353eff60295")
+	)
 	(text_box "SW1A : \n  POS A : USB bootloader\n  POS B : USB debug"
 		(exclude_from_sim no)
 		(at 220.98 157.48 0)
@@ -5812,16 +5983,6 @@
 			(justify left top)
 		)
 		(uuid "a004f660-37a5-4dbe-869a-6cbb5b62dc88")
-	)
-	(text "GPIO3 : pull up au demarrage"
-		(exclude_from_sim no)
-		(at 109.474 36.576 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "1e071107-ac11-42fe-905e-a436e7deff57")
 	)
 	(text "ESP32-s3-wroom-1 datasheet"
 		(exclude_from_sim no)
@@ -5993,7 +6154,7 @@
 		)
 		(uuid "65fafcb1-c9b9-415a-bce9-78abfbbad16a")
 	)
-	(label "esp32_vbatt_mon_2v9"
+	(label "esp32_vbatt_mon_1v8"
 		(at 106.68 55.88 0)
 		(fields_autoplaced yes)
 		(effects
@@ -6317,7 +6478,7 @@
 		)
 		(uuid "56576ee3-984e-45d3-aa9c-99972cc3c351")
 	)
-	(hierarchical_label "vbatt_mon_4.35V"
+	(hierarchical_label "vbatt_mon_3.45V"
 		(shape input)
 		(at 82.55 46.99 180)
 		(fields_autoplaced yes)
@@ -9212,7 +9373,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0603_1%")
 		(at 93.98 50.8 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9266,7 +9427,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 93.98 50.8 0)
 			(effects
 				(font
@@ -9284,7 +9445,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C25803"
+		(property "JLCPCB" "C23265"
 			(at 93.98 50.8 0)
 			(effects
 				(font
@@ -9478,7 +9639,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "a33074ac-4a8b-40fa-9a3f-f17770857121")
 		(property "Reference" "R85"
