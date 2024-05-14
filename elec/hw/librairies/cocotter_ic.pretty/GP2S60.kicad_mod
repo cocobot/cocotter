@@ -321,7 +321,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "1f1516f0-524e-4699-b9f4-3e4641a5c5a4")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/TRAN_ICA00550_SHP.step"
+	(model "3d/TRAN_ICA00550_SHP.step"
 		(offset
 			(xyz 0 0 0)
 		)

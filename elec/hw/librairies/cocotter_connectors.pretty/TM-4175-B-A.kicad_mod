@@ -460,7 +460,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "8dcd110d-2793-417e-9f79-b13aa9a44f71")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/tm-4175-x-a.stp"
+	(model "3d/tm-4175-x-a.stp"
 		(offset
 			(xyz 0 0 0)
 		)

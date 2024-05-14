@@ -242,7 +242,7 @@
 		(remove_unused_layers no)
 		(uuid "76521dbd-3018-4005-ab44-fc4b1190b723")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/oled_i2c.step"
+	(model "3d/oled_i2c.step"
 		(offset
 			(xyz 0 0 2.5)
 		)

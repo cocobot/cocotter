@@ -213,7 +213,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "bd0ce27a-3c95-4810-86cd-13b7b952c112")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/EE_SX1321.step"
+	(model "3d/EE_SX1321.step"
 		(offset
 			(xyz 0 0 0)
 		)

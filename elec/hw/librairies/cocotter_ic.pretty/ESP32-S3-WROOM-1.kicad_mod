@@ -775,7 +775,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "d93d9b6f-c2fd-4a9c-8f90-4dbae230284b")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/ESP32-S3-WROOM-1.STEP"
+	(model "3d/ESP32-S3-WROOM-1.STEP"
 		(offset
 			(xyz -9 -9.75 0)
 		)

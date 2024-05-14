@@ -281,7 +281,7 @@
 		(thermal_bridge_angle 90)
 		(uuid "4b8b12c4-c0a4-4617-aacb-aa90327a0054")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/dipsw-4p.stp"
+	(model "3d/dipsw-4p.stp"
 		(offset
 			(xyz 0 0 0)
 		)

@@ -302,7 +302,7 @@
 		(remove_unused_layers no)
 		(uuid "fabc3364-b5a5-4aa4-8324-7e996566b69c")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/DDA0008B.stp"
+	(model "3d/DDA0008B.stp"
 		(offset
 			(xyz 0 0 0)
 		)

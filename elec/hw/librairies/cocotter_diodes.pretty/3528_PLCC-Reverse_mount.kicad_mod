@@ -165,7 +165,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "83d0b3ef-011d-4523-ba61-61c12b7a4ce6")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_diodes.pretty/3d/IN-P32TRRRGB.step"
+	(model "3d/IN-P32TRRRGB.step"
 		(offset
 			(xyz 0 0 0)
 		)

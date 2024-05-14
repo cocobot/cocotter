@@ -330,7 +330,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "35385623-a763-4873-8f2e-07253b23abba")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/TQ-2537.step"
+	(model "3d/TQ-2537.step"
 		(offset
 			(xyz 0 0 0)
 		)

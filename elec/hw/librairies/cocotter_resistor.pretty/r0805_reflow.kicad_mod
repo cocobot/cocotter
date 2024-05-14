@@ -124,7 +124,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "1431a10a-609d-49f0-9ce0-1a9cade172b0")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_resistor.pretty/3d/RES_CRCW_0805.step"
+	(model "3d/RES_CRCW_0805.step"
 		(offset
 			(xyz 0 0 0)
 		)

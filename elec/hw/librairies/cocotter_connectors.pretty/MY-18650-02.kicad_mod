@@ -410,7 +410,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "e41c124d-22df-4bb2-8e48-05884335d258")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/keystone-PN254TR.STEP"
+	(model "3d/keystone-PN254TR.STEP"
 		(offset
 			(xyz -6 0 0.71)
 		)

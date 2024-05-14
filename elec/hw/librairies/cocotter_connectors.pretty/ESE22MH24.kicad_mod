@@ -358,7 +358,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "2dd57488-b295-447d-80c8-5827b4cb278c")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/ESE22MH24.step"
+	(model "3d/ESE22MH24.step"
 		(offset
 			(xyz 0 -1.25 0)
 		)

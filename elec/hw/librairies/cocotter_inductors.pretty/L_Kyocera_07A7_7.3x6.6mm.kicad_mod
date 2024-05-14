@@ -27,7 +27,7 @@
 			)
 		)
 	)
-	(property "Footprint" "cocotter_inductors:L_Kyocera_07A7_7.3x6.6mm"
+	(property "Footprint" "L_Kyocera_07A7_7.3x6.6mm"
 		(at 0 0 0)
 		(unlocked yes)
 		(layer "F.Fab")
@@ -407,7 +407,7 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(uuid "de88cbbb-53e9-48c7-8760-6c07d37ac37e")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_inductors.pretty/3d/LMLP0707.step"
+	(model "3d/LMLP0707.step"
 		(offset
 			(xyz 0 0 0)
 		)

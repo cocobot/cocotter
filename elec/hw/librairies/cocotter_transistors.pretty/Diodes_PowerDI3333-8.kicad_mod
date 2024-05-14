@@ -356,7 +356,7 @@
 		)
 		(uuid "3f06de15-7d25-463b-b9c4-5a45fae83cc0")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_transistors.pretty/3d/PowerDI3333-8.step"
+	(model "3d/PowerDI3333-8.step"
 		(offset
 			(xyz 0 0 0)
 		)

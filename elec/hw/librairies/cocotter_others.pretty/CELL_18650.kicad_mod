@@ -101,7 +101,7 @@
 			)
 		)
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_others.pretty/3d/battery 18650.step"
+	(model "3d/battery 18650.step"
 		(offset
 			(xyz 32.5 0 9.7)
 		)
