@@ -537,7 +537,7 @@
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "cocotter_diodes:3528_PLCC-Reverse_mount"
 				(at 0 0 0)
 				(effects
 					(font
@@ -11327,7 +11327,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_diodes:3528_PLCC-Reverse_mount"
 			(at 237.49 45.72 0)
 			(effects
 				(font

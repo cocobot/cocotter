@@ -644,7 +644,7 @@
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "cocotter_connectors:254"
 				(at 0 0 0)
 				(effects
 					(font
@@ -10776,7 +10776,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_connectors:254"
 			(at 38.1 69.85 0)
 			(effects
 				(font
@@ -13982,7 +13982,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_connectors:254"
 			(at 38.1 59.69 0)
 			(effects
 				(font

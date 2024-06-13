@@ -2947,7 +2947,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_others:TS-1187A-B-A-B"
+		(symbol "cocotter_others:TSB001A3526A02"
 			(pin_numbers hide)
 			(pin_names
 				(offset 0) hide)
@@ -2962,7 +2962,7 @@
 					)
 				)
 			)
-			(property "Value" "TS-1187A-B-A-B"
+			(property "Value" "TSB001A3526A02"
 				(at 2.54 -5.08 0)
 				(effects
 					(font
@@ -2971,7 +2971,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "cocotter_others:TS-1187A-B-A-B"
+			(property "Footprint" "cocotter_others:TSB001A3526A02"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2980,7 +2980,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" ""
+			(property "Datasheet" "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2108252230_BZCN-TSB001A3526A02_C2888889.pdf"
 				(at 0 -5.08 0)
 				(effects
 					(font
@@ -2998,7 +2998,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C318884"
+			(property "JLCPCB" "C2888889"
 				(at -1.27 -5.08 0)
 				(effects
 					(font
@@ -3016,7 +3016,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "TS-1187A-B-A-B_1_1"
+			(symbol "TSB001A3526A02_1_1"
 				(rectangle
 					(start -2.54 2.54)
 					(end 2.54 -2.54)
@@ -3101,7 +3101,7 @@
 							)
 						)
 					)
-					(number "A"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3119,7 +3119,7 @@
 							)
 						)
 					)
-					(number "B"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -6901,7 +6901,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_others:TS-1187A-B-A-B")
+		(lib_id "cocotter_others:TSB001A3526A02")
 		(at 69.85 148.59 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6926,7 +6926,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "cocotter_others:TS-1187A-B-A-B"
+		(property "Footprint" "cocotter_others:TSB001A3526A02"
 			(at 69.85 148.59 0)
 			(effects
 				(font
@@ -6935,7 +6935,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2108252230_BZCN-TSB001A3526A02_C2888889.pdf"
 			(at 74.93 148.59 0)
 			(effects
 				(font
@@ -6953,7 +6953,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C318884"
+		(property "JLCPCB" "C2888889"
 			(at 74.93 149.86 0)
 			(effects
 				(font
@@ -6962,10 +6962,10 @@
 				(hide yes)
 			)
 		)
-		(pin "A"
+		(pin "1"
 			(uuid "e0d82b83-b044-4fec-8bf8-e42a9f3e310f")
 		)
-		(pin "B"
+		(pin "2"
 			(uuid "d706c020-dc07-40eb-af10-f5d4fe741579")
 		)
 		(instances

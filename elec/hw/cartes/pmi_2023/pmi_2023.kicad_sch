@@ -696,7 +696,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_others:MountingHole_2.1mm"
 			(at 120.65 181.61 0)
 			(effects
 				(font
@@ -760,7 +760,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_others:MountingHole_2.1mm"
 			(at 120.65 172.72 0)
 			(effects
 				(font
@@ -824,7 +824,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_others:MountingHole_2.1mm"
 			(at 97.79 172.72 0)
 			(effects
 				(font
@@ -888,7 +888,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "cocotter_others:MountingHole_2.1mm"
 			(at 97.79 181.61 0)
 			(effects
 				(font
