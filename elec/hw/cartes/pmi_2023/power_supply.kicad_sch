@@ -9853,7 +9853,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C1858011"
 			(at 222.25 95.25 0)
 			(effects
 				(font
@@ -11545,7 +11545,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C1858011"
 			(at 167.64 20.32 0)
 			(effects
 				(font
@@ -11804,7 +11804,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C1858011"
 			(at 222.25 134.62 0)
 			(effects
 				(font
@@ -12057,6 +12057,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 248.92 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C435835"
 			(at 248.92 33.02 0)
 			(effects
 				(font
@@ -12804,7 +12813,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C6881375"
 			(at 167.64 33.02 0)
 			(effects
 				(font
@@ -13091,7 +13100,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C6881375"
 			(at 222.25 147.32 0)
 			(effects
 				(font
@@ -13341,7 +13350,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C6881375"
 			(at 222.25 68.58 0)
 			(effects
 				(font
@@ -14409,7 +14418,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board no)
-		(dnp no)
+		(dnp yes)
 		(uuid "d78a2c27-2a6d-4333-9b79-29afd707dc70")
 		(property "Reference" "BT1"
 			(at 43.18 60.96 0)
@@ -15017,7 +15026,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C6881375"
 			(at 222.25 107.95 0)
 			(effects
 				(font
@@ -15221,7 +15230,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 78.74 52.07 0)
 			(effects
 				(font
@@ -15373,7 +15382,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB" "C1858011"
 			(at 222.25 55.88 0)
 			(effects
 				(font

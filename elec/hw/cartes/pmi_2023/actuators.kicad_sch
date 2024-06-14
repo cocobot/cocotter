@@ -5781,7 +5781,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 166.37 33.02 0)
 			(effects
 				(font
@@ -10190,7 +10190,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 149.86 33.02 0)
 			(effects
 				(font
@@ -11553,7 +11553,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 137.16 33.02 0)
 			(effects
 				(font

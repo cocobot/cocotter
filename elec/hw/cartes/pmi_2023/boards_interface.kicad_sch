@@ -2010,7 +2010,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "7213e886-5aed-4b90-b52a-7ea3f8312898")
 		(property "Reference" "J49"
 			(at 205.994 125.476 0)
@@ -2198,7 +2198,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "eaf58643-c494-4a57-adb0-cdc2e422d0ef")
 		(property "Reference" "J50"
 			(at 229.616 125.476 0)

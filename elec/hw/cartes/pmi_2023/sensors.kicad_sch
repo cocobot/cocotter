@@ -5128,6 +5128,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB" "C669819 "
+			(at 74.93 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "12556309-2075-4e0d-ba7e-d582c94b2725")
 		)
@@ -5328,6 +5337,15 @@
 		)
 		(property "Mouser" "667-ESE-22MH22"
 			(at 22.86 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C669819 "
+			(at 22.86 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7220,6 +7238,15 @@
 		)
 		(property "mouser" "701-XRA1200PIG16TR-F "
 			(at 69.85 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C2669711"
+			(at 69.85 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10030,6 +10057,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB" "C669818"
+			(at 22.86 190.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "5a9282d6-f600-4019-8f67-1132bac99769")
 		)
@@ -10446,6 +10482,15 @@
 		)
 		(property "Mouser" "C669818"
 			(at 74.93 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C669818"
+			(at 74.93 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)

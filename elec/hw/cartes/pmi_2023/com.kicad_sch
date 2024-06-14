@@ -8797,7 +8797,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 69.85 87.63 0)
 			(effects
 				(font
@@ -9156,7 +9156,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 29.21 177.8 0)
 			(effects
 				(font
@@ -9251,7 +9251,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 220.98 92.71 0)
 			(effects
 				(font
@@ -9608,7 +9608,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 39.37 177.8 0)
 			(effects
 				(font
@@ -10027,7 +10027,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 220.98 101.6 0)
 			(effects
 				(font
@@ -10710,7 +10710,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 58.42 87.63 0)
 			(effects
 				(font
@@ -10807,7 +10807,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 58.42 77.47 0)
 			(effects
 				(font
@@ -11324,7 +11324,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 69.85 77.47 0)
 			(effects
 				(font

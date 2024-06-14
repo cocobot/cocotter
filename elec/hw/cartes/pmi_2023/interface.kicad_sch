@@ -6118,7 +6118,7 @@
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "101ed00a-63ad-4c79-b0ba-189a56f97e7a")
 		(property "Reference" "U31"
@@ -7343,7 +7343,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 204.47 149.86 0)
 			(effects
 				(font
@@ -8296,7 +8296,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2991540"
+		(property "JLCPCB" "C21190"
 			(at 194.31 149.86 0)
 			(effects
 				(font
@@ -10342,6 +10342,15 @@
 		)
 		(property "mouser" "701-XRA1200PIG16TR-F "
 			(at 82.55 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C2669711"
+			(at 82.55 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
