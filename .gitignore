@@ -11,3 +11,4 @@ Cargo.lock
 *.bak
 fp-info-cache
 production
+fabrication*
