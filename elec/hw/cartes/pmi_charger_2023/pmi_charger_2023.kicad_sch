@@ -3550,6 +3550,12 @@
 		(uuid "1d63ac6e-176f-4820-96f0-0d104ae2800c")
 	)
 	(junction
+		(at 96.52 78.74)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "23b544b8-3413-4b95-87e8-0cd3e3560ea2")
+	)
+	(junction
 		(at 236.22 91.44)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3586,16 +3592,10 @@
 		(uuid "3a030a9d-4d76-42da-a022-1837e574d923")
 	)
 	(junction
-		(at 130.81 81.28)
+		(at 58.42 93.98)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "3a797a37-e78c-469c-8c82-d26a26b71024")
-	)
-	(junction
-		(at 96.52 77.47)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "5adc4481-0e8e-45ce-a942-135de32970e5")
+		(uuid "50ad64d1-a52a-4a28-a118-f92d561b3178")
 	)
 	(junction
 		(at 175.26 78.74)
@@ -3622,22 +3622,40 @@
 		(uuid "6d4d6452-59d4-46f8-baa3-a1b2f98f1f98")
 	)
 	(junction
+		(at 72.39 93.98)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6dd09f48-868d-4ac9-822f-68b0b16cd99d")
+	)
+	(junction
 		(at 236.22 109.22)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "88fb51ac-09d2-40f6-8aa6-2692d4e1d7a4")
 	)
 	(junction
-		(at 69.85 73.66)
+		(at 48.26 93.98)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "9c5034ba-4df4-4e64-91cf-b8880704ddbf")
+		(uuid "8ca5a447-8ba0-41a2-a02d-bccedec7701c")
 	)
 	(junction
 		(at 96.52 91.44)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9f48af3e-e57f-4cc3-a3a7-d39c5b6ef609")
+	)
+	(junction
+		(at 72.39 85.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a8401879-9922-4f33-9e4b-b4e5b89f0b5e")
+	)
+	(junction
+		(at 130.81 78.74)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b0c4e9b2-08fb-46ef-bd4f-8ac7199712f3")
 	)
 	(junction
 		(at 62.23 93.98)
@@ -3652,16 +3670,22 @@
 		(uuid "c3b249e7-614f-49b6-85c7-c1a8b701cfa3")
 	)
 	(junction
-		(at 82.55 73.66)
+		(at 82.55 93.98)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "d251ac0c-40e8-4abb-88bf-70e745cda150")
+		(uuid "e6d5a221-710b-4ad4-b940-d41ef8308707")
 	)
 	(junction
 		(at 205.74 99.06)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ead55d84-4afb-41e4-b8f3-a7b7c2b5eb0f")
+	)
+	(junction
+		(at 48.26 82.55)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "facd87ca-e43f-494c-8c4b-05185ab4402e")
 	)
 	(wire
 		(pts
@@ -3675,13 +3699,13 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 82.55) (xy 69.85 81.28)
+			(xy 41.91 73.66) (xy 96.52 73.66)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "04579af6-0a0b-4093-bfbe-8fd9d3c22651")
+		(uuid "04a347ae-e0f6-4621-9739-bdce7c488558")
 	)
 	(wire
 		(pts
@@ -3745,7 +3769,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 81.28) (xy 149.86 81.28)
+			(xy 111.76 81.28) (xy 149.86 81.28)
 		)
 		(stroke
 			(width 0)
@@ -3755,17 +3779,7 @@
 	)
 	(wire
 		(pts
-			(xy 62.23 73.66) (xy 69.85 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "15ba4462-259f-41cc-b7c9-bbb69b983f93")
-	)
-	(wire
-		(pts
-			(xy 130.81 91.44) (xy 130.81 88.9)
+			(xy 130.81 91.44) (xy 130.81 90.17)
 		)
 		(stroke
 			(width 0)
@@ -3865,13 +3879,23 @@
 	)
 	(wire
 		(pts
-			(xy 62.23 91.44) (xy 62.23 93.98)
+			(xy 91.44 91.44) (xy 91.44 93.98)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "287ea6a7-ef71-40cf-b1de-375fdb6ed850")
+	)
+	(wire
+		(pts
+			(xy 72.39 93.98) (xy 62.23 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "28ab1056-b76b-4fff-a059-f89fea9cac25")
 	)
 	(wire
 		(pts
@@ -3895,6 +3919,16 @@
 	)
 	(wire
 		(pts
+			(xy 48.26 82.55) (xy 48.26 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "326cc1ed-4b31-4921-a328-e222a6850a40")
+	)
+	(wire
+		(pts
 			(xy 220.98 78.74) (xy 236.22 78.74)
 		)
 		(stroke
@@ -3915,7 +3949,7 @@
 	)
 	(wire
 		(pts
-			(xy 62.23 85.09) (xy 82.55 85.09)
+			(xy 41.91 85.09) (xy 72.39 85.09)
 		)
 		(stroke
 			(width 0)
@@ -3945,16 +3979,6 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 77.47) (xy 149.86 78.74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3ffa31cc-38d3-4f90-b948-b9fcf8c101f7")
-	)
-	(wire
-		(pts
 			(xy 172.72 86.36) (xy 184.15 86.36)
 		)
 		(stroke
@@ -3975,17 +3999,7 @@
 	)
 	(wire
 		(pts
-			(xy 96.52 73.66) (xy 96.52 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "46a4ec04-def5-41c6-9678-4db7d6e80821")
-	)
-	(wire
-		(pts
-			(xy 62.23 91.44) (xy 96.52 91.44)
+			(xy 91.44 91.44) (xy 96.52 91.44)
 		)
 		(stroke
 			(width 0)
@@ -4005,6 +4019,16 @@
 	)
 	(wire
 		(pts
+			(xy 96.52 78.74) (xy 96.52 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4ec44fa7-d4c3-46e0-bfe1-c2ccf6c3db6d")
+	)
+	(wire
+		(pts
 			(xy 204.47 78.74) (xy 220.98 78.74)
 		)
 		(stroke
@@ -4015,7 +4039,17 @@
 	)
 	(wire
 		(pts
-			(xy 96.52 77.47) (xy 149.86 77.47)
+			(xy 91.44 93.98) (xy 82.55 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "51a08d7e-8668-4327-8fb6-451052856dc3")
+	)
+	(wire
+		(pts
+			(xy 96.52 78.74) (xy 130.81 78.74)
 		)
 		(stroke
 			(width 0)
@@ -4035,6 +4069,16 @@
 	)
 	(wire
 		(pts
+			(xy 130.81 78.74) (xy 149.86 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "581f77cc-cbe4-40d2-a4ee-e1834549edc0")
+	)
+	(wire
+		(pts
 			(xy 236.22 93.98) (xy 236.22 100.33)
 		)
 		(stroke
@@ -4045,7 +4089,7 @@
 	)
 	(wire
 		(pts
-			(xy 50.8 101.6) (xy 62.23 101.6)
+			(xy 30.48 101.6) (xy 62.23 101.6)
 		)
 		(stroke
 			(width 0)
@@ -4072,6 +4116,26 @@
 			(type default)
 		)
 		(uuid "5b64e51c-729c-4c51-9c01-402db3b97ed2")
+	)
+	(wire
+		(pts
+			(xy 41.91 93.98) (xy 48.26 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "61ae9991-6014-4121-a13d-b16e62927487")
+	)
+	(wire
+		(pts
+			(xy 130.81 78.74) (xy 130.81 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c5cd017-6752-41c4-9871-4a1953b52780")
 	)
 	(wire
 		(pts
@@ -4102,16 +4166,6 @@
 			(type default)
 		)
 		(uuid "774a524c-9512-4dc2-8a06-e79f4646719a")
-	)
-	(wire
-		(pts
-			(xy 111.76 81.28) (xy 130.81 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "78c8ca26-d9f8-4c74-a099-f3d539b69ec6")
 	)
 	(wire
 		(pts
@@ -4195,13 +4249,23 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 73.66) (xy 82.55 73.66)
+			(xy 72.39 86.36) (xy 72.39 85.09)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "9628edc3-fa72-444c-bf1c-3812ce450cd0")
+		(uuid "936c2cbc-41d6-46e0-979a-d324a7ab46f7")
+	)
+	(wire
+		(pts
+			(xy 82.55 86.36) (xy 82.55 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a145c39e-3a54-483d-85ac-bbe530878db1")
 	)
 	(wire
 		(pts
@@ -4265,6 +4329,16 @@
 	)
 	(wire
 		(pts
+			(xy 58.42 82.55) (xy 58.42 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ad74997b-b612-48e4-af59-d3295acd59c9")
+	)
+	(wire
+		(pts
 			(xy 205.74 106.68) (xy 205.74 107.95)
 		)
 		(stroke
@@ -4285,16 +4359,6 @@
 	)
 	(wire
 		(pts
-			(xy 82.55 85.09) (xy 82.55 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bd32edae-1662-42f1-8f7e-87e91871e686")
-	)
-	(wire
-		(pts
 			(xy 175.26 81.28) (xy 175.26 78.74)
 		)
 		(stroke
@@ -4302,16 +4366,6 @@
 			(type default)
 		)
 		(uuid "be5f93e0-2718-4498-b096-94fb2aa251b1")
-	)
-	(wire
-		(pts
-			(xy 82.55 73.66) (xy 96.52 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c195a12f-9f27-4519-bf41-2a9387e5b17d")
 	)
 	(wire
 		(pts
@@ -4345,6 +4399,16 @@
 	)
 	(wire
 		(pts
+			(xy 48.26 93.98) (xy 58.42 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf62e1ad-0b40-4844-91f8-9465a612997a")
+	)
+	(wire
+		(pts
 			(xy 88.9 97.79) (xy 127 97.79)
 		)
 		(stroke
@@ -4355,13 +4419,13 @@
 	)
 	(wire
 		(pts
-			(xy 96.52 77.47) (xy 96.52 81.28)
+			(xy 48.26 82.55) (xy 58.42 82.55)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "d20f53cc-56c1-4fd5-b41f-efa7f18377fe")
+		(uuid "d1066df2-abe9-4b3a-92f0-07f43bcf1bea")
 	)
 	(wire
 		(pts
@@ -4415,7 +4479,7 @@
 	)
 	(wire
 		(pts
-			(xy 62.23 82.55) (xy 69.85 82.55)
+			(xy 41.91 82.55) (xy 48.26 82.55)
 		)
 		(stroke
 			(width 0)
@@ -4465,6 +4529,36 @@
 	)
 	(wire
 		(pts
+			(xy 82.55 93.98) (xy 72.39 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ea1c89a8-203f-4ee3-8885-cf178579e422")
+	)
+	(wire
+		(pts
+			(xy 58.42 93.98) (xy 62.23 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ebcd7c6d-420a-4e90-bedc-031f7be1a073")
+	)
+	(wire
+		(pts
+			(xy 72.39 85.09) (xy 82.55 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ec0b137c-c872-48c4-b425-13e0ab2738ef")
+	)
+	(wire
+		(pts
 			(xy 193.04 99.06) (xy 194.31 99.06)
 		)
 		(stroke
@@ -4472,6 +4566,16 @@
 			(type default)
 		)
 		(uuid "f0f993e2-90aa-4fd7-8573-8562d4a395e5")
+	)
+	(wire
+		(pts
+			(xy 96.52 73.66) (xy 96.52 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ff9ee061-c5c3-41fe-8d22-d16d8eac759a")
 	)
 	(text_box "SW2:\n - POS A : charge disabled\n - POS B : charge enabled"
 		(exclude_from_sim no)
@@ -4751,7 +4855,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "148b8b21-a538-4084-8cff-8f5cf04eea0d")
 		(property "Reference" "R7"
 			(at 123.19 91.694 90)
@@ -4901,6 +5005,101 @@
 			(project "pmi_charger"
 				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
 					(reference "H3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_10k_0603_1%")
+		(at 58.42 90.17 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "1d3e9526-5462-47f0-9f87-44bb4c9508c1")
+		(property "Reference" "R18"
+			(at 59.436 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k 1%"
+			(at 63.5 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 56.642 90.17 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 58.42 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 58.42 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "10k 0603 1% 100mW"
+			(at 58.42 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 58.42 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C25804"
+			(at 58.42 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c73d3e92-8ad6-46b8-a576-54a66bfc2a34")
+		)
+		(pin "2"
+			(uuid "2b792288-7d50-46e7-ad39-56d6294d31ba")
+		)
+		(instances
+			(project "pmi_charger_2023"
+				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
+					(reference "R18")
 					(unit 1)
 				)
 			)
@@ -5388,6 +5587,101 @@
 			(project "pmi_charger"
 				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
 					(reference "#PWR019")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_10k_0603_1%")
+		(at 48.26 90.17 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "334515b5-a3c7-405c-97ea-dfac503e9d46")
+		(property "Reference" "R17"
+			(at 49.276 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k 1%"
+			(at 53.34 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 46.482 90.17 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 48.26 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 48.26 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "10k 0603 1% 100mW"
+			(at 48.26 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 48.26 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C25804"
+			(at 48.26 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "cb750fe2-09cf-4453-a1a6-64353176919e")
+		)
+		(pin "2"
+			(uuid "1ca7007a-eced-4b51-bfca-5e9889fcaf7f")
+		)
+		(instances
+			(project "pmi_charger_2023"
+				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
+					(reference "R17")
 					(unit 1)
 				)
 			)
@@ -6350,101 +6644,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_10k_0603_1%")
-		(at 69.85 77.47 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "70161604-de13-4dfe-913e-be0cda8b83f9")
-		(property "Reference" "R12"
-			(at 70.866 76.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10k 1%"
-			(at 74.93 78.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 68.072 77.47 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 69.85 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 69.85 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "10k 0603 1% 100mW"
-			(at 69.85 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" "603-RC0603FR-10100KL"
-			(at 69.85 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" "C25804"
-			(at 69.85 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0de60b89-0ffa-409b-8031-46080512b198")
-		)
-		(pin "2"
-			(uuid "444f94a0-0b0b-48f1-974c-e1a01c9eedda")
-		)
-		(instances
-			(project "pmi_charger"
-				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
-					(reference "R12")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Mechanical:MountingHole_Pad")
 		(at 87.63 162.56 0)
 		(unit 1)
@@ -6583,7 +6782,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:BTC-TC6S-23")
-		(at 46.99 82.55 0)
+		(at 26.67 82.55 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6592,7 +6791,7 @@
 		(fields_autoplaced yes)
 		(uuid "7da55c34-99a2-4d5e-887d-6fc1d37ff179")
 		(property "Reference" "J1"
-			(at 46.99 68.58 0)
+			(at 26.67 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6600,7 +6799,7 @@
 			)
 		)
 		(property "Value" "BTC-TC6S-23"
-			(at 46.99 71.12 0)
+			(at 26.67 71.12 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6608,7 +6807,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:BTC-TC6S-23"
-			(at 50.8 82.55 0)
+			(at 30.48 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6617,7 +6816,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
-			(at 50.8 82.55 0)
+			(at 30.48 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6626,7 +6825,7 @@
 			)
 		)
 		(property "Description" "USB-C receptacle, SMD, 5A"
-			(at 46.99 82.55 0)
+			(at 26.67 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6635,7 +6834,7 @@
 			)
 		)
 		(property "DIGIKEY_REF" ""
-			(at 46.99 82.55 0)
+			(at 26.67 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6644,7 +6843,7 @@
 			)
 		)
 		(property "JLCPCB" "C2908210"
-			(at 46.99 82.55 0)
+			(at 26.67 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7161,15 +7360,15 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_10k_0603_1%")
-		(at 82.55 77.47 0)
+		(at 72.39 90.17 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "965f4d95-0ae1-40f5-b8ee-fa605a7d95ef")
-		(property "Reference" "R11"
-			(at 83.566 76.2 0)
+		(uuid "94efc5fc-efeb-4769-b4ee-37735863b060")
+		(property "Reference" "R15"
+			(at 73.406 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7178,7 +7377,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 87.63 78.74 0)
+			(at 77.47 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7186,7 +7385,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 80.772 77.47 90)
+			(at 70.612 90.17 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7195,7 +7394,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 82.55 77.47 0)
+			(at 72.39 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7204,7 +7403,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 82.55 77.47 0)
+			(at 72.39 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7213,7 +7412,7 @@
 			)
 		)
 		(property "Specification" "10k 0603 1% 100mW"
-			(at 82.55 77.47 0)
+			(at 72.39 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7222,7 +7421,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 82.55 77.47 0)
+			(at 72.39 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7231,7 +7430,7 @@
 			)
 		)
 		(property "JLCPCB" "C25804"
-			(at 82.55 77.47 0)
+			(at 72.39 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7240,15 +7439,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "2f28df53-b828-4a46-9eab-e01ae5011e8d")
+			(uuid "6e0e44d7-8920-4705-a319-8c82d1c972d6")
 		)
 		(pin "2"
-			(uuid "eeeb74a5-3ffc-4968-94a2-b1fb0c249c9e")
+			(uuid "5771eed1-ea39-4b53-896b-6539a0d0b901")
 		)
 		(instances
-			(project "pmi_charger"
+			(project "pmi_charger_2023"
 				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
-					(reference "R11")
+					(reference "R15")
 					(unit 1)
 				)
 			)
@@ -7705,7 +7904,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_10k_0603_1%")
-		(at 130.81 85.09 0)
+		(at 130.81 86.36 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7713,7 +7912,7 @@
 		(dnp no)
 		(uuid "b922c64a-bd6d-49eb-9c73-5fcc6ad9918f")
 		(property "Reference" "R6"
-			(at 131.826 83.82 0)
+			(at 131.826 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7722,7 +7921,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 135.89 86.36 0)
+			(at 135.89 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7730,7 +7929,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 129.032 85.09 90)
+			(at 129.032 86.36 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7739,7 +7938,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 130.81 85.09 0)
+			(at 130.81 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7748,7 +7947,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 130.81 85.09 0)
+			(at 130.81 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7757,7 +7956,7 @@
 			)
 		)
 		(property "Specification" "10k 0603 1% 100mW"
-			(at 130.81 85.09 0)
+			(at 130.81 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7766,7 +7965,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 130.81 85.09 0)
+			(at 130.81 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7775,7 +7974,7 @@
 			)
 		)
 		(property "JLCPCB" "C25804"
-			(at 130.81 85.09 0)
+			(at 130.81 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7858,6 +8057,101 @@
 			(project "pmi_charger"
 				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
 					(reference "#PWR03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_10k_0603_1%")
+		(at 82.55 90.17 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bcbc7e10-274e-4b0a-bd0d-c543808ff4e3")
+		(property "Reference" "R16"
+			(at 83.566 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k 1%"
+			(at 87.63 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 80.772 90.17 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 82.55 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 82.55 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "10k 0603 1% 100mW"
+			(at 82.55 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 82.55 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" "C25804"
+			(at 82.55 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "334e5743-17b2-4284-b6dd-3e88a8dd113e")
+		)
+		(pin "2"
+			(uuid "c066bf61-0c44-4845-998b-132f22f99e10")
+		)
+		(instances
+			(project "pmi_charger_2023"
+				(path "/af7f140e-62a0-45d5-9c6f-bc99ca06259a"
+					(reference "R16")
 					(unit 1)
 				)
 			)
