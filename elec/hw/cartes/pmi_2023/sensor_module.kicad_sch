@@ -1030,6 +1030,108 @@
 				)
 			)
 		)
+		(symbol "cocotter_others:TestPoint"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0.762) hide)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_resistors:R_0R_0603"
 			(pin_numbers hide)
 			(pin_names
@@ -1695,6 +1797,12 @@
 		)
 	)
 	(junction
+		(at 40.64 44.45)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "09126f1a-5368-41c0-a0da-d9c69507934f")
+	)
+	(junction
 		(at 48.26 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1717,6 +1825,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3571eff3-e959-4398-a728-e7f50f4328e5")
+	)
+	(junction
+		(at 38.1 46.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "38e59905-e4ae-491d-8cbf-4d971d165ecc")
 	)
 	(junction
 		(at 168.91 121.92)
@@ -1753,6 +1867,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4a56541e-2d0b-49b0-a7af-97b1ab957302")
+	)
+	(junction
+		(at 35.56 49.53)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4d683afa-f236-4b10-9fcb-f999584ebec0")
 	)
 	(junction
 		(at 63.5 109.22)
@@ -1875,16 +1995,16 @@
 		(uuid "c06c0024-50f4-4450-b9b9-40648edee69b")
 	)
 	(junction
-		(at 43.18 35.56)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c19bc9ae-471e-4e83-a013-746b614e8cd4")
-	)
-	(junction
 		(at 68.58 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c27c8fd6-9176-46d1-a0ff-27cf40c14f82")
+	)
+	(junction
+		(at 43.18 41.91)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c4110884-8997-4dd2-b992-0c5a58d14d61")
 	)
 	(junction
 		(at 210.82 88.9)
@@ -1951,6 +2071,16 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ffafa1c0-752c-49ae-bb4f-ef5c6bb264f8")
+	)
+	(wire
+		(pts
+			(xy 43.18 41.91) (xy 43.18 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "00a2533d-0c30-42b3-88d8-4f38942013ec")
 	)
 	(wire
 		(pts
@@ -2161,6 +2291,16 @@
 			(type default)
 		)
 		(uuid "213c278d-78cd-4cca-95f6-f415345a4270")
+	)
+	(wire
+		(pts
+			(xy 35.56 49.53) (xy 35.56 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "284f99a6-e6d7-441a-8eaf-2ba0bffdb3d1")
 	)
 	(wire
 		(pts
@@ -2454,7 +2594,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 44.45) (xy 53.34 44.45)
+			(xy 33.02 44.45) (xy 40.64 44.45)
 		)
 		(stroke
 			(width 0)
@@ -2544,7 +2684,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 46.99) (xy 53.34 46.99)
+			(xy 33.02 46.99) (xy 38.1 46.99)
 		)
 		(stroke
 			(width 0)
@@ -2581,6 +2721,16 @@
 			(type default)
 		)
 		(uuid "7246519c-ae02-41c6-a7ea-765d292db5c6")
+	)
+	(wire
+		(pts
+			(xy 38.1 46.99) (xy 53.34 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "739e02bf-2791-4322-bba0-a7fee8ab4382")
 	)
 	(wire
 		(pts
@@ -2684,6 +2834,16 @@
 	)
 	(wire
 		(pts
+			(xy 43.18 41.91) (xy 52.07 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "865a7cda-9c26-4359-98ef-c46da2085a4b")
+	)
+	(wire
+		(pts
 			(xy 165.1 114.3) (xy 186.69 114.3)
 		)
 		(stroke
@@ -2764,6 +2924,26 @@
 	)
 	(wire
 		(pts
+			(xy 35.56 49.53) (xy 53.34 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "974244e1-e284-4c7b-8f2a-13ddccb47ab8")
+	)
+	(wire
+		(pts
+			(xy 40.64 44.45) (xy 53.34 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "97991d02-f790-45bb-9f1a-2e86e832489f")
+	)
+	(wire
+		(pts
 			(xy 68.58 96.52) (xy 68.58 97.79)
 		)
 		(stroke
@@ -2771,16 +2951,6 @@
 			(type default)
 		)
 		(uuid "9a37a4d2-175a-45ae-9adb-ca46a932561b")
-	)
-	(wire
-		(pts
-			(xy 33.02 35.56) (xy 43.18 35.56)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9c42830d-bcd3-4aeb-b760-92c8c8633547")
 	)
 	(wire
 		(pts
@@ -2794,7 +2964,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 41.91) (xy 52.07 41.91)
+			(xy 33.02 41.91) (xy 43.18 41.91)
 		)
 		(stroke
 			(width 0)
@@ -2871,6 +3041,16 @@
 			(type default)
 		)
 		(uuid "ae362bdd-117e-4a10-9cd6-5baa87f1d900")
+	)
+	(wire
+		(pts
+			(xy 40.64 44.45) (xy 40.64 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "af01bb18-816a-498b-ac0b-308608628050")
 	)
 	(wire
 		(pts
@@ -2964,7 +3144,7 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 49.53) (xy 53.34 49.53)
+			(xy 33.02 49.53) (xy 35.56 49.53)
 		)
 		(stroke
 			(width 0)
@@ -3234,6 +3414,16 @@
 	)
 	(wire
 		(pts
+			(xy 38.1 46.99) (xy 38.1 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f6274857-08cd-478b-b2a3-c056baa505a4")
+	)
+	(wire
+		(pts
 			(xy 63.5 109.22) (xy 63.5 124.46)
 		)
 		(stroke
@@ -3405,7 +3595,7 @@
 	)
 	(hierarchical_label "gyro_miso_3v3"
 		(shape output)
-		(at 48.26 49.53 180)
+		(at 33.02 49.53 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3417,7 +3607,7 @@
 	)
 	(hierarchical_label "gyro_ncs_3v3"
 		(shape input)
-		(at 48.26 41.91 180)
+		(at 33.02 41.91 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3477,7 +3667,7 @@
 	)
 	(hierarchical_label "gyro_mosi_3v3"
 		(shape input)
-		(at 48.26 46.99 180)
+		(at 33.02 46.99 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -3501,7 +3691,7 @@
 	)
 	(hierarchical_label "gyro_sck_3v3"
 		(shape input)
-		(at 48.26 44.45 180)
+		(at 33.02 44.45 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -5489,6 +5679,73 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 38.1 53.34 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "7f6e779e-f9f9-4045-905f-3bfed0e3a8db")
+		(property "Reference" "TP15"
+			(at 38.1 62.738 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 40.64 57.9119 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 33.02 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 33.02 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 38.1 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "208ec115-8298-4add-b503-2601b81c867c")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "TP15")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
 		(at 109.22 97.79 0)
 		(unit 1)
@@ -6127,6 +6384,73 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 35.56 53.34 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "b17db746-0cd2-4b00-9083-75a3d3f59aef")
+		(property "Reference" "TP14"
+			(at 35.56 62.738 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 38.1 57.9119 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 30.48 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 30.48 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 35.56 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "566e50de-adbd-4f7c-8992-fa5d001d0278")
+		)
+		(instances
+			(project ""
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "TP14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
 		(at 201.93 133.35 0)
 		(unit 1)
@@ -6187,6 +6511,73 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
 					(reference "#PWR075")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 43.18 53.34 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "c597c69f-48ee-49d4-8970-7ccc48cf3a02")
+		(property "Reference" "TP17"
+			(at 43.18 62.738 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 45.72 57.9119 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 38.1 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 38.1 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 43.18 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ca0a1195-a985-4675-93f6-8733ebba31f7")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "TP17")
 					(unit 1)
 				)
 			)
@@ -6441,6 +6832,73 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
 					(reference "U22")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 40.64 53.34 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "cd26a467-0bed-4f8a-bf91-ab2b4cc31d03")
+		(property "Reference" "TP16"
+			(at 40.64 62.738 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 43.18 57.9119 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 35.56 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 35.56 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 40.64 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "226f5b65-85ee-423f-88e8-04ee0482b501")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "TP16")
 					(unit 1)
 				)
 			)

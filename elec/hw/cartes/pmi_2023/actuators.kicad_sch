@@ -516,7 +516,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_diodes:IN-P32TRRRGB"
+		(symbol "cocotter_diodes:NH-B2020RGBA-HF"
 			(pin_names hide)
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -529,7 +529,7 @@
 					)
 				)
 			)
-			(property "Value" "IN-P32TRRRGB"
+			(property "Value" "NH-B2020RGBA-HF"
 				(at 4.572 -7.874 0)
 				(effects
 					(font
@@ -537,7 +537,7 @@
 					)
 				)
 			)
-			(property "Footprint" "cocotter_diodes:3528_PLCC-Reverse_mount"
+			(property "Footprint" "cocotter_diodes:NH-B2020RGBA-HF"
 				(at 0 0 0)
 				(effects
 					(font
@@ -555,7 +555,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "RGB LED, reverse mount"
+			(property "Description" "RGB LED 2.1mm x 2.1mm"
 				(at 0 0 0)
 				(effects
 					(font
@@ -564,7 +564,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C7288909"
+			(property "JLCPCB" "C2874116"
 				(at 0 0 0)
 				(effects
 					(font
@@ -573,7 +573,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "IN-P32TRRRGB_0_1"
+			(symbol "NH-B2020RGBA-HF_0_1"
 				(polyline
 					(pts
 						(xy -2.54 -6.35) (xy -2.54 -3.81)
@@ -707,7 +707,7 @@
 					)
 				)
 			)
-			(symbol "IN-P32TRRRGB_1_1"
+			(symbol "NH-B2020RGBA-HF_1_1"
 				(polyline
 					(pts
 						(xy 0 -6.35) (xy 0 -3.81) (xy -2.54 -5.08) (xy 0 -6.35)
@@ -748,9 +748,9 @@
 					)
 				)
 				(pin passive line
-					(at -5.08 -5.08 0)
+					(at -5.08 5.08 0)
 					(length 2.54)
-					(name "C_BLUE"
+					(name "C_RED"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -766,9 +766,9 @@
 					)
 				)
 				(pin passive line
-					(at -5.08 0 0)
+					(at -5.08 -5.08 0)
 					(length 2.54)
-					(name "C_GREEN"
+					(name "C_BLUE"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -784,9 +784,9 @@
 					)
 				)
 				(pin passive line
-					(at -5.08 5.08 0)
+					(at 3.81 0 180)
 					(length 2.54)
-					(name "C_RED"
+					(name "COM"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -802,9 +802,9 @@
 					)
 				)
 				(pin passive line
-					(at 3.81 0 180)
+					(at -5.08 0 0)
 					(length 2.54)
-					(name "COM"
+					(name "C_GREEN"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -4286,7 +4286,7 @@
 	)
 	(wire
 		(pts
-			(xy 195.58 40.64) (xy 213.36 40.64)
+			(xy 194.31 40.64) (xy 213.36 40.64)
 		)
 		(stroke
 			(width 0)
@@ -4669,7 +4669,7 @@
 		)
 		(uuid "8cd42b57-39b0-40ac-bb36-643ee21eb253")
 	)
-	(label "led_RGB_b_3v3"
+	(label "led_RGB_g_3v3"
 		(at 99.06 69.85 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4680,7 +4680,7 @@
 		)
 		(uuid "0c753f23-bce7-46cb-95e6-aad4dc992643")
 	)
-	(label "led_RGB_b_3v3"
+	(label "led_RGB_g_3v3"
 		(at 194.31 45.72 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4768,7 +4768,7 @@
 		)
 		(uuid "420818e6-4123-4bbd-a49b-fb431ad91e74")
 	)
-	(label "led_RGB_g_3v3"
+	(label "led_RGB_b_3v3"
 		(at 194.31 50.8 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4867,7 +4867,7 @@
 		)
 		(uuid "a97e3f85-87e5-4bb1-a7c0-eb00a98ca923")
 	)
-	(label "led_RGB_g_3v3"
+	(label "led_RGB_b_3v3"
 		(at 99.06 72.39 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4879,7 +4879,7 @@
 		(uuid "b7e88f61-1a91-4b02-9008-53f999d69627")
 	)
 	(label "led_RGB_r_3v3"
-		(at 195.58 40.64 0)
+		(at 194.31 40.64 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11303,7 +11303,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:IN-P32TRRRGB")
+		(lib_id "cocotter_diodes:NH-B2020RGBA-HF")
 		(at 237.49 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11319,7 +11319,7 @@
 				)
 			)
 		)
-		(property "Value" "IN-P32TRRRGB"
+		(property "Value" "NH-B2020RGBA-HF"
 			(at 242.062 53.594 0)
 			(effects
 				(font
@@ -11327,7 +11327,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_diodes:3528_PLCC-Reverse_mount"
+		(property "Footprint" "cocotter_diodes:NH-B2020RGBA-HF"
 			(at 237.49 45.72 0)
 			(effects
 				(font
@@ -11345,7 +11345,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "RGB LED, reverse mount"
+		(property "Description" "RGB LED 2.1mm x 2.1mm"
 			(at 237.49 45.72 0)
 			(effects
 				(font
@@ -11354,7 +11354,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C7288909"
+		(property "JLCPCB" "C2874116"
 			(at 237.49 45.72 0)
 			(effects
 				(font
