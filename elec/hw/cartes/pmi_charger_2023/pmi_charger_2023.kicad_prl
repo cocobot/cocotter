@@ -64,7 +64,7 @@
       39,
       40
     ],
-    "visible_layers": "ffdf3cf_ffffffff",
+    "visible_layers": "ffdf3ef_ffffffff",
     "zone_display_mode": 0
   },
   "git": {
@@ -74,7 +74,7 @@
     "ssh_key": ""
   },
   "meta": {
-    "filename": "pmi_charger.kicad_prl",
+    "filename": "pmi_charger_2023.kicad_prl",
     "version": 3
   },
   "project": {
