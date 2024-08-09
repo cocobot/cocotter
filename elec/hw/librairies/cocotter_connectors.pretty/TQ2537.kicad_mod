@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +62,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -258,16 +261,85 @@
 		(layer "Dwgs.User")
 		(uuid "dc6d0ffc-c420-41e4-abcc-69b660ddf7ec")
 	)
-	(fp_rect
-		(start -3.2 -0.7)
+	(fp_line
+		(start -3.2 0.9)
+		(end -2 0.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "8492b126-a472-4d87-b145-da59244d8bb9")
+	)
+	(fp_line
+		(start -3.2 2.5)
+		(end -3.2 0.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "0f42dd74-5d18-4ccf-9693-2d445a0016f4")
+	)
+	(fp_line
+		(start -3.2 2.5)
 		(end 3.2 2.5)
 		(stroke
 			(width 0.05)
 			(type default)
 		)
-		(fill none)
 		(layer "F.CrtYd")
-		(uuid "0d584cc2-b888-4bc7-9d1a-9754413cd0e0")
+		(uuid "efb580a4-76f5-4e35-9b60-d9ed838846d1")
+	)
+	(fp_line
+		(start -2 -0.7)
+		(end 2 -0.7)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "6ed26f39-2589-4973-91f5-4ce44a03d8e7")
+	)
+	(fp_line
+		(start -2 0.9)
+		(end -2 -0.7)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "6f57ac30-f9e1-4b7d-a1b7-7c8cd87828bd")
+	)
+	(fp_line
+		(start 2 -0.7)
+		(end 2 0.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "aa752a41-540f-4c51-b8bf-761482a9acb3")
+	)
+	(fp_line
+		(start 2 0.9)
+		(end 3.2 0.9)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "a35a3d48-aa6e-4a37-a9a2-f2758f91adaa")
+	)
+	(fp_line
+		(start 3.2 0.9)
+		(end 3.2 2.5)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "8433573e-2cc6-4985-8485-be35bef31d57")
 	)
 	(fp_text user "trigger zone"
 		(at 0 -1.858598 0)

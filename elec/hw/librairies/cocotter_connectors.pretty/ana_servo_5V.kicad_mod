@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +62,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -116,7 +119,7 @@
 	)
 	(fp_line
 		(start -1.8 4.31)
-		(end 2.6 4.31)
+		(end 1.8 4.31)
 		(stroke
 			(width 0.05)
 			(type solid)
@@ -125,7 +128,7 @@
 		(uuid "56a0eaa8-1f42-4824-9fc4-0cbfa375ec08")
 	)
 	(fp_line
-		(start 2.6 -4.34)
+		(start 1.8 -4.34)
 		(end -1.8 -4.34)
 		(stroke
 			(width 0.05)
@@ -135,8 +138,8 @@
 		(uuid "757b6603-0fa3-41f4-942f-2ab155c45604")
 	)
 	(fp_line
-		(start 2.6 4.31)
-		(end 2.6 -4.34)
+		(start 1.8 4.31)
+		(end 1.8 -4.34)
 		(stroke
 			(width 0.05)
 			(type solid)
