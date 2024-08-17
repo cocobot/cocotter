@@ -456,7 +456,8 @@
       "cocotter_transistors",
       "export_pmi2023",
       "lib_export",
-      "cocotter_inductors"
+      "cocotter_inductors",
+      "Library"
     ],
     "pinned_symbol_libs": [
       "cocotter_resistors",
