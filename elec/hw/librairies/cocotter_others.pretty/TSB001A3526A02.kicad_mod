@@ -219,4 +219,15 @@
 		(thermal_bridge_angle 45)
 		(uuid "bd020f25-37a9-4581-8e8c-31b725cbcaaa")
 	)
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_others.pretty/3d/TSB001A3526A02.step"
+		(offset
+			(xyz 0 -1.5 1.75)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 -90 -90)
+		)
+	)
 )
