@@ -5069,7 +5069,8 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:TQ2537A")
-		(at 74.93 189.23 180)
+		(at 74.93 189.23 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5077,7 +5078,7 @@
 		(dnp no)
 		(uuid "074e12ee-cbda-4252-99ac-1eeedbf1a951")
 		(property "Reference" "SW9"
-			(at 77.724 192.532 0)
+			(at 72.136 192.532 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5093,7 +5094,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:TQ2537A"
-			(at 76.2 186.69 0)
+			(at 73.66 186.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5102,7 +5103,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.lcsc.com/product-detail/Microswitches_Yuandi-TQ-2537A_C669819.html"
-			(at 76.2 189.23 0)
+			(at 73.66 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9997,7 +9998,8 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:TQ2537")
-		(at 22.86 190.5 180)
+		(at 22.86 190.5 0)
+		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10005,7 +10007,7 @@
 		(dnp no)
 		(uuid "c87b3d65-6e27-446b-8028-f46feb04cdc0")
 		(property "Reference" "SW6"
-			(at 21.209 193.929 0)
+			(at 24.511 193.929 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10013,7 +10015,7 @@
 			)
 		)
 		(property "Value" "TQ2537"
-			(at 24.13 186.69 0)
+			(at 21.59 186.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10022,7 +10024,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:TQ2537"
-			(at 24.13 189.23 0)
+			(at 21.59 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10031,7 +10033,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.lcsc.com/product-detail/microswitches_yuandi_tq-2537_C669818.html"
-			(at 24.13 190.5 0)
+			(at 21.59 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
