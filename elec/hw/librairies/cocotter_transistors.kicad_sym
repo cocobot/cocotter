@@ -25,7 +25,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+		(property "Footprint" "cocotter_transistors:SOT-23-3"
 			(at 5.08 -1.905 0)
 			(effects
 				(font
