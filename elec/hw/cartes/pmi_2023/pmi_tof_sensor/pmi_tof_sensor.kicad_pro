@@ -487,7 +487,7 @@
       "plot": "",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "pmi_tof_sensor_v2.step",
+      "step": "pmi_tof_sensor_v3.step",
       "svg": "",
       "vrml": ""
     },

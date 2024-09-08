@@ -3021,6 +3021,155 @@
 				)
 			)
 		)
+		(symbol "cocotter_resistors:R_100R_0603_1%"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "100R"
+				(at 3.81 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0603_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "100R 0603 1% 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB" "C22775"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_100R_0603_1%_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_100R_0603_1%_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_resistors:R_100k_0603_1%"
 			(pin_numbers hide)
 			(pin_names
@@ -7468,7 +7617,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_0R_0603")
+		(lib_id "cocotter_resistors:R_100R_0603_1%")
 		(at 222.25 82.55 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7477,15 +7626,16 @@
 		(dnp no)
 		(uuid "32a8f32e-efcb-4e1c-982d-1d67071e86a2")
 		(property "Reference" "R147"
-			(at 222.25 80.264 90)
+			(at 230.632 81.534 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "0R"
-			(at 222.25 82.55 90)
+		(property "Value" "100R"
+			(at 227.838 83.566 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7519,7 +7669,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "0R 0603 20mOhms max 100mW"
+		(property "Specification" "100R 0603 1% 100mW"
 			(at 222.25 82.55 0)
 			(effects
 				(font
@@ -7537,7 +7687,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB" "C22775"
 			(at 222.25 82.55 0)
 			(effects
 				(font
@@ -7757,7 +7907,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_0R_0603")
+		(lib_id "cocotter_resistors:R_100R_0603_1%")
 		(at 222.25 36.83 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7766,15 +7916,16 @@
 		(dnp no)
 		(uuid "3cb3583d-61c0-46b3-8aaf-0b9b92e03edf")
 		(property "Reference" "R144"
-			(at 222.25 34.544 90)
+			(at 230.632 35.56 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "0R"
-			(at 222.25 36.83 90)
+		(property "Value" "100R"
+			(at 227.838 38.1 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7808,7 +7959,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "0R 0603 20mOhms max 100mW"
+		(property "Specification" "100R 0603 1% 100mW"
 			(at 222.25 36.83 0)
 			(effects
 				(font
@@ -7826,7 +7977,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB" "C22775"
 			(at 222.25 36.83 0)
 			(effects
 				(font
@@ -8981,7 +9132,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_0R_0603")
+		(lib_id "cocotter_resistors:R_100R_0603_1%")
 		(at 222.25 77.47 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8990,15 +9141,16 @@
 		(dnp no)
 		(uuid "7d4d37dc-c97f-4b6b-9913-844f4621f6ae")
 		(property "Reference" "R146"
-			(at 222.25 75.184 90)
+			(at 230.632 76.454 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "0R"
-			(at 222.25 77.47 90)
+		(property "Value" "100R"
+			(at 227.838 78.486 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9032,7 +9184,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "0R 0603 20mOhms max 100mW"
+		(property "Specification" "100R 0603 1% 100mW"
 			(at 222.25 77.47 0)
 			(effects
 				(font
@@ -9050,7 +9202,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB" "C22775"
 			(at 222.25 77.47 0)
 			(effects
 				(font
@@ -9408,7 +9560,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_0R_0603")
+		(lib_id "cocotter_resistors:R_100R_0603_1%")
 		(at 222.25 41.91 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9417,15 +9569,16 @@
 		(dnp no)
 		(uuid "8888c191-15fa-4182-bc90-45421cac6e1d")
 		(property "Reference" "R145"
-			(at 222.25 39.624 90)
+			(at 230.632 40.64 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "0R"
-			(at 222.25 41.91 90)
+		(property "Value" "100R"
+			(at 227.838 43.18 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9459,7 +9612,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "0R 0603 20mOhms max 100mW"
+		(property "Specification" "100R 0603 1% 100mW"
 			(at 222.25 41.91 0)
 			(effects
 				(font
@@ -9477,7 +9630,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB" "C22775"
 			(at 222.25 41.91 0)
 			(effects
 				(font

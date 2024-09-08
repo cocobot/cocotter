@@ -7676,7 +7676,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp yes)
+		(dnp no)
 		(uuid "7eb31263-c51a-4045-a415-67ec19199ee3")
 		(property "Reference" "R30"
 			(at 207.01 35.56 0)
@@ -10342,7 +10342,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "fe95bf6e-fd60-4c9b-87d5-1659af319d80")
 		(property "Reference" "R29"
 			(at 207.01 29.21 0)
