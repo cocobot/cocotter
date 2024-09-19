@@ -1,3 +1,4 @@
+#[derive(Clone)]
 //Create an holder for current robot coordinates
 pub struct RobotCoordinate {
     //store robot position in standardized unit (mm/rad)
@@ -10,6 +11,7 @@ pub struct RobotCoordinate {
     y_is_precise : bool,
     a_is_precise : bool,
 }
+
 
 impl RobotCoordinate {
     //create a new structure from independant data
@@ -34,7 +36,39 @@ impl RobotCoordinate {
 
     //return the angle position only (degrees)
     pub fn get_a_deg(&self) -> f32 {
-        unimplemented!()
+        self.a_rad  * 180.0 / std::f32::consts::PI
+    }
+
+    //sets the new position
+    pub fn set_position(&mut self, x_mm : Option<f32>, y_mm : Option<f32>, a_rad : Option<f32>) {
+        match x_mm{
+            Some(x_mm) => {
+                self.x_mm = x_mm;
+                self.x_is_precise = true;
+            }
+            None => (),
+        }
+        match y_mm{
+            Some(y_mm) => {
+                self.y_mm = y_mm;
+                self.y_is_precise = true;
+            }
+            None => (),
+        }
+        match a_rad{
+            Some(a_rad) => {
+                self.a_rad = a_rad;
+                self.a_is_precise = true;
+            }
+            None => (),
+        }
+    }
+
+    pub fn compute_new_position(&mut self, distance_mm: f32, angle_rad: f32)
+    {
+        self.a_rad += angle_rad;
+        self.x_mm  += self.a_rad.cos() * distance_mm;
+        self.y_mm  += self.a_rad.sin() * distance_mm;
     }
 
     //return the x axis precision flag
@@ -44,32 +78,34 @@ impl RobotCoordinate {
 
     //return the y axis precision flag
     pub fn is_y_precise(&self) -> bool {
-        unimplemented!()
+        self.y_is_precise
     }
 
     //return the angle axis precision flag
     pub fn is_a_precise(&self) -> bool {
-        unimplemented!()
+        self.a_is_precise
     }
 
     //set calibration needed flag for the x axis
-    pub fn mark_x_as_imprecise(&mut self) -> bool {
-        unimplemented!()
+    pub fn mark_x_as_imprecise(&mut self)  {
+        self.x_is_precise = false;
     }
 
     //set calibration needed flag for the y axis
-    pub fn mark_y_as_imprecise(&mut self) -> bool {
-        unimplemented!()
+    pub fn mark_y_as_imprecise(&mut self) {
+        self.y_is_precise = false;
     }
 
     //set calibration needed flag for the angle axis
-    pub fn mark_a_as_imprecise(&mut self) -> bool {
-        unimplemented!()
+    pub fn mark_a_as_imprecise(&mut self) {
+        self.a_is_precise = false;
     }
     
     //copy precision data from an old coordinate structure
     pub fn copy_precision_from(&mut self, old : &RobotCoordinate) {
-        unimplemented!()
+        self.x_is_precise = old.is_x_precise();
+        self.y_is_precise = old.is_y_precise();
+        self.a_is_precise = old.is_a_precise();
     }
 }
 
