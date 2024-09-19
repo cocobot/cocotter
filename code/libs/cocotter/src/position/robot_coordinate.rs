@@ -41,26 +41,18 @@ impl RobotCoordinate {
 
     //sets the new position
     pub fn set_position(&mut self, x_mm : Option<f32>, y_mm : Option<f32>, a_rad : Option<f32>) {
-        match x_mm{
-            Some(x_mm) => {
-                self.x_mm = x_mm;
-                self.x_is_precise = true;
-            }
-            None => (),
+        if let Some(x_mm) = x_mm {
+            self.x_mm = x_mm;
+            self.x_is_precise = true;
         }
-        match y_mm{
-            Some(y_mm) => {
-                self.y_mm = y_mm;
-                self.y_is_precise = true;
-            }
-            None => (),
+
+        if let Some(y_mm) = y_mm {
+            self.y_mm = y_mm;
+            self.y_is_precise = true;
         }
-        match a_rad{
-            Some(a_rad) => {
-                self.a_rad = a_rad;
-                self.a_is_precise = true;
-            }
-            None => (),
+        if let Some(a_rad) = a_rad{
+            self.a_rad = a_rad;
+            self.a_is_precise = true;
         }
     }
 

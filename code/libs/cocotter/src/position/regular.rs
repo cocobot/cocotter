@@ -50,8 +50,8 @@ impl RegularPosition {
             let delta_tick_left_encoder  : f32 = (left_encoder  - self.left_encoder) as f32;
             let delta_tick_right_encoder : f32 = (right_encoder - self.right_encoder) as f32;
 
-            let delta_distance_mm : f32 = (delta_tick_left_encoder + delta_tick_right_encoder)/2.0 / self.configuration.tick_to_mm;
-            let delta_angle_rad : f32 = (delta_tick_right_encoder - delta_tick_left_encoder) / self.configuration.tick_to_rad;
+            let delta_distance_mm = (delta_tick_left_encoder + delta_tick_right_encoder)/2.0 / self.configuration.tick_to_mm;
+            let delta_angle_rad = (delta_tick_right_encoder - delta_tick_left_encoder) / self.configuration.tick_to_rad;
             self.distance_mm += delta_distance_mm;
             self.angle_rad += delta_angle_rad;
 
@@ -82,12 +82,6 @@ impl RegularPosition {
     pub fn get_angle_rad(&self) -> f32 {
         self.angle_rad
     }
-
-    //get the current curvilinear angle velocity in rad/s
-    pub fn get_angle_velocity_rad_s(&self) -> f32 {
-        self.angle_velocity_rad_s
-    }
-
 }
 
 //general functions implementation
@@ -111,8 +105,7 @@ impl Position for RegularPosition {
 
     //get the current angle velocity in rad/s
     fn get_angle_speed_rad_s(&self) -> f32 {
-        let ret=  self.get_angle_velocity_rad_s();
-        ret
+        self.angle_velocity_rad_s
     }
 
     //get the current angle velocity in degree/s
