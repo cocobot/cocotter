@@ -52,7 +52,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB Part #" ""
 			(at 0 0 0)
 			(effects
 				(font
@@ -208,7 +208,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C434834"
+		(property "JLCPCB Part #" "C434834"
 			(at 0 0 0)
 			(effects
 				(font
