@@ -51,7 +51,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C238066"
+		(property "JLCPCB Part #" "C238066"
 			(at 0 0 0)
 			(effects
 				(font
@@ -222,7 +222,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" ""
+		(property "JLCPCB Part #" ""
 			(at 0 0 0)
 			(effects
 				(font
@@ -625,7 +625,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2979182"
+		(property "JLCPCB Part #" "C2979182"
 			(at 0 0 0)
 			(effects
 				(font
@@ -755,7 +755,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2733301"
+		(property "JLCPCB Part #" "C2733301"
 			(at 0 0 0)
 			(effects
 				(font
@@ -1271,7 +1271,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2908210"
+		(property "JLCPCB Part #" "C2908210"
 			(at 0 0 0)
 			(effects
 				(font
@@ -1733,7 +1733,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C3024970"
+		(property "JLCPCB Part #" "C3024970"
 			(at 0 0 0)
 			(effects
 				(font
@@ -2633,7 +2633,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C3008585"
+		(property "JLCPCB Part #" "C3008585"
 			(at -1.27 -5.08 0)
 			(effects
 				(font
@@ -3032,7 +3032,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C501532"
+		(property "JLCPCB Part #" "C501532"
 			(at 0 0 0)
 			(effects
 				(font
@@ -3839,7 +3839,7 @@
 				)
 			)
 		)
-		(property "Value" "2425755-1"
+		(property "Value" "TM-4175-B-A"
 			(at -4.572 -1.27 0)
 			(effects
 				(font
@@ -3883,7 +3883,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C465995"
+		(property "JLCPCB Part #" "C465995"
 			(at 0 0 0)
 			(effects
 				(font
@@ -4911,7 +4911,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2927039"
+		(property "JLCPCB Part #" "C2927039"
 			(at 0 0 0)
 			(effects
 				(font
@@ -5621,7 +5621,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2927300"
+		(property "JLCPCB Part #" "C2927300"
 			(at 0 0 0)
 			(effects
 				(font
@@ -6320,7 +6320,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2932698"
+		(property "JLCPCB Part #" "C2932698"
 			(at 0 0 0)
 			(effects
 				(font
@@ -6520,7 +6520,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C492406"
+		(property "JLCPCB Part #" "C492406"
 			(at 0 0 0)
 			(effects
 				(font

@@ -324,7 +324,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C136374"
+		(property "JLCPCB Part #" "C136374"
 			(at 0 -2.54 0)
 			(effects
 				(font
@@ -530,7 +530,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C318884"
+		(property "JLCPCB Part #" "C318884"
 			(at -1.27 -5.08 0)
 			(effects
 				(font
@@ -712,7 +712,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2888889"
+		(property "JLCPCB Part #" "C2888889"
 			(at -1.27 -5.08 0)
 			(effects
 				(font

@@ -67,7 +67,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C14663"
+			(property "JLCPCB Part #" "C14663"
 				(at 0 0 0)
 				(effects
 					(font
@@ -221,7 +221,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C96123"
+			(property "JLCPCB Part #" "C96123"
 				(at 0 0 0)
 				(effects
 					(font
@@ -360,37 +360,13 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C5218849"
+			(property "JLCPCB Part #" "C5218849"
 				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 					(hide yes)
-				)
-			)
-			(symbol "DRV8231ADDAR_0_1"
-				(rectangle
-					(start 1.27 -1.27)
-					(end 1.27 -1.27)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start 1.27 -1.27)
-					(end 1.27 -1.27)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
 				)
 			)
 			(symbol "DRV8231ADDAR_1_1"
@@ -575,23 +551,23 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at -4.318 6.604 0)
+				(at -3.81 4.445 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" ""
-				(at 0 0 0)
+			(property "Value" "EESX1321"
+				(at 8.89 5.08 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" ""
-				(at 0 0 0)
+			(property "Footprint" "cocotter_ic:EESX1321"
+				(at 8.89 5.08 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -600,7 +576,7 @@
 				)
 			)
 			(property "Datasheet" ""
-				(at 0 0 0)
+				(at 8.89 5.08 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -620,7 +596,7 @@
 			(symbol "EESX1321_0_1"
 				(polyline
 					(pts
-						(xy 2.7096 -1.4131) (xy 3.8526 -2.5561)
+						(xy 2.7096 -3.9531) (xy 3.8526 -5.0961)
 					)
 					(stroke
 						(width 0)
@@ -632,7 +608,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 -1.1591) (xy 3.8526 -0.0161)
+						(xy 2.7096 -3.6991) (xy 3.8526 -2.5561)
 					)
 					(stroke
 						(width 0)
@@ -644,7 +620,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 2.3969) (xy 3.8526 1.2539)
+						(xy 2.7096 -0.1431) (xy 3.8526 -1.2861)
 					)
 					(stroke
 						(width 0)
@@ -656,7 +632,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 2.6509) (xy 3.8526 3.7939)
+						(xy 2.7096 0.1109) (xy 3.8526 1.2539)
 					)
 					(stroke
 						(width 0)
@@ -668,7 +644,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 -0.2701) (xy 2.7096 -2.3021) (xy 2.7096 -2.3021)
+						(xy 2.7096 -2.8101) (xy 2.7096 -4.8421) (xy 2.7096 -4.8421)
 					)
 					(stroke
 						(width 0.3556)
@@ -680,7 +656,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 3.5399) (xy 2.7096 1.5079) (xy 2.7096 1.5079)
+						(xy 2.7096 0.9999) (xy 2.7096 -1.0321) (xy 2.7096 -1.0321)
 					)
 					(stroke
 						(width 0.3556)
@@ -692,7 +668,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.8526 -2.5561) (xy 3.8526 -2.5561) (xy 5.1226 -2.5561)
+						(xy 3.8526 -5.0961) (xy 3.8526 -5.0961) (xy 5.1226 -5.0961)
 					)
 					(stroke
 						(width 0)
@@ -704,7 +680,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.8526 1.2539) (xy 3.8526 1.2539) (xy 5.1226 1.2539)
+						(xy 3.8526 -1.2861) (xy 3.8526 -1.2861) (xy 5.1226 -1.2861)
 					)
 					(stroke
 						(width 0)
@@ -716,7 +692,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.8526 3.7939) (xy 3.8542 5.6953) (xy 3.8526 5.0639)
+						(xy 3.8526 1.2539) (xy 3.8542 3.1553) (xy 3.8526 2.5239)
 					)
 					(stroke
 						(width 0)
@@ -728,7 +704,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.7256 -2.4291) (xy 3.4716 -1.9211) (xy 3.2176 -2.1751) (xy 3.7256 -2.4291)
+						(xy 3.7256 -4.9691) (xy 3.4716 -4.4611) (xy 3.2176 -4.7151) (xy 3.7256 -4.9691)
 					)
 					(stroke
 						(width 0)
@@ -740,7 +716,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.7256 1.3809) (xy 3.4716 1.8889) (xy 3.2176 1.6349) (xy 3.7256 1.3809)
+						(xy 3.7256 -1.1591) (xy 3.4716 -0.6511) (xy 3.2176 -0.9051) (xy 3.7256 -1.1591)
 					)
 					(stroke
 						(width 0)
@@ -754,7 +730,7 @@
 			(symbol "EESX1321_1_1"
 				(polyline
 					(pts
-						(xy -4.445 1.27) (xy -1.905 1.27)
+						(xy -4.445 -1.27) (xy -1.905 -1.27)
 					)
 					(stroke
 						(width 0)
@@ -766,7 +742,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0.635 2.54) (xy 0.254 2.286)
+						(xy 0.635 0) (xy 0.254 -0.254)
 					)
 					(stroke
 						(width 0)
@@ -778,7 +754,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0.635 3.429) (xy 0.254 3.175)
+						(xy 0.635 0.889) (xy 0.254 0.635)
 					)
 					(stroke
 						(width 0)
@@ -790,7 +766,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0.762 -1.143) (xy 0.381 -1.397)
+						(xy 0.762 -3.683) (xy 0.381 -3.937)
 					)
 					(stroke
 						(width 0)
@@ -802,7 +778,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0.762 -0.254) (xy 0.381 -0.508)
+						(xy 0.762 -2.794) (xy 0.381 -3.048)
 					)
 					(stroke
 						(width 0)
@@ -814,7 +790,7 @@
 				)
 				(polyline
 					(pts
-						(xy -3.175 0) (xy -3.175 -2.54) (xy -5.08 -2.54)
+						(xy -3.175 -2.54) (xy -3.175 -5.08) (xy -5.08 -5.08)
 					)
 					(stroke
 						(width 0)
@@ -826,7 +802,7 @@
 				)
 				(polyline
 					(pts
-						(xy -3.175 1.27) (xy -3.1736 0.0001) (xy -5.08 0)
+						(xy -3.175 -1.27) (xy -3.1736 -2.5399) (xy -5.08 -2.54)
 					)
 					(stroke
 						(width 0)
@@ -838,7 +814,7 @@
 				)
 				(polyline
 					(pts
-						(xy -3.175 2.54) (xy -3.175 3.81) (xy -5.08 3.81)
+						(xy -3.175 0) (xy -3.175 1.27) (xy -5.08 1.27)
 					)
 					(stroke
 						(width 0)
@@ -850,7 +826,7 @@
 				)
 				(polyline
 					(pts
-						(xy -4.445 2.54) (xy -3.175 1.27) (xy -1.905 2.54) (xy -4.445 2.54)
+						(xy -4.445 0) (xy -3.175 -1.27) (xy -1.905 0) (xy -4.445 0)
 					)
 					(stroke
 						(width 0)
@@ -862,7 +838,7 @@
 				)
 				(polyline
 					(pts
-						(xy -0.635 2.54) (xy 0.635 2.54) (xy 0.254 2.794) (xy 0.635 2.54)
+						(xy -0.635 0) (xy 0.635 0) (xy 0.254 0.254) (xy 0.635 0)
 					)
 					(stroke
 						(width 0)
@@ -874,7 +850,7 @@
 				)
 				(polyline
 					(pts
-						(xy -0.635 3.429) (xy 0.635 3.429) (xy 0.254 3.683) (xy 0.635 3.429)
+						(xy -0.635 0.889) (xy 0.635 0.889) (xy 0.254 1.143) (xy 0.635 0.889)
 					)
 					(stroke
 						(width 0)
@@ -886,7 +862,7 @@
 				)
 				(polyline
 					(pts
-						(xy -0.508 -1.143) (xy 0.762 -1.143) (xy 0.381 -0.889) (xy 0.762 -1.143)
+						(xy -0.508 -3.683) (xy 0.762 -3.683) (xy 0.381 -3.429) (xy 0.762 -3.683)
 					)
 					(stroke
 						(width 0)
@@ -898,7 +874,7 @@
 				)
 				(polyline
 					(pts
-						(xy -0.508 -0.254) (xy 0.762 -0.254) (xy 0.381 0) (xy 0.762 -0.254)
+						(xy -0.508 -2.794) (xy 0.762 -2.794) (xy 0.381 -2.54) (xy 0.762 -2.794)
 					)
 					(stroke
 						(width 0)
@@ -910,7 +886,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.8526 -0.0161) (xy 4.4876 -0.0161) (xy 4.4876 4.4289) (xy 3.8526 4.4289)
+						(xy 3.8526 -2.5561) (xy 4.4876 -2.5561) (xy 4.4876 1.8889) (xy 3.8526 1.8889)
 					)
 					(stroke
 						(width 0)
@@ -922,8 +898,8 @@
 				)
 				(polyline
 					(pts
-						(xy -5.08 5.715) (xy -1.27 5.715) (xy -1.27 -1.905) (xy 1.27 -1.905) (xy 1.27 5.715) (xy 5.08 5.715)
-						(xy 5.08 -4.445) (xy -5.08 -4.445) (xy -5.08 5.715) (xy -5.08 5.715)
+						(xy -5.08 3.175) (xy -1.27 3.175) (xy -1.27 -4.445) (xy 1.27 -4.445) (xy 1.27 3.175) (xy 5.08 3.175)
+						(xy 5.08 -6.985) (xy -5.08 -6.985) (xy -5.08 3.175) (xy -5.08 3.175)
 					)
 					(stroke
 						(width 0)
@@ -934,7 +910,7 @@
 					)
 				)
 				(pin input line
-					(at -7.62 3.81 0)
+					(at -7.62 1.27 0)
 					(length 2.54)
 					(name "A"
 						(effects
@@ -952,7 +928,7 @@
 					)
 				)
 				(pin free line
-					(at -7.62 0 0)
+					(at -7.62 -2.54 0)
 					(length 2.54)
 					(name "C1"
 						(effects
@@ -970,7 +946,7 @@
 					)
 				)
 				(pin free line
-					(at -7.62 -2.54 0)
+					(at -7.62 -5.08 0)
 					(length 2.54)
 					(name "C2"
 						(effects
@@ -988,7 +964,7 @@
 					)
 				)
 				(pin open_emitter line
-					(at 7.62 1.27 180)
+					(at 7.62 -1.27 180)
 					(length 2.54)
 					(name "E1"
 						(effects
@@ -1006,7 +982,7 @@
 					)
 				)
 				(pin open_emitter line
-					(at 7.62 -2.54 180)
+					(at 7.62 -5.08 180)
 					(length 2.54)
 					(name "E2"
 						(effects
@@ -1024,7 +1000,7 @@
 					)
 				)
 				(pin power_in line
-					(at 3.81 8.255 270)
+					(at 3.81 5.715 270)
 					(length 2.54)
 					(name "C"
 						(effects
@@ -1215,7 +1191,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C431718"
+			(property "JLCPCB Part #" "C431718"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1364,7 +1340,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C25803"
+			(property "JLCPCB Part #" "C25803"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1513,7 +1489,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C22767"
+			(property "JLCPCB Part #" "C22767"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1662,7 +1638,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C2991540"
+			(property "JLCPCB Part #" "C2991540"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1811,7 +1787,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C23151"
+			(property "JLCPCB Part #" "C23151"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1960,7 +1936,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C22978"
+			(property "JLCPCB Part #" "C22978"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2109,7 +2085,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C23179"
+			(property "JLCPCB Part #" "C23179"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2237,7 +2213,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB" "C2938374"
+			(property "JLCPCB Part #" "C2938374"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2817,6 +2793,12 @@
 		)
 	)
 	(junction
+		(at 175.26 48.26)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0117b2b6-3436-49c5-8f96-bac81abc083f")
+	)
+	(junction
 		(at 175.26 55.88)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2899,6 +2881,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6b81813d-88a2-4311-96d7-ff62b5dc1dbb")
+	)
+	(junction
+		(at 175.26 124.46)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6e80cb67-0d88-4ace-aa20-4cb1e59f261f")
 	)
 	(junction
 		(at 201.93 30.48)
@@ -2996,18 +2984,6 @@
 		(color 0 0 0 0)
 		(uuid "ef93fa08-479c-4a1c-aeb9-a4e0ad5193de")
 	)
-	(junction
-		(at 175.26 48.26)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f3564996-6710-477c-841a-4a5a427ee495")
-	)
-	(junction
-		(at 175.26 124.46)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f63a2042-c0d8-47f1-a51b-e4c407588fd8")
-	)
 	(wire
 		(pts
 			(xy 72.39 52.07) (xy 76.2 52.07)
@@ -3027,16 +3003,6 @@
 			(type default)
 		)
 		(uuid "01f56d2b-f9cd-49d6-9bab-60a153a89fb5")
-	)
-	(wire
-		(pts
-			(xy 160.02 48.26) (xy 158.75 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "02dd359e-86af-4c24-bb4f-5151332c92e6")
 	)
 	(wire
 		(pts
@@ -3620,16 +3586,6 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 124.46) (xy 158.75 124.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "78a65043-8f87-48b3-9918-e63f869036fb")
-	)
-	(wire
-		(pts
 			(xy 157.48 118.11) (xy 160.02 118.11)
 		)
 		(stroke
@@ -3697,6 +3653,16 @@
 			(type default)
 		)
 		(uuid "9ebcf165-8222-4eff-a27b-dd2b24ed285e")
+	)
+	(wire
+		(pts
+			(xy 158.75 48.26) (xy 160.02 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9f181b2d-d478-4175-b50e-8f1bdc86fd9d")
 	)
 	(wire
 		(pts
@@ -3957,6 +3923,16 @@
 			(type default)
 		)
 		(uuid "e4aac377-3e05-4762-9492-5c2354e76586")
+	)
+	(wire
+		(pts
+			(xy 158.75 124.46) (xy 160.02 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e84cb78d-0f4f-4b70-aa33-4d90651ffc30")
 	)
 	(wire
 		(pts
@@ -4509,7 +4485,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C23179"
+		(property "JLCPCB Part #" "C23179"
 			(at 158.75 137.16 0)
 			(effects
 				(font
@@ -4727,7 +4703,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C14663"
+		(property "JLCPCB Part #" "C14663"
 			(at 45.72 58.42 0)
 			(effects
 				(font
@@ -4824,7 +4800,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C21190"
+		(property "JLCPCB Part #" "C2991540"
 			(at 205.74 124.46 0)
 			(effects
 				(font
@@ -5051,7 +5027,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB Part #" "C431718"
 			(at 175.26 128.27 0)
 			(effects
 				(font
@@ -5213,7 +5189,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C21190"
+		(property "JLCPCB Part #" "C2991540"
 			(at 185.42 128.27 0)
 			(effects
 				(font
@@ -5440,7 +5416,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C25803"
+		(property "JLCPCB Part #" "C25803"
 			(at 52.07 184.15 0)
 			(effects
 				(font
@@ -5602,7 +5578,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB Part #" "C431718"
 			(at 195.58 48.26 0)
 			(effects
 				(font
@@ -5690,7 +5666,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C14663"
+		(property "JLCPCB Part #" "C14663"
 			(at 93.98 30.48 0)
 			(effects
 				(font
@@ -5834,7 +5810,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C2938374"
+		(property "JLCPCB Part #" "C2938374"
 			(at 83.82 177.8 0)
 			(effects
 				(font
@@ -5934,7 +5910,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB Part #" "C431718"
 			(at 175.26 52.07 0)
 			(effects
 				(font
@@ -6031,7 +6007,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C25803"
+		(property "JLCPCB Part #" "C25803"
 			(at 26.67 132.08 0)
 			(effects
 				(font
@@ -6126,7 +6102,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB Part #" "C431718"
 			(at 80.01 166.37 0)
 			(effects
 				(font
@@ -6202,7 +6178,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C5218849"
+		(property "JLCPCB Part #" "C5218849"
 			(at 85.09 46.99 0)
 			(effects
 				(font
@@ -6311,7 +6287,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C14663"
+		(property "JLCPCB Part #" "C14663"
 			(at 45.72 134.62 0)
 			(effects
 				(font
@@ -6538,7 +6514,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C21190"
+		(property "JLCPCB Part #" "C2991540"
 			(at 185.42 52.07 0)
 			(effects
 				(font
@@ -6630,7 +6606,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_ic:EESX1321")
-		(at 167.64 121.92 0)
+		(at 167.64 119.38 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6638,7 +6614,7 @@
 		(dnp no)
 		(uuid "5d92d1ac-f628-4ef8-a5d7-6da28642e56b")
 		(property "Reference" "U3"
-			(at 167.64 127.762 0)
+			(at 167.64 125.222 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6646,7 +6622,7 @@
 			)
 		)
 		(property "Value" "EESX1321"
-			(at 167.64 129.794 0)
+			(at 167.64 127.254 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6654,7 +6630,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_ic:EESX1321"
-			(at 176.53 116.84 0)
+			(at 176.53 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6663,7 +6639,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 176.53 116.84 0)
+			(at 176.53 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6672,7 +6648,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 167.64 121.92 0)
+			(at 167.64 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6845,7 +6821,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C22767"
+		(property "JLCPCB Part #" "C22767"
 			(at 195.58 60.96 0)
 			(effects
 				(font
@@ -6942,7 +6918,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C22767"
+		(property "JLCPCB Part #" "C22767"
 			(at 195.58 137.16 0)
 			(effects
 				(font
@@ -7030,7 +7006,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C96123"
+		(property "JLCPCB Part #" "C96123"
 			(at 111.76 30.48 0)
 			(effects
 				(font
@@ -7127,7 +7103,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C25803"
+		(property "JLCPCB Part #" "C25803"
 			(at 35.56 132.08 0)
 			(effects
 				(font
@@ -7288,7 +7264,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C21190"
+		(property "JLCPCB Part #" "C2991540"
 			(at 205.74 48.26 0)
 			(effects
 				(font
@@ -7624,7 +7600,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C5218849"
+		(property "JLCPCB Part #" "C5218849"
 			(at 85.09 123.19 0)
 			(effects
 				(font
@@ -7740,7 +7716,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB Part #" "C431718"
 			(at 208.28 36.83 0)
 			(effects
 				(font
@@ -7828,7 +7804,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C14663"
+		(property "JLCPCB Part #" "C14663"
 			(at 180.34 34.29 0)
 			(effects
 				(font
@@ -7919,7 +7895,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_ic:EESX1321")
-		(at 167.64 45.72 0)
+		(at 167.64 43.18 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7927,7 +7903,7 @@
 		(dnp no)
 		(uuid "89455f3a-890f-43bc-81a4-04a0347193c3")
 		(property "Reference" "U4"
-			(at 167.64 51.562 0)
+			(at 167.64 49.022 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7935,7 +7911,7 @@
 			)
 		)
 		(property "Value" "EESX1321"
-			(at 167.64 53.594 0)
+			(at 167.64 51.054 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7943,7 +7919,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_ic:EESX1321"
-			(at 176.53 40.64 0)
+			(at 176.53 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7952,7 +7928,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 176.53 40.64 0)
+			(at 176.53 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7961,7 +7937,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 167.64 45.72 0)
+			(at 167.64 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8199,7 +8175,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C22978"
+		(property "JLCPCB Part #" "C22978"
 			(at 71.12 133.35 0)
 			(effects
 				(font
@@ -8624,7 +8600,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C23151"
+		(property "JLCPCB Part #" "C23151"
 			(at 146.05 137.16 0)
 			(effects
 				(font
@@ -8786,7 +8762,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB Part #" "C431718"
 			(at 195.58 124.46 0)
 			(effects
 				(font
@@ -9198,7 +9174,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C14663"
+		(property "JLCPCB Part #" "C14663"
 			(at 180.34 110.49 0)
 			(effects
 				(font
@@ -9295,7 +9271,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C23179"
+		(property "JLCPCB Part #" "C23179"
 			(at 158.75 60.96 0)
 			(effects
 				(font
@@ -9383,7 +9359,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C96123"
+		(property "JLCPCB Part #" "C96123"
 			(at 111.76 106.68 0)
 			(effects
 				(font
@@ -9471,7 +9447,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C14663"
+		(property "JLCPCB Part #" "C14663"
 			(at 93.98 106.68 0)
 			(effects
 				(font
@@ -9568,7 +9544,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C25803"
+		(property "JLCPCB Part #" "C25803"
 			(at 26.67 55.88 0)
 			(effects
 				(font
@@ -9665,7 +9641,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C22767"
+		(property "JLCPCB Part #" "C22767"
 			(at 175.26 137.16 0)
 			(effects
 				(font
@@ -9762,7 +9738,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C22767"
+		(property "JLCPCB Part #" "C22767"
 			(at 175.26 60.96 0)
 			(effects
 				(font
@@ -9857,7 +9833,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C22978"
+		(property "JLCPCB Part #" "C22978"
 			(at 72.39 57.15 0)
 			(effects
 				(font
@@ -10214,7 +10190,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C23151"
+		(property "JLCPCB Part #" "C23151"
 			(at 146.05 60.96 0)
 			(effects
 				(font
@@ -10311,7 +10287,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C25803"
+		(property "JLCPCB Part #" "C25803"
 			(at 35.56 55.88 0)
 			(effects
 				(font
@@ -10406,7 +10382,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB" "C431718"
+		(property "JLCPCB Part #" "C431718"
 			(at 208.28 30.48 0)
 			(effects
 				(font
