@@ -313,160 +313,6 @@
 				)
 			)
 		)
-		(symbol "cocotter_capacitors:C_1µF_50V_0805"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0.254)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "C"
-				(at 0.635 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "1µF 50V"
-				(at 0.635 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" "cocotter_capacitors:C_0805_2012Metric"
-				(at 0.9652 -3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Unpolarized capacitor X7R "
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "1µF 50V X7R 0805 "
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C28323"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "cap capacitor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "C_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "C_1µF_50V_0805_0_1"
-				(polyline
-					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
-					)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "C_1µF_50V_0805_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 2.794)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 2.794)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_capacitors:C_47µF_10V_1206_X5R"
 			(pin_numbers hide)
 			(pin_names
@@ -1141,7 +987,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_diodes:white_led_0603"
+		(symbol "cocotter_diodes:green_led_0603"
 			(pin_numbers hide)
 			(pin_names
 				(offset 1.016) hide)
@@ -1156,7 +1002,7 @@
 					)
 				)
 			)
-			(property "Value" "white, 0603"
+			(property "Value" "green, 0603"
 				(at 0 -2.54 0)
 				(effects
 					(font
@@ -1183,16 +1029,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
-				(at 0 -4.572 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "DIGIKEY_REF" ""
+			(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1201,7 +1038,7 @@
 					(hide yes)
 				)
 			)
-			(property "MOUSER_REF" ""
+			(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1210,7 +1047,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C2290"
+			(property "MOUSER_REF" "710-150060VS55040"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1219,7 +1056,16 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "white LED diode"
+			(property "JLCPCB Part #" "C22371299"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "Green LED diode"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1237,7 +1083,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "white_led_0603_0_1"
+			(symbol "green_led_0603_0_1"
 				(polyline
 					(pts
 						(xy -1.27 -1.27) (xy -1.27 1.27)
@@ -1275,7 +1121,7 @@
 					)
 				)
 			)
-			(symbol "white_led_0603_1_1"
+			(symbol "green_led_0603_1_1"
 				(polyline
 					(pts
 						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
@@ -1286,7 +1132,7 @@
 					)
 					(fill
 						(type color)
-						(color 0 0 0 0)
+						(color 0 194 0 1)
 					)
 				)
 				(pin passive line
@@ -3244,6 +3090,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(symbol "DMP2008UFG-7_0_1"
@@ -9947,7 +9794,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:white_led_0603")
+		(lib_id "cocotter_diodes:green_led_0603")
 		(at 101.6 62.23 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9957,7 +9804,7 @@
 		(fields_autoplaced yes)
 		(uuid "1472a05e-4ce3-4c77-aa31-cbaeaed1ccdc")
 		(property "Reference" "D7"
-			(at 105.41 63.8174 90)
+			(at 105.41 62.5474 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9965,7 +9812,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "white, 0603"
+		(property "Value" "green, 0603"
 			(at 104.14 62.23 0)
 			(effects
 				(font
@@ -9992,16 +9839,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
-			(at 106.172 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "DIGIKEY_REF" ""
+		(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
 			(at 101.6 62.23 0)
 			(effects
 				(font
@@ -10010,7 +9848,7 @@
 				(hide yes)
 			)
 		)
-		(property "MOUSER_REF" ""
+		(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
 			(at 101.6 62.23 0)
 			(effects
 				(font
@@ -10019,12 +9857,22 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C2290"
+		(property "MOUSER_REF" "710-150060VS55040"
 			(at 101.6 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C22371299"
+			(at 105.41 65.0874 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 				(hide yes)
 			)
 		)
@@ -10355,6 +10203,7 @@
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(pin "3"
@@ -13840,7 +13689,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_1µF_50V_0805")
+		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 233.68 38.1 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -13849,7 +13698,7 @@
 		(dnp no)
 		(uuid "b97f8159-f8f9-4806-9e5a-e436402a0e6e")
 		(property "Reference" "C45"
-			(at 237.49 36.83 0)
+			(at 234.315 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13857,8 +13706,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1µF 50V"
-			(at 237.49 39.37 0)
+		(property "Value" "10µF 25V"
+			(at 234.315 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13884,7 +13733,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor X7R "
+		(property "Description" "Unpolarized capacitor"
 			(at 233.68 38.1 0)
 			(effects
 				(font
@@ -13893,7 +13742,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "1µF 50V X7R 0805 "
+		(property "Specification" "10µF 25V X7R 0805 "
 			(at 233.68 38.1 0)
 			(effects
 				(font
@@ -13902,7 +13751,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C28323"
+		(property "JLCPCB Part #" "C15850"
 			(at 233.68 38.1 0)
 			(effects
 				(font
