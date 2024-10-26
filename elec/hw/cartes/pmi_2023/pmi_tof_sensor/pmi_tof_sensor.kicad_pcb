@@ -1012,7 +1012,7 @@
 		(path "/d31f95ed-97db-45a7-addb-b3f67ec7e1ca")
 		(sheetname "Racine")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start -1.07 -1.815)
 			(end -0.17 -1.815)
@@ -7889,7 +7889,7 @@
 		(start 23.5 180)
 		(end 23.5 160.73)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")
@@ -7899,7 +7899,7 @@
 		(start 44.5 160.73)
 		(end 44.5 180)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")
@@ -7910,7 +7910,7 @@
 		(mid 44.342066 160.148233)
 		(end 44.5 160.73)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")
@@ -7920,7 +7920,7 @@
 		(start 23.5 180)
 		(end 44.5 180)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")
@@ -7931,7 +7931,7 @@
 		(mid 34 156.259825)
 		(end 34.3 156.3)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")
@@ -7942,7 +7942,7 @@
 		(mid 23.688382 160.157525)
 		(end 24.166637 159.790798)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")
@@ -7952,7 +7952,7 @@
 		(start 24.166637 159.790798)
 		(end 33.7 156.3)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")
@@ -7962,7 +7962,7 @@
 		(start 34.3 156.3)
 		(end 43.85 159.8)
 		(stroke
-			(width 0.2)
+			(width 0.1)
 			(type default)
 		)
 		(layer "Edge.Cuts")

@@ -2105,155 +2105,6 @@
 				)
 			)
 		)
-		(symbol "cocotter_resistors:R_100k_0603_1%"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "100k"
-				(at 3.81 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "100k 0603 1% 100mW"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" "603-RC0603FR-10100KL"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C25803"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_100k_0603_1%_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_100k_0603_1%_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_resistors:R_150R_0805_1%"
 			(pin_numbers hide)
 			(pin_names
@@ -2514,6 +2365,155 @@
 				)
 			)
 			(symbol "R_27k_0603_1%_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "cocotter_resistors:R_91k_0603_1%"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "91k 1%"
+				(at 4.826 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0603_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "91k 0603 1% 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C23265"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_91k_0603_1%_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_91k_0603_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -5952,7 +5952,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0603_1%")
 		(at 35.56 63.5 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5969,8 +5969,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100k"
-			(at 39.37 64.77 0)
+		(property "Value" "91k 1%"
+			(at 40.386 64.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6004,7 +6004,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 35.56 63.5 0)
 			(effects
 				(font
@@ -6013,7 +6013,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 35.56 63.5 0)
 			(effects
 				(font
@@ -6022,7 +6022,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C25803"
+		(property "JLCPCB Part #" "C23265"
 			(at 35.56 63.5 0)
 			(effects
 				(font
@@ -7053,7 +7053,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0603_1%")
 		(at 66.04 173.99 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7070,8 +7070,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100k"
-			(at 69.85 175.26 0)
+		(property "Value" "91k 1%"
+			(at 70.866 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7105,7 +7105,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 66.04 173.99 0)
 			(effects
 				(font
@@ -7114,7 +7114,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 66.04 173.99 0)
 			(effects
 				(font
@@ -7123,7 +7123,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C25803"
+		(property "JLCPCB Part #" "C23265"
 			(at 66.04 173.99 0)
 			(effects
 				(font
@@ -8517,7 +8517,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0603_1%")
 		(at 33.02 25.4 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8535,7 +8535,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 35.56 26.6699 0)
 			(effects
 				(font
@@ -8571,7 +8571,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 33.02 25.4 0)
 			(effects
 				(font
@@ -8580,7 +8580,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 33.02 25.4 0)
 			(effects
 				(font
@@ -8589,7 +8589,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C25803"
+		(property "JLCPCB Part #" "C23265"
 			(at 33.02 25.4 0)
 			(effects
 				(font
@@ -9022,7 +9022,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0603_1%")
 		(at 29.21 173.99 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9040,7 +9040,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 31.75 175.2599 0)
 			(effects
 				(font
@@ -9076,7 +9076,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 29.21 173.99 0)
 			(effects
 				(font
@@ -9085,7 +9085,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 29.21 173.99 0)
 			(effects
 				(font
@@ -9094,7 +9094,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C25803"
+		(property "JLCPCB Part #" "C23265"
 			(at 29.21 173.99 0)
 			(effects
 				(font
@@ -10563,7 +10563,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0603_1%")
 		(at 44.45 63.5 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10581,7 +10581,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 46.99 64.7699 0)
 			(effects
 				(font
@@ -10617,7 +10617,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 44.45 63.5 0)
 			(effects
 				(font
@@ -10626,7 +10626,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 44.45 63.5 0)
 			(effects
 				(font
@@ -10635,7 +10635,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C25803"
+		(property "JLCPCB Part #" "C23265"
 			(at 44.45 63.5 0)
 			(effects
 				(font

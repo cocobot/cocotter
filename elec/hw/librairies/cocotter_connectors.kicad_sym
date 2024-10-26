@@ -2585,6 +2585,519 @@
 			)
 		)
 	)
+	(symbol "HAD-04HWAG-2"
+		(pin_numbers hide)
+		(pin_names
+			(offset 0) hide)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "SW"
+			(at 8.89 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "HAD-04HWAG-2"
+			(at 12.7 -3.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:HAD-04HWAG-2"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 poles SMT DIP switch"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER_REF" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C437204"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "HAD-04HWAG-2_1_1"
+			(rectangle
+				(start -3.81 2.54)
+				(end 6.35 -2.54)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(circle
+				(center -2.54 -1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center -2.54 1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 0 -1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 -2.54) (xy -2.54 -1.524)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 1.016) (xy -2.921 -1.27)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 1.524) (xy -2.54 2.54)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 -2.54) (xy 0 -1.524)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 1.016) (xy -0.381 -1.27)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 1.524) (xy 0 2.54)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.54 -2.54) (xy 2.54 -1.524)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.54 1.016) (xy 2.159 -1.27)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.54 1.524) (xy 2.54 2.54)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 5.08 -2.54) (xy 5.08 -1.524)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 5.08 1.016) (xy 4.699 -1.27)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 5.08 1.524) (xy 5.08 2.54)
+				)
+				(stroke
+					(width 0.2)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 0 1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 2.54 -1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 2.54 1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 5.08 -1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 5.08 1.27)
+				(radius 0.254)
+				(stroke
+					(width 0)
+					(type default)
+					(color 0 0 0 1)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(text "1"
+				(at -1.9568 -0.018 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(color 0 0 0 1)
+					)
+				)
+			)
+			(text "2"
+				(at 0.5832 -0.018 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(color 0 0 0 1)
+					)
+				)
+			)
+			(text "3"
+				(at 3.1232 -0.018 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(color 0 0 0 1)
+					)
+				)
+			)
+			(text "4"
+				(at 5.6632 -0.018 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(color 0 0 0 1)
+					)
+				)
+			)
+			(pin passive line
+				(at -2.54 -5.08 90)
+				(length 2.54)
+				(name "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -5.08 90)
+				(length 2.54)
+				(name "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 2.54 -5.08 90)
+				(length 2.54)
+				(name "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 5.08 -5.08 90)
+				(length 2.54)
+				(name "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 5.08 5.08 270)
+				(length 2.54)
+				(name "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 2.54 5.08 270)
+				(length 2.54)
+				(name "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 5.08 270)
+				(length 2.54)
+				(name "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -2.54 5.08 270)
+				(length 2.54)
+				(name "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+	)
 	(symbol "MSS12C02LS-BB2.0"
 		(pin_names hide)
 		(exclude_from_sim no)
