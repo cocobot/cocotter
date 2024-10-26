@@ -821,555 +821,6 @@
 				)
 			)
 		)
-		(symbol "cocotter_diodes:green_led_0603"
-			(pin_numbers hide)
-			(pin_names
-				(offset 1.016) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "green, 0603"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "MOUSER_REF" "710-150060VS55040"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C22371299"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "Green LED diode"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "green_led_0603_0_1"
-				(polyline
-					(pts
-						(xy -1.27 -1.27) (xy -1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "green_led_0603_1_1"
-				(polyline
-					(pts
-						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type color)
-						(color 0 194 0 1)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "cocotter_diodes:red_led_0603"
-			(pin_numbers hide)
-			(pin_names
-				(offset 1.016) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "red, 0603"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Light emitting diode, Red, Vf=[1.6V; 2.4V]"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "DIGIKEY_REF" "3147-B1931USD-20D000814U1930CT-ND"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "MOUSER_REF" "710-150060RS75000"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "Green LED diode"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "red_led_0603_0_1"
-				(polyline
-					(pts
-						(xy -1.27 -1.27) (xy -1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "red_led_0603_1_1"
-				(polyline
-					(pts
-						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type color)
-						(color 255 0 0 1)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "cocotter_diodes:yellow_led_0603"
-			(pin_numbers hide)
-			(pin_names
-				(offset 1.016) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "yellow, 0603"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Light emitting diode, Yellow, Vf=[2V; 2.4V]"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "DIGIKEY_REF" "150060YS55040"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "MOUSER_REF" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C965802"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "Yellow LED diode"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "yellow_led_0603_0_1"
-				(polyline
-					(pts
-						(xy -1.27 -1.27) (xy -1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "yellow_led_0603_1_1"
-				(polyline
-					(pts
-						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type color)
-						(color 255 255 0 1)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_ic:PCA9685PW"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -2825,155 +2276,6 @@
 				)
 			)
 		)
-		(symbol "cocotter_resistors:R_1k_0603_1%"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "1k 1%"
-				(at 3.81 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "10k 0603 1% 100mW"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" "603-RC0603FR-10100KL"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C2991540"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_1k_0603_1%_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_1k_0603_1%_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_resistors:R_390R_0603_1%"
 			(pin_numbers hide)
 			(pin_names
@@ -3614,7 +2916,17 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 62.23) (xy 163.83 62.23)
+			(xy 134.62 34.29) (xy 134.62 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0b1f9765-8092-46b3-acab-13e8ae39a350")
+	)
+	(wire
+		(pts
+			(xy 97.79 62.23) (xy 134.62 62.23)
 		)
 		(stroke
 			(width 0)
@@ -3674,6 +2986,16 @@
 	)
 	(wire
 		(pts
+			(xy 147.32 25.4) (xy 147.32 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1c6ec5cd-8a97-42dd-909c-ecaf8f19651d")
+	)
+	(wire
+		(pts
 			(xy 58.42 29.21) (xy 58.42 72.39)
 		)
 		(stroke
@@ -3691,6 +3013,16 @@
 			(type default)
 		)
 		(uuid "2124e537-fe47-4cae-8809-9a4cdedaab84")
+	)
+	(wire
+		(pts
+			(xy 142.24 34.29) (xy 134.62 34.29)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "21c9ce75-0cc8-4775-848c-30f319f78a53")
 	)
 	(wire
 		(pts
@@ -3734,6 +3066,16 @@
 	)
 	(wire
 		(pts
+			(xy 147.32 34.29) (xy 147.32 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "33bb6c40-101c-4536-932f-ad057579faeb")
+	)
+	(wire
+		(pts
 			(xy 39.37 120.65) (xy 39.37 139.7)
 		)
 		(stroke
@@ -3741,16 +3083,6 @@
 			(type default)
 		)
 		(uuid "33ef279e-7d4c-4596-9b21-c8a8e23f2dc5")
-	)
-	(wire
-		(pts
-			(xy 149.86 44.45) (xy 149.86 59.69)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3706b1cf-1124-44c0-b755-005930f3c2e2")
 	)
 	(wire
 		(pts
@@ -3924,7 +3256,7 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 59.69) (xy 149.86 59.69)
+			(xy 97.79 59.69) (xy 160.02 59.69)
 		)
 		(stroke
 			(width 0)
@@ -4024,13 +3356,13 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 21.59) (xy 137.16 29.21)
+			(xy 160.02 34.29) (xy 152.4 34.29)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "6ced2e59-a101-4a75-a66e-b6b7165b1765")
+		(uuid "680381de-4a2b-43a7-81cc-1d48efb094cb")
 	)
 	(wire
 		(pts
@@ -4044,16 +3376,6 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 21.59) (xy 163.83 29.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6e9e8d50-ddfe-4063-96c2-a13db3764177")
-	)
-	(wire
-		(pts
 			(xy 62.23 62.23) (xy 39.37 62.23)
 		)
 		(stroke
@@ -4064,7 +3386,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 44.45) (xy 163.83 62.23)
+			(xy 160.02 49.53) (xy 160.02 59.69)
 		)
 		(stroke
 			(width 0)
@@ -4124,7 +3446,17 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 57.15) (xy 137.16 57.15)
+			(xy 134.62 49.53) (xy 134.62 62.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "888f40ae-d42a-415a-8eca-0585594f44bb")
+	)
+	(wire
+		(pts
+			(xy 97.79 57.15) (xy 147.32 57.15)
 		)
 		(stroke
 			(width 0)
@@ -4204,13 +3536,13 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 44.45) (xy 137.16 57.15)
+			(xy 160.02 41.91) (xy 160.02 34.29)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "9dea8577-443a-45de-8a14-a7e3e8689b1a")
+		(uuid "9d706b1f-8911-4ed4-a3dc-31554040d330")
 	)
 	(wire
 		(pts
@@ -4221,6 +3553,16 @@
 			(type default)
 		)
 		(uuid "9fb925a7-60ae-47f7-8fb7-a2ae7ab7de53")
+	)
+	(wire
+		(pts
+			(xy 147.32 57.15) (xy 147.32 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a134aefe-dfa6-449a-bd23-25eadad63a5a")
 	)
 	(wire
 		(pts
@@ -4654,16 +3996,6 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 29.21) (xy 149.86 21.59)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ed5daf63-f689-48b6-8b12-348db29bc0f0")
-	)
-	(wire
-		(pts
 			(xy 220.98 158.75) (xy 234.95 158.75)
 		)
 		(stroke
@@ -4740,6 +4072,16 @@
 			)
 		)
 		(uuid "34338ba1-8307-4bd6-b743-1eac9eb1c641")
+	)
+	(text "If is between 10 and 13mA, let it shine !!!"
+		(exclude_from_sim no)
+		(at 218.44 61.214 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "62a922f1-2293-4c95-a70c-7ba2308fddd6")
 	)
 	(text "robot color"
 		(exclude_from_sim no)
@@ -4822,7 +4164,7 @@
 		)
 		(uuid "210b827c-889d-47bc-9c83-67b889b7d89b")
 	)
-	(label "led_vbatt_warning"
+	(label "led_vbatt_B"
 		(at 100.33 59.69 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4888,7 +4230,7 @@
 		)
 		(uuid "4f3d7220-6588-4a0d-9abd-f7142125bb68")
 	)
-	(label "led_vbatt_error"
+	(label "led_vbatt_G"
 		(at 100.33 57.15 0)
 		(fields_autoplaced yes)
 		(effects
@@ -4943,7 +4285,7 @@
 		)
 		(uuid "738e6f00-e46c-43fb-ad37-82e890634763")
 	)
-	(label "led_vbatt_ok"
+	(label "led_vbatt_R"
 		(at 100.33 62.23 0)
 		(fields_autoplaced yes)
 		(effects
@@ -5780,8 +5122,8 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_1k_0603_1%")
-		(at 163.83 33.02 0)
+		(lib_id "cocotter_resistors:R_100R_0603_1%")
+		(at 160.02 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5790,7 +5132,7 @@
 		(fields_autoplaced yes)
 		(uuid "1048865d-c1df-486f-a569-14fd6677fe13")
 		(property "Reference" "R62"
-			(at 166.37 31.7499 0)
+			(at 162.56 44.4499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5798,8 +5140,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1k 1%"
-			(at 166.37 34.2899 0)
+		(property "Value" "100R"
+			(at 162.56 46.9899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5808,7 +5150,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 162.052 33.02 90)
+			(at 158.242 45.72 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5817,7 +5159,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 163.83 33.02 0)
+			(at 160.02 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5826,7 +5168,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 163.83 33.02 0)
+			(at 160.02 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5834,8 +5176,8 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10k 0603 1% 100mW"
-			(at 163.83 33.02 0)
+		(property "Specification" "100R 0603 1% 100mW"
+			(at 160.02 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5844,7 +5186,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 163.83 33.02 0)
+			(at 160.02 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5852,8 +5194,8 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C2991540"
-			(at 163.83 33.02 0)
+		(property "JLCPCB Part #" "C22775"
+			(at 160.02 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6635,7 +5977,7 @@
 	)
 	(symbol
 		(lib_id "power:+3V3")
-		(at 149.86 21.59 0)
+		(at 147.32 22.86 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6644,7 +5986,7 @@
 		(fields_autoplaced yes)
 		(uuid "30b525d2-fca3-4c9f-b296-779ca843f19c")
 		(property "Reference" "#PWR0227"
-			(at 149.86 25.4 0)
+			(at 147.32 26.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6653,7 +5995,7 @@
 			)
 		)
 		(property "Value" "+3V3"
-			(at 149.86 16.51 0)
+			(at 147.32 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6661,7 +6003,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 149.86 21.59 0)
+			(at 147.32 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6670,7 +6012,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 149.86 21.59 0)
+			(at 147.32 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6679,7 +6021,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 149.86 21.59 0)
+			(at 147.32 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7839,72 +7181,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3V3")
-		(at 163.83 21.59 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "69147d28-3cf1-4711-bd83-9a1d39df708d")
-		(property "Reference" "#PWR0228"
-			(at 163.83 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 163.83 16.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 163.83 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 163.83 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 163.83 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "9a130d7a-59c3-4321-b070-a909d71fb4ee")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
-					(reference "#PWR0228")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 220.98 158.75 0)
 		(unit 1)
@@ -8137,92 +7413,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:red_led_0603")
-		(at 137.16 40.64 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "774d9f65-42b4-4ba3-9530-f37258e277dd")
-		(property "Reference" "BAT_LOW1"
-			(at 134.62 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "red, 0603"
-			(at 139.7 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-			(at 137.16 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 137.16 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Light emitting diode, Red, Vf=[1.6V; 2.4V]"
-			(at 137.16 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "DIGIKEY_REF" "3147-B1931USD-20D000814U1930CT-ND"
-			(at 137.16 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MOUSER_REF" "710-150060RS75000"
-			(at 137.16 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "C"
-			(uuid "b99ed7c7-c980-41d6-81d9-8b1426c77ccf")
-		)
-		(pin "A"
-			(uuid "9ea3f31b-8add-4226-abc9-6f6572f745b6")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
-					(reference "BAT_LOW1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 86.36 158.75 0)
 		(unit 1)
@@ -8441,6 +7631,88 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
 					(reference "R76")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_diodes:NH-B2020RGBA-HF")
+		(at 147.32 29.21 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7ae09aff-5e93-4055-935a-09153cbfd911")
+		(property "Reference" "BAT2"
+			(at 141.224 27.178 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "NH-B2020RGBA-HF"
+			(at 155.194 24.638 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_diodes:NH-B2020RGBA-HF"
+			(at 147.32 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 147.32 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "RGB LED 2.1mm x 2.1mm"
+			(at 147.32 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C2874116"
+			(at 147.32 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "4"
+			(uuid "f83c8861-215b-4357-8c21-04299de640f6")
+		)
+		(pin "3"
+			(uuid "9b24f713-9758-485d-96a9-d8723dcfa8bb")
+		)
+		(pin "2"
+			(uuid "657ab745-4807-45b1-b9d0-0f7800db5166")
+		)
+		(pin "1"
+			(uuid "71ac459b-e2ca-4399-95ed-f1dd53d42a4a")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
+					(reference "BAT2")
 					(unit 1)
 				)
 			)
@@ -9093,101 +8365,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:yellow_led_0603")
-		(at 149.86 40.64 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "b22dbd10-a948-4f95-affa-d7814bf85b23")
-		(property "Reference" "BAT_WARN1"
-			(at 147.32 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "yellow, 0603"
-			(at 152.4 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-			(at 149.86 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 149.86 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Light emitting diode, Yellow, Vf=[2V; 2.4V]"
-			(at 149.86 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "DIGIKEY_REF" "150060YS55040"
-			(at 149.86 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MOUSER_REF" ""
-			(at 149.86 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C965802"
-			(at 149.86 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "A"
-			(uuid "f3687cb9-f9ff-4bfa-917e-8b6848a55522")
-		)
-		(pin "C"
-			(uuid "1fc94ce9-09f6-48c8-baa5-0f71c67edea2")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
-					(reference "BAT_WARN1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 220.98 118.11 0)
 		(unit 1)
@@ -9474,83 +8651,16 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3V3")
-		(at 137.16 21.59 0)
+		(lib_id "cocotter_resistors:R_100R_0603_1%")
+		(at 147.32 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "bf8517f0-ef54-4643-9d65-a9712bf8c1eb")
-		(property "Reference" "#PWR0229"
-			(at 137.16 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 137.16 16.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 137.16 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 137.16 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 137.16 21.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "56f1ed41-c8ef-459f-813c-cb719bb54cd4")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
-					(reference "#PWR0229")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_resistors:R_1k_0603_1%")
-		(at 149.86 33.02 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "bf8e3343-120f-40ea-838f-f10243163f68")
 		(property "Reference" "R63"
-			(at 152.4 31.7499 0)
+			(at 148.59 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9558,8 +8668,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1k 1%"
-			(at 152.4 34.2899 0)
+		(property "Value" "100R"
+			(at 149.098 47.244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9568,7 +8678,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 148.082 33.02 90)
+			(at 145.542 45.72 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9577,7 +8687,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 149.86 33.02 0)
+			(at 147.32 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9586,7 +8696,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 149.86 33.02 0)
+			(at 147.32 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9594,8 +8704,8 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10k 0603 1% 100mW"
-			(at 149.86 33.02 0)
+		(property "Specification" "100R 0603 1% 100mW"
+			(at 147.32 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9604,7 +8714,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 149.86 33.02 0)
+			(at 147.32 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9612,8 +8722,8 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C2991540"
-			(at 149.86 33.02 0)
+		(property "JLCPCB Part #" "C22775"
+			(at 147.32 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10336,7 +9446,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_390R_0603_1%")
+		(lib_id "cocotter_resistors:R_100R_0603_1%")
 		(at 217.17 40.64 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10353,8 +9463,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "390R 1%"
-			(at 218.44 35.56 0)
+		(property "Value" "100R"
+			(at 218.44 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10388,7 +9498,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "390R 0603 1% 100mW"
+		(property "Specification" "100R 0603 1% 100mW"
 			(at 217.17 40.64 0)
 			(effects
 				(font
@@ -10406,7 +9516,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23151"
+		(property "JLCPCB Part #" "C22775"
 			(at 217.17 40.64 0)
 			(effects
 				(font
@@ -10837,112 +9947,16 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:green_led_0603")
-		(at 163.83 40.64 90)
+		(lib_id "cocotter_resistors:R_390R_0603_1%")
+		(at 134.62 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "f2189ddd-864a-4bac-9894-6a64dacb674a")
-		(property "Reference" "BAT_OK1"
-			(at 161.29 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "green, 0603"
-			(at 166.37 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-			(at 163.83 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 163.83 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
-			(at 163.83 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
-			(at 163.83 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MOUSER_REF" "710-150060VS55040"
-			(at 163.83 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C22371299"
-			(at 163.83 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "A"
-			(uuid "d2f6a4e2-cbf5-41ab-b83f-b22eedaf90f2")
-		)
-		(pin "C"
-			(uuid "c91dbae2-d1a2-4a3d-8505-ed3e17feb5b1")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/76b412a5-2e5b-49f9-bfc4-2fef81997c2b"
-					(reference "BAT_OK1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_resistors:R_1k_0603_1%")
-		(at 137.16 33.02 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "f2d97e7f-dec6-4baa-8165-b342400d08f8")
 		(property "Reference" "R64"
-			(at 139.7 31.7499 0)
+			(at 135.89 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10950,8 +9964,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1k 1%"
-			(at 139.7 34.2899 0)
+		(property "Value" "390R 1%"
+			(at 135.89 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10960,7 +9974,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 135.382 33.02 90)
+			(at 132.842 45.72 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10969,7 +9983,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 137.16 33.02 0)
+			(at 134.62 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10978,7 +9992,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 137.16 33.02 0)
+			(at 134.62 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10986,8 +10000,8 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10k 0603 1% 100mW"
-			(at 137.16 33.02 0)
+		(property "Specification" "390R 0603 1% 100mW"
+			(at 134.62 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10996,7 +10010,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 137.16 33.02 0)
+			(at 134.62 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11004,8 +10018,8 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C2991540"
-			(at 137.16 33.02 0)
+		(property "JLCPCB Part #" "C23151"
+			(at 134.62 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)

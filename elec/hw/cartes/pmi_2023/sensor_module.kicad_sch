@@ -3473,6 +3473,44 @@
 		)
 		(uuid "fec3e894-ba5c-425b-86b5-3e4885e469f7")
 	)
+	(text_box "default I2C@ : 0b0101001"
+		(exclude_from_sim no)
+		(at 156.21 142.24 0)
+		(size 13.97 7.62)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "2e222e50-f3eb-4a60-b99c-f86802824c63")
+	)
+	(text_box "default I2C@ : 0b0101001"
+		(exclude_from_sim no)
+		(at 41.91 142.24 0)
+		(size 13.97 7.62)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "9e442999-73ee-4252-af4b-5b07996a7882")
+	)
 	(label "SDA_3v3"
 		(at 165.1 114.3 0)
 		(fields_autoplaced yes)
