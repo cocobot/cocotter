@@ -368,22 +368,18 @@
 			)
 		)
 	)
-	(pad "" np_thru_hole roundrect
+	(pad "" np_thru_hole circle
 		(at 0 0)
 		(size 0.1 0.1)
 		(drill 0.7)
 		(layers "F&B.Cu" "*.Mask")
-		(roundrect_rratio 0.25)
-		(thermal_bridge_angle 45)
 		(uuid "5fc1cf0a-c3bc-460b-a82c-5111b5db5c7d")
 	)
-	(pad "" np_thru_hole roundrect
+	(pad "" np_thru_hole circle
 		(at 0 1.6)
 		(size 0.1 0.1)
 		(drill 0.7)
 		(layers "F&B.Cu" "*.Mask")
-		(roundrect_rratio 0.25)
-		(thermal_bridge_angle 45)
 		(uuid "43ee82d4-9c00-4c61-a9a2-f98e1956b616")
 	)
 	(pad "1" smd roundrect
