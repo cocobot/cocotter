@@ -342,6 +342,7 @@
 					(font
 						(size 1.27 1.27)
 					)
+					(hide yes)
 				)
 			)
 			(property "Datasheet" ""
@@ -6155,7 +6156,26 @@
 		)
 		(uuid "ffb3bdce-1ff8-414e-8da9-d36ede117704")
 	)
-	(text_box "I2C@ : 0x42"
+	(text_box "I2C@ : 0b0111100 or 0b0111101"
+		(exclude_from_sim no)
+		(at 100.33 184.15 0)
+		(size 13.97 10.16)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "09514b2a-fa56-4145-9372-82cc8c3e348f")
+	)
+	(text_box "I2C@ : 0b0100001"
 		(exclude_from_sim no)
 		(at 107.95 64.77 0)
 		(size 13.97 5.08)
@@ -8874,7 +8894,6 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "740e9dfa-feb9-4510-a0b7-5d2b1c7cd8d5")
 		(property "Reference" "SW5"
 			(at 45.72 163.8299 0)
@@ -8895,12 +8914,13 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:HAD-04HWAG-2"
-			(at 45.72 168.9099 0)
+			(at 33.528 169.672 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Datasheet" ""
