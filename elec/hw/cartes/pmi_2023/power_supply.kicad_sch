@@ -819,6 +819,24 @@
 						)
 					)
 				)
+				(pin passive line
+					(at 0 -6.35 90)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
 			(symbol "MSS12C02LS-BB2.0_2_1"
 				(rectangle
@@ -3835,12 +3853,6 @@
 		(uuid "10f398d9-a5b3-457e-ae84-656c81f59179")
 	)
 	(junction
-		(at 74.93 67.31)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "12b72b65-1d9c-4d38-a0c9-5503143c9f4a")
-	)
-	(junction
 		(at 234.95 113.03)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3887,6 +3899,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2a50082f-eab2-45d5-8b81-e331fc234a7c")
+	)
+	(junction
+		(at 104.14 57.15)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2c36a359-c9d4-42b9-a0fc-8512fbc68212")
 	)
 	(junction
 		(at 260.35 66.04)
@@ -4111,10 +4129,22 @@
 		(uuid "b727c8ae-abb6-45b6-8fbc-f39376f82e23")
 	)
 	(junction
+		(at 76.2 67.31)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b7ff0314-7e37-4b62-bcb9-be642a3395b3")
+	)
+	(junction
 		(at 48.26 160.02)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b8595902-43b3-4e37-aad4-e3e861f4ecbf")
+	)
+	(junction
+		(at 69.85 67.31)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b88e75e7-8c5d-42dc-904f-0ed1fd23ab05")
 	)
 	(junction
 		(at 180.34 45.72)
@@ -4133,12 +4163,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "bf020da1-aa9a-4a2d-81e1-dc08178bc006")
-	)
-	(junction
-		(at 101.6 57.15)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c5715dd6-1cce-492b-8ca0-85720cea3e50")
 	)
 	(junction
 		(at 73.66 46.99)
@@ -4350,7 +4374,7 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 57.15) (xy 101.6 57.15)
+			(xy 78.74 57.15) (xy 104.14 57.15)
 		)
 		(stroke
 			(width 0)
@@ -4380,7 +4404,7 @@
 	)
 	(wire
 		(pts
-			(xy 101.6 67.31) (xy 101.6 66.04)
+			(xy 104.14 67.31) (xy 104.14 66.04)
 		)
 		(stroke
 			(width 0)
@@ -4560,6 +4584,16 @@
 	)
 	(wire
 		(pts
+			(xy 69.85 67.31) (xy 76.2 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2f322664-0952-4071-bfb2-2cec53746bcf")
+	)
+	(wire
+		(pts
 			(xy 205.74 30.48) (xy 205.74 34.29)
 		)
 		(stroke
@@ -4700,6 +4734,16 @@
 	)
 	(wire
 		(pts
+			(xy 69.85 62.23) (xy 69.85 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "43246ef1-5801-4d66-bc0f-1eb06a00b85f")
+	)
+	(wire
+		(pts
 			(xy 48.26 179.07) (xy 60.96 179.07)
 		)
 		(stroke
@@ -4787,16 +4831,6 @@
 			(type default)
 		)
 		(uuid "5919a53e-2bff-493f-a0b9-415e9af671c3")
-	)
-	(wire
-		(pts
-			(xy 74.93 67.31) (xy 101.6 67.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5a1001e2-318a-4275-b0af-0fc16ec1bc66")
 	)
 	(wire
 		(pts
@@ -5050,16 +5084,6 @@
 	)
 	(wire
 		(pts
-			(xy 101.6 57.15) (xy 105.41 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9252c053-e255-45eb-940b-2e9f758f8c8a")
-	)
-	(wire
-		(pts
 			(xy 15.24 15.24) (xy 15.24 33.02)
 		)
 		(stroke
@@ -5077,16 +5101,6 @@
 			(type default)
 		)
 		(uuid "95e91b38-3a58-4de3-aab4-298f5417a380")
-	)
-	(wire
-		(pts
-			(xy 77.47 57.15) (xy 78.74 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "96a89c88-141b-4f71-aacd-aa859aa407d4")
 	)
 	(wire
 		(pts
@@ -5290,6 +5304,26 @@
 	)
 	(wire
 		(pts
+			(xy 76.2 67.31) (xy 104.14 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ba715d52-39f0-4b77-8798-1a77c752fba4")
+	)
+	(wire
+		(pts
+			(xy 104.14 57.15) (xy 105.41 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ba7fa142-5b20-41b9-ab16-eed3f618dc04")
+	)
+	(wire
+		(pts
 			(xy 226.06 134.62) (xy 231.14 134.62)
 		)
 		(stroke
@@ -5420,7 +5454,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 67.31) (xy 74.93 67.31)
+			(xy 68.58 67.31) (xy 69.85 67.31)
 		)
 		(stroke
 			(width 0)
@@ -5680,7 +5714,7 @@
 	)
 	(wire
 		(pts
-			(xy 101.6 57.15) (xy 101.6 58.42)
+			(xy 104.14 57.15) (xy 104.14 58.42)
 		)
 		(stroke
 			(width 0)
@@ -9795,7 +9829,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_diodes:green_led_0603")
-		(at 101.6 62.23 90)
+		(at 104.14 62.23 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9804,7 +9838,7 @@
 		(fields_autoplaced yes)
 		(uuid "1472a05e-4ce3-4c77-aa31-cbaeaed1ccdc")
 		(property "Reference" "D7"
-			(at 105.41 62.5474 90)
+			(at 107.95 62.5474 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9813,7 +9847,7 @@
 			)
 		)
 		(property "Value" "green, 0603"
-			(at 104.14 62.23 0)
+			(at 106.68 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9822,7 +9856,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-			(at 101.6 62.23 0)
+			(at 104.14 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9831,7 +9865,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 101.6 62.23 0)
+			(at 104.14 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9840,7 +9874,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
-			(at 101.6 62.23 0)
+			(at 104.14 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9849,7 +9883,7 @@
 			)
 		)
 		(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
-			(at 101.6 62.23 0)
+			(at 104.14 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9858,7 +9892,7 @@
 			)
 		)
 		(property "MOUSER_REF" "710-150060VS55040"
-			(at 101.6 62.23 0)
+			(at 104.14 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9867,7 +9901,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C22371299"
-			(at 105.41 65.0874 90)
+			(at 107.95 65.0874 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10825,16 +10859,15 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:MSS12C02LS-BB2.0")
-		(at 74.93 62.23 270)
+		(at 76.2 62.23 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "335c0c17-1db8-414f-a66a-9cce2739c90b")
 		(property "Reference" "SW8"
-			(at 80.01 60.9599 90)
+			(at 81.28 60.9599 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10843,7 +10876,7 @@
 			)
 		)
 		(property "Value" "MSS12C02LS-BB2.0"
-			(at 80.01 63.4999 90)
+			(at 81.28 63.4999 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10852,7 +10885,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:MSS12C02LS-BB2.0"
-			(at 74.93 62.23 0)
+			(at 76.2 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10861,7 +10894,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.mouser.fr/datasheet/2/910/606_MSS614-1571571.pdf"
-			(at 69.85 62.23 0)
+			(at 71.12 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10870,7 +10903,7 @@
 			)
 		)
 		(property "Description" "100mA max, 12Vdc, 10000 cycles"
-			(at 74.93 62.23 0)
+			(at 76.2 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10879,7 +10912,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C3008585"
-			(at 69.85 60.96 0)
+			(at 71.12 60.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10904,6 +10937,9 @@
 		)
 		(pin "B"
 			(uuid "fbe8fc46-3e66-4af6-b96c-6cf82ceb7d60")
+		)
+		(pin "MP"
+			(uuid "1317ef24-7f66-4828-af42-56e6f75cde9b")
 		)
 		(instances
 			(project "pmi_2023"
