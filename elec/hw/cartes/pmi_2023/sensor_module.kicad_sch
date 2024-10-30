@@ -318,7 +318,7 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at 7.62 11.43 0)
+				(at 7.874 11.43 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -544,7 +544,7 @@
 					)
 				)
 				(pin power_in line
-					(at 5.08 12.7 270)
+					(at 2.54 12.7 270)
 					(length 2.54)
 					(name "Vdd_IO"
 						(effects
@@ -598,7 +598,7 @@
 					)
 				)
 				(pin power_in line
-					(at 2.54 12.7 270)
+					(at 5.08 12.7 270)
 					(length 2.54)
 					(name "Vdd"
 						(effects
@@ -1798,12 +1798,6 @@
 		)
 	)
 	(junction
-		(at 116.84 22.86)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "089d0100-4942-42a5-8cd5-d2951e924270")
-	)
-	(junction
 		(at 62.23 44.45)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1846,12 +1840,6 @@
 		(uuid "38e59905-e4ae-491d-8cbf-4d971d165ecc")
 	)
 	(junction
-		(at 49.53 22.86)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3d98785d-820a-4793-945c-b8a21c181014")
-	)
-	(junction
 		(at 168.91 121.92)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1862,12 +1850,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3f592593-d70b-4dd1-8f1a-8e35cb1c6b1c")
-	)
-	(junction
-		(at 92.71 22.86)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "433ef6e7-2204-499d-9fee-e53d0f6e0df1")
 	)
 	(junction
 		(at 82.55 132.08)
@@ -1916,6 +1898,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6ceff166-e0eb-4d4c-bca2-560908547718")
+	)
+	(junction
+		(at 49.53 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "70174c27-eff4-43ff-979e-570d1a7f6e8e")
 	)
 	(junction
 		(at 36.83 106.68)
@@ -1990,6 +1978,12 @@
 		(uuid "b76e289a-ceb3-4ff2-a69c-cbe7012621cf")
 	)
 	(junction
+		(at 27.94 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b8f2e18f-580d-4473-af4e-75f82286ffb4")
+	)
+	(junction
 		(at 242.57 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2038,6 +2032,12 @@
 		(uuid "c8da3582-525c-4e7a-8fe5-21dcda9d8d4b")
 	)
 	(junction
+		(at 27.94 17.78)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "cf70887a-f1a0-4bb6-bec4-213d0e73221d")
+	)
+	(junction
 		(at 58.42 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2048,6 +2048,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d6f173a4-032f-4649-9599-03cc63c2db28")
+	)
+	(junction
+		(at 92.71 17.78)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "db0a79e3-78c9-42b7-9c7f-29f86339ac03")
 	)
 	(junction
 		(at 201.93 132.08)
@@ -2285,6 +2291,16 @@
 	)
 	(wire
 		(pts
+			(xy 27.94 17.78) (xy 48.26 17.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "218d4813-ad7c-46b2-aa1f-c1b3b13af420")
+	)
+	(wire
+		(pts
 			(xy 49.53 33.02) (xy 49.53 31.75)
 		)
 		(stroke
@@ -2495,16 +2511,6 @@
 	)
 	(wire
 		(pts
-			(xy 31.75 22.86) (xy 35.56 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "533ac9eb-79e5-4e03-ba87-cbf428d3f4ed")
-	)
-	(wire
-		(pts
 			(xy 175.26 88.9) (xy 185.42 88.9)
 		)
 		(stroke
@@ -2555,7 +2561,7 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 22.86) (xy 92.71 22.86)
+			(xy 90.17 22.86) (xy 105.41 22.86)
 		)
 		(stroke
 			(width 0)
@@ -2622,16 +2628,6 @@
 			(type default)
 		)
 		(uuid "6410c49a-f14d-4914-a211-d15475e2e0c3")
-	)
-	(wire
-		(pts
-			(xy 92.71 22.86) (xy 92.71 29.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "64e2901e-e8b8-4451-8da5-84af8cc61010")
 	)
 	(wire
 		(pts
@@ -2765,16 +2761,6 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 22.86) (xy 49.53 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7bf92ddd-dbb4-4b0f-9afa-5df638f6d7d2")
-	)
-	(wire
-		(pts
 			(xy 204.47 132.08) (xy 207.01 132.08)
 		)
 		(stroke
@@ -2822,16 +2808,6 @@
 			(type default)
 		)
 		(uuid "8239ea6d-e885-404f-b708-f823979ba4eb")
-	)
-	(wire
-		(pts
-			(xy 92.71 22.86) (xy 105.41 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "84e63f1a-bb8c-4932-b03e-932c4ce49c43")
 	)
 	(wire
 		(pts
@@ -2885,6 +2861,16 @@
 	)
 	(wire
 		(pts
+			(xy 92.71 17.78) (xy 55.88 17.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8c36177d-6973-430f-bc5e-184e5c5e1158")
+	)
+	(wire
+		(pts
 			(xy 196.85 129.54) (xy 196.85 132.08)
 		)
 		(stroke
@@ -2912,16 +2898,6 @@
 			(type default)
 		)
 		(uuid "92102b96-99f2-40dc-ae8a-e69a2e30e23b")
-	)
-	(wire
-		(pts
-			(xy 116.84 22.86) (xy 128.27 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9342ecfc-34f0-473e-8977-29d67fc6be8a")
 	)
 	(wire
 		(pts
@@ -3025,6 +3001,16 @@
 	)
 	(wire
 		(pts
+			(xy 128.27 30.48) (xy 128.27 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a67b525e-6b0e-4987-9098-45b623da0f44")
+	)
+	(wire
+		(pts
 			(xy 82.55 129.54) (xy 82.55 132.08)
 		)
 		(stroke
@@ -3042,6 +3028,16 @@
 			(type default)
 		)
 		(uuid "ab42d658-baa9-4009-9b2a-b0e608ac2cd2")
+	)
+	(wire
+		(pts
+			(xy 27.94 22.86) (xy 27.94 17.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ab7f5e5d-d0b6-4c64-8833-fcb99290f2ce")
 	)
 	(wire
 		(pts
@@ -3082,6 +3078,16 @@
 			(type default)
 		)
 		(uuid "af01bb18-816a-498b-ac0b-308608628050")
+	)
+	(wire
+		(pts
+			(xy 128.27 17.78) (xy 92.71 17.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "af8a2d16-2771-4d93-9442-385c92cbe287")
 	)
 	(wire
 		(pts
@@ -3205,6 +3211,16 @@
 	)
 	(wire
 		(pts
+			(xy 92.71 17.78) (xy 92.71 29.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cb1fd064-2cac-4020-b119-12bc5dedb0ae")
+	)
+	(wire
+		(pts
 			(xy 204.47 129.54) (xy 204.47 132.08)
 		)
 		(stroke
@@ -3295,7 +3311,7 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 30.48) (xy 128.27 31.75)
+			(xy 27.94 30.48) (xy 27.94 31.75)
 		)
 		(stroke
 			(width 0)
@@ -3342,6 +3358,16 @@
 			(type default)
 		)
 		(uuid "e575038a-a31e-4329-97a2-25a70b6b1f8f")
+	)
+	(wire
+		(pts
+			(xy 128.27 22.86) (xy 128.27 17.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e6008984-063a-4740-98dc-21b213471b36")
 	)
 	(wire
 		(pts
@@ -3432,6 +3458,16 @@
 			(type default)
 		)
 		(uuid "f6496dbe-a808-4a00-a35d-b78a32473460")
+	)
+	(wire
+		(pts
+			(xy 49.53 22.86) (xy 27.94 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f6ed2497-a22c-402f-bb07-27f2025e2697")
 	)
 	(wire
 		(pts
@@ -3754,7 +3790,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_0R_0603")
-		(at 39.37 22.86 90)
+		(at 52.07 17.78 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3762,7 +3798,7 @@
 		(dnp no)
 		(uuid "00eef77c-0f4e-46ac-a027-b6baf29f57bf")
 		(property "Reference" "R141"
-			(at 39.37 20.574 90)
+			(at 52.07 15.494 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3770,7 +3806,7 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 39.37 22.86 90)
+			(at 52.07 17.78 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3778,7 +3814,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 39.37 24.638 90)
+			(at 52.07 19.558 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3787,7 +3823,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 39.37 22.86 0)
+			(at 52.07 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3796,7 +3832,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 39.37 22.86 0)
+			(at 52.07 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3805,7 +3841,7 @@
 			)
 		)
 		(property "Specification" "0R 0603 20mOhms max 100mW"
-			(at 39.37 22.86 0)
+			(at 52.07 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3814,7 +3850,7 @@
 			)
 		)
 		(property "mouser" ""
-			(at 39.37 22.86 0)
+			(at 52.07 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3823,7 +3859,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
-			(at 39.37 22.86 0)
+			(at 52.07 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4268,6 +4304,71 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
 					(reference "C58")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "pmi_2023_specific:GND_m")
+		(at 128.27 55.88 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "2c3f7ff8-4055-446a-9af3-b9d4d2eda44b")
+		(property "Reference" "#PWR061"
+			(at 128.27 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND_m"
+			(at 128.27 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 128.27 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 128.27 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 128.27 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c10da8a5-c198-43de-8be1-88e346d4337d")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "#PWR061")
 					(unit 1)
 				)
 			)
@@ -5585,6 +5686,93 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_capacitors:C_100nF_50V_0603")
+		(at 128.27 26.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7dac12de-d6ea-4ad4-ae4c-9e9b0f498a2e")
+		(property "Reference" "C20"
+			(at 128.905 24.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nF 50V"
+			(at 128.905 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
+			(at 129.2352 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 128.27 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor tol +/-10%"
+			(at 128.27 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "100nF 50V X7R 0603 "
+			(at 128.27 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C14663"
+			(at 128.27 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "11cdc672-1fc2-4ba7-ab4a-6cdc66185783")
+		)
+		(pin "2"
+			(uuid "7127e3d8-285a-4d83-a08c-43538532846c")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/9bd16f2c-41f8-43b0-a8ef-4e646b1fd1de"
+					(reference "C20")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
 		(at 226.06 97.79 0)
 		(unit 1)
@@ -5652,7 +5840,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
-		(at 128.27 31.75 0)
+		(at 27.94 31.75 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5660,7 +5848,7 @@
 		(dnp no)
 		(uuid "7f584623-9d62-4142-9b7f-e63833e28ab7")
 		(property "Reference" "#PWR095"
-			(at 128.27 38.1 0)
+			(at 27.94 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5669,7 +5857,7 @@
 			)
 		)
 		(property "Value" "GND_m"
-			(at 128.27 35.56 0)
+			(at 27.94 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5677,7 +5865,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 128.27 31.75 0)
+			(at 27.94 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5686,7 +5874,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 128.27 31.75 0)
+			(at 27.94 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5695,7 +5883,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 128.27 31.75 0)
+			(at 27.94 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6108,7 +6296,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_capacitors:C_100nF_50V_0603")
-		(at 128.27 26.67 0)
+		(at 27.94 26.67 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6116,7 +6304,7 @@
 		(dnp no)
 		(uuid "a462e87d-698d-4fd6-9874-19b672b8e83d")
 		(property "Reference" "C12"
-			(at 128.905 24.13 0)
+			(at 28.575 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6125,7 +6313,7 @@
 			)
 		)
 		(property "Value" "100nF 50V"
-			(at 128.905 29.21 0)
+			(at 28.575 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6134,7 +6322,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
-			(at 129.2352 30.48 0)
+			(at 28.9052 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6143,7 +6331,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 128.27 26.67 0)
+			(at 27.94 26.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6152,7 +6340,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor tol +/-10%"
-			(at 128.27 26.67 0)
+			(at 27.94 26.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6161,7 +6349,7 @@
 			)
 		)
 		(property "Specification" "100nF 50V X7R 0603 "
-			(at 128.27 26.67 0)
+			(at 27.94 26.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6170,7 +6358,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C14663"
-			(at 128.27 26.67 0)
+			(at 27.94 26.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6688,16 +6876,15 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 31.75 22.86 0)
+		(at 27.94 17.78 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "c783acfb-fb16-4840-8953-6d2ffb0fcdb1")
 		(property "Reference" "#PWR036"
-			(at 31.75 26.67 0)
+			(at 27.94 21.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6706,7 +6893,7 @@
 			)
 		)
 		(property "Value" "+3V3_m"
-			(at 31.75 17.78 0)
+			(at 27.94 14.478 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6714,7 +6901,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 31.75 22.86 0)
+			(at 27.94 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6723,7 +6910,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 31.75 22.86 0)
+			(at 27.94 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6732,7 +6919,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 31.75 22.86 0)
+			(at 27.94 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
