@@ -191,28 +191,28 @@
 		(thermal_bridge_angle 45)
 		(uuid "bead1b2a-1ef0-4728-b9f9-eb99efe71be7")
 	)
-	(pad "NC" smd rect
+	(pad "MP" smd rect
 		(at -3.7 -0.4)
 		(size 0.8 1.7)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(thermal_bridge_angle 45)
 		(uuid "582dce0c-fef5-4589-984c-dde68cc7a689")
 	)
-	(pad "NC" smd rect
+	(pad "MP" smd rect
 		(at -3.4 -0.85)
 		(size 1.4 0.8)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(thermal_bridge_angle 45)
 		(uuid "74908102-7409-468d-bd7f-036b32d73cfc")
 	)
-	(pad "NC" smd rect
+	(pad "MP" smd rect
 		(at 3.4 -0.85)
 		(size 1.4 0.8)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(thermal_bridge_angle 45)
 		(uuid "474bf7c6-a1d3-4d94-9845-2790839b4b11")
 	)
-	(pad "NC" smd rect
+	(pad "MP" smd rect
 		(at 3.7 -0.4)
 		(size 0.8 1.7)
 		(layers "F.Cu" "F.Paste" "F.Mask")

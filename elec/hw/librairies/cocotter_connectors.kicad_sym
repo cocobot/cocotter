@@ -5631,7 +5631,7 @@
 			)
 		)
 		(property "Value" "TM-4175-B-A"
-			(at -4.572 -1.27 0)
+			(at 2.54 -1.016 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6018,6 +6018,24 @@
 					)
 				)
 				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin free line
+				(at -5.08 -2.54 90)
+				(length 2.54)
+				(name "MP"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "MP"
 					(effects
 						(font
 							(size 1.27 1.27)
