@@ -3086,7 +3086,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 0 -1 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -3141,7 +3141,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -3155,7 +3155,7 @@
 				(justify mirror)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -3169,12 +3169,12 @@
 				(justify mirror)
 			)
 		)
-		(property "JLCPCB" "C25803"
-			(at 0 0 0)
+		(property "JLCPCB Part #" "C23265"
+			(at 0 0 180)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "68171d5a-3315-4b80-a263-a543f915532e")
+			(uuid "4387111e-2871-4c04-b7f1-10b9d256f1bd")
 			(effects
 				(font
 					(size 1 1)
@@ -4084,7 +4084,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 0 -1 180)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -4139,7 +4139,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -4152,7 +4152,7 @@
 				(justify mirror)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -4165,12 +4165,12 @@
 				(justify mirror)
 			)
 		)
-		(property "JLCPCB" "C25803"
-			(at 0 0 180)
+		(property "JLCPCB Part #" "C23265"
+			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "ed5e09d6-1353-4726-91ae-f2c5f230ef0f")
+			(uuid "7f8cd609-6a3a-4f6a-87c9-ea9a5ae3cb54")
 			(effects
 				(font
 					(size 1 1)
@@ -4775,7 +4775,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Value" "1nF 50V"
+		(property "Value" "2nF 50V"
 			(at 0 -1.43 90)
 			(layer "B.Fab")
 			(uuid "41411726-74dc-4144-b8ae-57f628cfc930")
@@ -4826,7 +4826,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Specification" "1nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 0 0 -90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -4846,6 +4846,20 @@
 			(layer "B.Fab")
 			(hide yes)
 			(uuid "bc56252f-37d1-4053-90e2-fb21f0cc4d93")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+				(justify mirror)
+			)
+		)
+		(property "JLCPCB Part #" "C282245"
+			(at 0 0 90)
+			(unlocked yes)
+			(layer "B.Fab")
+			(hide yes)
+			(uuid "b775052a-1676-4848-9ab4-65ba46953a3b")
 			(effects
 				(font
 					(size 1 1)
@@ -5263,7 +5277,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 0 -1 -90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5318,7 +5332,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 0 0 -90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5332,7 +5346,7 @@
 				(justify mirror)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 0 0 -90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5346,12 +5360,12 @@
 				(justify mirror)
 			)
 		)
-		(property "JLCPCB" "C25803"
-			(at 0 0 -90)
+		(property "JLCPCB Part #" "C23265"
+			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "a60d7823-46f2-41c0-959f-06424296953f")
+			(uuid "cf3457b0-e6a1-4278-9304-a4b308c4d04b")
 			(effects
 				(font
 					(size 1 1)
@@ -5488,7 +5502,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 0 -1 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5543,7 +5557,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5557,7 +5571,7 @@
 				(justify mirror)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5571,12 +5585,12 @@
 				(justify mirror)
 			)
 		)
-		(property "JLCPCB" "C25803"
-			(at 0 0 90)
+		(property "JLCPCB Part #" "C23265"
+			(at 0 0 -90)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "1b5280cf-58a4-44b1-86c5-969cec8139c2")
+			(uuid "71eeb035-d527-4fda-a4a4-d69b0f4d622a")
 			(effects
 				(font
 					(size 1 1)
@@ -5938,7 +5952,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Value" "100k"
+		(property "Value" "91k 1%"
 			(at 0 -1 180)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5993,7 +6007,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Specification" "100k 0603 1% 100mW"
+		(property "Specification" "91k 0603 1% 100mW"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -6006,7 +6020,7 @@
 				(justify mirror)
 			)
 		)
-		(property "mouser" "603-RC0603FR-10100KL"
+		(property "mouser" ""
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -6019,12 +6033,12 @@
 				(justify mirror)
 			)
 		)
-		(property "JLCPCB" "C25803"
-			(at 0 0 180)
+		(property "JLCPCB Part #" "C23265"
+			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "341882e7-b934-45a7-9c24-2ab5348c326c")
+			(uuid "03b64ce0-31f9-45f9-a8b0-02ae753c13f5")
 			(effects
 				(font
 					(size 1 1)

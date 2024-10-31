@@ -19132,7 +19132,7 @@
 				)
 			)
 		)
-		(property "Value" "18nF 50V"
+		(property "Value" "2nF 50V"
 			(at 0 1.43 -90)
 			(layer "F.Fab")
 			(uuid "eee8cbc6-e4c5-4886-aed8-76133ef741fd")
@@ -19182,7 +19182,7 @@
 				)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -19194,7 +19194,7 @@
 				)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 0 0 -90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -31096,7 +31096,7 @@
 				)
 			)
 		)
-		(property "Value" "18nF 50V"
+		(property "Value" "2nF 50V"
 			(at 0 1.43 -90)
 			(layer "F.Fab")
 			(uuid "e36d857e-632d-4f5a-b426-4f1ca9d7e1eb")
@@ -31146,7 +31146,7 @@
 				)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -31158,7 +31158,7 @@
 				)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 0 0 -90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -34873,7 +34873,7 @@
 				)
 			)
 		)
-		(property "Value" "18nF 50V"
+		(property "Value" "2nF 50V"
 			(at 0 1.43 -90)
 			(layer "F.Fab")
 			(uuid "0bb81ef7-f6f6-4640-85e1-185f353e1fc5")
@@ -34923,7 +34923,7 @@
 				)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -34935,7 +34935,7 @@
 				)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 0 0 -90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -43551,7 +43551,7 @@
 				)
 			)
 		)
-		(property "Value" "18nF 50V"
+		(property "Value" "2nF 50V"
 			(at 0 1.43 -90)
 			(layer "F.Fab")
 			(uuid "e393562c-6a9b-414a-b662-08a0138aa194")
@@ -43601,7 +43601,7 @@
 				)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -43613,7 +43613,7 @@
 				)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 0 0 -90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -107469,45 +107469,6 @@
 		(uuid "da1ca4f1-c869-4133-83ad-2f7ca6de77a9")
 	)
 	(zone
-		(net 8)
-		(net_name "/boards interface/com/USB_D+")
-		(layer "F.Cu")
-		(uuid "0013d57c-592d-48eb-8fe6-901e2f8c43a6")
-		(name "$teardrop_padvia$")
-		(hatch full 0.1)
-		(priority 30008)
-		(attr
-			(teardrop
-				(type padvia)
-			)
-		)
-		(connect_pads yes
-			(clearance 0)
-		)
-		(min_thickness 0.0254)
-		(filled_areas_thickness no)
-		(fill yes
-			(thermal_gap 0.5)
-			(thermal_bridge_width 0.5)
-			(island_removal_mode 1)
-			(island_area_min 10)
-		)
-		(polygon
-			(pts
-				(xy 216.838 93.54) (xy 216.638 93.54) (xy 216.589142 93.69926) (xy 216.738 94.266) (xy 216.886858 93.69926)
-			)
-		)
-		(filled_polygon
-			(layer "F.Cu")
-			(pts
-				(xy 216.837625 93.543427) (xy 216.840537 93.548269) (xy 216.885881 93.696076) (xy 216.886012 93.702479)
-				(xy 216.749316 94.222917) (xy 216.7439 94.230048) (xy 216.735028 94.231261) (xy 216.727897 94.225845)
-				(xy 216.726684 94.222917) (xy 216.589987 93.702479) (xy 216.590117 93.696078) (xy 216.635463 93.548266)
-				(xy 216.641165 93.541364) (xy 216.646648 93.54) (xy 216.829352 93.54)
-			)
-		)
-	)
-	(zone
 		(net 17)
 		(net_name "+BATT")
 		(layer "F.Cu")
@@ -107711,10 +107672,10 @@
 		(net 13)
 		(net_name "/boards interface/com/USB_D-")
 		(layer "F.Cu")
-		(uuid "7624a9c9-d7ff-4b34-a04a-41fa86b28a4b")
+		(uuid "6e7b7f73-8cd4-49d6-845e-db6587453f78")
 		(name "$teardrop_padvia$")
 		(hatch full 0.1)
-		(priority 30010)
+		(priority 30003)
 		(attr
 			(teardrop
 				(type padvia)
@@ -107739,10 +107700,7 @@
 		(filled_polygon
 			(layer "F.Cu")
 			(pts
-				(xy 216.248103 94.304154) (xy 216.249316 94.307082) (xy 216.386012 94.82752) (xy 216.385881 94.833923)
-				(xy 216.340537 94.981731) (xy 216.334835 94.988636) (xy 216.329352 94.99) (xy 216.146648 94.99)
-				(xy 216.138375 94.986573) (xy 216.135464 94.981733) (xy 216.090117 94.833921) (xy 216.089987 94.827522)
-				(xy 216.226684 94.307081) (xy 216.2321 94.299951) (xy 216.240972 94.298738)
+				(xy 216.138 94.99) (xy 216.338 94.99) (xy 216.386858 94.83074) (xy 216.238 94.264) (xy 216.089142 94.83074)
 			)
 		)
 	)
@@ -108021,6 +107979,80 @@
 		)
 	)
 	(zone
+		(net 8)
+		(net_name "/boards interface/com/USB_D+")
+		(layer "F.Cu")
+		(uuid "c374d0ed-24fe-414b-98ee-7048e592cae5")
+		(name "$teardrop_padvia$")
+		(hatch full 0.1)
+		(priority 30002)
+		(attr
+			(teardrop
+				(type padvia)
+			)
+		)
+		(connect_pads yes
+			(clearance 0)
+		)
+		(min_thickness 0.0254)
+		(filled_areas_thickness no)
+		(fill yes
+			(thermal_gap 0.5)
+			(thermal_bridge_width 0.5)
+			(island_removal_mode 1)
+			(island_area_min 10)
+		)
+		(polygon
+			(pts
+				(xy 216.838 93.54) (xy 216.638 93.54) (xy 216.589142 93.69926) (xy 216.738 94.266) (xy 216.886858 93.69926)
+			)
+		)
+		(filled_polygon
+			(layer "F.Cu")
+			(pts
+				(xy 216.838 93.54) (xy 216.638 93.54) (xy 216.589142 93.69926) (xy 216.738 94.266) (xy 216.886858 93.69926)
+			)
+		)
+	)
+	(zone
+		(net 13)
+		(net_name "/boards interface/com/USB_D-")
+		(layer "F.Cu")
+		(uuid "d168cb5d-0c99-4a3b-adc7-63a5c0749343")
+		(name "$teardrop_padvia$")
+		(hatch full 0.1)
+		(priority 30004)
+		(attr
+			(teardrop
+				(type padvia)
+			)
+		)
+		(connect_pads yes
+			(clearance 0)
+		)
+		(min_thickness 0.0254)
+		(filled_areas_thickness no)
+		(fill yes
+			(thermal_gap 0.5)
+			(thermal_bridge_width 0.5)
+			(island_removal_mode 1)
+			(island_area_min 10)
+		)
+		(polygon
+			(pts
+				(xy 217.139006 94.907574) (xy 217.280426 95.048994) (xy 217.365455 94.84) (xy 217.238707 94.264293)
+				(xy 217.089142 94.83074)
+			)
+		)
+		(filled_polygon
+			(layer "F.Cu")
+			(pts
+				(xy 217.139006 94.907574) (xy 217.280426 95.048994) (xy 217.365455 94.84) (xy 217.238707 94.264293)
+				(xy 217.089142 94.83074)
+			)
+		)
+	)
+	(zone
 		(net 124)
 		(net_name "/boards interface/sda_top_3v3")
 		(layer "F.Cu")
@@ -108103,53 +108135,13 @@
 		)
 	)
 	(zone
-		(net 13)
-		(net_name "/boards interface/com/USB_D-")
-		(layer "F.Cu")
-		(uuid "db47896f-d950-4dd9-b04b-5ead2c317d27")
-		(name "$teardrop_padvia$")
-		(hatch full 0.1)
-		(priority 30011)
-		(attr
-			(teardrop
-				(type padvia)
-			)
-		)
-		(connect_pads yes
-			(clearance 0)
-		)
-		(min_thickness 0.0254)
-		(filled_areas_thickness no)
-		(fill yes
-			(thermal_gap 0.5)
-			(thermal_bridge_width 0.5)
-			(island_removal_mode 1)
-			(island_area_min 10)
-		)
-		(polygon
-			(pts
-				(xy 217.139006 94.907574) (xy 217.280426 95.048994) (xy 217.365455 94.84) (xy 217.238707 94.264293)
-				(xy 217.089142 94.83074)
-			)
-		)
-		(filled_polygon
-			(layer "F.Cu")
-			(pts
-				(xy 217.247787 94.308138) (xy 217.249102 94.311509) (xy 217.364672 94.836445) (xy 217.364083 94.84337)
-				(xy 217.287069 95.032663) (xy 217.280777 95.039035) (xy 217.271823 95.039091) (xy 217.267959 95.036527)
-				(xy 217.139875 94.908443) (xy 217.138334 94.906539) (xy 217.091961 94.835084) (xy 217.090332 94.826281)
-				(xy 217.090455 94.825764) (xy 217.226364 94.311037) (xy 217.231789 94.303914) (xy 217.240663 94.302713)
-			)
-		)
-	)
-	(zone
 		(net 8)
 		(net_name "/boards interface/com/USB_D+")
 		(layer "F.Cu")
-		(uuid "e03dbf31-b921-442a-95ea-e94ce19bc8a9")
+		(uuid "dc55ec3a-c199-4b0a-836d-281aaec0764e")
 		(name "$teardrop_padvia$")
 		(hatch full 0.1)
-		(priority 30009)
+		(priority 30000)
 		(attr
 			(teardrop
 				(type padvia)
@@ -108174,10 +108166,7 @@
 		(filled_polygon
 			(layer "F.Cu")
 			(pts
-				(xy 215.837625 93.543427) (xy 215.840537 93.548269) (xy 215.885881 93.696076) (xy 215.886012 93.702479)
-				(xy 215.749316 94.222917) (xy 215.7439 94.230048) (xy 215.735028 94.231261) (xy 215.727897 94.225845)
-				(xy 215.726684 94.222917) (xy 215.589987 93.702479) (xy 215.590117 93.696078) (xy 215.635463 93.548266)
-				(xy 215.641165 93.541364) (xy 215.646648 93.54) (xy 215.829352 93.54)
+				(xy 215.838 93.54) (xy 215.638 93.54) (xy 215.589142 93.69926) (xy 215.738 94.266) (xy 215.886858 93.69926)
 			)
 		)
 	)
@@ -108263,10 +108252,10 @@
 		(net 8)
 		(net_name "/boards interface/com/USB_D+")
 		(layer "F.Cu")
-		(uuid "f8f5896a-b38b-4632-b404-283ced82b178")
+		(uuid "f7d60ef1-3d01-42ee-8fed-f99728fdd305")
 		(name "$teardrop_padvia$")
 		(hatch full 0.1)
-		(priority 30007)
+		(priority 30001)
 		(attr
 			(teardrop
 				(type padvia)
@@ -108291,10 +108280,7 @@
 		(filled_polygon
 			(layer "F.Cu")
 			(pts
-				(xy 215.748103 94.304154) (xy 215.749316 94.307082) (xy 215.886012 94.82752) (xy 215.885881 94.833923)
-				(xy 215.840537 94.981731) (xy 215.834835 94.988636) (xy 215.829352 94.99) (xy 215.646648 94.99)
-				(xy 215.638375 94.986573) (xy 215.635464 94.981733) (xy 215.590117 94.833921) (xy 215.589987 94.827522)
-				(xy 215.726684 94.307081) (xy 215.7321 94.299951) (xy 215.740972 94.298738)
+				(xy 215.638 94.99) (xy 215.838 94.99) (xy 215.886858 94.83074) (xy 215.738 94.264) (xy 215.589142 94.83074)
 			)
 		)
 	)
