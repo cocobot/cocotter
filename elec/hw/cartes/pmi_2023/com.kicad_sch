@@ -2967,7 +2967,8 @@
 		(symbol "cocotter_others:TSB001A3526A02"
 			(pin_numbers hide)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3111,7 +3112,7 @@
 				(pin passive line
 					(at -3.81 0 0)
 					(length 1.27)
-					(name "1"
+					(name ""
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3129,7 +3130,7 @@
 				(pin passive line
 					(at 3.81 0 180)
 					(length 1.27)
-					(name "2"
+					(name ""
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3137,6 +3138,24 @@
 						)
 					)
 					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin free line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "MP"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -4586,6 +4605,12 @@
 		(uuid "959186a1-ec23-47c3-bf77-32662cf9d880")
 	)
 	(junction
+		(at 69.85 153.67)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9d0837da-6d22-42ca-964c-5d74a6d4765f")
+	)
+	(junction
 		(at 132.08 55.88)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5028,6 +5053,16 @@
 			(type default)
 		)
 		(uuid "4d12851b-b3f0-4439-bfc4-2f07ecaff9c4")
+	)
+	(wire
+		(pts
+			(xy 73.66 148.59) (xy 73.66 153.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e12fe97-cf76-4190-9897-1bc44d889d7f")
 	)
 	(wire
 		(pts
@@ -5578,6 +5613,16 @@
 			(type default)
 		)
 		(uuid "b1177955-da24-44b6-8812-bdd9088b25fa")
+	)
+	(wire
+		(pts
+			(xy 69.85 153.67) (xy 73.66 153.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b3d4e04d-8980-4400-a563-d5f0b5531de1")
 	)
 	(wire
 		(pts
@@ -6954,6 +6999,9 @@
 		)
 		(pin "2"
 			(uuid "d706c020-dc07-40eb-af10-f5d4fe741579")
+		)
+		(pin "MP"
+			(uuid "c611c56f-955d-4aab-8d90-ffabe25f2230")
 		)
 		(instances
 			(project "pmi_2023"

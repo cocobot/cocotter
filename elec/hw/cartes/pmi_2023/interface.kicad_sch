@@ -1261,7 +1261,7 @@
 				)
 			)
 			(property "Value" "TM-4175-B-A"
-				(at -4.572 -1.27 0)
+				(at 2.54 -1.016 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1648,6 +1648,24 @@
 						)
 					)
 					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin free line
+					(at -5.08 -2.54 90)
+					(length 2.54)
+					(name "MP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "MP"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3870,12 +3888,6 @@
 		(uuid "04919e9e-1f9a-4352-b9a3-a3bbb888042c")
 	)
 	(junction
-		(at 43.18 144.78)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0519bf20-705e-4a19-a5a6-a9a819b1ee1f")
-	)
-	(junction
 		(at 176.53 151.13)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3892,6 +3904,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "135ad72e-3136-42ae-b7da-9b77576cecaa")
+	)
+	(junction
+		(at 40.64 144.78)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "162a6cf2-ea50-471a-ba5f-fd08bfbe020a")
 	)
 	(junction
 		(at 194.31 19.05)
@@ -4602,6 +4620,16 @@
 	)
 	(wire
 		(pts
+			(xy 40.64 144.78) (xy 45.72 144.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "229cc008-747e-408a-b023-36e2548afb03")
+	)
+	(wire
+		(pts
 			(xy 40.64 171.45) (xy 40.64 177.8)
 		)
 		(stroke
@@ -4812,7 +4840,7 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 146.05) (xy 43.18 144.78)
+			(xy 40.64 146.05) (xy 40.64 144.78)
 		)
 		(stroke
 			(width 0)
@@ -5382,7 +5410,7 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 144.78) (xy 43.18 144.78)
+			(xy 35.56 144.78) (xy 40.64 144.78)
 		)
 		(stroke
 			(width 0)
@@ -5862,16 +5890,6 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 144.78) (xy 45.72 144.78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c5cdc1eb-95fc-43e7-910c-365c605866eb")
-	)
-	(wire
-		(pts
 			(xy 163.83 175.26) (xy 171.45 175.26)
 		)
 		(stroke
@@ -5959,6 +5977,16 @@
 			(type default)
 		)
 		(uuid "d8f17a17-691c-4d58-8087-67b385aa8dc5")
+	)
+	(wire
+		(pts
+			(xy 54.61 135.89) (xy 54.61 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d90c85a0-c748-45d2-b17b-a78b9122d70f")
 	)
 	(wire
 		(pts
@@ -7567,6 +7595,71 @@
 		)
 	)
 	(symbol
+		(lib_id "pmi_2023_specific:GND_m")
+		(at 54.61 146.05 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "22536515-f86c-4c82-996d-5d5f1ca0be61")
+		(property "Reference" "#PWR0135"
+			(at 54.61 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND_m"
+			(at 54.61 149.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 54.61 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 54.61 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 54.61 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3a4877ed-6d78-4231-b17c-754744c2e2e5")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/70ec626c-1f87-41a0-95c0-5e3c50204455"
+					(reference "#PWR0135")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_resistors:R_1k_0603_1%")
 		(at 153.67 168.91 0)
 		(unit 1)
@@ -8844,6 +8937,9 @@
 		(pin "1"
 			(uuid "18713fd1-06f0-4993-9cf0-4ed4b8e50fde")
 		)
+		(pin "MP"
+			(uuid "404959b1-5669-4cef-9d5f-71a09b170db6")
+		)
 		(instances
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/70ec626c-1f87-41a0-95c0-5e3c50204455"
@@ -9048,7 +9144,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
-		(at 43.18 146.05 0)
+		(at 40.64 146.05 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9056,7 +9152,7 @@
 		(dnp no)
 		(uuid "786338d1-8291-4044-9844-7b8fa2ecd374")
 		(property "Reference" "#PWR017"
-			(at 43.18 152.4 0)
+			(at 40.64 152.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9065,7 +9161,7 @@
 			)
 		)
 		(property "Value" "GND_m"
-			(at 43.18 149.86 0)
+			(at 40.64 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9073,7 +9169,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 43.18 146.05 0)
+			(at 40.64 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9082,7 +9178,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 43.18 146.05 0)
+			(at 40.64 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9091,7 +9187,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 43.18 146.05 0)
+			(at 40.64 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)

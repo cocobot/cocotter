@@ -159,7 +159,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_capacitors:C_18nF_50V_0603"
+		(symbol "cocotter_capacitors:C_2nF_50V_0603"
 			(pin_numbers hide)
 			(pin_names
 				(offset 0.254)
@@ -176,7 +176,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "18nF 50V"
+			(property "Value" "2nF 50V"
 				(at 0.635 -2.54 0)
 				(effects
 					(font
@@ -212,7 +212,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "18nF 50V X7R 0603 "
+			(property "Specification" "2nF 50V X7R 0603 "
 				(at 0 0 0)
 				(effects
 					(font
@@ -221,7 +221,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C107079 "
+			(property "JLCPCB Part #" "C282245"
 				(at 0 0 0)
 				(effects
 					(font
@@ -248,7 +248,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "C_18nF_50V_0603_0_1"
+			(symbol "C_2nF_50V_0603_0_1"
 				(polyline
 					(pts
 						(xy -2.032 -0.762) (xy 2.032 -0.762)
@@ -274,7 +274,7 @@
 					)
 				)
 			)
-			(symbol "C_18nF_50V_0603_1_1"
+			(symbol "C_2nF_50V_0603_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 2.794)
@@ -11269,7 +11269,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_18nF_50V_0603")
+		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
 		(at 245.11 69.85 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11279,7 +11279,7 @@
 		(fields_autoplaced yes)
 		(uuid "39d1e8ec-e39f-4370-b6a1-c3ad71b0d331")
 		(property "Reference" "C37"
-			(at 248.92 68.58 0)
+			(at 248.92 68.5799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11287,8 +11287,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "18nF 50V"
-			(at 248.92 71.12 0)
+		(property "Value" "2nF 50V"
+			(at 248.92 71.1199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11323,7 +11323,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 245.11 69.85 0)
 			(effects
 				(font
@@ -11332,7 +11332,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 245.11 69.85 0)
 			(effects
 				(font
@@ -11692,7 +11692,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_18nF_50V_0603")
+		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
 		(at 245.11 148.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11702,7 +11702,7 @@
 		(fields_autoplaced yes)
 		(uuid "51e1aee8-fd4f-4730-8ce4-3b0b886778d4")
 		(property "Reference" "C42"
-			(at 248.92 147.32 0)
+			(at 248.92 147.3199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11710,8 +11710,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "18nF 50V"
-			(at 248.92 149.86 0)
+		(property "Value" "2nF 50V"
+			(at 248.92 149.8599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11746,7 +11746,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 245.11 148.59 0)
 			(effects
 				(font
@@ -11755,7 +11755,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 245.11 148.59 0)
 			(effects
 				(font
@@ -12431,7 +12431,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_18nF_50V_0603")
+		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
 		(at 245.11 109.22 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -12441,7 +12441,7 @@
 		(fields_autoplaced yes)
 		(uuid "8135a9c7-eb99-4375-8f1d-37ccf8b1ddbb")
 		(property "Reference" "C41"
-			(at 248.92 107.95 0)
+			(at 248.92 107.9499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12449,8 +12449,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "18nF 50V"
-			(at 248.92 110.49 0)
+		(property "Value" "2nF 50V"
+			(at 248.92 110.4899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12485,7 +12485,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 245.11 109.22 0)
 			(effects
 				(font
@@ -12494,7 +12494,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 245.11 109.22 0)
 			(effects
 				(font
@@ -13452,7 +13452,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_18nF_50V_0603")
+		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
 		(at 191.77 34.29 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -13462,7 +13462,7 @@
 		(fields_autoplaced yes)
 		(uuid "b18f987f-1154-4d29-82aa-96bf827de0de")
 		(property "Reference" "C29"
-			(at 195.58 33.02 0)
+			(at 195.58 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13470,8 +13470,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "18nF 50V"
-			(at 195.58 35.56 0)
+		(property "Value" "2nF 50V"
+			(at 195.58 35.5599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13506,7 +13506,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "18nF 50V X7R 0603 "
+		(property "Specification" "2nF 50V X7R 0603 "
 			(at 191.77 34.29 0)
 			(effects
 				(font
@@ -13515,7 +13515,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C107079 "
+		(property "JLCPCB Part #" "C282245"
 			(at 191.77 34.29 0)
 			(effects
 				(font
