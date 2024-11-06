@@ -32,7 +32,7 @@ async fn heartbeat(mut led: Output<'static>) {
         Timer::after(Duration::from_millis(500)).await;
 
         log::info!("heatbeat high !");
-        led.set_low();
+        led.set_high();
         Timer::after(Duration::from_millis(500)).await;
     }
 }
