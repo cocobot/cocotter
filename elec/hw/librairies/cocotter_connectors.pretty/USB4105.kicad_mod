@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +62,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -155,7 +158,9 @@
 		(at -3.2 -7.355)
 		(size 0.6 1.15)
 		(layers "F.Cu" "F.Paste" "F.Mask")
-		(roundrect_rratio 0.05)
+		(roundrect_rratio 0)
+		(chamfer_ratio 0.28)
+		(chamfer bottom_right)
 		(thermal_bridge_angle 45)
 		(uuid "29f5f417-2795-406d-a00c-1a1799c84529")
 	)
@@ -208,18 +213,22 @@
 		(uuid "d37707c5-100f-4dba-ab41-ca5a4c408ce0")
 	)
 	(pad "A12" smd roundrect
-		(at 3.2 -7.355 180)
+		(at 3.2 -7.355)
 		(size 0.6 1.15)
 		(layers "F.Cu" "F.Paste" "F.Mask")
-		(roundrect_rratio 0.05)
+		(roundrect_rratio 0)
+		(chamfer_ratio 0.28)
+		(chamfer bottom_left)
 		(thermal_bridge_angle 45)
 		(uuid "6b6b7647-8b44-4ef2-b508-107c8df480b9")
 	)
 	(pad "B1" smd roundrect
-		(at 3.2 -7.355 180)
+		(at 3.2 -7.355)
 		(size 0.6 1.15)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
+		(chamfer_ratio 0.28)
+		(chamfer bottom_left)
 		(thermal_bridge_angle 45)
 		(uuid "e462cc06-384e-4a95-9b4a-ac0ef7a7dccf")
 	)
@@ -275,7 +284,9 @@
 		(at -3.2 -7.355)
 		(size 0.6 1.15)
 		(layers "F.Cu" "F.Paste" "F.Mask")
-		(roundrect_rratio 0.05)
+		(roundrect_rratio 0)
+		(chamfer_ratio 0.28)
+		(chamfer bottom_right)
 		(thermal_bridge_angle 45)
 		(uuid "01fa4dd5-8099-4037-81c8-0f9f78df647c")
 	)
