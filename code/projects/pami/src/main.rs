@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-use board_pami_2023::board_init;
+use board_pami_2023::{board_init, PWM_EXTENDED_LED_RGB};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use esp_backtrace as _;
@@ -38,15 +38,41 @@ async fn heartbeat(mut led: Output<'static>) {
 }
 
 #[main]
-async fn main(spawner: Spawner) {    
+async fn main(spawner: Spawner) {        
     let mut board = board_init();
     init_heap();
-    
+
     esp_println::logger::init_logger_from_env();
+
     spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
 
+    //configure pwm
+    let mut pwm_extended = board.pwm_extended.take().unwrap();
+    pwm_extended.set_prescale(100).await.unwrap(); // 60Hz for servomotor
+    pwm_extended.enable().await.unwrap();
+    
+    //run color blind test
     loop {
-        log::info!("Hello world!");
-        Timer::after(Duration::from_millis(500)).await;
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[0], 4095).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[1], 0).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[2], 0).await.unwrap();
+        Timer::after(Duration::from_millis(250)).await;
+
+
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[0], 2048).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[1], 2048).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[2], 0).await.unwrap();
+        Timer::after(Duration::from_millis(250)).await;
+
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[0], 0).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[1], 4095).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[2], 0).await.unwrap();
+        Timer::after(Duration::from_millis(250)).await;
+
+        //the last one is blue. This is the easy one
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[0], 0).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[1], 0).await.unwrap();
+        pwm_extended.set_channel_on(PWM_EXTENDED_LED_RGB[2], 4095).await.unwrap();
+        Timer::after(Duration::from_millis(250)).await;
     }
 }
