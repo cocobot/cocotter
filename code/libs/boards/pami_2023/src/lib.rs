@@ -34,7 +34,7 @@ pub fn board_init() -> Pami2023 {
     let i2c0 = I2c::new_async(peripherals.I2C0, io.pins.gpio18, io.pins.gpio17, 400.kHz());
 
     //init i2c peripherals
-    let pwm_extended = match Pca9685::new(i2c0, Pca9685Address::default()) {
+    let pwm_extended = match Pca9685::new(i2c0, Pca9685Address::from(0b110_1010)) {
         Ok(pwm) => Some(pwm),
         Err(_) => None,
     };
