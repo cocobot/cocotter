@@ -33,7 +33,7 @@ where
     I2C: AsyncI2c<Error = E>,
 {
     /// Create a new instance of the TCA6408A device.
-    pub fn new<A: Into<Address>>(i2c: I2C, address: Address) -> Self {
+    pub fn new(i2c: I2C, address: Address) -> Self {
         Tca6408A {
             i2c,
             address: address.0,
