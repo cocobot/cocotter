@@ -1,8 +1,9 @@
+use embedded_hal::digital::PinState;
 use embedded_hal_async::i2c::I2c as AsyncI2c;
 
 /// I2C device address
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub struct Address(pub(crate) u8);
+pub struct Address(u8);
 
 impl From<u8> for Address {
     fn from(a: u8) -> Self {
@@ -10,13 +11,20 @@ impl From<u8> for Address {
     }
 }
 
+impl Address {
+    pub fn from_pin_state(addr: PinState) -> Self {
+        match addr {
+            PinState::Low => Address(0b010_0000),
+            PinState::High  => Address(0b010_0001),
+        }
+    }
+}
+
 #[derive(Debug)]
 
-pub struct Tca6408A<I2C> {
-    /// The concrete I²C device implementation.
-    pub(crate) i2c: I2C,
-    /// The I²C device address.
-    pub(crate) address: u8,
+pub struct Tca6408a<I2C> {
+    i2c: I2C,
+    address: u8,
 }
 
 #[derive(Debug)]
@@ -28,13 +36,13 @@ impl Register {
     const CONFIG: u8 = 0x03;
 }
 
-impl<I2C, E> Tca6408A<I2C>
+impl<I2C, E> Tca6408a<I2C>
 where
     I2C: AsyncI2c<Error = E>,
 {
     /// Create a new instance of the TCA6408A device.
     pub fn new(i2c: I2C, address: Address) -> Self {
-        Tca6408A {
+        Tca6408a {
             i2c,
             address: address.0,
         }
