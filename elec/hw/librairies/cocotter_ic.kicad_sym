@@ -22,7 +22,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_ic:SOT23-5"
+		(property "Footprint" "cocotter_ic:SOT-23-5"
 			(at -0.762 8.89 0)
 			(effects
 				(font
