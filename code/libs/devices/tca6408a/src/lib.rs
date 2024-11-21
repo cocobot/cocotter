@@ -1,3 +1,5 @@
+#![no_std]
+
 use embedded_hal::digital::PinState;
 use embedded_hal_async::i2c::I2c as AsyncI2c;
 
