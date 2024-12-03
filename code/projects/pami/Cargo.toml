@@ -12,14 +12,13 @@ esp-backtrace = { version = "0.14.2", features = [
     "panic-handler",
     "println",
 ] }
-esp-hal = { version = "0.21.0", features = ["esp32s3"] }
+esp-hal = { version = "0.22.0", features = ["esp32s3"] }
 esp-println = { version = "0.12.0", features = ["esp32s3", "log"] }
 log = { version = "0.4.22" }
 esp-alloc = { version = "0.5.0" }
 embedded-io = "0.6.1"
-esp-wifi = { version = "0.10.1", features = [
+esp-wifi = { version = "0.11.0", features = [
     "esp32s3",
-    "phy-enable-usb",
     "utils",
     "wifi",
 ] }
@@ -37,10 +36,11 @@ smoltcp = { version = "0.11.0", default-features = false, features = [
 ] }
 embassy-time = "0.3.2"
 embassy-executor = "0.6.1"
-esp-hal-embassy = { version = "0.4.0", features = ["esp32s3", "integrated-timers"]}
+esp-hal-embassy = { version = "0.5.0", features = ["esp32s3", "integrated-timers"]}
 
 
 board-pami-2023 = { path = "../../libs/boards/pami_2023" }
+embedded-hal-async = "1.0.0"
 
 
 [profile.dev]
