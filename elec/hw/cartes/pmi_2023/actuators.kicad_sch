@@ -4054,7 +4054,7 @@
 		)
 		(uuid "fe15c39f-06ea-42b2-8987-efd555e28bba")
 	)
-	(text_box "I²C @ : 0b1101010"
+	(text_box "I²C @ : 0b1101001"
 		(exclude_from_sim no)
 		(at 57.15 82.55 0)
 		(size 20.32 6.35)

@@ -458,9 +458,9 @@
 		(thermal_bridge_angle 45)
 		(uuid "35385623-a763-4873-8f2e-07253b23abba")
 	)
-	(model "3d/TQ-2537.step"
+	(model "3d/ESE58L11B.step"
 		(offset
-			(xyz 0 0 0)
+			(xyz 0 -1.2 0)
 		)
 		(scale
 			(xyz 1 1 1)
