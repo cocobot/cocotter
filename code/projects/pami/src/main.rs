@@ -58,11 +58,10 @@ async fn main(spawner: Spawner) {
     pwm_extended.set_prescale(100).await.unwrap(); // 60Hz for servomotor
     pwm_extended.enable().await.unwrap();
     
-    //let mut adc = board.adc.take().unwrap();
+    let mut adc = board.adc.take().unwrap();
 
     //run color blind test
-    loop {
-        /*/
+    loop {        
         const VBATT_RL_KOHMS : f32= 91.0;
         const VBATT_RH_KOHMS : f32= 91.0;
         let vbatt_raw : u16 = adc.adc.read_oneshot(&mut adc.vbatt).unwrap();
@@ -84,26 +83,6 @@ async fn main(spawner: Spawner) {
         pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[1], vbat_color[1]).await.unwrap();
         pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[2], vbat_color[2]).await.unwrap();
         
-
-        
-        //const VBATT_RL_KOHMS : f32= 91.0;
-        //const VBATT_RH_KOHMS : f32= 91.0;
-        //let vbatt_raw : u16 = adc.adc.read_oneshot(&mut adc.vbatt).unwrap();
-        //let vbatt_mv : f32 = (vbatt_raw as f32)/((1<<12 -1) as f32) * 1750.0 * (1.0 + VBATT_RH_KOHMS/VBATT_RL_KOHMS);
-        let vbatt_mv = 5.0;
-        log::info!("BATT : battery voltage : {}mV", vbatt_mv);
-
-        // lifepo4 discharge example:  https://cleversolarpower.com/lifepo4-voltage-chart/
-        const VBATT_LVL_WARN_MV : f32 = 3150.0; // corresponds to around 15% SOC battery SOC
-        const VBATT_LVL_ERR_MV  : f32 = 3000.0; // corresponds to around 5% battery SOC
-
-        let vbat_color :[u16; 3];
-        match vbatt_mv {
-            mv if mv <= VBATT_LVL_ERR_MV  => vbat_color = [ 2048, 0,    0   ], // error : stop required
-            mv if mv <= VBATT_LVL_WARN_MV => vbat_color = [ 2048, 2048, 0   ], // low battery
-            _                             => vbat_color = [ 0,    0,    4095], // ok
-        }
-*/
         
         if let Some(btns) = board.buttons.as_mut() {
             let state = btns.get_input().await.ok();
@@ -112,12 +91,6 @@ async fn main(spawner: Spawner) {
         else {
             log::info!("No buttons found");
         }
-
-/*
-            pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[0], vbat_color[0]).await.unwrap();
-            pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[1], vbat_color[1]).await.unwrap();
-            pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[2], vbat_color[2]).await.unwrap();
-            */
 
         pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[0], 2047).await.ok();
         pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[1], 4095).await.ok();
