@@ -2,13 +2,15 @@
 #![no_main]
 
 mod ui;
+mod pwm;
 
-use board_pami_2023::{Pami2023, PamiAdc, PamiAdcChannel, PWM_EXTENDED_LED_RGB, PWM_EXTENDED_VBAT_RGB};
+use board_pami_2023::{Pami2023, PamiAdc, PamiAdcChannel};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use esp_backtrace as _;
 use esp_hal::gpio::Output;
 use esp_hal_embassy::main;
+use pwm::{PWMEvent, PWM};
 use ui::{UIEvent, UI};
 
 extern crate alloc;
@@ -69,6 +71,7 @@ async fn main(spawner: Spawner) {
 
     esp_println::logger::init_logger_from_env();
     
+    PWM::new(board.pwm_extended.take().unwrap(), spawner).await;
 
     let ui = UI::new(spawner);
 
@@ -78,33 +81,8 @@ async fn main(spawner: Spawner) {
 
     spawner.spawn(asserv(board.left_wheel_counter.take().unwrap(), board.right_wheel_counter.take().unwrap())).unwrap();
 
-
-    //configure pwm
-    let mut pwm_extended = board.pwm_extended.take().unwrap();
-    pwm_extended.set_prescale(100).await.ok(); // 60Hz for servomotor
-    pwm_extended.enable().await.ok();
-    
-
     //run color blind test
     loop {        
-
-        /*
-        // lifepo4 discharge example:  https://cleversolarpower.com/lifepo4-voltage-chart/
-        const VBATT_LVL_WARN_MV : f32 = 3150.0; // corresponds to around 15% SOC battery SOC
-        const VBATT_LVL_ERR_MV  : f32 = 3000.0; // corresponds to around 5% battery SOC
-
-        let vbat_color :[u16; 3];
-        match vbatt_mv {
-            mv if mv <= VBATT_LVL_ERR_MV  => vbat_color = [ 2048, 0,    0   ], // error : stop required
-            mv if mv <= VBATT_LVL_WARN_MV => vbat_color = [ 2048, 2048, 0   ], // low battery
-            _                             => vbat_color = [ 0,    0,    4095], // ok
-        }
-
-        pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[0], vbat_color[0]).await.unwrap();
-        pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[1], vbat_color[1]).await.unwrap();
-        pwm_extended.set_channel_on(PWM_EXTENDED_VBAT_RGB[2], vbat_color[2]).await.unwrap();
-        */
-        
         
         if let Some(btns) = board.buttons.as_mut() {
             let state = btns.get_input().await.ok();
@@ -114,26 +92,17 @@ async fn main(spawner: Spawner) {
             log::info!("No buttons found");
         }
 
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[0], 2047).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[1], 4095).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[2], 4095).await.ok();
+        PWM::send_event(PWMEvent::LedBottom([0.5, 0.0, 0.0]));
         Timer::after(Duration::from_millis(250)).await;
 
-
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[0], 2047).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[1], 2047).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[2], 4095).await.ok();
+        PWM::send_event(PWMEvent::LedBottom([0.5, 0.5, 0.0]));
         Timer::after(Duration::from_millis(250)).await;
 
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[0], 4095).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[1], 2047).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[2], 4095).await.ok();
+        PWM::send_event(PWMEvent::LedBottom([0.5, 0.5, 0.0]));
         Timer::after(Duration::from_millis(250)).await;
 
         //the last one is blue. This is the easy one
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[0], 4095).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[1], 4095).await.ok();
-        pwm_extended.set_channel_off(PWM_EXTENDED_LED_RGB[2], 2047).await.ok();
+        PWM::send_event(PWMEvent::LedBottom([0.0, 0.0, 0.5]));
         Timer::after(Duration::from_millis(250)).await;
     }
 }

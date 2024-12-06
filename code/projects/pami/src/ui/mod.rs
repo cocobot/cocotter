@@ -3,6 +3,8 @@ use embassy_futures::select::{select, Either};
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::{Channel, Receiver, Sender, TrySendError}};
 use embassy_time::{Duration, Timer};
 
+use crate::pwm::{PWMEvent, PWM};
+
 static EVENT_QUEUE: Channel<CriticalSectionRawMutex, UIEvent, 32> = Channel::new();
 
 pub enum UIEvent {
@@ -47,9 +49,23 @@ impl UIThread {
         }
     }
 
+    fn handle_battery_event(&self, voltage_mv: f32) {
+        log::info!("vbatt {}", voltage_mv);
+
+        // lifepo4 discharge example:  https://cleversolarpower.com/lifepo4-voltage-chart/
+        const VBATT_LVL_WARN_MV : f32 = 3150.0; // corresponds to around 15% SOC battery SOC
+        const VBATT_LVL_ERR_MV  : f32 = 3000.0; // corresponds to around 5% battery SOC
+
+        match voltage_mv {
+            mv if mv <= VBATT_LVL_ERR_MV  => PWM::send_event(PWMEvent::LedVbatt([0.5, 0.0, 0.0])), // error : stop required
+            mv if mv <= VBATT_LVL_WARN_MV => PWM::send_event(PWMEvent::LedVbatt([0.5, 0.5, 0.0])), // low battery
+            _                                  => PWM::send_event(PWMEvent::LedVbatt([0.0, 0.5, 0.0])), // ok
+        };
+    }
+
     fn handle_event(&self, event: UIEvent) {
         match event {
-            UIEvent::Vbatt { voltage_mv } => {log::info!("vbatt {}", voltage_mv)},
+            UIEvent::Vbatt { voltage_mv } => self.handle_battery_event(voltage_mv),
         }
     }
 

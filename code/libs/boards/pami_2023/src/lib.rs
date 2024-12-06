@@ -1,5 +1,6 @@
 #![no_std]
 
+
 use core::cmp::min;
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
@@ -15,7 +16,7 @@ use esp_hal::{
     timer::timg::TimerGroup,
     Async,
 };
-use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
+pub use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
 use static_cell::StaticCell;
 use tca6408a::Tca6408a;
 
