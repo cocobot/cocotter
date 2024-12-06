@@ -41,6 +41,8 @@ esp-hal-embassy = { version = "0.5.0", features = ["esp32s3", "integrated-timers
 
 board-pami-2023 = { path = "../../libs/boards/pami_2023" }
 embedded-hal-async = "1.0.0"
+embassy-sync = "0.6.1"
+embassy-futures = "0.1.1"
 
 
 [profile.dev]

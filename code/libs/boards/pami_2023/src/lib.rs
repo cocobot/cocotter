@@ -3,6 +3,7 @@
 use core::cmp::min;
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
+use embassy_time::{Duration, Timer};
 use embedded_hal::digital::PinState;
 use esp_hal::prelude::*;
 use esp_hal::{
@@ -33,12 +34,43 @@ pub const PWM_EXTENDED_VBAT_RGB: [Channel; 3] = [Channel::C10, Channel::C8, Chan
 pub const PWM_EXTENDED_LINE_LED: Channel = Channel::C11;
 pub const PWM_EXTENDED_LED_RGB: [Channel; 3] = [Channel::C12, Channel::C13, Channel::C14];
 
+pub enum PamiAdcChannel {
+    VBat,
+    IMotLeft,
+    IMotRight,
+}
+
 pub struct PamiAdc {
-    pub vbatt: AdcPin<esp_hal::gpio::GpioPin<1>, esp_hal::peripherals::ADC1>,
-    pub i_mot_left: AdcPin<esp_hal::gpio::GpioPin<9>, esp_hal::peripherals::ADC1>,
-    pub i_mot_right: AdcPin<esp_hal::gpio::GpioPin<10>, esp_hal::peripherals::ADC1>,
+    vbatt: AdcPin<esp_hal::gpio::GpioPin<1>, esp_hal::peripherals::ADC1>,
+    i_mot_left: AdcPin<esp_hal::gpio::GpioPin<9>, esp_hal::peripherals::ADC1>,
+    i_mot_right: AdcPin<esp_hal::gpio::GpioPin<10>, esp_hal::peripherals::ADC1>,
+
     pub adc: Adc<'static, esp_hal::peripherals::ADC1>,
 }
+
+impl PamiAdc {    
+    pub async fn read(&mut self, channel: PamiAdcChannel) -> u16 {
+        loop {
+            //ESP-HAL ADC is not compatible with embassy async yet.
+            //TODO: rework this to have a IRQ to signal the executor
+            //instead of periodic polling
+
+            let res = match channel {
+                PamiAdcChannel::VBat => self.adc.read_oneshot(&mut self.vbatt),
+                PamiAdcChannel::IMotLeft => self.adc.read_oneshot(&mut self.i_mot_left),
+                PamiAdcChannel::IMotRight => self.adc.read_oneshot(&mut self.i_mot_right),
+            };
+
+            match res {
+                Ok(result) => return result,
+                _ => {
+                    Timer::after(Duration::from_millis(2)).await;
+                }
+            }
+        }
+    }
+}
+
 
 pub struct Pami2023 {
     pub led_esp: Option<Output<'static>>,
