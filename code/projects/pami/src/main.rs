@@ -55,7 +55,8 @@ async fn analog_reading(ui: UI, mut adc: PamiAdc) {
         const VBATT_RL_KOHMS : f32= 91.0;
         const VBATT_RH_KOHMS : f32= 91.0;
         let vbatt_raw : u16 = adc.read(PamiAdcChannel::VBat).await;
-        let vbatt_mv : f32 = (vbatt_raw as f32)/((1<<12 -1) as f32) * 1750.0 * (1.0 + VBATT_RH_KOHMS/VBATT_RL_KOHMS);
+        log::warn!("vbatt raw {} / {}", vbatt_raw, ((vbatt_raw as f32)/(((1 << 12) -1) as f32)) * 3100.0 );
+        let vbatt_mv : f32 = ((vbatt_raw as f32)/(((1 << 12) -1) as f32)) * 3100.0 * (1.0 + VBATT_RH_KOHMS/VBATT_RL_KOHMS);
 
         ui.send_event(UIEvent::Vbatt { voltage_mv: vbatt_mv });
 
