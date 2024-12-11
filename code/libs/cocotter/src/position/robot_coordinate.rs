@@ -1,4 +1,8 @@
-#[derive(Clone)]
+use core::f32;
+
+use libm::{cosf, sinf};
+
+#[derive(Clone, Debug)]
 //Create an holder for current robot coordinates
 pub struct RobotCoordinate {
     //store robot position in standardized unit (mm/rad)
@@ -36,7 +40,7 @@ impl RobotCoordinate {
 
     //return the angle position only (degrees)
     pub fn get_a_deg(&self) -> f32 {
-        self.a_rad  * 180.0 / std::f32::consts::PI
+        self.a_rad  * 180.0 / core::f32::consts::PI
     }
 
     //sets the new position
@@ -59,8 +63,8 @@ impl RobotCoordinate {
     pub fn compute_new_position(&mut self, distance_mm: f32, angle_rad: f32)
     {
         self.a_rad += angle_rad;
-        self.x_mm  += self.a_rad.cos() * distance_mm;
-        self.y_mm  += self.a_rad.sin() * distance_mm;
+        self.x_mm  += cosf(self.a_rad) * distance_mm;
+        self.y_mm  += sinf(self.a_rad) * distance_mm;
     }
 
     //return the x axis precision flag
@@ -130,7 +134,7 @@ mod tests {
         let position = prepare_structure_for_test();
 
         //check conversion
-        assert_eq!(position.get_a_deg(), A_INIT * 180.0 / std::f32::consts::PI);
+        assert_eq!(position.get_a_deg(), A_INIT * 180.0 / core::f32::consts::PI);
     }
 
     #[test]

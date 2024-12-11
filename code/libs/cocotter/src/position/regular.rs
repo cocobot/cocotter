@@ -1,8 +1,8 @@
 use super::{robot_coordinate::RobotCoordinate, Position};
 
 pub struct RegularPositionConfiguration {
-    tick_to_mm : f32,
-    tick_to_rad : f32,
+    pub tick_to_mm : f32,
+    pub tick_to_rad : f32,
 }
 
 //create a strucut for regular robot position decoder
@@ -110,7 +110,7 @@ impl Position for RegularPosition {
 
     //get the current angle velocity in degree/s
     fn get_angle_speed_deg_s(&self) -> f32 {
-        self.get_angle_speed_rad_s() * 180.0 / std::f32::consts::PI
+        self.get_angle_speed_rad_s() * 180.0 / core::f32::consts::PI
     }
 }
 
@@ -220,23 +220,23 @@ mod tests {
         
         //turn -90° in 500ms
         timestamp       += 500;
-        left_encoder    += std::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0;
-        right_encoder   -= std::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0;
+        left_encoder    += core::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0;
+        right_encoder   -= core::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0;
         position.set_new_encoder_values(timestamp, left_encoder as i32, right_encoder as i32);
         coordinates = position.get_coordinates();
         assert_eq!(position.get_distance_mm(), 5.0);
-        diff = position.get_angle_rad() - (-std::f32::consts::FRAC_PI_2);
+        diff = position.get_angle_rad() - (-core::f32::consts::FRAC_PI_2);
         assert!(diff.abs()<0.001, "angle not equal to -PI/2 : diff to expected value :  {}", diff);
         diff = coordinates.get_x_mm() - 5.0;
         assert!(diff.abs()<0.001, "x not equal to 5.0 : diff to expected value :  {}", diff);
         assert_eq!(coordinates.get_y_mm(), 0.0);
-        diff = coordinates.get_a_rad()- (-std::f32::consts::FRAC_PI_2);
+        diff = coordinates.get_a_rad()- (-core::f32::consts::FRAC_PI_2);
         assert!(diff.abs()<0.001, "angle not equal to -PI/2 : diff to expected value :  {}", diff);
         assert_eq!(coordinates.is_x_precise(), true);
         assert_eq!(coordinates.is_y_precise(), true);
         assert_eq!(coordinates.is_a_precise(), true);
         assert_eq!(position.get_distance_speed_mm_s(), 0.0);
-        diff = position.get_angle_speed_rad_s()- (-std::f32::consts::PI);
+        diff = position.get_angle_speed_rad_s()- (-core::f32::consts::PI);
         assert!(diff.abs()<0.001, "angle speed not equal to -PI : diff to expected value :  {}", diff);
 
         //go 5mm forward in 1000ms
@@ -246,13 +246,13 @@ mod tests {
         position.set_new_encoder_values(timestamp, left_encoder as i32, right_encoder as i32);
         coordinates = position.get_coordinates();
         assert_eq!(position.get_distance_mm(), 10.0);
-        diff = position.get_angle_rad() - (-std::f32::consts::FRAC_PI_2);
+        diff = position.get_angle_rad() - (-core::f32::consts::FRAC_PI_2);
         assert!(diff.abs()<0.001, "angle not equal to -PI/2 : diff to expected value :  {}", diff);
         diff = coordinates.get_x_mm() - 5.0;
         assert!(diff.abs()<0.001, "x not equal to 5.0 : diff to expected value :  {}", diff);
         diff = coordinates.get_y_mm() - (-5.0);
         assert!(diff.abs()<0.001, "y not equal to 5.0 : diff to expected value :  {}", diff);
-        diff = coordinates.get_a_rad()- (-std::f32::consts::FRAC_PI_2);
+        diff = coordinates.get_a_rad()- (-core::f32::consts::FRAC_PI_2);
         assert!(diff.abs()<0.001, "angle not equal to -PI/2 : diff to expected value :  {}", diff);
         assert_eq!(coordinates.is_x_precise(), true);
         assert_eq!(coordinates.is_y_precise(), true);
@@ -269,14 +269,14 @@ mod tests {
         position.set_new_encoder_values(0, 0, 0);
 
         //turn 90° in 500ms
-        position.set_new_encoder_values(500, (-std::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0) as i32, (std::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0) as i32);
+        position.set_new_encoder_values(500, (-core::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0) as i32, (core::f32::consts::FRAC_PI_2 * CONFIG.tick_to_rad / 2.0) as i32);
 
         //check velocity
         let mut read_val = position.get_angle_speed_rad_s();
-        let mut expected_val = std::f32::consts::PI;
+        let mut expected_val = core::f32::consts::PI;
         assert!( (read_val - expected_val).abs() < 0.001, "radian : new angle speed error: read {}, expected : {}", read_val, expected_val);
         read_val = position.get_angle_speed_deg_s();
-        expected_val *= 180.0 / std::f32::consts::PI;
+        expected_val *= 180.0 / core::f32::consts::PI;
         assert!( (read_val - expected_val).abs() < 0.001, "degree : new angle speed error: read {}, expected : {}", read_val, expected_val);
     }
 }

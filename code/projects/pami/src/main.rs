@@ -3,7 +3,10 @@
 
 mod ui;
 mod pwm;
+mod asserv;
+mod config;
 
+use asserv::Asserv;
 use board_pami_2023::{Pami2023, PamiAdc, PamiAdcChannel};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -38,14 +41,6 @@ async fn heartbeat(mut led: Output<'static>) {
 
         led.set_high();
         Timer::after(Duration::from_millis(500)).await;
-    }
-}
-
-#[embassy_executor::task]
-async fn asserv(left_wheel_counter: board_pami_2023::LeftWheelEncoder, right_wheel_counter: board_pami_2023::RightWheelEncoder) {
-    loop {
-        log::info!("left encoder value: {} / right encoder value: {}", left_wheel_counter.get(), right_wheel_counter.get());
-        Timer::after(Duration::from_millis(100)).await;
     }
 }
 
@@ -85,17 +80,15 @@ async fn main(spawner: Spawner) {
     
     log::info!("logger init done!");
     PWM::new(board.pwm_extended.take().unwrap(), spawner).await;
-    log::info!("continuing init...");
+
     let ui = UI::new(spawner);
-    log::info!("continuing init...");
+
     spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
     log::info!("heartbeat created!");
     spawner.spawn(analog_reading(ui.clone(), board.adc.take().unwrap())).unwrap();
     log::info!("analog reading created!");
 
     spawner.spawn(asserv(board.left_wheel_counter.take().unwrap(), board.right_wheel_counter.take().unwrap())).unwrap();
-    log::info!("lef encoder created!");
-    log::info!("init done!");
 
     let mut accel = board.accelerometer.take().unwrap();
     
