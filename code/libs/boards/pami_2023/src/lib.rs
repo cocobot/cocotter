@@ -6,24 +6,30 @@ use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Timer};
 use embedded_hal::digital::PinState;
-use esp_hal::prelude::*;
+use esp_hal::spi::{SpiBitOrder, SpiMode};
+use esp_hal::{peripheral::Peripheral, prelude::*};
 use esp_hal::{
     analog::adc::{Adc, AdcConfig, AdcPin, Attenuation},
-    gpio::{Input, Level, Output, Pull},
+    gpio::{Input, Level, Output, Pull, GpioPin},
+    spi::master::{Config as SpiConfig, Spi},
     i2c::master::{Config, I2c},
     pcnt::{self, Pcnt},
     peripherals::PCNT,
     timer::timg::TimerGroup,
     Async,
+    mcpwm::{McPwm, operator::{PwmPinConfig, PwmPin}, PeripheralClockConfig, timer::PwmWorkingMode, PwmPeripheral},
 };
 pub use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
 use static_cell::StaticCell;
 use tca6408a::Tca6408a;
+use lsm6dso32x::{Lsm6dso32x, Lsm6dso32xConfiguration, AccelerometerConfiguration, GyroscopeConfiguration, ODR, AccelerometerFullScale, GyroFullScale, };
 
 //declare hardcoded peripheral types
 pub type I2C0PamiDevice = I2cDevice<'static, CriticalSectionRawMutex, I2c<'static, Async>>;
 pub type LeftWheelEncoder = pcnt::unit::Counter<'static, 0>;
 pub type RightWheelEncoder = pcnt::unit::Counter<'static, 1>;
+pub type LeftMotorPwms = (PwmPin<'static, esp_hal::peripherals::MCPWM0, 0, true>, PwmPin<'static, esp_hal::peripherals::MCPWM0, 0, false>);
+pub type RightMotorPwms = (PwmPin<'static, esp_hal::peripherals::MCPWM0, 1, true>, PwmPin<'static, esp_hal::peripherals::MCPWM0, 1, false>); 
 
 //external
 pub const PWM_EXTENDED_CHANEL_SERVO: [Channel; 4] =
@@ -53,7 +59,7 @@ impl PamiAdc {
     pub async fn read(&mut self, channel: PamiAdcChannel) -> u16 {
         loop {
             //ESP-HAL ADC is not compatible with embassy async yet.
-            //TODO: rework this to have a IRQ to signal the executor
+            //TODO: rework this to have an IRQ to signal the executor
             //instead of periodic polling
 
             let res = match channel {
@@ -87,8 +93,15 @@ pub struct Pami2023 {
     pub left_wheel_counter: Option<LeftWheelEncoder>,
     pub right_wheel_counter: Option<RightWheelEncoder>,
 
+    //pub left_wheel_pwm : Option<>,
+
     pub adc: Option<PamiAdc>,
+
+    pub accelerometer : Option<Lsm6dso32x>,
+    pub left_motor_pwm : Option<LeftMotorPwms>,
+    pub right_motor_pwm : Option<RightMotorPwms>,
 }
+
 
 impl Pami2023 {
     pub fn new() -> Self {
@@ -107,6 +120,7 @@ impl Pami2023 {
         .with_scl(peripherals.GPIO17)
         .with_sda(peripherals.GPIO18)
         .into_async();
+    
         let (pwm_extended, line_sensor, buttons) = Self::init_i2c_devices(i2c0);
 
         //init motor peripherals
@@ -124,13 +138,47 @@ impl Pami2023 {
 
         //init adc
         let mut adc1_config = AdcConfig::new();
+      
         let adc = PamiAdc {
-            vbatt: adc1_config.enable_pin(peripherals.GPIO1, Attenuation::Attenuation6dB), // 0-1750mV
+            vbatt: adc1_config.enable_pin(peripherals.GPIO1, Attenuation::Attenuation11dB), // 0-1750mV
             i_mot_left: adc1_config.enable_pin(peripherals.GPIO9, Attenuation::Attenuation11dB), // 0-3100mV
             i_mot_right: adc1_config.enable_pin(peripherals.GPIO10, Attenuation::Attenuation11dB), // 0-3100mV
 
             adc: Adc::new(peripherals.ADC1, adc1_config),
         };
+
+        let spi = Spi::new_with_config( peripherals.SPI2, 
+                                     {  let mut config = SpiConfig::default();
+                                        config.frequency = 100.kHz();
+                                        config.mode = SpiMode::Mode3;
+                                        config.read_bit_order = SpiBitOrder::MSBFirst;
+                                        config.write_bit_order = SpiBitOrder::MSBFirst;
+                                        config
+                                    }
+                                    ).with_cs(peripherals.GPIO37)
+                                    .with_sck(peripherals.GPIO48)
+                                    .with_miso(peripherals.GPIO35)
+                                    .with_mosi(peripherals.GPIO36);
+
+        let acc_config = Lsm6dso32xConfiguration  {
+            accelerometer : { let config = AccelerometerConfiguration {
+                odr: ODR::Odr1660Hz,
+                full_scale : AccelerometerFullScale::Fs4g,
+            };
+            config},
+            gyroscope : {let config =  GyroscopeConfiguration {
+                odr: ODR::Odr1660Hz,
+                full_scale : GyroFullScale::Fs1000dps,
+            };
+            config},
+        };
+
+        let truc: esp_hal::peripherals::MCPWM1 =  peripherals.MCPWM1;
+        let p = peripherals.GPIO32;
+
+        let (left_motor_pwm, right_motor_pwm) = Self::init_motor_pwm(peripherals.MCPWM0 ,
+                       peripherals.GPIO14, peripherals.GPIO21,
+                       peripherals.GPIO12, peripherals.GPIO13);
 
         Self {
             led_esp: Some(Output::new(peripherals.GPIO4, Level::High)),
@@ -147,11 +195,50 @@ impl Pami2023 {
             right_wheel_counter: Some(right_wheel_counter),
 
             adc: Some(adc),
+            accelerometer: Some(Lsm6dso32x::new(acc_config, spi)),
+            left_motor_pwm : Some(left_motor_pwm),
+            right_motor_pwm : Some(right_motor_pwm)
         }
     }
 
+    fn init_motor_pwm(mcpwm_dev : esp_hal::peripherals::MCPWM0,
+                    dir_left: GpioPin<14>, pwm_left: GpioPin<21>,
+                    dir_right: GpioPin<12>, pwm_right: GpioPin<13>) ->
+                    (LeftMotorPwms, RightMotorPwms )
+                    {
+        // initialize peripheral
+        let clock_cfg = PeripheralClockConfig::with_frequency(32.MHz()).unwrap();
+        let mut mcpwm = McPwm::new(mcpwm_dev, clock_cfg);
+
+        // connect operator0 to timer0
+        mcpwm.operator0.set_timer(&mcpwm.timer0);
+        mcpwm.operator1.set_timer(&mcpwm.timer0);
+        // connect operator0 to pin
+        let mut left_motor = mcpwm
+            .operator0
+            .with_pins(dir_left, PwmPinConfig::UP_ACTIVE_HIGH,
+                pwm_left, PwmPinConfig::UP_ACTIVE_HIGH);
+
+        let mut right_motor = mcpwm
+            .operator1
+            .with_pins(dir_right, PwmPinConfig::UP_ACTIVE_HIGH,
+                pwm_right, PwmPinConfig::UP_ACTIVE_HIGH);
+        // start timer with timestamp values in the range of 0..=99 and a frequency
+        // of 20 kHz
+        let timer_clock_cfg = clock_cfg
+            .timer_clock_with_frequency(99, PwmWorkingMode::Increase, 20.kHz())
+            .unwrap();
+        mcpwm.timer0.start(timer_clock_cfg);
+
+        /*left_motor.0.set_timestamp(10);
+        left_motor.1.set_timestamp(0);*/
+        (left_motor, right_motor)
+
+    }
+
+
     fn init_i2c_devices(
-        i2c0: I2c<'static, Async>,
+        i2c: I2c<'static, Async>,
     ) -> (
         Pca9685<I2C0PamiDevice>,
         Tca6408a<I2C0PamiDevice>,
@@ -159,7 +246,7 @@ impl Pami2023 {
     ) {
         static I2C0_BUS: StaticCell<Mutex<CriticalSectionRawMutex, I2c<'static, Async>>> =
             StaticCell::new();
-        let i2c0 = I2C0_BUS.init(Mutex::new(i2c0));
+        let i2c0: &'static mut Mutex<CriticalSectionRawMutex, I2c<'_, Async>> = I2C0_BUS.init(Mutex::new(i2c));
 
         //init i2c peripherals
         let pwm_extended = Pca9685::new(I2cDevice::new(i2c0), Pca9685Address::from(0b110_1001))
