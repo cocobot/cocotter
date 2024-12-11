@@ -3,7 +3,10 @@
 
 mod ui;
 mod pwm;
+mod asserv;
+mod config;
 
+use asserv::Asserv;
 use board_pami_2023::{Pami2023, PamiAdc, PamiAdcChannel};
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
@@ -42,14 +45,6 @@ async fn heartbeat(mut led: Output<'static>) {
 }
 
 #[embassy_executor::task]
-async fn asserv(left_wheel_counter: board_pami_2023::LeftWheelEncoder, right_wheel_counter: board_pami_2023::RightWheelEncoder) {
-    loop {
-        log::info!("left encoder value: {} / right encoder value: {}", left_wheel_counter.get(), right_wheel_counter.get());
-        Timer::after(Duration::from_millis(100)).await;
-    }
-}
-
-#[embassy_executor::task]
 async fn analog_reading(ui: UI, mut adc: PamiAdc) {
     loop {
         const VBATT_RL_KOHMS : f32= 91.0;
@@ -75,12 +70,16 @@ async fn main(spawner: Spawner) {
     PWM::new(board.pwm_extended.take().unwrap(), spawner).await;
 
     let ui = UI::new(spawner);
+    let _asserv = Asserv::new(
+        spawner, 
+        
+        board.left_wheel_counter.take().unwrap(), 
+        board.right_wheel_counter.take().unwrap()
+    );
 
     spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
     spawner.spawn(analog_reading(ui.clone(), board.adc.take().unwrap())).unwrap();
     
-
-    spawner.spawn(asserv(board.left_wheel_counter.take().unwrap(), board.right_wheel_counter.take().unwrap())).unwrap();
 
     //run color blind test
     loop {        
