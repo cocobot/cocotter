@@ -226,14 +226,14 @@ impl Lsm6dso32x{
         //first  : send reg and read bit and complete with 2 bytes (register )
         let mut reg_cmd : [u8 ; 7] =  [0xff; 7];
         reg_cmd[0] = Lsm6dso32x::READ_OP_BV | (_register_add as u8);
-        data_out.copy_from_slice(self.spi.transfer(&mut reg_cmd).unwrap()[1..data_out.len()].as_ref());
+        data_out.copy_from_slice(self.spi.transfer(&mut reg_cmd).unwrap()[1..(data_out.len() + 1)].as_ref());
     }
 
     fn write_reg(&mut self,_register_add : RegistersAddr, data_in : &[u8]){
         let mut reg_cmd : [u8 ; 7] =  [0xff; 7];
         reg_cmd[0] = Lsm6dso32x::WRITE_OP_BV | (_register_add as u8);
-        reg_cmd[1..data_in.len()].copy_from_slice(data_in);
-        self.spi.write_bytes(&reg_cmd).unwrap();
+        reg_cmd[1..(data_in.len() + 1)].copy_from_slice(data_in);
+        self.spi.write_bytes(&reg_cmd[0..(data_in.len() + 1)]).unwrap();
     }
 
     pub fn update_measures(&mut self){
