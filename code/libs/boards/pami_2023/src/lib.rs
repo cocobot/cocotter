@@ -162,12 +162,12 @@ impl Pami2023 {
 
         let acc_config = Lsm6dso32xConfiguration  {
             accelerometer : { let config = AccelerometerConfiguration {
-                odr: ODR::Odr1660Hz,
-                full_scale : AccelerometerFullScale::Fs4g,
+                odr: ODR::Odr416Hz,
+                full_scale : AccelerometerFullScale::Fs16g,
             };
             config},
             gyroscope : {let config =  GyroscopeConfiguration {
-                odr: ODR::Odr1660Hz,
+                odr: ODR::Odr416Hz,
                 full_scale : GyroFullScale::Fs1000dps,
             };
             config},
