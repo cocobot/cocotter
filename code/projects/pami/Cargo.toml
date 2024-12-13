@@ -44,6 +44,7 @@ cocotter = { path = "../../libs/cocotter" }
 embedded-hal-async = "1.0.0"
 embassy-sync = "0.6.1"
 embassy-futures = "0.1.1"
+libm = "0.2.11"
 
 
 [profile.dev]
