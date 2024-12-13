@@ -199,7 +199,7 @@
 		(thermal_bridge_angle 45)
 		(uuid "125fe6d4-98f2-4c9d-81fe-509583e0ed73")
 	)
-	(model "3d/IN-P32TRRRGB.step"
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_diodes.pretty/3d/NH-B2020RGBA.step"
 		(offset
 			(xyz 0 0 0)
 		)
@@ -207,7 +207,7 @@
 			(xyz 1 1 1)
 		)
 		(rotate
-			(xyz 0 0 180)
+			(xyz 0 0 0)
 		)
 	)
 )
