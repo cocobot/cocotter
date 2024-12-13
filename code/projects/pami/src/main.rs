@@ -104,7 +104,7 @@ async fn main(spawner: Spawner) {
 
     //run color blind test
     loop {        
-        
+      
         accel.update_measures();
         //let angle = accel.get_angular_rate();
         let angle = accel.get_angular_rate();

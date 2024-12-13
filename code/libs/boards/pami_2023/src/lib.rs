@@ -86,6 +86,9 @@ pub struct Pami2023 {
     pub start_robot: Option<Input<'static>>,
     pub emergency_stop: Option<Input<'static>>,
 
+    pub left_bumper_switch: Option<Input<'static>>,
+    pub right_bumper_switch: Option<Input<'static>>,
+
     pub pwm_extended: Option<Pca9685<I2C0PamiDevice>>,
     pub line_sensor: Option<Tca6408a<I2C0PamiDevice>>,
     pub buttons: Option<Tca6408a<I2C0PamiDevice>>,
@@ -163,7 +166,7 @@ impl Pami2023 {
         let acc_config = Lsm6dso32xConfiguration  {
             accelerometer : { let config = AccelerometerConfiguration {
                 odr: ODR::Odr416Hz,
-                full_scale : AccelerometerFullScale::Fs16g,
+                full_scale : AccelerometerFullScale::Fs2g,
             };
             config},
             gyroscope : {let config =  GyroscopeConfiguration {
@@ -172,9 +175,6 @@ impl Pami2023 {
             };
             config},
         };
-
-        let truc: esp_hal::peripherals::MCPWM1 =  peripherals.MCPWM1;
-        let p = peripherals.GPIO32;
 
         let (left_motor_pwm, right_motor_pwm) = Self::init_motor_pwm(peripherals.MCPWM0 ,
                        peripherals.GPIO14, peripherals.GPIO21,
@@ -186,6 +186,9 @@ impl Pami2023 {
 
             start_robot: Some(Input::new(peripherals.GPIO2, Pull::None)),
             emergency_stop: Some(Input::new(peripherals.GPIO15, Pull::None)),
+
+            left_bumper_switch: Some(Input::new(peripherals.GPIO47, Pull::None)),
+            right_bumper_switch: Some(Input::new(peripherals.GPIO6, Pull::None)),
 
             pwm_extended: Some(pwm_extended),
             line_sensor: Some(line_sensor),
