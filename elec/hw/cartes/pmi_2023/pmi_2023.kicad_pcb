@@ -26945,7 +26945,7 @@
 			(at 2.3 -0.29 90)
 			(unlocked yes)
 			(layer "F.SilkS")
-			(uuid "8122a8f0-3624-4e04-9857-76b93d9c16a6")
+			(uuid "498f8e01-af91-4189-b217-2b8dffb4c343")
 			(effects
 				(font
 					(size 1 1)
@@ -26957,7 +26957,7 @@
 			(at 0 1 180)
 			(unlocked yes)
 			(layer "F.Fab")
-			(uuid "b9692963-98f7-4e69-a08e-6c6797318f47")
+			(uuid "e563b48a-c83b-437a-9acc-7020cb35ccda")
 			(effects
 				(font
 					(size 1 1)
@@ -26970,7 +26970,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "2f87a3f1-a8c3-4cc2-b5a8-064f477ceb76")
+			(uuid "7b3d8f1d-f0de-4982-908a-edf8f27cbe9e")
 			(effects
 				(font
 					(size 1 1)
@@ -26983,7 +26983,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "6b4d6873-4d20-42ac-9562-de8b1e978e2e")
+			(uuid "5e6c5ec2-f20f-4072-9f65-19dbef14f3fa")
 			(effects
 				(font
 					(size 1 1)
@@ -26996,7 +26996,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "ca07d255-a274-4047-9010-6b8c9e58ceda")
+			(uuid "5b03efe3-4e1f-4f93-b48a-5bc8a375c589")
 			(effects
 				(font
 					(size 1 1)
@@ -27029,7 +27029,7 @@
 				(type default)
 			)
 			(layer "F.SilkS")
-			(uuid "227f0504-4d91-4b4c-b812-309953cbb3fa")
+			(uuid "7cdce564-2c84-49d9-ad25-2a2413f5dae6")
 		)
 		(fp_line
 			(start -0.2 -1.05)
@@ -27039,7 +27039,7 @@
 				(type default)
 			)
 			(layer "F.SilkS")
-			(uuid "e33cefd4-c10a-403c-90da-da3baba1857f")
+			(uuid "0faf4137-68a6-4154-a288-83937e6e5488")
 		)
 		(fp_line
 			(start -1.4 -1)
@@ -27049,7 +27049,7 @@
 				(type default)
 			)
 			(layer "F.SilkS")
-			(uuid "9895b7bf-60e3-4753-a0fb-9f975b950686")
+			(uuid "02478ee9-e052-43a6-9d73-0006ac8f3289")
 		)
 		(fp_line
 			(start -1.4 -1.2)
@@ -27059,7 +27059,7 @@
 				(type default)
 			)
 			(layer "F.SilkS")
-			(uuid "ef5f70cd-9170-4f16-ac92-39807800e622")
+			(uuid "999f2547-21f3-4372-a7c4-9189bc03829c")
 		)
 		(fp_rect
 			(start 1.05 1.05)
@@ -27070,7 +27070,7 @@
 			)
 			(fill none)
 			(layer "Dwgs.User")
-			(uuid "becd6877-8f5b-4032-842d-20343fdcc7fb")
+			(uuid "359ba589-9d9d-485e-b1eb-56e56c3f0f62")
 		)
 		(fp_poly
 			(pts
@@ -27082,7 +27082,7 @@
 			)
 			(fill solid)
 			(layer "Dwgs.User")
-			(uuid "d63454b6-8368-47b4-8629-6a5d982aa963")
+			(uuid "fa9ba292-3cc2-4c2b-b6de-b1b4477c0be0")
 		)
 		(fp_rect
 			(start 1.65 1.5)
@@ -27093,13 +27093,13 @@
 			)
 			(fill none)
 			(layer "F.CrtYd")
-			(uuid "b07150b5-571a-426a-a660-d838dac6de71")
+			(uuid "bc2aac36-baff-4350-808e-e59067644979")
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 2.5 180)
 			(unlocked yes)
 			(layer "F.Fab")
-			(uuid "33ceff4c-e5fd-4f88-b304-ee60268166ba")
+			(uuid "5806e71f-14fd-4cb1-91a2-cfcd1474919b")
 			(effects
 				(font
 					(size 1 1)
@@ -27111,7 +27111,7 @@
 			(at 0 2.5 180)
 			(unlocked yes)
 			(layer "F.Fab")
-			(uuid "f01eb43b-c782-466a-bbbe-4eb4a76ae04b")
+			(uuid "5dcf7ecc-5de4-4c9b-8e95-5d9084f485c0")
 			(effects
 				(font
 					(size 1 1)
@@ -27130,7 +27130,7 @@
 			(pinfunction "C_RED")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "5a4a426d-e28d-4fa1-9059-dedad4c6fcc9")
+			(uuid "78c0619f-625f-4868-a36d-f37f1ff449c5")
 		)
 		(pad "2" smd roundrect
 			(at 0.85 -0.55)
@@ -27141,7 +27141,7 @@
 			(pinfunction "C_BLUE")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "317c1701-6189-4834-aa81-667337ce9df4")
+			(uuid "d9769537-6a76-4860-9557-0857aab701b0")
 		)
 		(pad "3" smd roundrect
 			(at 0.85 0.55)
@@ -27152,7 +27152,7 @@
 			(pinfunction "COM")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "5a3035c3-67ce-45a7-adea-2c530c9a9b37")
+			(uuid "7d8da199-6ef1-42ca-adc9-937f35e035f1")
 		)
 		(pad "4" smd roundrect
 			(at -0.85 0.55)
@@ -27163,9 +27163,9 @@
 			(pinfunction "C_GREEN")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "a911c664-348d-4df9-8cb8-12a9172ce2e7")
+			(uuid "59b40970-4739-4b70-8d0d-7c11f0229ed6")
 		)
-		(model "3d/IN-P32TRRRGB.step"
+		(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_diodes.pretty/3d/NH-B2020RGBA.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -27173,7 +27173,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 180)
+				(xyz 0 0 0)
 			)
 		)
 	)
@@ -66520,7 +66520,7 @@
 			(at 1.6 1.9 0)
 			(unlocked yes)
 			(layer "B.SilkS")
-			(uuid "9efdffb7-8366-4771-ae02-9cc72fbe7b01")
+			(uuid "7fa642d9-c851-4c2d-ac6f-f2d2e496ef21")
 			(effects
 				(font
 					(size 1 1)
@@ -66533,7 +66533,7 @@
 			(at 0 -1 0)
 			(unlocked yes)
 			(layer "B.Fab")
-			(uuid "a3b36bbd-128a-4000-ba1a-6d8b4b6c5dc0")
+			(uuid "ccc5cd6b-0beb-4666-9ba8-d9749c019991")
 			(effects
 				(font
 					(size 1 1)
@@ -66547,7 +66547,7 @@
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "0d71b3b6-d7d9-4f5d-996a-6ff562c24dfb")
+			(uuid "d8fd6f0d-c6c0-45e3-8086-65472b14682d")
 			(effects
 				(font
 					(size 1 1)
@@ -66561,7 +66561,7 @@
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "be2664b5-db09-40b0-b05f-2b42d5017111")
+			(uuid "a257a7da-9788-4b00-a653-117579cdfd2d")
 			(effects
 				(font
 					(size 1 1)
@@ -66575,7 +66575,7 @@
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "b860d305-daf1-4793-a5b9-d0fba95f041a")
+			(uuid "1a0e6925-ecf3-4d9f-9d8b-23a79b8bba1e")
 			(effects
 				(font
 					(size 1 1)
@@ -66610,7 +66610,7 @@
 				(type default)
 			)
 			(layer "B.SilkS")
-			(uuid "55b93b72-e95e-4b9c-8589-feedb0218d74")
+			(uuid "8cfef86d-5594-40b3-ab76-867405a0f63b")
 		)
 		(fp_line
 			(start 0.2 -1.05)
@@ -66620,7 +66620,7 @@
 				(type default)
 			)
 			(layer "B.SilkS")
-			(uuid "5de0003e-8c22-4eb1-8a15-030ec77e2c7d")
+			(uuid "86f685c5-58c1-42e9-aed4-a6bbf2e2d8e2")
 		)
 		(fp_line
 			(start -1.2 1.2)
@@ -66630,7 +66630,7 @@
 				(type default)
 			)
 			(layer "B.SilkS")
-			(uuid "773a8e5c-c4e7-46c5-beeb-1f40a647bdb0")
+			(uuid "f431cf98-46bc-4f5a-b1e5-e00c3b7e4d41")
 		)
 		(fp_line
 			(start -1.4 1.2)
@@ -66640,18 +66640,18 @@
 				(type default)
 			)
 			(layer "B.SilkS")
-			(uuid "4e0396ed-a441-44ba-a49e-c6b1c7d00f88")
+			(uuid "e09ad073-a6ee-4db3-ad1d-9c764efa9d10")
 		)
 		(fp_rect
-			(start -1.05 1.05)
-			(end 1.05 -1.05)
+			(start 1.05 -1.05)
+			(end -1.05 1.05)
 			(stroke
 				(width 0.1)
 				(type default)
 			)
 			(fill none)
 			(layer "Dwgs.User")
-			(uuid "a6bff8de-a790-4efd-987d-a4f2778c7783")
+			(uuid "c3515681-9998-47c6-8c93-43ee03333385")
 		)
 		(fp_poly
 			(pts
@@ -66663,24 +66663,24 @@
 			)
 			(fill solid)
 			(layer "Dwgs.User")
-			(uuid "ef7ce8bc-12c4-4006-be7a-449c4de2804e")
+			(uuid "c26ffe5a-7967-4e8b-a9da-0c897f2b4c61")
 		)
 		(fp_rect
-			(start -1.65 1.5)
-			(end 1.65 -1.5)
+			(start 1.65 -1.5)
+			(end -1.65 1.5)
 			(stroke
 				(width 0.1)
 				(type default)
 			)
 			(fill none)
 			(layer "B.CrtYd")
-			(uuid "21753853-2359-427f-96f6-a36409cf8e8d")
+			(uuid "babb0035-f484-4e28-925b-1eccab9070a0")
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 -2.5 0)
 			(unlocked yes)
 			(layer "B.Fab")
-			(uuid "03061419-faba-46a3-ae6a-9989f3bd97f8")
+			(uuid "87b8cee8-05e2-41ba-a2dc-7e28e31d7040")
 			(effects
 				(font
 					(size 1 1)
@@ -66693,7 +66693,7 @@
 			(at 0 -2.5 0)
 			(unlocked yes)
 			(layer "B.Fab")
-			(uuid "4fbc5a13-dee7-4281-8986-1d7d7b6ae2a6")
+			(uuid "f1661acf-d2ee-40e4-b147-1c98fa066221")
 			(effects
 				(font
 					(size 1 1)
@@ -66713,7 +66713,7 @@
 			(pinfunction "C_RED")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "f73d2180-fd28-437a-a5f6-cac7a56a18b8")
+			(uuid "7e9b4407-fa32-4b8b-9c4a-9595632efbb2")
 		)
 		(pad "2" smd roundrect
 			(at 0.85 0.55)
@@ -66724,7 +66724,7 @@
 			(pinfunction "C_BLUE")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "579cf05a-11e4-4108-be4e-ac68f360df09")
+			(uuid "1ca01927-0ad3-47c0-9c4f-0da90a64e1b2")
 		)
 		(pad "3" smd roundrect
 			(at 0.85 -0.55)
@@ -66735,7 +66735,7 @@
 			(pinfunction "COM")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "1e5ff20c-5241-4d29-9779-9edaabf979d4")
+			(uuid "4f9768d8-a6fe-4fc5-be43-f74a25a3baa5")
 		)
 		(pad "4" smd roundrect
 			(at -0.85 -0.55)
@@ -66746,9 +66746,9 @@
 			(pinfunction "C_GREEN")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
-			(uuid "de797a6d-aade-4c8c-9d34-d55f36fc5ee9")
+			(uuid "05269167-415f-4d8f-afe7-27b2b1aeb506")
 		)
-		(model "3d/IN-P32TRRRGB.step"
+		(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_diodes.pretty/3d/NH-B2020RGBA.step"
 			(offset
 				(xyz 0 0 0)
 			)
@@ -66756,7 +66756,7 @@
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 180)
+				(xyz 0 0 0)
 			)
 		)
 	)
