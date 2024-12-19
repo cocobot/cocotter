@@ -171,7 +171,7 @@ impl Pami2023 {
             config},
             gyroscope : {let config =  GyroscopeConfiguration {
                 odr: ODR::Odr416Hz,
-                full_scale : GyroFullScale::Fs1000dps,
+                full_scale : GyroFullScale::Fs250dps,
             };
             config},
         };
@@ -229,7 +229,7 @@ impl Pami2023 {
         // start timer with timestamp values in the range of 0..=99 and a frequency
         // of 20 kHz
         let timer_clock_cfg = clock_cfg
-            .timer_clock_with_frequency(99, PwmWorkingMode::Increase, 20.kHz())
+            .timer_clock_with_frequency(999, PwmWorkingMode::Increase, 20.kHz())
             .unwrap();
         mcpwm.timer0.start(timer_clock_cfg);
 

@@ -4,6 +4,9 @@
 
 use esp_hal::spi::master::Spi;
 use core::ops::AddAssign;
+use embassy_time::{Duration, Instant, Timer};
+use log::info;
+
 
 #[allow(dead_code)]
 enum RegistersAddr {
@@ -193,7 +196,7 @@ pub struct Lsm6dso32x {
     angular_rate    : Meas3d,
     angular_rate_offset: Meas3d,
     temperature     : f32,
-    timestamp_us    : u64
+    timestamp       : Instant,
 }
 
 
@@ -213,6 +216,8 @@ impl Lsm6dso32x{
     const STATUS_REG_GDA_BM     : u8 = 0b0000_0010;   // gyroscope new data available bit in status reg
     const STATUS_REG_TDA_BM     : u8 = 0b0000_0100;   // temperature new data available bit in status reg
 
+    const CALIBRATION_PERIOD_MS : u64 = 20;
+
     //pub fn new(configuration: Lsm6dso32xConfiguration, spi_dev: Spi<'static, SpiMode>, _cs: Output<'static>) -> Self {
     pub fn new(configuration: Lsm6dso32xConfiguration, spi_dev: Spi<'static, esp_hal::Blocking>) -> Self {
         Lsm6dso32x { 
@@ -223,11 +228,11 @@ impl Lsm6dso32x{
             angular_rate: Meas3d::from([0,0, 0,0, 0,0], 1.0), 
             angular_rate_offset: Meas3d::from([0,0, 0,0, 0,0], 1.0), 
             temperature : 0.0, 
-            timestamp_us : u64::MAX
+            timestamp : Instant::now(),
         }
     }
 
-    pub fn init(&mut self) {
+    pub async fn init(&mut self) {
         // check device identity
         let mut who_am_i_val : [u8;1] = [0xff];
         self.read_reg(RegistersAddr::WhoAmI, &mut who_am_i_val);
@@ -258,16 +263,26 @@ impl Lsm6dso32x{
 
         let mut angular_rate = Meas3d::from([0,0, 0,0, 0,0], 1.0);
 
-        for _it in 0..200{
+        log::info!("calibrating lsm6dso32x");
+        for _it in 0..20{
+            self.update_measures(); // update but throw first measures
+            Timer::after(Duration::from_millis(Self::CALIBRATION_PERIOD_MS)).await;
+        }
 
+        for _it in 0..200{
+            log::info!("meas {}, {}, {}", angular_rate.x, angular_rate.y, angular_rate.z);
             self.update_measures();
             angular_rate += self.get_angular_rate();
-            // todo add tempo
+            //run the asserv at 20Hz
+            Timer::after(Duration::from_millis(Self::CALIBRATION_PERIOD_MS)).await;
+            
         }
+        log::info!("cal tot {}, {}, {}", angular_rate.x, angular_rate.y, angular_rate.z);
         angular_rate.x = -angular_rate.x/200.0;
         angular_rate.y = -angular_rate.y/200.0;
         angular_rate.z = -angular_rate.z/200.0;
-        //self.angular_rate_offset = angular_rate;
+        log::info!("cal div {}, {}, {}", angular_rate.x, angular_rate.y, angular_rate.z);
+        self.angular_rate_offset = angular_rate;
         //todo correct it
 
     }
@@ -292,7 +307,6 @@ impl Lsm6dso32x{
 
         if status_reg_val[0] & (Lsm6dso32x::STATUS_REG_GDA_BM | Lsm6dso32x::STATUS_REG_XLDA_BM) == (Lsm6dso32x::STATUS_REG_GDA_BM | Lsm6dso32x::STATUS_REG_XLDA_BM)
         {
-
             let mut xl_val : [u8 ;6] = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
             self.read_reg(RegistersAddr::OutxLG, &mut xl_val);
             self.angular_rate = Meas3d::from(xl_val, GyroFullScale::from(self.dev_conf.gyroscope.full_scale.clone()));
@@ -302,7 +316,7 @@ impl Lsm6dso32x{
             self.read_reg(RegistersAddr::OutxLA, &mut angle_rate_val);
             self.acceleration = Meas3d::from(angle_rate_val, AccelerometerFullScale::from(self.dev_conf.accelerometer.full_scale.clone()));
 
-            // todo : update timestamp
+            self.timestamp = Instant::now();
         }
         if status_reg_val[0] & Lsm6dso32x::STATUS_REG_TDA_BM == Lsm6dso32x::STATUS_REG_TDA_BM
         {
@@ -322,8 +336,8 @@ impl Lsm6dso32x{
         self.angular_rate.clone()
     }
 
-    pub fn get_measure_timestamp(&self) -> u64{
-        self.timestamp_us.clone()
+    pub fn get_measure_timestamp(&self) -> Instant{
+        self.timestamp.clone()
     }
 
     pub fn get_temperature_degc(&self) -> f32{
