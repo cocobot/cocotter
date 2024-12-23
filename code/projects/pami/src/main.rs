@@ -112,20 +112,20 @@ async fn main(spawner: Spawner) {
 
     //run color blind test
     loop {        
-      
+        Timer::after(Duration::from_millis(20)).await;
         accel.update_measures();
         //let angle = accel.get_angular_rate();
         let mut angle = accel.get_angular_rate();
         let acc = accel.get_acceleration();
         let temp = accel.get_temperature_degc();
         let delta_time_ms = accel.get_measure_timestamp().duration_since(last_period).as_micros() as f64;
-        log::info!("delta time : {}", delta_time_ms);
+        //log::info!("delta time : {}", delta_time_ms);
         angle.x = ((angle.x as f64)* delta_time_ms / 1000_000.0)as f32;
         last_period = accel.get_measure_timestamp();
         pos += angle.clone();
 
-        log::info!("accelerometer angle {:4.5} {:4.5} {:4.5} \t accel : {:4.5} {:4.5} {:4.5} \t temperature {:2.3} \t pos {:4.5}", angle.x, angle.y, angle.z, acc.x, acc.y, acc.z, temp, pos.x);
-        Timer::after(Duration::from_millis(50)).await;
+        log::info!("accelerometer angle {:4.5} {:4.5} {:4.5} \t accel : {:4.5} {:4.5} {:4.5} \t temperature {:4.3} \t pos {:4.3} {:4.3} {:4.3}", angle.x, angle.y, angle.z, acc.x, acc.y, acc.z, pos.x, accel.get_angle().x, accel.get_angle().y, accel.get_angle().z);
+        
         
         /*if let Some(btns) = board.buttons.as_mut() {
             let state = btns.get_input().await.ok();
