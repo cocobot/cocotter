@@ -1,5 +1,5 @@
 use alloc::sync::Arc;
-use board_pami_2023::{LeftWheelEncoder, RightWheelEncoder};
+use board_pami_2023::{LeftMotorPwms, LeftWheelEncoder, RightWheelEncoder};
 use cocotter::{pid::PID, position::{regular::RegularPosition, Position}, ramp::Ramp};
 use embassy_executor::Spawner;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
@@ -10,6 +10,9 @@ use crate::config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTA
 pub struct Asserv {
     left_wheel_counter: LeftWheelEncoder,
     right_wheel_counter: RightWheelEncoder,
+
+    left_pwm: LeftMotorPwms,
+
     last_encoders_read: [i16; 2],
     encoders: [i32; 2],
 
@@ -23,10 +26,11 @@ pub struct Asserv {
 }
 
 impl Asserv {
-    pub fn new(spawner: Spawner, left_wheel_counter: LeftWheelEncoder, right_wheel_counter: RightWheelEncoder) -> Arc<Mutex<CriticalSectionRawMutex, Self>> {  
+    pub fn new(spawner: Spawner, left_wheel_counter: LeftWheelEncoder, right_wheel_counter: RightWheelEncoder, left_pwm: LeftMotorPwms) -> Arc<Mutex<CriticalSectionRawMutex, Self>> {  
         let instance = Arc::new(Mutex::new(Self {
             left_wheel_counter,
             right_wheel_counter,
+            left_pwm,
             last_encoders_read: [0, 0],
             encoders: [0, 0],
 
@@ -45,6 +49,11 @@ impl Asserv {
     }
 
     pub async fn run(instance: Arc<Mutex<CriticalSectionRawMutex, Self>>) {
+
+        let mut test = instance.lock().await;
+       // test.ramp_distance.set_target(10.0);
+        drop(test);
+
         loop {
             //run the asserv at 20Hz
             Timer::after(Duration::from_millis(ASSERV_PERIOD_MS)).await;
@@ -57,10 +66,12 @@ impl Asserv {
             for i in 0..2 {
                 let delta = new_encoders[i].overflowing_sub(instance.last_encoders_read[i]).0;
                 instance.encoders[i] += delta as i32;
+                log::info!("delta: {:?}", delta);
                 instance.last_encoders_read[i] = new_encoders[i];
             }
 
             //compute new position
+            log::info!("encoders: {:?}", instance.encoders);
             let encoder_latched = (instance.encoders[0], instance.encoders[1]);
             instance.position.set_new_encoder_values(now, encoder_latched.0, encoder_latched.1);
             
@@ -78,9 +89,22 @@ impl Asserv {
             //assign the control loop output to the motors
             let left_speed = distance_sp - angle_sp;
             let right_speed = distance_sp + angle_sp;
+        
+            let left_speed = (left_speed * 0.001).clamp(-25.0, 25.0);
+
+            match left_speed < 0.0 {
+                true => {
+                    instance.left_pwm.0.set_timestamp( (-left_speed) as u16);
+                    instance.left_pwm.1.set_timestamp(0);
+                }
+                false => {
+                    instance.left_pwm.0.set_timestamp(0);
+                    instance.left_pwm.1.set_timestamp(left_speed as u16);
+                }
+            }
 
             log::info!("encoder L:{} R:{} / coord {:?}", encoder_latched.0, encoder_latched.1, robot_coord);
-            log::info!("ramp distance: {} / ramp angle: {}", instance.ramp_distance.get_output(), instance.ramp_angle.get_output());
+            //log::info!("ramp distance: {} / ramp angle: {}", instance.ramp_distance.get_output(), instance.ramp_angle.get_output());
             log::info!("left speed: {} / right speed: {}", left_speed, right_speed);
         }
     }

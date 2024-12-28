@@ -19,8 +19,6 @@ use ui::{UIEvent, UI};
 extern crate alloc;
 use core::mem::MaybeUninit;
 
-use libm::{cosf, sinf};
-
 fn init_heap() {
     const HEAP_SIZE: usize = 32 * 1024;
     static mut HEAP: MaybeUninit<[u8; HEAP_SIZE]> = MaybeUninit::uninit();
@@ -65,7 +63,7 @@ async fn test_vaccum() {
 loop{
     PWM::send_event(PWMEvent::Vaccum(0.0));
     Timer::after(Duration::from_secs(3)).await;
-    PWM::send_event(PWMEvent::Vaccum(0.8));
+ //   PWM::send_event(PWMEvent::Vaccum(1.0));
     Timer::after(Duration::from_secs(3)).await;
 }
 
@@ -79,24 +77,29 @@ async fn main(spawner: Spawner) {
 
     esp_println::logger::init_logger_from_env();
     
-    log::info!("logger init done!");
     PWM::new(board.pwm_extended.take().unwrap(), spawner).await;
 
     let ui = UI::new(spawner);
+    let _asserv = Asserv::new(
+        spawner, 
+        
+        board.left_wheel_counter.take().unwrap(), 
+        board.right_wheel_counter.take().unwrap(),
 
+        board.left_motor_pwm.take().unwrap(),
+    );
+    
     spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
-    log::info!("heartbeat created!");
     spawner.spawn(analog_reading(ui.clone(), board.adc.take().unwrap())).unwrap();
-    log::info!("analog reading created!");
 
     //spawner.spawn(asserv(board.left_wheel_counter.take().unwrap(), board.right_wheel_counter.take().unwrap())).unwrap();
 
     let mut accel = board.accelerometer.take().unwrap();
     
-    //spawner.spawn(test_vaccum()).unwrap();
+    spawner.spawn(test_vaccum()).unwrap();
     //let mut vaccumm_lvl : u16;
 
-    let mut left_motor_pwm = board.left_motor_pwm.take().unwrap();
+    //let mut left_motor_pwm = board.left_motor_pwm.take().unwrap();
 
     PWM::send_event(PWMEvent::LineLedLvl(1.0));
     accel.init();
@@ -165,14 +168,14 @@ async fn main(spawner: Spawner) {
         else {
             log::info!("No buttons found");
         }
-
+/* 
         left_motor_pwm.0.set_timestamp(speed);
         left_motor_pwm.1.set_timestamp(0);
         speed += 5;
         if speed >= 100{
             speed = 0;
         }
-        log::info!("speed : {speed}");
+        log::info!("speed : {speed}");*/
 
         PWM::send_event(PWMEvent::LedBottom([0.5, 0.0, 0.0]));
         Timer::after(Duration::from_millis(250)).await;

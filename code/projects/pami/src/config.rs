@@ -20,17 +20,17 @@ pub const ANGLE_RAMP_CONFIG : RampConfiguration = RampConfiguration {
 };
 
 pub const DISTANCE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
-    kp: 1.0,
+    kp: 10.0,
     ki: 0.0,
-    kd: 0.0,
+    kd: 500.0,
     max_integral: 0.0,
     max_err_for_integral: 0.0,
 };
 
 pub const ANGLE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
-    kp: 1.0,
+    kp: 10.0,
     ki: 0.0,
-    kd: 0.0,
+    kd: 500.0,
     max_integral: 0.0,
     max_err_for_integral: 0.0,
 };

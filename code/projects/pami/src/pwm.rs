@@ -24,17 +24,12 @@ pub struct PWM {
 
 impl PWM {
     pub async fn new(mut device: Pca9685<I2C0PamiDevice>, spawner: Spawner) {
-        // 60Hz for servomotor
-        log::info!("before prescaler init");
-        device.set_prescale(100).await.unwrap();
-        /* 
+        // 60Hz for servomotor        
         if device.set_prescale(100).await.is_err() {
             //only display error once if device is not soldered
             log::error!("No pca9685 working");
-        }*/
-        log::info!("prescaler init");
-        device.enable().await.unwrap();
-        log::info!("enable");
+        }
+        device.enable().await.ok();
         let instance = Self {
             device
         };

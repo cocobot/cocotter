@@ -7,8 +7,8 @@ pub struct RampConfiguration {
 
 impl RampConfiguration {
     pub fn with_timestep_ms(self, timestamp_ms: u64) -> RampConfiguration {
-        let max_speed = self.max_speed / (timestamp_ms as f32 / 1000.0);
-        let acceleration = self.acceleration / ((timestamp_ms as f32 / 1000.0) * (timestamp_ms as f32 / 1000.0));
+        let max_speed = self.max_speed * 1e-3 * (timestamp_ms as f32);
+        let acceleration = self.acceleration * 1e-6 * ((timestamp_ms * timestamp_ms) as f32);
 
         RampConfiguration {
             max_speed,
@@ -56,6 +56,9 @@ impl Ramp {
         //compute how much distance the robot will do if we start decreasing the speed now
         let delta_position = self.speed * self.speed / (2.0 * self.configuration.acceleration);
 
+        //log::info!("delta_position: {} {} {}", delta_position, self.position, self.target);
+        //log::info!("speed: {}/{} ({})", self.speed, self.configuration.max_speed, self.configuration.acceleration);
+
         //check if we want to move forward or backward
         let forward = (self.target - self.position) >= 0.0;
         if forward {
@@ -81,13 +84,22 @@ impl Ramp {
             }
         }
 
+
+       // log::info!("speed: {}", self.speed);
+
         //set speed limit (because of cops !)
         self.speed = self.speed.clamp(-self.configuration.max_speed, self.configuration.max_speed);
 
         //compute next output
         let mut output = self.position + self.speed;
+      // log::info!("output: {}", output);
 
         //prevent position overshoot because of discrete speed
+        if (self.target - self.position) < 0.001 {
+            //we are close enough to the target
+            output = self.target;
+            self.speed = 0.0;
+        }
         if forward && (self.speed > 0.0) {
             if output > self.target {
                 output = self.target;
@@ -103,7 +115,7 @@ impl Ramp {
         
         //assign output
         self.position = output;
-
+        //log::info!("eoutput: {}", output);
         output
     }
 }
