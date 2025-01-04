@@ -92,10 +92,15 @@ impl Ramp {
 
         //compute next output
         let mut output = self.position + self.speed;
-      // log::info!("output: {}", output);
+        // log::info!("output: {}", output);
+        let mut abs_diff : f32 = self.target - self.position;
+
+        if !forward{
+            abs_diff = - abs_diff;
+        }
 
         //prevent position overshoot because of discrete speed
-        if (self.target - self.position) < 0.001 {
+        if abs_diff < 0.001 {
             //we are close enough to the target
             output = self.target;
             self.speed = 0.0;
@@ -118,6 +123,7 @@ impl Ramp {
         //log::info!("eoutput: {}", output);
         output
     }
+
 }
 
 impl fmt::Debug for Ramp {

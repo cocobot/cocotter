@@ -15,6 +15,7 @@ use esp_hal::gpio::Output;
 use esp_hal_embassy::main;
 use pwm::{PWMEvent, PWM};
 use ui::{UIEvent, UI};
+use core::f32::consts::PI;
 
 extern crate alloc;
 use core::mem::MaybeUninit;
@@ -80,7 +81,7 @@ async fn main(spawner: Spawner) {
     PWM::new(board.pwm_extended.take().unwrap(), spawner).await;
 
     let ui = UI::new(spawner);
-    let _asserv = Asserv::new(
+    let asserv = Asserv::new(
         spawner, 
         
         board.left_wheel_counter.take().unwrap(), 
@@ -105,6 +106,9 @@ async fn main(spawner: Spawner) {
     PWM::send_event(PWMEvent::LineLedLvl(1.0));
     accel.init();
     let mut speed : u16 = 0;
+
+    let mut time_s = 0;
+    let mut target:f32 = 0.0;
 
     //run color blind test
     loop {        
@@ -177,6 +181,20 @@ async fn main(spawner: Spawner) {
             speed = 0;
         }
         log::info!("speed : {speed}");*/
+        if time_s%3 == 0{
+            
+            if target > 0.001 {
+                target = 0.0;
+            }
+            else
+            {
+                //target = PI/2.0;
+                target = 100.0;
+            }
+            log::info!("\n\n\nchange target {}\n\n\n", target);
+            //Asserv::set_angle_target(asserv.clone(), target).await;
+            Asserv::set_distance_target(asserv.clone(), target).await;
+        }
 
         PWM::send_event(PWMEvent::LedBottom([0.5, 0.0, 0.0]));
         Timer::after(Duration::from_millis(250)).await;
@@ -190,5 +208,6 @@ async fn main(spawner: Spawner) {
         //the last one is blue. This is the easy one
         PWM::send_event(PWMEvent::LedBottom([0.0, 0.0, 0.5]));
         Timer::after(Duration::from_millis(250)).await;
+        time_s += 1;
     }
 }

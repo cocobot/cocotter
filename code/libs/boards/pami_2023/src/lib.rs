@@ -7,7 +7,7 @@ use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Timer};
 use embedded_hal::digital::PinState;
 use esp_hal::spi::{SpiBitOrder, SpiMode};
-use esp_hal::{peripheral::Peripheral, prelude::*};
+use esp_hal::prelude::*;
 use esp_hal::{
     analog::adc::{Adc, AdcConfig, AdcPin, Attenuation},
     gpio::{Input, Level, Output, Pull, GpioPin},
@@ -17,7 +17,7 @@ use esp_hal::{
     peripherals::PCNT,
     timer::timg::TimerGroup,
     Async,
-    mcpwm::{McPwm, operator::{PwmPinConfig, PwmPin}, PeripheralClockConfig, timer::PwmWorkingMode, PwmPeripheral},
+    mcpwm::{McPwm, operator::{PwmPinConfig, PwmPin}, PeripheralClockConfig, timer::PwmWorkingMode},
 };
 pub use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
 use static_cell::StaticCell;
@@ -217,12 +217,12 @@ impl Pami2023 {
         mcpwm.operator0.set_timer(&mcpwm.timer0);
         mcpwm.operator1.set_timer(&mcpwm.timer0);
         // connect operator0 to pin
-        let mut left_motor = mcpwm
+        let left_motor = mcpwm
             .operator0
             .with_pins(dir_left, PwmPinConfig::UP_ACTIVE_HIGH,
                 pwm_left, PwmPinConfig::UP_ACTIVE_HIGH);
 
-        let mut right_motor = mcpwm
+        let right_motor = mcpwm
             .operator1
             .with_pins(dir_right, PwmPinConfig::UP_ACTIVE_HIGH,
                 pwm_right, PwmPinConfig::UP_ACTIVE_HIGH);
