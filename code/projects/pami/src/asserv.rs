@@ -1,5 +1,5 @@
 use alloc::sync::Arc;
-use board_pami_2023::{LeftMotorPwms, LeftWheelEncoder, RightWheelEncoder};
+use board_pami_2023::{LeftMotorPwms, RightMotorPwms, LeftWheelEncoder, RightWheelEncoder};
 use cocotter::{pid::PID, position::{regular::RegularPosition, Position}, ramp::Ramp};
 use embassy_executor::Spawner;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
@@ -12,6 +12,7 @@ pub struct Asserv {
     right_wheel_counter: RightWheelEncoder,
 
     left_pwm: LeftMotorPwms,
+    right_pwm: RightMotorPwms,
 
     last_encoders_read: [i16; 2],
     encoders: [i32; 2],
@@ -26,11 +27,16 @@ pub struct Asserv {
 }
 
 impl Asserv {
-    pub fn new(spawner: Spawner, left_wheel_counter: LeftWheelEncoder, right_wheel_counter: RightWheelEncoder, left_pwm: LeftMotorPwms) -> Arc<Mutex<CriticalSectionRawMutex, Self>> {  
+    pub fn new(spawner: Spawner,
+             left_wheel_counter: LeftWheelEncoder,
+             right_wheel_counter: RightWheelEncoder,
+             left_pwm: LeftMotorPwms,
+             right_pwm: RightMotorPwms) -> Arc<Mutex<CriticalSectionRawMutex, Self>> {  
         let instance = Arc::new(Mutex::new(Self {
             left_wheel_counter,
             right_wheel_counter,
             left_pwm,
+            right_pwm,
             last_encoders_read: [0, 0],
             encoders: [0, 0],
 
@@ -84,13 +90,14 @@ impl Asserv {
 
             //compute the control loop
             let distance_sp = instance.pid_distance.compute(distance_target - robot_distance);
-            let angle_sp = instance.pid_angle.compute(angle_target - robot_coord.get_a_deg());
+            //let angle_sp = instance.pid_angle.compute(angle_target - robot_coord.get_a_deg());
+            let angle_sp = 0.0;
             
             //assign the control loop output to the motors
             let left_speed = distance_sp - angle_sp;
             let right_speed = distance_sp + angle_sp;
         
-            let left_speed = (left_speed * 0.001).clamp(-25.0, 25.0);
+            //let left_speed = (left_speed * 0.001).clamp(-25.0, 25.0);
 
             match left_speed < 0.0 {
                 true => {
@@ -100,6 +107,17 @@ impl Asserv {
                 false => {
                     instance.left_pwm.0.set_timestamp(0);
                     instance.left_pwm.1.set_timestamp(left_speed as u16);
+                }
+            }
+
+            match right_speed < 0.0 {
+                true => {
+                    instance.right_pwm.1.set_timestamp( (-right_speed) as u16);
+                    instance.right_pwm.0.set_timestamp(0);
+                }
+                false => {
+                    instance.right_pwm.1.set_timestamp(0);
+                    instance.right_pwm.0.set_timestamp(right_speed as u16);
                 }
             }
 

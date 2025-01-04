@@ -87,6 +87,7 @@ async fn main(spawner: Spawner) {
         board.right_wheel_counter.take().unwrap(),
 
         board.left_motor_pwm.take().unwrap(),
+        board.right_motor_pwm.take().unwrap(),
     );
     
     spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
