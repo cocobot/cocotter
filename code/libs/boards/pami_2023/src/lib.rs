@@ -229,7 +229,7 @@ impl Pami2023 {
         // start timer with timestamp values in the range of 0..=99 and a frequency
         // of 20 kHz
         let timer_clock_cfg = clock_cfg
-            .timer_clock_with_frequency(99, PwmWorkingMode::Increase, 20.kHz())
+            .timer_clock_with_frequency(999, PwmWorkingMode::Increase, 20.kHz())
             .unwrap();
         mcpwm.timer0.start(timer_clock_cfg);
 
@@ -293,8 +293,8 @@ impl Pami2023 {
             pcnt::channel::CtrlMode::Keep,
         );
         ch0.set_input_mode(
-            pcnt::channel::EdgeMode::Increment,
             pcnt::channel::EdgeMode::Decrement,
+            pcnt::channel::EdgeMode::Increment,
         );
 
         let ch1 = &u0.channel1;
@@ -305,8 +305,8 @@ impl Pami2023 {
             pcnt::channel::CtrlMode::Keep,
         );
         ch1.set_input_mode(
-            pcnt::channel::EdgeMode::Decrement,
             pcnt::channel::EdgeMode::Increment,
+            pcnt::channel::EdgeMode::Decrement,
         );
 
         let u1 = pcnt.unit1;
@@ -321,8 +321,8 @@ impl Pami2023 {
             pcnt::channel::CtrlMode::Keep,
         );
         ch0.set_input_mode(
-            pcnt::channel::EdgeMode::Increment,
             pcnt::channel::EdgeMode::Decrement,
+            pcnt::channel::EdgeMode::Increment,
         );
 
         let ch1 = &u1.channel1;
@@ -333,8 +333,8 @@ impl Pami2023 {
             pcnt::channel::CtrlMode::Keep,
         );
         ch1.set_input_mode(
-            pcnt::channel::EdgeMode::Decrement,
             pcnt::channel::EdgeMode::Increment,
+            pcnt::channel::EdgeMode::Decrement,
         );
 
         u0.listen();
