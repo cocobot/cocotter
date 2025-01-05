@@ -5,7 +5,7 @@ use embassy_executor::Spawner;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Instant, Timer};
 
-use crate::config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG, ASSERV_PWM_OFFSET_MEAS_PERIOD_MS};
+use crate::config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG, ASSERV_PWM_OFFSET_MEAS_PERIOD_MS, ASSERV_DEAD_ZONE_SPEED};
 
 pub type AsservMutexProtected = Arc<Mutex<CriticalSectionRawMutex, Asserv>>;
 
@@ -184,25 +184,22 @@ impl Asserv {
             let left_pwm_offset = instance.left_pwm_offset.clone();
             let right_pwm_offset = instance.right_pwm_offset.clone();
 
-            match left_speed {
-
-                -8.0..8.0 => {
+            if (left_speed >= -ASSERV_DEAD_ZONE_SPEED) && (left_speed <= ASSERV_DEAD_ZONE_SPEED){
                     instance.left_pwm.0.set_timestamp(0);
                     instance.left_pwm.1.set_timestamp(0);
                 }
-                ..-8.0 => {
+            else if left_speed <= -ASSERV_DEAD_ZONE_SPEED {
                     instance.left_pwm.0.set_timestamp( (-left_speed) as u16 + left_pwm_offset[0]);
                     instance.left_pwm.1.set_timestamp(0);
                 }
-                8.0.. => {
+            else if left_speed >= ASSERV_DEAD_ZONE_SPEED {
                     instance.left_pwm.0.set_timestamp(0);
                     instance.left_pwm.1.set_timestamp(left_speed as u16 + left_pwm_offset[1]);
                 }
-                _=> {
+            else {
                     instance.left_pwm.0.set_timestamp(0);
                     instance.left_pwm.1.set_timestamp(0);
                 }
-            }
 
             /*match right_speed < 0.0 {
                 true => {
@@ -214,25 +211,23 @@ impl Asserv {
                     instance.right_pwm.0.set_timestamp(right_speed as u16 + right_pwm_offset[1]);
                 }
             }*/
-            match right_speed {
-
-                -8.0..8.0 => {
+            if (right_speed >= -ASSERV_DEAD_ZONE_SPEED) && (right_speed <= ASSERV_DEAD_ZONE_SPEED){
                     instance.right_pwm.0.set_timestamp(0);
                     instance.right_pwm.1.set_timestamp(0);
                 }
-                ..-8.0 => {
+            else if right_speed <= -ASSERV_DEAD_ZONE_SPEED {
                     instance.right_pwm.1.set_timestamp( (-right_speed) as u16 + right_pwm_offset[0]);
                     instance.right_pwm.0.set_timestamp(0);
                 }
-                8.0.. => {
+            else if right_speed >= ASSERV_DEAD_ZONE_SPEED {
                     instance.right_pwm.1.set_timestamp(0);
                     instance.right_pwm.0.set_timestamp(right_speed as u16 + right_pwm_offset[1]);
                 }
-                _=> {
+            else {
                     instance.right_pwm.0.set_timestamp(0);
                     instance.right_pwm.1.set_timestamp(0);
                 }
-            }
+
 
             log::info!("encoder L:{} R:{} / coord {:?}", encoder_latched.0, encoder_latched.1, robot_coord);
             //log::info!("ramp distance: {} / ramp angle: {}", instance.ramp_distance.get_output(), instance.ramp_angle.get_output());

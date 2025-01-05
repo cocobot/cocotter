@@ -1,7 +1,10 @@
 use cocotter::{pid::PIDConfiguration, position::regular::RegularPositionConfiguration, ramp::RampConfiguration};
 
 pub const ASSERV_PERIOD_MS : u64 = 10;
+
 pub const ASSERV_PWM_OFFSET_MEAS_PERIOD_MS : u64 = 10;
+
+pub const ASSERV_DEAD_ZONE_SPEED : f32 = 12.0; // 
 
 
 pub const POSITION_CONFIG : RegularPositionConfiguration = RegularPositionConfiguration {
