@@ -189,7 +189,7 @@ async fn main(spawner: Spawner) {
             else
             {
                 //target = PI/2.0;
-                target = 100.0;
+                target = 200.0;
             }
             log::info!("\n\n\nchange target {}\n\n\n", target);
             //Asserv::set_angle_target(asserv.clone(), target).await;
