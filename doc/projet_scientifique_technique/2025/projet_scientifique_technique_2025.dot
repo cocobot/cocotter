@@ -1,0 +1,71 @@
+graph robot_architecture{
+fontname="Helvetica,Arial,sans-serif"
+node [fontname="Helvetica,Arial,sans-serif"]
+edge [fontname="Helvetica,Arial,sans-serif"]
+layout=neato
+compound=true;
+uc [shape = box, width = 2, height = 3, label = "Microcontroller"];
+
+propulsion_array [shape=plain label=<
+          <table border="0" cellborder="1" cellspacing="0" cellpadding="2">
+          <tr><td colspan="2" sides="b" ><b>propulsion</b></td></tr>
+          <tr><td port="0">2*DC motor</td></tr>
+          <tr><td port="1">2*Incremental Encoder</td></tr>
+          </table>> ];
+
+hmi_array [shape=plain label=<
+          <table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+          <tr><td colspan="1" sides="b" ><b>HMI</b></td></tr>
+          <tr><td port="0">4* configuration switch</td></tr>
+          <tr><td port="1">OLED display</td></tr>
+	  <tr><td port="2">directionnal switch</td></tr>
+          </table>> ];
+
+positionning_array [shape=plain label=<
+          <table border="0" cellborder="1" cellspacing="0" cellpadding="3">
+          <tr><td colspan="1" sides="b" ><b>positionning</b></td></tr>
+          <tr><td port="0">2*side TOF sensor</td></tr>
+          <tr><td port="1">inertial sensor (6 axis)</td></tr>
+          <tr><td port="2">8*line sensor</td></tr>
+          </table>> ];
+
+avoidance_array  [shape=plain label=<
+          <table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+          <tr><td colspan="1" sides="b" ><b>avoidance</b></td></tr>
+          <tr><td port="0">front multizone (8x8) TOD sensor</td></tr>
+          <tr><td port="1">back multizone (8x8) TOD sensor</td></tr>
+          <tr><td port="2">2*front contact switch</td></tr>
+          <tr><td port="3">2*back contact switch</td></tr>
+          </table>> ];
+
+mandatory_array  [shape=plain label=<
+          <table border="0" cellborder="1" cellspacing="0" cellpadding="2">
+          <tr><td colspan="1" sides="b" ><b>mandatory</b></td></tr>
+          <tr><td port="0">starting cord</td></tr>
+          <tr><td port="1">emergency stop</td></tr>
+          </table>> ]
+
+bat_mon [shape = box,width = 1, label = "battery monitoring"];
+ana_servo[shape = box,width = 1, label = "4*analog servo"];
+prog_itf[shape = box,width = 1, label = "programming interface"];
+
+
+uc -- {prog_itf, bat_mon, propulsion_array, positionning_array, hmi_array, ana_servo, avoidance_array, mandatory_array};
+/*uc -- hmi_array:1;
+uc -- hmi_array:2;
+uc -- positionning_array:1;
+uc -- avoidance_array:0;
+uc -- avoidance_array:1;
+uc -- propulsion_array [label = "2"];
+uc -- positionning_array:0 [label = "2"];
+uc -- positionning_array:2 [label = "8"];
+uc -- ana_servo [label = "4"];
+uc -- hmi_array:0:w [label = "4"];
+uc -- avoidance_array:2 [label = "2"];
+uc -- avoidance_array:3 [label = "2"];*/
+
+
+overlap=false
+/*label="PetriNet Model PhiloDilemma\nExtracted from ConceptBase and layed out by Graphviz "*/
+fontsize=12;
+}
