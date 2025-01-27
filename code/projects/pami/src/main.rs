@@ -8,14 +8,15 @@ mod config;
 
 use asserv::Asserv;
 use board_pami_2023::{Pami2023, PamiAdc, PamiAdcChannel};
+use cocotter::trajectory::{order::Order, Trajectory, TrajectoryOrderList};
 use embassy_executor::Spawner;
+use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_time::{Duration, Timer};
 use esp_backtrace as _;
 use esp_hal::gpio::Output;
 use esp_hal_embassy::main;
 use pwm::{PWMEvent, PWM};
 use ui::{UIEvent, UI};
-use core::f32::consts::PI;
 
 extern crate alloc;
 use core::mem::MaybeUninit;
@@ -60,6 +61,29 @@ async fn analog_reading(ui: UI, mut adc: PamiAdc) {
 }
 
 #[embassy_executor::task]
+async fn game_logic(trajectory: Trajectory<CriticalSectionRawMutex, 2>) {
+
+    loop {
+        let order = TrajectoryOrderList::new()
+        .add_order(Order::GotoA { a_rad: 0_f32.to_radians() })
+        .add_order(Order::GotoD { d_mm: 100.0 })
+        .add_order(Order::GotoA { a_rad: 90_f32.to_radians() })
+        .add_order(Order::GotoD { d_mm: 100.0 })
+        .add_order(Order::GotoA { a_rad: 180_f32.to_radians() })
+        .add_order(Order::GotoD { d_mm: 100.0 })
+        .add_order(Order::GotoA { a_rad: -90_f32.to_radians() })
+        .add_order(Order::GotoD { d_mm: 100.0 })
+            ;
+
+        match trajectory.execute(order).await {
+            Ok(_) => log::info!("Trajectory done"),
+            Err(e) => log::error!("Trajectory error: {:?}", e),
+        }
+        Timer::after(Duration::from_secs(3)).await;
+    }
+}
+
+#[embassy_executor::task]
 async fn test_vaccum() {
 loop{
     PWM::send_event(PWMEvent::Vaccum(0.0));
@@ -90,11 +114,11 @@ async fn main(spawner: Spawner) {
         board.left_motor_pwm.take().unwrap(),
         board.right_motor_pwm.take().unwrap(),
     );
+    let trajectory = Trajectory::new(asserv.lock().await.get_position());
     
     spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
     spawner.spawn(analog_reading(ui.clone(), board.adc.take().unwrap())).unwrap();
-
-    //spawner.spawn(asserv(board.left_wheel_counter.take().unwrap(), board.right_wheel_counter.take().unwrap())).unwrap();
+    spawner.spawn(game_logic(trajectory)).unwrap();
 
     let mut accel = board.accelerometer.take().unwrap();
     
@@ -105,10 +129,6 @@ async fn main(spawner: Spawner) {
 
     PWM::send_event(PWMEvent::LineLedLvl(1.0));
     accel.init();
-    let mut speed : u16 = 0;
-
-    let mut time_s = 0;
-    let mut target:f32 = 0.0;
 
     //run color blind test
     loop {        
@@ -173,28 +193,7 @@ async fn main(spawner: Spawner) {
         else {
             log::info!("No buttons found");
         }
-/* 
-        left_motor_pwm.0.set_timestamp(speed);
-        left_motor_pwm.1.set_timestamp(0);
-        speed += 5;
-        if speed >= 100{
-            speed = 0;
-        }
-        log::info!("speed : {speed}");*/
-        if time_s%3 == 0{
-            
-            if target > 0.001 {
-                target = 0.0;
-            }
-            else
-            {
-                //target = PI/2.0;
-                target = 200.0;
-            }
-            log::info!("\n\n\nchange target {}\n\n\n", target);
-            //Asserv::set_angle_target(asserv.clone(), target).await;
-            Asserv::set_distance_target(asserv.clone(), target).await;
-        }
+
 
         PWM::send_event(PWMEvent::LedBottom([0.5, 0.0, 0.0]));
         Timer::after(Duration::from_millis(250)).await;
@@ -208,6 +207,5 @@ async fn main(spawner: Spawner) {
         //the last one is blue. This is the easy one
         PWM::send_event(PWMEvent::LedBottom([0.0, 0.0, 0.5]));
         Timer::after(Duration::from_millis(250)).await;
-        time_s += 1;
     }
 }

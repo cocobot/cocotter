@@ -1,4 +1,4 @@
-use cocotter::{pid::PIDConfiguration, position::regular::RegularPositionConfiguration, ramp::RampConfiguration};
+use cocotter::{pid::PIDConfiguration, position::PositionConfiguration, ramp::RampConfiguration};
 
 pub const ASSERV_PERIOD_MS : u64 = 10;
 
@@ -7,7 +7,7 @@ pub const ASSERV_PWM_OFFSET_MEAS_PERIOD_MS : u64 = 10;
 pub const ASSERV_DEAD_ZONE_SPEED : f32 = 5.0; // 
 
 
-pub const POSITION_CONFIG : RegularPositionConfiguration = RegularPositionConfiguration {
+pub const POSITION_CONFIG : PositionConfiguration = PositionConfiguration {
     tick_to_mm: 2.71666,
     tick_to_rad: 225.448, //112.724,
 };

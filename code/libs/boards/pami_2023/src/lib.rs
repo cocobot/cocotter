@@ -6,8 +6,7 @@ use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Timer};
 use embedded_hal::digital::PinState;
-use esp_hal::spi::{SpiBitOrder, SpiMode};
-use esp_hal::prelude::*;
+use esp_hal::spi::{BitOrder, Mode};
 use esp_hal::{
     analog::adc::{Adc, AdcConfig, AdcPin, Attenuation},
     gpio::{Input, Level, Output, Pull, GpioPin},
@@ -18,6 +17,7 @@ use esp_hal::{
     timer::timg::TimerGroup,
     Async,
     mcpwm::{McPwm, operator::{PwmPinConfig, PwmPin}, PeripheralClockConfig, timer::PwmWorkingMode},
+    time::RateExtU32,
 };
 pub use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
 use static_cell::StaticCell;
@@ -119,10 +119,15 @@ impl Pami2023 {
             let mut config = Config::default();
             config.frequency = 100.kHz();
             config
-        })
+        }).unwrap()
         .with_scl(peripherals.GPIO17)
-        .with_sda(peripherals.GPIO18)
-        .into_async();
+        .with_sda(peripherals.GPIO18);
+
+        let _enable_front_tof = Output::new(peripherals.GPIO3, Level::Low);
+        let _enable_back_tof = Output::new(peripherals.GPIO16, Level::High);
+        
+        
+        let i2c0 = i2c0.into_async();
     
         let (pwm_extended, line_sensor, buttons) = Self::init_i2c_devices(i2c0);
 
@@ -143,22 +148,23 @@ impl Pami2023 {
         let mut adc1_config = AdcConfig::new();
       
         let adc = PamiAdc {
-            vbatt: adc1_config.enable_pin_with_cal(peripherals.GPIO1, Attenuation::Attenuation11dB), // 0-3100mV
-            i_mot_left: adc1_config.enable_pin_with_cal(peripherals.GPIO9, Attenuation::Attenuation11dB), // 0-3100mV
-            i_mot_right: adc1_config.enable_pin_with_cal(peripherals.GPIO10, Attenuation::Attenuation11dB), // 0-3100mV
+            vbatt: adc1_config.enable_pin_with_cal(peripherals.GPIO1, Attenuation::_11dB), // 0-3100mV
+            i_mot_left: adc1_config.enable_pin_with_cal(peripherals.GPIO9, Attenuation::_11dB), // 0-3100mV
+            i_mot_right: adc1_config.enable_pin_with_cal(peripherals.GPIO10, Attenuation::_11dB), // 0-3100mV
 
             adc: Adc::new(peripherals.ADC1, adc1_config),
         };
 
-        let spi = Spi::new_with_config( peripherals.SPI2, 
+        let spi = Spi::new( peripherals.SPI2, 
                                      {  let mut config = SpiConfig::default();
                                         config.frequency = 100.kHz();
-                                        config.mode = SpiMode::Mode3;
-                                        config.read_bit_order = SpiBitOrder::MSBFirst;
-                                        config.write_bit_order = SpiBitOrder::MSBFirst;
+                                        config.mode = Mode::_3;
+                                        config.read_bit_order = BitOrder::MsbFirst;
+                                        config.write_bit_order = BitOrder::MsbFirst;
                                         config
-                                    }
-                                    ).with_cs(peripherals.GPIO37)
+                                    })
+                                    .unwrap()
+                                    .with_cs(peripherals.GPIO37)
                                     .with_sck(peripherals.GPIO48)
                                     .with_miso(peripherals.GPIO35)
                                     .with_mosi(peripherals.GPIO36);
@@ -210,7 +216,7 @@ impl Pami2023 {
                     (LeftMotorPwms, RightMotorPwms )
                     {
         // initialize peripheral
-        let clock_cfg = PeripheralClockConfig::with_frequency(32.MHz()).unwrap();
+        let clock_cfg = PeripheralClockConfig::with_frequency(32u32.MHz()).unwrap();
         let mut mcpwm = McPwm::new(mcpwm_dev, clock_cfg);
 
         // connect operator0 to timer0

@@ -1,5 +1,6 @@
-use core::fmt;
+use core::{f32::EPSILON, fmt};
 
+#[derive(Debug, Clone, Copy)]
 pub struct RampConfiguration {
     pub max_speed: f32,
     pub acceleration: f32,
@@ -34,6 +35,10 @@ impl Ramp {
             target: 0.0,
             speed: 0.0,
         }
+    }
+
+    pub fn get_conf_as_mut(&mut self) -> &mut RampConfiguration {
+        &mut self.configuration
     }
 
     pub fn set_max_speed(&mut self, max_speed: f32) {
@@ -122,6 +127,11 @@ impl Ramp {
         self.position = output;
         //log::info!("eoutput: {}", output);
         output
+    }
+
+    pub fn is_done(&self) -> bool {
+        let diff = self.position - self.target;
+        diff.abs() <= EPSILON
     }
 
 }

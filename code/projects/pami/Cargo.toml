@@ -12,16 +12,15 @@ esp-backtrace = { version = "0.14.2", features = [
     "panic-handler",
     "println",
 ] }
-esp-hal = { version = "0.22.0", features = ["esp32s3"] }
 esp-println = { version = "0.12.0", features = ["esp32s3", "log"] }
 log = { version = "0.4.22" }
 esp-alloc = { version = "0.5.0" }
 embedded-io = "0.6.1"
-esp-wifi = { version = "0.11.0", features = [
-    "esp32s3",
-    "utils",
-    "wifi",
-] }
+#esp-wifi = { version = "0.11.0", features = [
+#    "esp32s3",
+#    "utils",
+#    "wifi",
+#] }
 heapless = { version = "0.8.0", default-features = false }
 smoltcp = { version = "0.11.0", default-features = false, features = [
     "medium-ethernet",
@@ -34,17 +33,18 @@ smoltcp = { version = "0.11.0", default-features = false, features = [
     "socket-tcp",
     "socket-udp",
 ] }
-embassy-time = "0.3.2"
-embassy-executor = "0.6.1"
-esp-hal-embassy = { version = "0.5.0", features = ["esp32s3", "integrated-timers"]}
+embassy-time = "0.4.0"
+embassy-executor = "0.7.0"
+esp-hal-embassy = { version = "0.6.0", features = ["esp32s3"] }
 
 
 board-pami-2023 = { path = "../../libs/boards/pami_2023" }
 cocotter = { path = "../../libs/cocotter" }
 embedded-hal-async = "1.0.0"
-embassy-sync = "0.6.1"
+embassy-sync = "0.6.2"
 embassy-futures = "0.1.1"
 libm = "0.2.11"
+esp-hal = "0.23.1"
 
 
 [profile.dev]
