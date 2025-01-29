@@ -2,6 +2,7 @@ use core::f32::consts::{PI, TAU}; // 2 * PI
 
 use embassy_sync::blocking_mutex::raw::RawMutex;
 use embassy_time::{Duration, Timer};
+use libm::{atan2f, floorf, sqrtf};
 
 use crate::position::PositionMutex;
 
@@ -11,30 +12,33 @@ use super::{OrderConfig, TrajectorError};
 pub enum Order {
     GotoD { d_mm: f32 },
     GotoA { a_rad: f32 },
+
+    GotoXY { x_mm: f32, y_mm: f32 },
 }
 
 impl Order {
+    const A_INDEX: usize = 0;
+    const D_INDEX_IN_NON_HOLONOMIC_ROBOT: usize = 1;
+
     pub async fn execute<M: RawMutex, const N: usize>(&self, order_index: usize, config: &OrderConfig<N>, position: &PositionMutex<M, N>) -> Result<usize, TrajectorError> {
         match self {
             Order::GotoD { d_mm } => {
                 match N {
                     2 => {
-                        const D_INDEX_IN_NON_HOLONOMIC_ROBOT: usize = 1;
-
                         let mut locked_position = position.lock().await;
                         let initial_position = locked_position.get_coordinates();
-                        let initial_d = initial_position.get_raw_linear_coordonate()[D_INDEX_IN_NON_HOLONOMIC_ROBOT];
+                        let initial_d = initial_position.get_raw_linear_coordonate()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
                         if config.is_backwards() {
-                            locked_position.get_ramps_as_mut()[D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d - d_mm);
+                            locked_position.get_ramps_as_mut()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d - d_mm);
                         }
                         else {
-                            locked_position.get_ramps_as_mut()[D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d + d_mm);
+                            locked_position.get_ramps_as_mut()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d + d_mm);
                         }
                         drop(locked_position);
         
                         loop {
                             let locked_position = position.lock().await;
-                            let d_ramp =  &locked_position.get_ramps()[D_INDEX_IN_NON_HOLONOMIC_ROBOT];
+                            let d_ramp =  &locked_position.get_ramps()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
                             if d_ramp.is_done() {
                                 break;
                             }
@@ -51,24 +55,73 @@ impl Order {
                     }
                 }
             }
-            Order::GotoA { a_rad } => {
-                const A_INDEX: usize = 0;
-                        
+            Order::GotoA { a_rad } => {                        
                 let mut locked_position = position.lock().await;
                 let initial_position = locked_position.get_coordinates();
                 let initial_a = initial_position.get_a_rad();
                 if config.is_backwards() {
-                    locked_position.get_ramps_as_mut()[A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad));
+                    locked_position.get_ramps_as_mut()[Order::A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad));
                 }
                 else {
-                    locked_position.get_ramps_as_mut()[A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad + PI));
+                    locked_position.get_ramps_as_mut()[Order::A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad + PI));
                 }
                 drop(locked_position);
 
                 loop {
                     let locked_position = position.lock().await;
-                    let a_ramp =  &locked_position.get_ramps()[A_INDEX];
+                    let a_ramp =  &locked_position.get_ramps()[Order::A_INDEX];
                     if a_ramp.is_done() {
+                        break;
+                    }
+                    drop(locked_position);
+                    
+                    Timer::after(Duration::from_millis(75)).await;
+                }
+                
+                Ok(order_index + 1)
+            }
+
+            Order::GotoXY { x_mm, y_mm } => {
+                if N != 2 {
+                    return Err(TrajectorError::InvalidOrder);
+                }
+
+                loop {
+                    let mut locked_position = position.lock().await;
+                    
+                    let initial_position = locked_position.get_coordinates();
+                    let delta_x = x_mm - initial_position.get_x_mm();
+                    let delta_y = y_mm - initial_position.get_y_mm();
+
+                    //compute ramp targets
+                    let target_a = atan2f(delta_y, delta_x);
+                    let target_a = match config.is_backwards() {
+                        false => Order::find_closest_angle(initial_position.get_a_rad(), target_a),
+                        true => Order::find_closest_angle(initial_position.get_a_rad(), target_a + PI),
+                    };
+
+                    let angle_diff = (target_a - initial_position.get_a_rad()).abs();
+                    let target_d = match angle_diff < config.max_angle_diff_before_stop {
+                        true => sqrtf(delta_x * delta_x + delta_y * delta_y),
+                        false => 0.0,
+                    };
+                    let target_d = match config.is_backwards() {
+                        false => target_d,
+                        true => -target_d,
+                    };
+                                        
+                    let ramps =  locked_position.get_ramps_as_mut();
+                    ramps[Order::A_INDEX].set_target(target_a);
+                    ramps[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(target_d);
+
+                    let mut done = true;
+                    for ramp in ramps.iter() {
+                        if !ramp.is_done() {
+                            done = false;
+                            break;
+                        }
+                    }
+                    if done {
                         break;
                     }
                     drop(locked_position);
@@ -82,8 +135,8 @@ impl Order {
     }
 
     fn find_closest_angle(current_angle: f32, angle: f32) -> f32 {
-        //get modulo multiplier (floor division without std)
-        let abase = ((current_angle / TAU) as i32 as f32) * TAU;
+        //get modulo multiplier
+        let abase = floorf(current_angle / TAU);
 
         //set set point in valid range (-π > π)
         let mut normalized_angle = angle;

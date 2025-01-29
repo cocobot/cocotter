@@ -64,15 +64,25 @@ async fn analog_reading(ui: UI, mut adc: PamiAdc) {
 async fn game_logic(trajectory: Trajectory<CriticalSectionRawMutex, 2>) {
 
     loop {
+        /*
         let order = TrajectoryOrderList::new()
-        .add_order(Order::GotoA { a_rad: 0_f32.to_radians() })
-        .add_order(Order::GotoD { d_mm: 100.0 })
-        .add_order(Order::GotoA { a_rad: 90_f32.to_radians() })
-        .add_order(Order::GotoD { d_mm: 100.0 })
-        .add_order(Order::GotoA { a_rad: 180_f32.to_radians() })
-        .add_order(Order::GotoD { d_mm: 100.0 })
-        .add_order(Order::GotoA { a_rad: -90_f32.to_radians() })
-        .add_order(Order::GotoD { d_mm: 100.0 })
+            .add_order(Order::GotoA { a_rad: 0_f32.to_radians() })
+            .add_order(Order::GotoD { d_mm: 100.0 })
+            .add_order(Order::GotoA { a_rad: 90_f32.to_radians() })
+            .add_order(Order::GotoD { d_mm: 100.0 })
+            .add_order(Order::GotoA { a_rad: 180_f32.to_radians() })
+            .add_order(Order::GotoD { d_mm: 100.0 })
+            .add_order(Order::GotoA { a_rad: -90_f32.to_radians() })
+            .add_order(Order::GotoD { d_mm: 100.0 })
+            ;
+        */
+
+        let order = TrajectoryOrderList::new()
+            .add_order(Order::GotoXY { x_mm: 100.0, y_mm: 0.0 })
+            .add_order(Order::GotoXY { x_mm: 100.0, y_mm: 100.0 })
+            .add_order(Order::GotoXY { x_mm: 0.0, y_mm: 100.0 })
+            .add_order(Order::GotoXY { x_mm: 0.0, y_mm: 0.0 })
+            .add_order(Order::GotoA { a_rad: 0.0 })
             ;
 
         match trajectory.execute(order).await {

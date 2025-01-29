@@ -23,6 +23,7 @@ pub struct OrderConfig<const N: usize> {
     ramp_configuration: [Option<ramp::RampConfiguration>; N],
 
     backwards: bool,
+    max_angle_diff_before_stop: f32,
 }
 
 impl<const N: usize> OrderConfig<N> {
@@ -30,6 +31,7 @@ impl<const N: usize> OrderConfig<N> {
         OrderConfig {
             ramp_configuration: [None; N],
             backwards: false,
+            max_angle_diff_before_stop: 30_f32.to_radians(),
         }
     }
 
