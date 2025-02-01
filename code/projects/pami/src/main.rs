@@ -48,13 +48,11 @@ async fn heartbeat(mut led: Output<'static>) {
 #[embassy_executor::task]
 async fn analog_reading(ui: UI, mut adc: PamiAdc) {
     loop {
-        const VBATT_RL_KOHMS : f32= 91.0;
-        const VBATT_RH_KOHMS : f32= 91.0;
-        let vbatt_raw : u16 = adc.read(PamiAdcChannel::VBat).await;
+        let vbatt_mv : u16 = adc.read(PamiAdcChannel::VBat).await;
 
-        let vbatt_mv : f32 = (f32::from(vbatt_raw))/(((1<<12) -1) as f32) * 3100.0 * (1.0 + VBATT_RH_KOHMS/VBATT_RL_KOHMS);
+        //let vbatt_mv : f32 = (f32::from(vbatt_raw))/(((1<<12) -1) as f32) * 3100.0 * (1.0 + VBATT_RH_KOHMS/VBATT_RL_KOHMS);
        
-        ui.send_event(UIEvent::Vbatt { voltage_mv: vbatt_mv });
+        ui.send_event(UIEvent::Vbatt { voltage_mv: vbatt_mv as f32});
 
         Timer::after(Duration::from_millis(500)).await;
     }
@@ -76,7 +74,6 @@ async fn game_logic(trajectory: Trajectory<CriticalSectionRawMutex, 2>) {
             .add_order(Order::GotoD { d_mm: 100.0 })
             ;
         */
-
         let order = TrajectoryOrderList::new()
             .add_order(Order::GotoXY { x_mm: 100.0, y_mm: 0.0 })
             .add_order(Order::GotoXY { x_mm: 100.0, y_mm: 100.0 })

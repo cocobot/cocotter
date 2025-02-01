@@ -61,9 +61,27 @@ impl PamiAdc {
             //ESP-HAL ADC is not compatible with embassy async yet.
             //TODO: rework this to have an IRQ to signal the executor
             //instead of periodic polling
+            const ADC_RES : u16 = 13;// 12 bits data are stored in 13 bits to be compatible with continuous read that returns 13bits resolution data
 
             let res = match channel {
-                PamiAdcChannel::VBat => self.adc.read_oneshot(&mut self.vbatt),
+                PamiAdcChannel::VBat => {
+                    let raw_opt = self.adc.read_oneshot(&mut self.vbatt);
+                    match raw_opt{
+                        Ok(raw) => {
+                            const ADC_MAX_V :f32 = 3100.0;
+                            let voltage = ((raw as f32)* ADC_MAX_V)/(((1<<ADC_RES) - 1) as f32); 
+        
+                            const VBATT_RL_KOHMS : f32= 91.0;
+                            const VBATT_RH_KOHMS : f32= 91.0;
+                            const ADC_INPUT_IMP_KOHMS : f32= 500.0;
+                            let rl_kohms = VBATT_RL_KOHMS*ADC_INPUT_IMP_KOHMS/(VBATT_RL_KOHMS+ADC_INPUT_IMP_KOHMS);
+                            let battery_voltage = voltage * (1.0 + VBATT_RH_KOHMS/rl_kohms);
+                            Ok(battery_voltage as u16)
+                        }
+                        _=> raw_opt
+                    }
+                    
+                }
                 PamiAdcChannel::IMotLeft => self.adc.read_oneshot(&mut self.i_mot_left),
                 PamiAdcChannel::IMotRight => self.adc.read_oneshot(&mut self.i_mot_right),
             };
