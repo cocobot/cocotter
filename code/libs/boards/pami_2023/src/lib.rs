@@ -2,6 +2,7 @@
 
 
 use core::cmp::min;
+use core::mem::ManuallyDrop;
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Timer};
@@ -286,8 +287,9 @@ impl Pami2023 {
         pcnt::unit::Counter<'static, 1>,
     ) {
         let pcnt = Pcnt::new(pcnt);
+        let pcnt = ManuallyDrop::new(pcnt);
 
-        let u0 = pcnt.unit0;
+        let u0 = &pcnt.unit0;
         u0.set_filter(Some(min(10u16 * 80, 1023u16))).unwrap();
         u0.clear();
 
@@ -315,7 +317,7 @@ impl Pami2023 {
             pcnt::channel::EdgeMode::Decrement,
         );
 
-        let u1 = pcnt.unit1;
+        let u1 = &pcnt.unit1;
         u1.set_filter(Some(min(10u16 * 80, 1023u16))).unwrap();
         u1.clear();
 
