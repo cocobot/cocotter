@@ -3,6 +3,7 @@ use core::mem::swap;
 use alloc::vec::Vec;
 use embassy_sync::blocking_mutex::raw::RawMutex;
 use order::Order;
+use log::info;
 
 use crate::{position::PositionMutex, ramp};
 
@@ -96,7 +97,7 @@ impl<const N: usize>  TrajectoryOrderList<N> {
             }
 
             let (order, config) = &mut self.orders[self.current_order_index];
-
+            log::info!("execute order");
             config.apply(position).await;
             let result = order.execute(self.current_order_index, config, position).await;
             config.revert(position).await;

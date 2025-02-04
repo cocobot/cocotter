@@ -55,7 +55,9 @@ impl Order {
                     }
                 }
             }
-            Order::GotoA { a_rad } => {                        
+            Order::GotoA { a_rad } => {   
+                log::info!("gotoa {a_rad}");
+
                 let mut locked_position = position.lock().await;
                 let initial_position = locked_position.get_coordinates();
                 let initial_a = initial_position.get_a_rad();
@@ -85,7 +87,7 @@ impl Order {
                 if N != 2 {
                     return Err(TrajectorError::InvalidOrder);
                 }
-
+                log::info!("gotoxy x{x_mm} y{y_mm}");
                 loop {
                     let mut locked_position = position.lock().await;
                     

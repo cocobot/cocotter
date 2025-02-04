@@ -4,12 +4,16 @@ use cocotter::{pid::PID, position::{Position, PositionMutex}};
 use embassy_executor::Spawner;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Instant, Timer};
+use log::{info, trace, warn};
+use esp_hal::gpio::Input;
 
 use crate::config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG, ASSERV_PWM_OFFSET_MEAS_PERIOD_MS, ASSERV_DEAD_ZONE_SPEED};
 
 pub type AsservMutexProtected = Arc<Mutex<CriticalSectionRawMutex, Asserv>>;
 
 pub struct Asserv {
+    emergency_stop: Input<'static>,
+
     left_wheel_counter: LeftWheelEncoder,
     right_wheel_counter: RightWheelEncoder,
 
@@ -29,11 +33,13 @@ pub struct Asserv {
 
 impl Asserv {
     pub fn new(spawner: Spawner,
+             emergency_stop: Input<'static>,
              left_wheel_counter: LeftWheelEncoder,
              right_wheel_counter: RightWheelEncoder,
              left_pwm: LeftMotorPwms,
              right_pwm: RightMotorPwms) -> AsservMutexProtected {  
         let instance = Arc::new(Mutex::new(Self {
+            emergency_stop,
             left_wheel_counter,
             right_wheel_counter,
             left_pwm,
@@ -54,7 +60,6 @@ impl Asserv {
             pid_distance: PID::new(DISTANCE_PID_CONFIG),
             pid_angle: PID::new(ANGLE_PID_CONFIG),
         }));
-
         spawner.spawn(start_asserv_thread(instance.clone())).unwrap();
 
         instance
@@ -71,7 +76,6 @@ impl Asserv {
         let mut beg_cnt_val = inst.left_wheel_counter.get();
 
         let wait_duration_ms : u64 = 500;
-
         inst.left_pwm.0.set_timestamp(0);
         inst.left_pwm.1.set_timestamp(0);
         inst.right_pwm.0.set_timestamp(0);
@@ -86,6 +90,7 @@ impl Asserv {
                 break;
             }
         }
+
         inst.left_pwm.0.set_timestamp(0);
         inst.left_pwm.1.set_timestamp(0);
         Timer::after(Duration::from_millis(wait_duration_ms)).await;
@@ -136,9 +141,7 @@ impl Asserv {
         Timer::after(Duration::from_millis(wait_duration_ms)).await;
         log::info!("pwm offsets left : {}|{} / right {}|{}", inst.left_pwm_offset[0], inst.left_pwm_offset[1], inst.right_pwm_offset[0], inst.right_pwm_offset[1]);
 
-
         drop(inst);
-        
 
         loop {
             //run the asserv at 20Hz
@@ -169,59 +172,59 @@ impl Asserv {
             let angle_target = ramp[0].compute();
             drop(position);
 
-            //compute the control loop
-            let distance_sp = instance.pid_distance.compute(distance_target - robot_distance);
-            let angle_sp = instance.pid_angle.compute(angle_target - robot_angle);//robot_coord.get_a_deg());
-            
-            //assign the control loop output to the motors
-            let left_speed = distance_sp - angle_sp;
-            let right_speed = distance_sp + angle_sp;
+            if instance.emergency_stop.is_high() {
+                //compute the control loop
+                let distance_sp = instance.pid_distance.compute(distance_target - robot_distance);
+                let angle_sp = instance.pid_angle.compute(angle_target - robot_angle);//robot_coord.get_a_deg());
+                
+                //assign the control loop output to the motors
+                let left_speed = distance_sp - angle_sp;
+                let right_speed = distance_sp + angle_sp;
 
-            let left_pwm_offset = instance.left_pwm_offset.clone();
-            let right_pwm_offset = instance.right_pwm_offset.clone();
+                let left_pwm_offset = instance.left_pwm_offset.clone();
+                let right_pwm_offset = instance.right_pwm_offset.clone();
 
-            if (left_speed >= -ASSERV_DEAD_ZONE_SPEED) && (left_speed <= ASSERV_DEAD_ZONE_SPEED){
-                instance.left_pwm.0.set_timestamp(0);
-                instance.left_pwm.1.set_timestamp(0);
-            }
-            else if left_speed <= -ASSERV_DEAD_ZONE_SPEED {
-                instance.left_pwm.0.set_timestamp( (-left_speed) as u16 + left_pwm_offset[0]);
-                instance.left_pwm.1.set_timestamp(0);
-            }
-            else if left_speed >= ASSERV_DEAD_ZONE_SPEED {
-                instance.left_pwm.0.set_timestamp(0);
-                instance.left_pwm.1.set_timestamp(left_speed as u16 + left_pwm_offset[1]);
-            }
-            else {
-                instance.left_pwm.0.set_timestamp(0);
-                instance.left_pwm.1.set_timestamp(0);
-            }
+                if (left_speed >= -ASSERV_DEAD_ZONE_SPEED) && (left_speed <= ASSERV_DEAD_ZONE_SPEED){
+                    instance.left_pwm.0.set_timestamp(0);
+                    instance.left_pwm.1.set_timestamp(0);
+                }
+                else if left_speed <= -ASSERV_DEAD_ZONE_SPEED {
+                    instance.left_pwm.0.set_timestamp( (-left_speed) as u16 + left_pwm_offset[0]);
+                    instance.left_pwm.1.set_timestamp(0);
+                }
+                else if left_speed >= ASSERV_DEAD_ZONE_SPEED {
+                    instance.left_pwm.0.set_timestamp(0);
+                    instance.left_pwm.1.set_timestamp(left_speed as u16 + left_pwm_offset[1]);
+                }
+                else {
+                    instance.left_pwm.0.set_timestamp(0);
+                    instance.left_pwm.1.set_timestamp(0);
+                }
 
-            /*match right_speed < 0.0 {
-                true => {
-                    instance.right_pwm.1.set_timestamp((-right_speed) as u16 + right_pwm_offset[0]);
+                if (right_speed >= -ASSERV_DEAD_ZONE_SPEED) && (right_speed <= ASSERV_DEAD_ZONE_SPEED){
+                    instance.right_pwm.0.set_timestamp(0);
+                    instance.right_pwm.1.set_timestamp(0);
+                }
+                else if right_speed <= -ASSERV_DEAD_ZONE_SPEED {
+                    instance.right_pwm.1.set_timestamp( (-right_speed) as u16 + right_pwm_offset[0]);
                     instance.right_pwm.0.set_timestamp(0);
                 }
-                false => {
+                else if right_speed >= ASSERV_DEAD_ZONE_SPEED {
                     instance.right_pwm.1.set_timestamp(0);
                     instance.right_pwm.0.set_timestamp(right_speed as u16 + right_pwm_offset[1]);
                 }
-            }*/
-            if (right_speed >= -ASSERV_DEAD_ZONE_SPEED) && (right_speed <= ASSERV_DEAD_ZONE_SPEED){
-                instance.right_pwm.0.set_timestamp(0);
-                instance.right_pwm.1.set_timestamp(0);
-            }
-            else if right_speed <= -ASSERV_DEAD_ZONE_SPEED {
-                instance.right_pwm.1.set_timestamp( (-right_speed) as u16 + right_pwm_offset[0]);
-                instance.right_pwm.0.set_timestamp(0);
-            }
-            else if right_speed >= ASSERV_DEAD_ZONE_SPEED {
-                instance.right_pwm.1.set_timestamp(0);
-                instance.right_pwm.0.set_timestamp(right_speed as u16 + right_pwm_offset[1]);
+                else {
+                    instance.right_pwm.0.set_timestamp(0);
+                    instance.right_pwm.1.set_timestamp(0);
+                }
             }
             else {
-                instance.right_pwm.0.set_timestamp(0);
-                instance.right_pwm.1.set_timestamp(0);
+                {
+                    instance.left_pwm.0.set_timestamp(0);
+                    instance.left_pwm.1.set_timestamp(0);
+                    instance.right_pwm.0.set_timestamp(0);
+                    instance.right_pwm.1.set_timestamp(0);
+                }
             }
         }
     }

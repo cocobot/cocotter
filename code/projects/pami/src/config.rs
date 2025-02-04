@@ -33,9 +33,9 @@ pub const DISTANCE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
 };
 
 pub const ANGLE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
-    kp: 30.0,
+    kp: 20.0,
     ki: 0.0,
-    kd: 10.0,
+    kd: 8.0,
     max_integral: 0.0,
     max_err_for_integral: 0.0,
 };

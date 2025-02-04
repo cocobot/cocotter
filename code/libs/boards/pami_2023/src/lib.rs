@@ -23,6 +23,7 @@ pub use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
 use static_cell::StaticCell;
 use tca6408a::Tca6408a;
 use lsm6dso32x::{Lsm6dso32x, Lsm6dso32xConfiguration, AccelerometerConfiguration, GyroscopeConfiguration, ODR, AccelerometerFullScale, GyroFullScale, };
+use core::mem;
 
 //declare hardcoded peripheral types
 pub type I2C0PamiDevice = I2cDevice<'static, CriticalSectionRawMutex, I2c<'static, Async>>;
@@ -331,7 +332,7 @@ impl Pami2023 {
         ch1.set_input_mode(
             pcnt::channel::EdgeMode::Increment,
             pcnt::channel::EdgeMode::Decrement,
-        );
+        );        
 
         let u1 = pcnt.unit1;
         u1.set_filter(Some(min(10u16 * 80, 1023u16))).unwrap();
@@ -361,14 +362,15 @@ impl Pami2023 {
             pcnt::channel::EdgeMode::Decrement,
         );
 
-        u0.listen();
+        //u0.listen();
         u0.resume();
-        u1.listen();
+        //u1.listen();
         u1.resume();
 
         let counter_left = u0.counter.clone();
         let counter_right = u1.counter.clone();
-
+        core::mem::forget(u0);
+        core::mem::forget(u1);
         (counter_left, counter_right)
     }
 }
