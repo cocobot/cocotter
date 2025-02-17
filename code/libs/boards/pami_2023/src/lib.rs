@@ -24,6 +24,7 @@ pub use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
 use static_cell::StaticCell;
 use tca6408a::Tca6408a;
 use lsm6dso32x::{Lsm6dso32x, Lsm6dso32xConfiguration, AccelerometerConfiguration, GyroscopeConfiguration, ODR, AccelerometerFullScale, GyroFullScale, };
+use vl53l5cx::Vl53l5cx;
 
 //declare hardcoded peripheral types
 pub type I2C0PamiDevice = I2cDevice<'static, CriticalSectionRawMutex, I2c<'static, Async>>;
@@ -104,6 +105,8 @@ pub struct Pami2023 {
     pub accelerometer : Option<Lsm6dso32x>,
     pub left_motor_pwm : Option<LeftMotorPwms>,
     pub right_motor_pwm : Option<RightMotorPwms>,
+
+    pub front_tof : Option<Vl53l5cx<I2C0PamiDevice>>,
 }
 
 
@@ -124,13 +127,14 @@ impl Pami2023 {
         .with_scl(peripherals.GPIO17)
         .with_sda(peripherals.GPIO18);
 
-        let _enable_front_tof = Output::new(peripherals.GPIO3, Level::Low);
-        let _enable_back_tof = Output::new(peripherals.GPIO16, Level::High);
         
         
         let i2c0 = i2c0.into_async();
     
-        let (pwm_extended, line_sensor, buttons) = Self::init_i2c_devices(i2c0);
+        let _enable_front_tof = Output::new(peripherals.GPIO3, Level::High);
+        let _enable_back_tof = Output::new(peripherals.GPIO16, Level::High);
+        let (pwm_extended, line_sensor, buttons, front_tof) = Self::init_i2c_devices(i2c0);
+
 
         //init motor peripherals
         let left_wheel_pin_a = Input::new(peripherals.GPIO39, Pull::None);
@@ -207,7 +211,9 @@ impl Pami2023 {
             adc: Some(adc),
             accelerometer: Some(Lsm6dso32x::new(acc_config, spi)),
             left_motor_pwm : Some(left_motor_pwm),
-            right_motor_pwm : Some(right_motor_pwm)
+            right_motor_pwm : Some(right_motor_pwm),
+
+            front_tof: Some(front_tof),
         }
     }
 
@@ -253,6 +259,7 @@ impl Pami2023 {
         Pca9685<I2C0PamiDevice>,
         Tca6408a<I2C0PamiDevice>,
         Tca6408a<I2C0PamiDevice>,
+        Vl53l5cx<I2C0PamiDevice>,
     ) {
         static I2C0_BUS: StaticCell<Mutex<CriticalSectionRawMutex, I2c<'static, Async>>> =
             StaticCell::new();
@@ -273,7 +280,11 @@ impl Pami2023 {
             tca6408a::Address::from_pin_state(PinState::High),
         );
 
-        (pwm_extended, line_sensor, buttons)
+
+        //init vlx53l5cx
+        let front_tof = Vl53l5cx::new(I2cDevice::new(i2c0), Some(0x29));
+
+        (pwm_extended, line_sensor, buttons, front_tof)
     }
 
     fn init_counters(

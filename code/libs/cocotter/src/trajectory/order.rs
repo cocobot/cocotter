@@ -1,5 +1,6 @@
-use core::f32::consts::{PI, TAU}; // 2 * PI
+use core::f32::consts::{PI, TAU}; // TAU = 2 * PI
 
+use either::Either;
 use embassy_sync::blocking_mutex::raw::RawMutex;
 use embassy_time::{Duration, Timer};
 use libm::{atan2f, floorf, sqrtf};
@@ -12,8 +13,14 @@ use super::{OrderConfig, TrajectorError};
 pub enum Order {
     GotoD { d_mm: f32 },
     GotoA { a_rad: f32 },
-
     GotoXY { x_mm: f32, y_mm: f32 },
+    
+    MoveUntil { callback: fn() -> bool },
+
+    Label { label: &'static str },
+    GotoLabel { label: &'static str },
+    GotoRel { rel_step: usize },
+    GotoRelStepOrLabel { callback: fn() -> Either<usize, &'static str> },
 }
 
 impl Order {
@@ -130,6 +137,37 @@ impl Order {
                 }
                 
                 Ok(order_index + 1)
+            }
+
+            Order::MoveUntil { callback } => {
+                loop {
+                    let mut locked_position = position.lock().await;
+
+                    let initial_position = locked_position.get_coordinates();
+                    let initial_d = initial_position.get_raw_linear_coordonate()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
+
+                    let ramp_d = locked_position.get_ramps_as_mut();
+                    
+
+                    if !callback() {
+                        ramp_d[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d);
+                        break;
+                    }
+                    else {
+                        match config.is_backwards() {
+                            true => ramp_d[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d - 1_000.0),
+                            false => ramp_d[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d + 1_000.0),
+                        }
+                    }
+
+                    Timer::after(Duration::from_millis(75)).await;
+                }
+                Ok(order_index + 1)
+            }
+
+            Order::Label { label: _ } | Order::GotoLabel { label: _ } | Order::GotoRelStepOrLabel { callback: _} | Order::GotoRel { rel_step: _} => {
+                //Should have been handled before calling this function
+                Err(TrajectorError::InvalidOrder)
             }
         }
     }

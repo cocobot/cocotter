@@ -21,6 +21,9 @@ impl RampConfiguration {
 pub struct Ramp {
     configuration: RampConfiguration,
 
+    speed_factor: f32,
+    acceleration_factor: f32,
+
     position: f32,
     target: f32,
     speed: f32,
@@ -30,6 +33,9 @@ impl Ramp {
     pub fn new(configuration: RampConfiguration) -> Ramp {
         Ramp {
             configuration,
+
+            speed_factor: 1.0,
+            acceleration_factor: 1.0,
 
             position: 0.0,
             target: 0.0,
@@ -57,9 +63,20 @@ impl Ramp {
         self.position
     }
 
+    pub fn set_max_speed_factor(&mut self, factor: f32) {
+        self.speed_factor = factor;
+    }
+
+    pub fn set_acceleration_factor(&mut self, factor: f32) {
+        self.acceleration_factor = factor;
+    }
+
     pub fn compute(&mut self) -> f32 {
+        let acceleration = self.configuration.acceleration * self.acceleration_factor;
+        let max_speed = self.configuration.max_speed * self.speed_factor;
+
         //compute how much distance the robot will do if we start decreasing the speed now
-        let delta_position = self.speed * self.speed / (2.0 * self.configuration.acceleration);
+        let delta_position = self.speed * self.speed / (2.0 * acceleration);
 
         //log::info!("delta_position: {} {} {}", delta_position, self.position, self.target);
         //log::info!("speed: {}/{} ({})", self.speed, self.configuration.max_speed, self.configuration.acceleration);
@@ -70,22 +87,22 @@ impl Ramp {
             //check if we need to speed up or down
             if delta_position + self.position < self.target {
                 //we can increase the speed
-                self.speed += self.configuration.acceleration;
+                self.speed += acceleration;
             }
             else {
                 //we should decrease the speed
-                self.speed -= self.configuration.acceleration;
+                self.speed -= acceleration;
             }
         }
         else {
             //check if we need to speed up or down
             if -delta_position + self.position < self.target {
                 //we should decrease the (negative) speed
-                self.speed += self.configuration.acceleration;
+                self.speed += acceleration;
             }
             else {
                 //we can increase the (negative) speed
-                self.speed -= self.configuration.acceleration;
+                self.speed -= acceleration;
             }
         }
 
@@ -93,7 +110,7 @@ impl Ramp {
        // log::info!("speed: {}", self.speed);
 
         //set speed limit (because of cops !)
-        self.speed = self.speed.clamp(-self.configuration.max_speed, self.configuration.max_speed);
+        self.speed = self.speed.clamp(-max_speed, max_speed);
 
         //compute next output
         let mut output = self.position + self.speed;

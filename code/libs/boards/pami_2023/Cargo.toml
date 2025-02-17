@@ -15,5 +15,6 @@ pwm-pca9685 = { version = "1.0.0", features = ["async"]}
 static_cell = "2.1.0"
 tca6408a = { path = "../../devices/tca6408a" }
 lsm6dso32x = { path = "../../devices/lsm6dso32x" }
+vl53l5cx = { path = "../../devices/vl53l5cx" }
 esp-hal = "0.23.1"
 embassy-embedded-hal = "0.3.0"

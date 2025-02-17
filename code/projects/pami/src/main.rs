@@ -8,13 +8,15 @@ mod config;
 
 use asserv::Asserv;
 use board_pami_2023::{Pami2023, PamiAdc, PamiAdcChannel};
-use cocotter::trajectory::{order::Order, Trajectory, TrajectoryOrderList};
+use cocotter::trajectory::{order::Order, RampCfg, Trajectory, TrajectoryOrderList};
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_time::{Duration, Timer};
 use esp_backtrace as _;
 use esp_hal::gpio::Output;
 use esp_hal_embassy::main;
+use esp_println::println;
+use log::LevelFilter;
 use pwm::{PWMEvent, PWM};
 use ui::{UIEvent, UI};
 
@@ -78,8 +80,11 @@ async fn game_logic(trajectory: Trajectory<CriticalSectionRawMutex, 2>) {
         */
 
         let order = TrajectoryOrderList::new()
+            .set_backwards(true) //all orders will be executed backwards
+
             .add_order(Order::GotoXY { x_mm: 100.0, y_mm: 0.0 })
             .add_order(Order::GotoXY { x_mm: 100.0, y_mm: 100.0 })
+                .set_max_speed(RampCfg::Linear, 0.2) //this order will be executed at 20% of the max speed
             .add_order(Order::GotoXY { x_mm: 0.0, y_mm: 100.0 })
             .add_order(Order::GotoXY { x_mm: 0.0, y_mm: 0.0 })
             .add_order(Order::GotoA { a_rad: 0.0 })
@@ -107,13 +112,26 @@ loop{
 
 #[main]
 async fn main(spawner: Spawner) {
-    let mut board = Pami2023::new();
     init_heap();
+    //esp_println::logger::init_logger_from_env();
+    esp_println::logger::init_logger(LevelFilter::Debug);
+    let mut board = Pami2023::new();
 
-    esp_println::logger::init_logger_from_env();
-    
+    let mut vlx = board.front_tof.take().unwrap();
+    vlx.init().unwrap();
+    loop {
+        match vlx.get_distance() {
+            Ok(d) => log::info!("Distance: {:?}", d),
+            Err(e) => log::error!("VLX error: {:?}", e),
+        }
+        println!("TEST");
+        Timer::after(Duration::from_secs(1)).await;
+    }
+
+
+ /*   
     PWM::new(board.pwm_extended.take().unwrap(), spawner).await;
-
+ 
     let ui = UI::new(spawner);
     let asserv = Asserv::new(
         spawner, 
@@ -125,10 +143,21 @@ async fn main(spawner: Spawner) {
         board.right_motor_pwm.take().unwrap(),
     );
     let trajectory = Trajectory::new(asserv.lock().await.get_position());
-    
-    spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
-    spawner.spawn(analog_reading(ui.clone(), board.adc.take().unwrap())).unwrap();
-    spawner.spawn(game_logic(trajectory)).unwrap();
+ 
+    //spawner.spawn(heartbeat(board.led_esp.take().unwrap())).unwrap();
+
+    let mut vlx = board.front_tof.take().unwrap();
+    vlx.init().unwrap();
+    loop {
+        match vlx.get_distance() {
+            Ok(d) => log::info!("Distance: {:?}", d),
+            Err(e) => log::error!("VLX error: {:?}", e),
+        }
+        Timer::after(Duration::from_secs(1)).await;
+    }
+ 
+    //spawner.spawn(analog_reading(ui.clone(), board.adc.take().unwrap())).unwrap();
+    //spawner.spawn(game_logic(trajectory)).unwrap();
 
     let mut accel = board.accelerometer.take().unwrap();
     
@@ -217,5 +246,5 @@ async fn main(spawner: Spawner) {
         //the last one is blue. This is the easy one
         PWM::send_event(PWMEvent::LedBottom([0.0, 0.0, 0.5]));
         Timer::after(Duration::from_millis(250)).await;
-    }
+    } */ 
 }

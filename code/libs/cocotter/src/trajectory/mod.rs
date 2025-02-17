@@ -1,10 +1,8 @@
-use core::mem::swap;
-
 use alloc::vec::Vec;
 use embassy_sync::blocking_mutex::raw::RawMutex;
 use order::Order;
 
-use crate::{position::PositionMutex, ramp};
+use crate::position::PositionMutex;
 
 pub mod order;
 
@@ -14,23 +12,30 @@ pub enum TrajectorError {
     Interruted,
 }
 
+pub enum RampCfg {
+    Linear,
+    Angular,
+}
+
 pub struct Trajectory<M: RawMutex, const N: usize> {
     position: PositionMutex<M, N>,
 }
 
 #[derive(Debug)]
 pub struct OrderConfig<const N: usize> {
-    ramp_configuration: [Option<ramp::RampConfiguration>; N],
+    max_speed: [Option<f32>; N],
+    acceleration: [Option<f32>; N],
 
-    backwards: bool,
+    backwards: Option<bool>,
     max_angle_diff_before_stop: f32,
 }
 
 impl<const N: usize> OrderConfig<N> {
     pub fn new() -> OrderConfig<N> {
         OrderConfig {
-            ramp_configuration: [None; N],
-            backwards: false,
+            max_speed: [Some(1.0); N],
+            acceleration: [Some(1.0); N],
+            backwards: Some(false),
             max_angle_diff_before_stop: 30_f32.to_radians(),
         }
     }
@@ -39,21 +44,32 @@ impl<const N: usize> OrderConfig<N> {
         let mut position = position.lock().await;
         let ramps = position.get_ramps_as_mut();
         for i in 0..N {
-            if let Some(config) = self.ramp_configuration[i].as_mut() {
-                swap(ramps[i].get_conf_as_mut(), config);
+            if let Some(max_speed) = self.max_speed[i] {
+                ramps[i].set_max_speed_factor(max_speed);
+            }
+            if let Some(acceleration) = self.acceleration[i] {
+                ramps[i].set_acceleration_factor(acceleration);
             }
         }
     }
 
     pub async fn revert<M: RawMutex>(&mut self, position: &PositionMutex<M, N>) {
-        //we can just apply the configuration again to revert it
-        //this is because the configuration is swapped
-        //so the revert will just swap it back
-        self.apply(position).await;
+        //reset max speed an acceleration
+        let mut position = position.lock().await;
+        let ramps = position.get_ramps_as_mut();
+        for i in 0..N {
+            ramps[i].set_max_speed_factor(1.0);
+            ramps[i].set_acceleration_factor(1.0);
+        }
     }
 
     pub fn is_backwards(&self) -> bool {
-        self.backwards
+        if let Some(backwards) = self.backwards {
+            backwards
+        }
+        else {
+            false
+        }
     }
 }
 
@@ -73,6 +89,7 @@ impl<M: RawMutex, const N: usize> Trajectory<M, N> {
 pub struct TrajectoryOrderList<const N: usize> {
     orders: Vec<(Order, OrderConfig<N>)>,
     current_order_index: usize,
+    default_config: OrderConfig<N>,
 }
 
 impl<const N: usize>  TrajectoryOrderList<N> {
@@ -80,11 +97,67 @@ impl<const N: usize>  TrajectoryOrderList<N> {
         TrajectoryOrderList {
             orders: Vec::new(),
             current_order_index: 0,
+            default_config: OrderConfig::new(),
         }
     }
 
     pub fn add_order(mut self, order: Order) -> Self {
         self.orders.push((order, OrderConfig::new()));
+
+        self
+    }
+
+    pub fn set_backwards(mut self, backwards: bool) -> Self {
+        if self.orders.is_empty() {
+            self.default_config.backwards = Some(backwards);
+        }
+        else {
+            self.orders.last_mut().unwrap().1.backwards = Some(backwards);
+        }
+        
+        self
+    }
+
+    pub fn set_max_speed(mut self, ramp: RampCfg, max_speed: f32) -> Self {
+        let order_config = if self.orders.is_empty() {
+            &mut self.default_config
+        }
+        else {
+            &mut self.orders.last_mut().unwrap().1
+        };
+
+        match ramp {
+            RampCfg::Linear => {
+                for i in 1..N {
+                    order_config.max_speed[i] = Some(max_speed);
+                }
+            }
+            RampCfg::Angular => {
+                order_config.max_speed[0] = Some(max_speed);
+            }
+        }
+
+        self
+    }
+
+    pub fn set_acceleration(mut self, ramp: RampCfg, acceleration: f32) -> Self {
+        let order_config = if self.orders.is_empty() {
+            &mut self.default_config
+        }
+        else {
+            &mut self.orders.last_mut().unwrap().1
+        };
+
+        match ramp {
+            RampCfg::Linear => {
+                for i in 1..N {
+                    order_config.acceleration[i] = Some(acceleration);
+                }
+            }
+            RampCfg::Angular => {
+                order_config.acceleration[0] = Some(acceleration);
+            }
+        }
 
         self
     }
