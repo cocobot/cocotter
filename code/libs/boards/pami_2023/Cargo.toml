@@ -18,3 +18,4 @@ lsm6dso32x = { path = "../../devices/lsm6dso32x" }
 vl53l5cx = { path = "../../devices/vl53l5cx" }
 esp-hal = "0.23.1"
 embassy-embedded-hal = "0.3.0"
+esp-wifi = { version = "0.12.0", features = ["esp32s3", "ble"]}

@@ -27,7 +27,7 @@ pub struct OrderConfig<const N: usize> {
     acceleration: [Option<f32>; N],
 
     backwards: Option<bool>,
-    max_angle_diff_before_stop: f32,
+    max_angle_diff_in_xy: f32,
 }
 
 impl<const N: usize> OrderConfig<N> {
@@ -36,7 +36,7 @@ impl<const N: usize> OrderConfig<N> {
             max_speed: [Some(1.0); N],
             acceleration: [Some(1.0); N],
             backwards: Some(false),
-            max_angle_diff_before_stop: 30_f32.to_radians(),
+            max_angle_diff_in_xy: 30_f32.to_radians(),
         }
     }
 

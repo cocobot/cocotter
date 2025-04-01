@@ -4,8 +4,7 @@
 
 use core::ffi::c_void;
 
-use embassy_futures::block_on;
-use embassy_time::{Duration, Instant, Timer};
+use embassy_time::{Duration, Instant};
 
 pub const VL53L5CX_NB_TARGET_PER_ZONE: u8 = 1;
 pub const VL53L5CX_NB_TARGET_PER_ZONsE2: u8 = 1;
@@ -55,7 +54,7 @@ pub extern fn VL53L5CX_RdMulti(platform: &mut VL53L5CX_Platform, register_addr: 
 pub extern fn VL53L5CX_WaitMs(_platform: &mut VL53L5CX_Platform, time_ms: u32) -> u8 {
     let start = Instant::now();
     loop {
-        if(start.elapsed() >= Duration::from_millis(time_ms as u64)) {
+        if start.elapsed() >= Duration::from_millis(time_ms as u64) {
             break;
         }
     }

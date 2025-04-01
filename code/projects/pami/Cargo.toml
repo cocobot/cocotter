@@ -14,13 +14,12 @@ esp-backtrace = { version = "0.14.2", features = [
 ] }
 esp-println = { version = "0.12.0", features = ["esp32s3", "log"] }
 log = { version = "0.4.22" }
-esp-alloc = { version = "0.5.0" }
+esp-alloc = { version = "0.6.0" }
 embedded-io = "0.6.1"
-#esp-wifi = { version = "0.11.0", features = [
-#    "esp32s3",
-#    "utils",
-#    "wifi",
-#] }
+esp-wifi = { version = "0.12.0", features = [
+    "esp32s3",
+    "ble",
+] }
 heapless = { version = "0.8.0", default-features = false }
 smoltcp = { version = "0.11.0", default-features = false, features = [
     "medium-ethernet",
@@ -34,9 +33,9 @@ smoltcp = { version = "0.11.0", default-features = false, features = [
     "socket-udp",
 ] }
 embassy-time = "0.4.0"
-embassy-executor = {version = "0.7.0", features = ["task-arena-size-8192"] }
+embassy-executor = {version = "0.7.0", features = ["task-arena-size-16384"] }
 esp-hal-embassy = { version = "0.6.0", features = ["esp32s3"] }
-
+trouble-host = { git="https://github.com/embassy-rs/trouble/", rev = "b6694cf00b602efe9c1c6e639e97218ebf623479"}
 
 board-pami-2023 = { path = "../../libs/boards/pami_2023" }
 cocotter = { path = "../../libs/cocotter" }
@@ -45,7 +44,10 @@ embassy-sync = "0.6.2"
 embassy-futures = "0.1.1"
 libm = "0.2.11"
 esp-hal = "0.23.1"
-
+bt-hci = "0.2.1"
+static_cell = "2.1.0"
+#bleps               = { git = "https://github.com/bjoernQ/bleps", package = "bleps", rev = "a5148d8ae679e021b78f53fd33afb8bb35d0b62e", features = [ "macros", "async"] }
+phf = { version = "0.11", default-features = false, features = ["macros"] }
 
 [profile.dev]
 # Rust debug is too slow.

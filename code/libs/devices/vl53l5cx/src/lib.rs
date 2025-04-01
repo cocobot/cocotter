@@ -1,6 +1,6 @@
 #![no_std]
 
-use core::{ffi::c_void, future::Future, pin::Pin, ptr, task::{Context, Poll, RawWaker, RawWakerVTable, Waker}};
+use core::ffi::c_void;
 
 use bindings::{vl53l5cx_check_data_ready, vl53l5cx_get_ranging_data, vl53l5cx_init, vl53l5cx_is_alive, vl53l5cx_start_ranging, vl53l5cx_set_resolution, VL53L5CX_Configuration, VL53L5CX_Platform, VL53L5CX_ResultsData, VL53L5CX_ResultsData__bindgen_ty_1};
 use embassy_futures::block_on;
@@ -25,7 +25,6 @@ pub struct Vl53l5cx<I2C> {
 
     binding_configuration: VL53L5CX_Configuration,
 }
-static VTABLE: RawWakerVTable = RawWakerVTable::new(|_| RawWaker::new(ptr::null(), &VTABLE), |_| {}, |_| {}, |_| {});
 
 impl<I2C, E> Vl53l5cx<I2C>
 where
@@ -76,20 +75,6 @@ where
                 ]).await.is_ok()
             }
         )
-    }
-    
-    fn block_on<F: Future>(mut fut: F) -> F::Output {
-        // safety: we don't move the future after this line.
-        let mut fut = unsafe { Pin::new_unchecked(&mut fut) };
-    
-        let raw_waker = RawWaker::new(ptr::null(), &VTABLE);
-        let waker = unsafe { Waker::from_raw(raw_waker) };
-        let mut cx = Context::from_waker(&waker);
-        loop {
-            if let Poll::Ready(res) = fut.as_mut().poll(&mut cx) {
-                return res;
-            }
-        }
     }
 
     extern "C" fn read_i2c(self_ptr: *mut c_void, reg_addr: u16, data: *mut u8, size: usize) -> bool {

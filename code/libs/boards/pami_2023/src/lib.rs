@@ -7,7 +7,9 @@ use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Timer};
 use embedded_hal::digital::PinState;
+use esp_hal::rng::Rng;
 use esp_hal::spi::{BitOrder, Mode};
+use esp_hal::timer::systimer::SystemTimer;
 use esp_hal::{
     analog::adc::{Adc, AdcConfig, AdcPin, Attenuation},
     gpio::{Input, Level, Output, Pull, GpioPin},
@@ -20,6 +22,8 @@ use esp_hal::{
     mcpwm::{McPwm, operator::{PwmPinConfig, PwmPin}, PeripheralClockConfig, timer::PwmWorkingMode},
     time::RateExtU32,
 };
+use esp_wifi::ble::controller::BleConnector;
+use esp_wifi::EspWifiController;
 pub use pwm_pca9685::{Address as Pca9685Address, Channel, Pca9685};
 use static_cell::StaticCell;
 use tca6408a::Tca6408a;
@@ -58,6 +62,8 @@ pub struct PamiAdc {
 }
 
 impl PamiAdc {    
+    const ADC_RES : u16 = 13;// 12 bits data are stored in 13 bits to be compatible with continuous read that returns 13bits resolution data
+
     pub async fn read(&mut self, channel: PamiAdcChannel) -> u16 {
         loop {
             //ESP-HAL ADC is not compatible with embassy async yet.
@@ -65,7 +71,23 @@ impl PamiAdc {
             //instead of periodic polling
 
             let res = match channel {
-                PamiAdcChannel::VBat => self.adc.read_oneshot(&mut self.vbatt),
+                PamiAdcChannel::VBat => {
+                    let raw_opt = self.adc.read_oneshot(&mut self.vbatt);
+                    match raw_opt{
+                        Ok(raw) => {
+                            const ADC_MAX_V :f32 = 3100.0;
+                            let voltage = ((raw as f32)* ADC_MAX_V)/(((1<<PamiAdc::ADC_RES) - 1) as f32); 
+        
+                            const VBATT_RL_KOHMS : f32= 91.0;
+                            const VBATT_RH_KOHMS : f32= 91.0;
+                            const ADC_INPUT_IMP_KOHMS : f32= 500.0;
+                            let rl_kohms = VBATT_RL_KOHMS*ADC_INPUT_IMP_KOHMS/(VBATT_RL_KOHMS+ADC_INPUT_IMP_KOHMS);
+                            let battery_voltage = voltage * (1.0 + VBATT_RH_KOHMS/rl_kohms);
+                            Ok(battery_voltage as u16)
+                        }
+                        _=> raw_opt
+                    }
+                }
                 PamiAdcChannel::IMotLeft => self.adc.read_oneshot(&mut self.i_mot_left),
                 PamiAdcChannel::IMotRight => self.adc.read_oneshot(&mut self.i_mot_right),
             };
@@ -107,6 +129,8 @@ pub struct Pami2023 {
     pub right_motor_pwm : Option<RightMotorPwms>,
 
     pub front_tof : Option<Vl53l5cx<I2C0PamiDevice>>,
+
+    pub ble_connector: Option<BleConnector<'static>>,
 }
 
 
@@ -115,8 +139,8 @@ impl Pami2023 {
         let peripherals = esp_hal::init(esp_hal::Config::default());
 
         //init embassy
-        let timg0 = TimerGroup::new(peripherals.TIMG0);
-        esp_hal_embassy::init(timg0.timer0);
+        let tim_embassy = SystemTimer::new(peripherals.SYSTIMER);
+        esp_hal_embassy::init(tim_embassy.alarm0);
 
         //init i2c peripherals
         let i2c0 = I2c::new(peripherals.I2C0, {
@@ -162,7 +186,7 @@ impl Pami2023 {
 
         let spi = Spi::new( peripherals.SPI2, 
                                      {  let mut config = SpiConfig::default();
-                                        config.frequency = 100.kHz();
+                                        config.frequency = 400.kHz();
                                         config.mode = Mode::_3;
                                         config.read_bit_order = BitOrder::MsbFirst;
                                         config.write_bit_order = BitOrder::MsbFirst;
@@ -191,6 +215,12 @@ impl Pami2023 {
                        peripherals.GPIO14, peripherals.GPIO21,
                        peripherals.GPIO12, peripherals.GPIO13);
 
+                       
+        let timg0 = TimerGroup::new(peripherals.TIMG0);
+        static RADIO_CTRL : StaticCell<EspWifiController> = StaticCell::new();
+        let radio_ctrl : &'static mut EspWifiController = RADIO_CTRL.init(esp_wifi::init(timg0.timer0, Rng::new(peripherals.RNG), peripherals.RADIO_CLK).unwrap()); 
+        let ble_connector: BleConnector<'static> = BleConnector::new(radio_ctrl, peripherals.BT);
+        
         Self {
             led_esp: Some(Output::new(peripherals.GPIO4, Level::High)),
             led_com: Some(Output::new(peripherals.GPIO5, Level::High)),
@@ -214,6 +244,8 @@ impl Pami2023 {
             right_motor_pwm : Some(right_motor_pwm),
 
             front_tof: Some(front_tof),
+
+            ble_connector: Some(ble_connector),
         }
     }
 

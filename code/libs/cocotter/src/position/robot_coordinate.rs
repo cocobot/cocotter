@@ -2,7 +2,7 @@ use core::f32;
 
 use libm::{cosf, sinf};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Copy)]
 //Create an holder for current robot coordinates
 pub struct RobotCoordinate<const N: usize> {
     //store robot position in standardized unit (mm/rad)
@@ -20,7 +20,6 @@ pub struct RobotCoordinate<const N: usize> {
     y_is_precise : bool,
     a_is_precise : bool,
 }
-
 
 impl<const N: usize> RobotCoordinate<N> {
     //create a new structure from independant data

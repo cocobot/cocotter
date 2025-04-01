@@ -93,33 +93,61 @@ impl Order {
                     return Err(TrajectorError::InvalidOrder);
                 }
 
-                loop {
-                    let mut locked_position = position.lock().await;
-                    
-                    let initial_position = locked_position.get_coordinates();
-                    let delta_x = x_mm - initial_position.get_x_mm();
-                    let delta_y = y_mm - initial_position.get_y_mm();
+                let mut locked_position = position.lock().await;
+                let initial_position = locked_position.get_coordinates();
 
-                    //compute ramp targets
-                    let target_a = atan2f(delta_y, delta_x);
-                    let target_a = match config.is_backwards() {
-                        false => Order::find_closest_angle(initial_position.get_a_rad(), target_a),
-                        true => Order::find_closest_angle(initial_position.get_a_rad(), target_a + PI),
-                    };
+                let delta_x = x_mm - initial_position.get_x_mm();
+                let delta_y = y_mm - initial_position.get_y_mm();
 
-                    let angle_diff = (target_a - initial_position.get_a_rad()).abs();
-                    let target_d = match angle_diff < config.max_angle_diff_before_stop {
-                        true => sqrtf(delta_x * delta_x + delta_y * delta_y),
-                        false => 0.0,
-                    };
-                    let target_d = match config.is_backwards() {
-                        false => target_d,
-                        true => -target_d,
-                    };
-                                        
+                //check if angle is close enough
+                let target_a = atan2f(delta_y, delta_x);
+                let initial_d = initial_position.get_raw_linear_coordonate()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
+                let target_a = match config.is_backwards() {
+                    false => Order::find_closest_angle(initial_position.get_a_rad(), target_a),
+                    true => Order::find_closest_angle(initial_position.get_a_rad(), target_a + PI),
+                };
+
+                let angle_diff = (target_a - initial_position.get_a_rad()).abs();
+                if angle_diff >= config.max_angle_diff_in_xy {
                     let ramps =  locked_position.get_ramps_as_mut();
+                    ramps[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d);
                     ramps[Order::A_INDEX].set_target(target_a);
-                    ramps[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(target_d);
+                    drop(locked_position);
+
+                    loop {
+                        let locked_position = position.lock().await;
+                        let a_ramp =  &locked_position.get_ramps()[Order::A_INDEX];
+                        if a_ramp.is_done() {
+                            break;
+                        }
+                        drop(locked_position);
+                        
+                        Timer::after(Duration::from_millis(75)).await;
+                    }
+                }
+                else {
+                    drop(locked_position);
+                }
+
+                //run to target
+                let mut locked_position =   position.lock().await;
+                let initial_position = locked_position.get_coordinates();
+                let delta_x = x_mm - initial_position.get_x_mm();
+                let delta_y = y_mm - initial_position.get_y_mm();
+                let target_d = sqrtf(delta_x * delta_x + delta_y * delta_y);
+                let target_d = match config.is_backwards() {
+                    false => target_d,
+                    true => -target_d,
+                };
+
+                let ramps =  locked_position.get_ramps_as_mut();
+                ramps[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d + target_d);
+                ramps[Order::A_INDEX].set_target(target_a);
+                drop(locked_position);
+
+                loop {
+                    let mut locked_position =   position.lock().await;
+                    let ramps =  locked_position.get_ramps_as_mut();
 
                     let mut done = true;
                     for ramp in ramps.iter() {

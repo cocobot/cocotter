@@ -1,13 +1,20 @@
-use alloc::sync::Arc;
 use board_pami_2023::{LeftMotorPwms, RightMotorPwms, LeftWheelEncoder, RightWheelEncoder};
 use cocotter::{pid::PID, position::{Position, PositionMutex}};
 use embassy_executor::Spawner;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Instant, Timer};
+use alloc::sync::Arc;
 
-use crate::config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG, ASSERV_PWM_OFFSET_MEAS_PERIOD_MS, ASSERV_DEAD_ZONE_SPEED};
+use crate::{config::{PAMIConfig, ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG}, events::{Event, EventSystem}};
 
 pub type AsservMutexProtected = Arc<Mutex<CriticalSectionRawMutex, Asserv>>;
+
+#[derive(Debug, Clone, Copy)]
+pub struct MotorSetpointOverride {
+    pub after_filter: bool,
+    pub left: i16,
+    pub right: i16,
+}
 
 pub struct Asserv {
     left_wheel_counter: LeftWheelEncoder,
@@ -25,14 +32,19 @@ pub struct Asserv {
 
     pid_distance: PID,
     pid_angle: PID,
+
+    motor_override_setpoint: Option<MotorSetpointOverride>,
 }
 
 impl Asserv {
-    pub fn new(spawner: Spawner,
+    pub async fn new(
              left_wheel_counter: LeftWheelEncoder,
              right_wheel_counter: RightWheelEncoder,
              left_pwm: LeftMotorPwms,
-             right_pwm: RightMotorPwms) -> AsservMutexProtected {  
+             right_pwm: RightMotorPwms,
+             spawner: Spawner,
+             event: &EventSystem,
+        ) -> AsservMutexProtected {  
         let instance = Arc::new(Mutex::new(Self {
             left_wheel_counter,
             right_wheel_counter,
@@ -53,92 +65,45 @@ impl Asserv {
         
             pid_distance: PID::new(DISTANCE_PID_CONFIG),
             pid_angle: PID::new(ANGLE_PID_CONFIG),
+
+            motor_override_setpoint: None,
         }));
 
-        spawner.spawn(start_asserv_thread(instance.clone())).unwrap();
+        spawner.spawn(start_asserv_thread(instance.clone(), event.clone())).unwrap();
+
+        let ble_instance = instance.clone();
+        event.register_receiver_callback(
+            Some(Asserv::filter_events), 
+            move |evt| {
+                let ble_instance = ble_instance.clone();
+                async move {
+                    match evt {
+                        Event::MotorOverrideSetpoint { ovr }  => {
+                            ble_instance.lock().await.motor_override_setpoint = ovr;
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        ).await;
 
         instance
     }
 
-    pub async fn run(instance: AsservMutexProtected) {
-
-        let test = instance.lock().await;
-       // test.ramp_distance.set_target(10.0);
-        drop(test);
-
-        let mut inst = instance.lock().await;
-
-        let mut beg_cnt_val = inst.left_wheel_counter.get();
-
-        let wait_duration_ms : u64 = 500;
-
-        inst.left_pwm.0.set_timestamp(0);
-        inst.left_pwm.1.set_timestamp(0);
-        inst.right_pwm.0.set_timestamp(0);
-        inst.right_pwm.1.set_timestamp(0);
-        Timer::after(Duration::from_millis(wait_duration_ms)).await;
-        for cnt in 0..500 {
-            inst.left_pwm.0.set_timestamp( cnt);
-            inst.left_pwm.1.set_timestamp(0);
-            Timer::after(Duration::from_millis(ASSERV_PWM_OFFSET_MEAS_PERIOD_MS)).await;
-            if (inst.left_wheel_counter.get() - beg_cnt_val).abs() > 10{
-                inst.left_pwm_offset[0] = cnt as u16 -1;
-                break;
-            }
+    fn filter_events(evt: &Event) -> bool {
+        match evt {
+            Event::MotorOverrideSetpoint { .. } => true,
+            _ => false,
         }
-        inst.left_pwm.0.set_timestamp(0);
-        inst.left_pwm.1.set_timestamp(0);
-        Timer::after(Duration::from_millis(wait_duration_ms)).await;
-        beg_cnt_val = inst.left_wheel_counter.get();
-
-        for cnt in 0..500 {
-            inst.left_pwm.0.set_timestamp(0);
-            inst.left_pwm.1.set_timestamp( cnt);
-            Timer::after(Duration::from_millis(ASSERV_PWM_OFFSET_MEAS_PERIOD_MS)).await;
-            if (inst.left_wheel_counter.get() - beg_cnt_val).abs() > 10{
-                inst.left_pwm_offset[1] = cnt as u16 -1;
-                break;
-            }
-        }
-
-        inst.left_pwm.0.set_timestamp(0);
-        inst.left_pwm.1.set_timestamp(0);
-        inst.right_pwm.0.set_timestamp(0);
-        inst.right_pwm.1.set_timestamp(0);
-        Timer::after(Duration::from_millis(wait_duration_ms)).await;
-        beg_cnt_val = inst.right_wheel_counter.get();
-        for cnt in 0..500 {
-            inst.right_pwm.0.set_timestamp( cnt);
-            inst.right_pwm.1.set_timestamp(0);
-            Timer::after(Duration::from_millis(ASSERV_PWM_OFFSET_MEAS_PERIOD_MS)).await;
-            if (inst.right_wheel_counter.get() - beg_cnt_val).abs() > 10{
-                inst.right_pwm_offset[0] = cnt as u16 -1;
-                break;
-            }
-        }
-
-        inst.right_pwm.0.set_timestamp(0);
-        inst.right_pwm.1.set_timestamp(0);
-        Timer::after(Duration::from_millis(wait_duration_ms)).await;
-        beg_cnt_val = inst.right_wheel_counter.get();
-
-        for cnt in 0..500 {
-            inst.right_pwm.0.set_timestamp(0);
-            inst.right_pwm.1.set_timestamp( cnt);
-            Timer::after(Duration::from_millis(ASSERV_PWM_OFFSET_MEAS_PERIOD_MS)).await;
-            if (inst.right_wheel_counter.get() - beg_cnt_val).abs() > 10{
-                inst.right_pwm_offset[1] = cnt as u16 -1;
-                break;
-            }
-        }
-        inst.right_pwm.0.set_timestamp(0);
-        inst.right_pwm.1.set_timestamp(0);
-        Timer::after(Duration::from_millis(wait_duration_ms)).await;
-        log::info!("pwm offsets left : {}|{} / right {}|{}", inst.left_pwm_offset[0], inst.left_pwm_offset[1], inst.right_pwm_offset[0], inst.right_pwm_offset[1]);
+    } 
 
 
-        drop(inst);
-        
+    pub async fn run(instance: AsservMutexProtected, event: EventSystem) {
+
+        let mut left_motor_filter = MotorFilter::Off;
+        let mut right_motor_filter = MotorFilter::Off;
+
+        let config = PAMIConfig::get_config().unwrap();
 
         loop {
             //run the asserv at 20Hz
@@ -149,10 +114,22 @@ impl Asserv {
             //compute the encoder delta to get rid of the overflow
             let now = Instant::now().as_millis();
             let new_encoders = [instance.left_wheel_counter.get(), instance.right_wheel_counter.get()];
+            let mut moving_forward: [bool; 2] = [false; 2];
+            let mut moving_backward: [bool; 2] = [false; 2];
             for i in 0..2 {
-                let delta = new_encoders[i].overflowing_sub(instance.last_encoders_read[i]).0;
+                let mut delta = new_encoders[i].overflowing_sub(instance.last_encoders_read[i]).0;
+                if i == 0 {
+                    delta = -delta;
+                }
                 instance.encoders[i] += delta as i32;
                 instance.last_encoders_read[i] = new_encoders[i];
+
+                if delta > 0 {
+                    moving_forward[i] = true;
+                }
+                else if delta < 0 {
+                    moving_backward[i] = true;
+                }
             }
 
             //compute new position
@@ -160,6 +137,7 @@ impl Asserv {
             position.set_new_encoder_values(now, instance.encoders);
             
             let robot_coord = position.get_coordinates();
+            event.send_event(Event::Position { coords: *robot_coord });
             let robot_distance = robot_coord.get_distance_mm();
             let robot_angle = robot_coord.get_angle_rad();
             
@@ -174,12 +152,51 @@ impl Asserv {
             let angle_sp = instance.pid_angle.compute(angle_target - robot_angle);//robot_coord.get_a_deg());
             
             //assign the control loop output to the motors
-            let left_speed = distance_sp - angle_sp;
-            let right_speed = distance_sp + angle_sp;
+            let left_speed = (distance_sp - angle_sp) * 0.0;
+            let right_speed = (distance_sp + angle_sp) * 0.0;
 
-            let left_pwm_offset = instance.left_pwm_offset.clone();
-            let right_pwm_offset = instance.right_pwm_offset.clone();
+            let mut left_pwm : i16 = left_speed.clamp(-1000.0, 1000.0) as i16;
+            let mut right_pwm : i16 = right_speed.clamp(-1000.0, 1000.0) as i16;
 
+            if let Some(ovr) = &instance.motor_override_setpoint {
+                if !ovr.after_filter {
+                    left_pwm = ovr.left;
+                    right_pwm = ovr.right;
+                }
+            }           
+
+            let mut left_pwm_filtered = left_motor_filter.apply_pwm(left_pwm, moving_forward[0], moving_backward[0]);
+            let mut right_pwm_filtered = right_motor_filter.apply_pwm(right_pwm, moving_forward[1], moving_backward[1]);
+            
+            if let Some(ovr) = &instance.motor_override_setpoint {
+                if ovr.after_filter {
+                    left_pwm_filtered = ovr.left;
+                    right_pwm_filtered = ovr.right;
+                }
+            }            
+
+            event.send_event(Event::MotorDebug { timestamp: (now & 0xFFFF) as u16, left_tick: instance.encoders[0], right_tick: instance.encoders[1], left_pwm: left_pwm_filtered, right_pwm: right_pwm_filtered });
+
+
+            if left_pwm_filtered >= 0 {
+                instance.left_pwm.1.set_timestamp(left_pwm_filtered as u16);
+                instance.left_pwm.0.set_timestamp(0);
+            }
+            else {
+                instance.left_pwm.1.set_timestamp(0);
+                instance.left_pwm.0.set_timestamp((-left_pwm_filtered) as u16);
+            }
+
+            if right_pwm_filtered >= 0 {
+                instance.right_pwm.0.set_timestamp(right_pwm_filtered as u16);
+                instance.right_pwm.1.set_timestamp(0);
+            }
+            else {
+                instance.right_pwm.0.set_timestamp(0);
+                instance.right_pwm.1.set_timestamp((-right_pwm_filtered) as u16);
+            }
+
+            /*
             if (left_speed >= -ASSERV_DEAD_ZONE_SPEED) && (left_speed <= ASSERV_DEAD_ZONE_SPEED){
                 instance.left_pwm.0.set_timestamp(0);
                 instance.left_pwm.1.set_timestamp(0);
@@ -223,6 +240,7 @@ impl Asserv {
                 instance.right_pwm.0.set_timestamp(0);
                 instance.right_pwm.1.set_timestamp(0);
             }
+            */
         }
     }
 
@@ -232,6 +250,59 @@ impl Asserv {
 }
 
 #[embassy_executor::task]
-async fn start_asserv_thread(instance: AsservMutexProtected) {
-    Asserv::run(instance).await;
+async fn start_asserv_thread(instance: AsservMutexProtected, event: EventSystem) {
+    Asserv::run(instance, event).await;
+}
+
+
+
+
+enum MotorFilter {
+    Off,
+    Forward,
+    Backward,
+}
+
+impl MotorFilter {
+    const THRESHOLD: i16 = 5;
+    const BOOST_PWM: i16 = 65;
+
+    pub fn apply_pwm(&mut self, pwm: i16, moving_forward: bool, moving_backward: bool) -> i16 {
+        if pwm > MotorFilter::THRESHOLD {
+            match self {
+                MotorFilter::Off | MotorFilter::Backward => {
+                    if moving_forward {
+                        *self = MotorFilter::Forward;
+                        return self.apply_pwm(pwm, moving_forward, moving_backward);
+                    }
+                    else {
+                        pwm + MotorFilter::BOOST_PWM
+                    }
+                }
+                MotorFilter::Forward => {
+                    pwm + 25
+                }
+            }
+        }
+        else if pwm < -MotorFilter::THRESHOLD {
+            match self {
+                MotorFilter::Off | MotorFilter::Forward => {
+                    if moving_backward {
+                        *self = MotorFilter::Backward;
+                        return self.apply_pwm(pwm, moving_forward, moving_backward);
+                    }
+                    else {
+                        pwm - MotorFilter::BOOST_PWM
+                    }
+                }
+                MotorFilter::Backward => {
+                    pwm - 25
+                }
+            }
+        }
+        else {
+            *self = MotorFilter::Off;
+            0
+        }
+    }
 }

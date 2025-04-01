@@ -1,9 +1,9 @@
-use alloc::{sync::Arc, vec::Vec};
 use embassy_sync::{blocking_mutex::raw::RawMutex, mutex::Mutex};
 
 use crate::ramp::{Ramp, RampConfiguration};
 
 use self::robot_coordinate::RobotCoordinate;
+use alloc::sync::Arc;
 
 pub mod robot_coordinate;
 
@@ -30,11 +30,7 @@ pub struct Position<const N: usize> {
 //Specific implementation of a regular robot
 impl<const N: usize> Position<N> {
     pub fn new(configuration: PositionConfiguration, ramp_configuration: [RampConfiguration; N]) -> Position<N> {
-        let ramps = ramp_configuration
-            .iter()
-            .map(|config| Ramp::new(*config))
-            .collect::<Vec<Ramp>>()
-            .try_into().unwrap(); //unwrap is safe because the size of the array is known at compile time
+        let ramps: [Ramp; N] = core::array::from_fn(|i| Ramp::new(ramp_configuration[i]));
 
         Position { 
             configuration, 
