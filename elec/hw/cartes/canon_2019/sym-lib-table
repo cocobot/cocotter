@@ -1,5 +1,0 @@
-(sym_lib_table
-  (version 7)
-  (lib (name "espitall")(type "Legacy")(uri "${KIPRJMOD}/../espitall.lib")(options "")(descr ""))
-  (lib (name "canon_2019-rescue")(type "KiCad")(uri "${KIPRJMOD}/canon_2019-rescue.kicad_sym")(options "")(descr ""))
-)

@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name espitall)(type KiCad)(uri ${KIPRJMOD}/../espitall.pretty)(options "")(descr ""))
-)
