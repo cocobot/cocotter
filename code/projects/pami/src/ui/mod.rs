@@ -56,7 +56,6 @@ impl UIThread {
     }
 
     fn handle_battery_event(&self, voltage_mv: f32) {
-        //log::info!("vbatt {}", voltage_mv);
 
         // lifepo4 discharge example:  https://cleversolarpower.com/lifepo4-voltage-chart/
         const VBATT_LVL_WARN_MV : f32 = 3150.0; // corresponds to around 15% SOC battery SOC

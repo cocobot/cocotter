@@ -17,6 +17,8 @@ pub struct MotorSetpointOverride {
 }
 
 pub struct Asserv {
+    emergency_stop: Input<'static>,
+
     left_wheel_counter: LeftWheelEncoder,
     right_wheel_counter: RightWheelEncoder,
 
@@ -38,6 +40,7 @@ pub struct Asserv {
 
 impl Asserv {
     pub async fn new(
+             emergency_stop: Input<'static>,
              left_wheel_counter: LeftWheelEncoder,
              right_wheel_counter: RightWheelEncoder,
              left_pwm: LeftMotorPwms,
@@ -46,6 +49,7 @@ impl Asserv {
              event: &EventSystem,
         ) -> AsservMutexProtected {  
         let instance = Arc::new(Mutex::new(Self {
+            emergency_stop,
             left_wheel_counter,
             right_wheel_counter,
             left_pwm,
@@ -214,31 +218,30 @@ impl Asserv {
                 instance.left_pwm.1.set_timestamp(0);
             }
 
-            /*match right_speed < 0.0 {
-                true => {
-                    instance.right_pwm.1.set_timestamp((-right_speed) as u16 + right_pwm_offset[0]);
+                if (right_speed >= -ASSERV_DEAD_ZONE_SPEED) && (right_speed <= ASSERV_DEAD_ZONE_SPEED){
+                    instance.right_pwm.0.set_timestamp(0);
+                    instance.right_pwm.1.set_timestamp(0);
+                }
+                else if right_speed <= -ASSERV_DEAD_ZONE_SPEED {
+                    instance.right_pwm.1.set_timestamp( (-right_speed) as u16 + right_pwm_offset[0]);
                     instance.right_pwm.0.set_timestamp(0);
                 }
-                false => {
+                else if right_speed >= ASSERV_DEAD_ZONE_SPEED {
                     instance.right_pwm.1.set_timestamp(0);
                     instance.right_pwm.0.set_timestamp(right_speed as u16 + right_pwm_offset[1]);
                 }
-            }*/
-            if (right_speed >= -ASSERV_DEAD_ZONE_SPEED) && (right_speed <= ASSERV_DEAD_ZONE_SPEED){
-                instance.right_pwm.0.set_timestamp(0);
-                instance.right_pwm.1.set_timestamp(0);
-            }
-            else if right_speed <= -ASSERV_DEAD_ZONE_SPEED {
-                instance.right_pwm.1.set_timestamp( (-right_speed) as u16 + right_pwm_offset[0]);
-                instance.right_pwm.0.set_timestamp(0);
-            }
-            else if right_speed >= ASSERV_DEAD_ZONE_SPEED {
-                instance.right_pwm.1.set_timestamp(0);
-                instance.right_pwm.0.set_timestamp(right_speed as u16 + right_pwm_offset[1]);
+                else {
+                    instance.right_pwm.0.set_timestamp(0);
+                    instance.right_pwm.1.set_timestamp(0);
+                }
             }
             else {
-                instance.right_pwm.0.set_timestamp(0);
-                instance.right_pwm.1.set_timestamp(0);
+                {
+                    instance.left_pwm.0.set_timestamp(0);
+                    instance.left_pwm.1.set_timestamp(0);
+                    instance.right_pwm.0.set_timestamp(0);
+                    instance.right_pwm.1.set_timestamp(0);
+                }
             }
             */
         }
