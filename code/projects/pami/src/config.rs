@@ -4,10 +4,6 @@ use phf::phf_map;
 
 pub const ASSERV_PERIOD_MS : u64 = 10;
 
-//pub const ASSERV_PWM_OFFSET_MEAS_PERIOD_MS : u64 = 10;
-
-//pub const ASSERV_DEAD_ZONE_SPEED : f32 = 5.0; // 
-
 
 pub const POSITION_CONFIG : PositionConfiguration = PositionConfiguration {
     tick_to_mm: 2.71666,
@@ -42,9 +38,28 @@ pub const ANGLE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
     max_err_for_integral: 0.0,
 };
 
+#[derive(Debug, Clone, Copy)]
+pub struct MotorQuadrantConfiguration {
+    pub gain: f32,
+    pub min_pwm: i16,
+    pub boost_pwm: i16,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct MotorConfiguration {
+    pub invert: bool,
+    pub forward: MotorQuadrantConfiguration,
+    pub backward: MotorQuadrantConfiguration,
+}
+
+
 pub struct PAMIConfig {
     pub id: usize,
     pub color: &'static str,
+
+    pub invert_encoder: [bool; 2],
+    pub left_motor: MotorConfiguration,
+    pub right_motor: MotorConfiguration,
 }
 
 
@@ -53,12 +68,72 @@ static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
     [116, 77, 189, 81, 207, 136] => PAMIConfig {
         id: 0,
         color: "Violet",
+
+        invert_encoder: [false, false],
+
+        left_motor: MotorConfiguration {
+            invert: false,
+            forward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+            backward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+        },
+
+        right_motor: MotorConfiguration {
+            invert: false,
+            forward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+            backward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+        },
     },
 
     //yellow (ID = 1)
     [116, 77, 189, 81, 239, 32] => PAMIConfig {
         id: 1,
         color: "Yellow",
+
+        invert_encoder: [false, false],
+
+        left_motor: MotorConfiguration {
+            invert: false,
+            forward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+            backward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+        },
+
+        right_motor: MotorConfiguration {
+            invert: false,
+            forward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+            backward: MotorQuadrantConfiguration {
+                gain: 1.0,
+                min_pwm: 15,
+                boost_pwm: 65,
+            },
+        },
     },
 };
 

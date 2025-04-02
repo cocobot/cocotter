@@ -113,7 +113,9 @@ async fn main(spawner: Spawner) {
     //init all subsystems
     UI::new(spawner, &event).await;
     PWM::new(board.pwm_extended.take().unwrap(), spawner, &event).await;
-    let asserv = Asserv::new(        
+    let asserv = Asserv::new(      
+        board.emergency_stop.take().unwrap(),
+
         board.left_wheel_counter.take().unwrap(), 
         board.right_wheel_counter.take().unwrap(),
 

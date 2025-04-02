@@ -69,7 +69,6 @@ impl PamiAdc {
             //ESP-HAL ADC is not compatible with embassy async yet.
             //TODO: rework this to have an IRQ to signal the executor
             //instead of periodic polling
-            const ADC_RES : u16 = 13;// 12 bits data are stored in 13 bits to be compatible with continuous read that returns 13bits resolution data
 
             let res = match channel {
                 PamiAdcChannel::VBat => {
@@ -396,8 +395,7 @@ impl Pami2023 {
 
         let counter_left = u0.counter.clone();
         let counter_right = u1.counter.clone();
-        core::mem::forget(u0);
-        core::mem::forget(u1);
+ 
         (counter_left, counter_right)
     }
 }
