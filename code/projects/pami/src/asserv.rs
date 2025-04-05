@@ -153,8 +153,8 @@ impl Asserv {
             let angle_sp = instance.pid_angle.compute(angle_target - robot_angle);
             
             //assign the control loop output to the motors
-            let left_speed = (distance_sp - angle_sp) * 0.0;
-            let right_speed = (distance_sp + angle_sp) * 0.0;
+            let left_speed = (distance_sp - angle_sp);
+            let right_speed = (distance_sp + angle_sp);
 
             let mut left_pwm : i16 = left_speed.clamp(-1000.0, 1000.0) as i16;
             let mut right_pwm : i16 = right_speed.clamp(-1000.0, 1000.0) as i16;
@@ -164,25 +164,24 @@ impl Asserv {
                     left_pwm = ovr.left;
                     right_pwm = ovr.right;
                 }
-            }           
+            }
 
             let mut left_pwm_filtered = left_motor_filter.apply_pwm(left_pwm, moving_forward[0], moving_backward[0]);
             let mut right_pwm_filtered = right_motor_filter.apply_pwm(right_pwm, moving_forward[1], moving_backward[1]);
-            
+
             if let Some(ovr) = &instance.motor_override_setpoint {
                 if ovr.after_filter {
                     left_pwm_filtered = ovr.left;
                     right_pwm_filtered = ovr.right;
                 }
-            }            
+            }
 
-            if instance.emergency_stop.is_high() {
+            if instance.emergency_stop.is_low() {
                 left_pwm_filtered = 0;
                 right_pwm_filtered = 0;
             }
 
             event.send_event(Event::MotorDebug { timestamp: (now & 0xFFFF) as u16, left_tick: instance.encoders[0], right_tick: instance.encoders[1], left_pwm: left_pwm_filtered, right_pwm: right_pwm_filtered });
-
 
             if left_pwm_filtered >= 0 {
                 instance.left_pwm.1.set_timestamp(left_pwm_filtered as u16);
