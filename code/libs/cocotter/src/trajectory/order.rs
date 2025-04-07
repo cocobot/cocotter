@@ -216,10 +216,10 @@ impl Order {
         }
 
         //find best target
-        let t1 = abase + normalized_angle;
-        let t2 = abase + normalized_angle + TAU;
-        let t3 = abase + normalized_angle - TAU;
-        let t4 = abase + normalized_angle - 2.0 * TAU;
+        let t1 = abase * TAU + normalized_angle;
+        let t2 = abase * TAU + normalized_angle + TAU;
+        let t3 = abase * TAU + normalized_angle - TAU;
+        let t4 = abase * TAU + normalized_angle - 2.0 * TAU;
 
         let dt1 = (t1 - current_angle).abs();
         let dt2 = (t2 - current_angle).abs();
