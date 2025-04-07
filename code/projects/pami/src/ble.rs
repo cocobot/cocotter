@@ -1,3 +1,5 @@
+use crate::config::PAMIConfig;
+use alloc::format;
 use bt_hci::controller::ExternalController;
 use embassy_executor::Spawner;
 use embassy_futures::{join::join, select::select};
@@ -106,15 +108,17 @@ async fn start_ble_thread(
     } = stack.build();
 
     log::info!("Starting advertising and GATT service");
+    let config = PAMIConfig::get_config().unwrap();
+    let adv_name = format!("CocOtter PAMI {:.8}", config.color);
     let server = Server::new_with_config(GapConfig::Peripheral(PeripheralConfig {
-        name: "Cocotter PAMI",
+        name: &adv_name,
         appearance: &appearance::power_device::GENERIC_POWER_DEVICE,
     }))
     .unwrap();
 
     let _ = join(ble_task(runner), async {
         loop {
-            match advertise("Cocotter PAMI", &mut peripheral).await {
+            match advertise(&adv_name, &mut peripheral).await {
                 Ok(conn) => {
                     // set up tasks when the connection is established to a central, so they don't run when no one is connected.
                     let a = gatt_events_task(&server, &conn, &event);
