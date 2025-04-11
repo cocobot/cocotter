@@ -70,13 +70,23 @@ impl PamiAdc {
             //TODO: rework this to have an IRQ to signal the executor
             //instead of periodic polling
 
+            fn convert_to_voltage(raw: u16) -> f32 {
+                const ADC_MAX_V: f32 = 3100.0;
+                ((raw as f32) * ADC_MAX_V) / (((1 << PamiAdc::ADC_RES) - 1) as f32)
+            }
+
+            fn convert_to_mot_current_ma(voltage_mv : f32) -> f32 {
+                const RES_OHMS : f32 = 768.0;
+                const GAIN_UA_A : f32 = 1500.0;
+                return ((voltage_mv * 1000.0) / RES_OHMS) * 1000.0 / GAIN_UA_A;
+            }
+
             let res = match channel {
                 PamiAdcChannel::VBat => {
                     let raw_opt = self.adc.read_oneshot(&mut self.vbatt);
                     match raw_opt{
                         Ok(raw) => {
-                            const ADC_MAX_V :f32 = 3100.0;
-                            let voltage = ((raw as f32)* ADC_MAX_V)/(((1<<PamiAdc::ADC_RES) - 1) as f32); 
+                            let voltage = convert_to_voltage(raw);
         
                             const VBATT_RL_KOHMS : f32= 91.0;
                             const VBATT_RH_KOHMS : f32= 91.0;
@@ -88,8 +98,8 @@ impl PamiAdc {
                         _=> raw_opt
                     }
                 }
-                PamiAdcChannel::IMotLeft => self.adc.read_oneshot(&mut self.i_mot_left),
-                PamiAdcChannel::IMotRight => self.adc.read_oneshot(&mut self.i_mot_right),
+                PamiAdcChannel::IMotLeft => self.adc.read_oneshot(&mut self.i_mot_left).map(|raw| convert_to_mot_current_ma(convert_to_voltage(raw)) as u16),
+                PamiAdcChannel::IMotRight => self.adc.read_oneshot(&mut self.i_mot_right).map(|raw| convert_to_mot_current_ma(convert_to_voltage(raw)) as u16),
             };
 
             match res {
