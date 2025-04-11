@@ -59,8 +59,8 @@ impl Asserv {
             position: Arc::new(Mutex::new(Position::new(
                 POSITION_CONFIG, 
                 [
-                    DISTANCE_RAMP_CONFIG.with_timestep_ms(ASSERV_PERIOD_MS),
-                    ANGLE_RAMP_CONFIG.with_timestep_ms(ASSERV_PERIOD_MS)
+                    ANGLE_RAMP_CONFIG.with_timestep_ms(ASSERV_PERIOD_MS),
+                    DISTANCE_RAMP_CONFIG.with_timestep_ms(ASSERV_PERIOD_MS)
                 ]
             ))),
         
@@ -151,10 +151,14 @@ impl Asserv {
             //compute the control loop
             let distance_sp = instance.pid_distance.compute(distance_target - robot_distance);
             let angle_sp = instance.pid_angle.compute(angle_target - robot_angle);
+
+            //log::info!("PID D: {:8.3} {:8.3} {:8.3} {:8.3}", distance_target, robot_distance, distance_sp, distance_target - robot_distance);
+            //log::info!("PID A: {:8.3} {:8.3} {:8.3} {:8.3}", angle_target, robot_angle, angle_sp, angle_target - robot_angle);
+
             
             //assign the control loop output to the motors
-            let left_speed = (distance_sp - angle_sp);
-            let right_speed = (distance_sp + angle_sp);
+            let left_speed = distance_sp - angle_sp;
+            let right_speed = distance_sp + angle_sp;
 
             let mut left_pwm : i16 = left_speed.clamp(-1000.0, 1000.0) as i16;
             let mut right_pwm : i16 = right_speed.clamp(-1000.0, 1000.0) as i16;

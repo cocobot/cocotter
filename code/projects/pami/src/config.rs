@@ -13,17 +13,17 @@ pub const POSITION_CONFIG : PositionConfiguration = PositionConfiguration {
 //unit are mm/s and mm/s^2
 pub const DISTANCE_RAMP_CONFIG : RampConfiguration = RampConfiguration {
     max_speed: 200.0,
-    acceleration: 80.0,
+    acceleration: 200.0,
 };
 
 //unit are deg/s and deg/s^2
 pub const ANGLE_RAMP_CONFIG : RampConfiguration = RampConfiguration {
     max_speed: 300.0,
-    acceleration: 80.0,
+    acceleration: 5.0,
 };
 
 pub const DISTANCE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
-    kp: 1.0,
+    kp: 40.0,
     ki: 0.0,
     kd: 0.0,
     max_integral: 0.0,
@@ -31,7 +31,7 @@ pub const DISTANCE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
 };
 
 pub const ANGLE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
-    kp: 10.0,
+    kp: 2250.0,
     ki: 0.0,
     kd: 0.0,
     max_integral: 0.0,
@@ -67,9 +67,9 @@ static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
     //violet (ID = 0)
     [116, 77, 189, 81, 207, 136] => PAMIConfig {
         id: 0,
-        color: "Violet",
+        color: "Red",
 
-        invert_encoder: [false, false],
+        invert_encoder: [true, true],
 
         left_motor: MotorConfiguration {
             invert: false,
