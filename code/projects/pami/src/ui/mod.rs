@@ -56,18 +56,52 @@ impl UIThread {
     }
 
     fn handle_battery_event(&self, voltage_mv: f32) {
+        // LiFePO4 voltage to percentage lookup table (voltage in mV, percentage points)
+        const LIFEPO4_CURVE: [(f32, f32); 11] = [
+            (3400.0, 100.0),
+            (3350.0, 90.0), 
+            (3320.0, 80.0),  
+            (3300.0, 70.0), 
+            (3270.0, 60.0), 
+            (3260.0, 50.0), 
+            (3350.0, 40.0), 
+            (3220.0, 35.0), 
+            (3200.0, 20.0), 
+            (3000.0, 10.0), 
+            (2500.0, 0.0), 
+        ];
 
-        // lifepo4 discharge example:  https://cleversolarpower.com/lifepo4-voltage-chart/
-        const VBATT_LVL_WARN_MV : f32 = 3150.0; // corresponds to around 15% SOC battery SOC
-        const VBATT_LVL_ERR_MV  : f32 = 3000.0; // corresponds to around 5% battery SOC
-
-        match voltage_mv {
-            mv if mv <= VBATT_LVL_ERR_MV  => self.event.send_event(Event::Pwm { pwm_event: PWMEvent::LedVbatt([0.5, 0.0, 0.0]) } ), // error : stop required
-            mv if mv <= VBATT_LVL_WARN_MV => self.event.send_event(Event::Pwm { pwm_event: PWMEvent::LedVbatt([0.5, 0.5, 0.0]) } ), // low battery
-            _                                  => self.event.send_event(Event::Pwm { pwm_event: PWMEvent::LedVbatt([0.0, 0.5, 0.0]) } ), // ok
+        // Find percentage using the lookup table
+        let percentage = if voltage_mv >= LIFEPO4_CURVE[0].0 {
+            LIFEPO4_CURVE[0].1
+        } else if voltage_mv <= LIFEPO4_CURVE[LIFEPO4_CURVE.len() - 1].0 {
+            LIFEPO4_CURVE[LIFEPO4_CURVE.len() - 1].1
+        } else {
+            // Find the two voltage points to interpolate between
+            let mut i = 0;
+            while i < LIFEPO4_CURVE.len() - 1 && voltage_mv < LIFEPO4_CURVE[i].0 {
+                i += 1;
+            }
+            
+            // Linear interpolation between the two points
+            let v1 = LIFEPO4_CURVE[i].0;
+            let p1 = LIFEPO4_CURVE[i].1;
+            let v2 = LIFEPO4_CURVE[i + 1].0;
+            let p2 = LIFEPO4_CURVE[i + 1].1;
+            
+            p1 + (p2 - p1) * (voltage_mv - v1) / (v2 - v1)
         };
 
-        let percentage = (voltage_mv - VBATT_LVL_ERR_MV) / (VBATT_LVL_WARN_MV - VBATT_LVL_ERR_MV) * 100.0;
+        if percentage < 30.0 {
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::LedVbatt([1.0, 0.0, 0.0]) } ); // error
+        }
+        else if percentage < 90.0 {
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::LedVbatt([1.0, 0.27, 0.0]) } );// low battery
+        }
+        else {
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::LedVbatt([0.0, 1.0, 0.0]) } ); // ok battery
+        }
+
         self.event.send_event(Event::VbattPercent { percent: percentage.clamp(0.0, 100.0) as u8 });
     }
 
