@@ -1,5 +1,5 @@
 use board_pami_2023::{LeftMotorPwms, RightMotorPwms, LeftWheelEncoder, RightWheelEncoder};
-use cocotter::{pid::PID, position::{Position, PositionMutex}};
+use cocotter::{pid::{PIDConfiguration, PID}, position::{Position, PositionMutex}};
 use embassy_executor::Spawner;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, mutex::Mutex};
 use embassy_time::{Duration, Instant, Timer};
@@ -15,6 +15,12 @@ pub struct MotorSetpointOverride {
     pub after_filter: bool,
     pub left: i16,
     pub right: i16,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct PIDSetpointOverride {
+    pub distance: f32,
+    pub angle: f32,
 }
 
 pub struct Asserv {
@@ -35,6 +41,9 @@ pub struct Asserv {
     pid_angle: PID,
 
     motor_override_setpoint: Option<MotorSetpointOverride>,
+    pid_override_setpoint: Option<PIDSetpointOverride>,
+    pid_distance_override_config : Option<PIDConfiguration>,
+    pid_angle_override_config : Option<PIDConfiguration>,
 }
 
 impl Asserv {
@@ -68,6 +77,9 @@ impl Asserv {
             pid_angle: PID::new(ANGLE_PID_CONFIG),
 
             motor_override_setpoint: None,
+            pid_override_setpoint: None,
+            pid_distance_override_config: None,
+            pid_angle_override_config: None,
         }));
 
         spawner.spawn(start_asserv_thread(instance.clone(), event.clone())).unwrap();
@@ -82,6 +94,16 @@ impl Asserv {
                         Event::MotorOverrideSetpoint { ovr }  => {
                             ble_instance.lock().await.motor_override_setpoint = ovr;
                         }
+                        Event::PidOverrideSetpoint { ovr } => {
+                            ble_instance.lock().await.pid_override_setpoint = ovr;
+                        }
+                        Event::PidOverrideConfiguration { ovr, pid_id } => {
+                            match pid_id {
+                                0 => ble_instance.lock().await.pid_distance_override_config = ovr,
+                                1 => ble_instance.lock().await.pid_angle_override_config = ovr,
+                                _ => {}
+                            }
+                        }
                         _ => {}
                     }
                 }
@@ -94,6 +116,8 @@ impl Asserv {
     fn filter_events(evt: &Event) -> bool {
         match evt {
             Event::MotorOverrideSetpoint { .. } => true,
+            Event::PidOverrideSetpoint { .. } => true,
+            Event::PidOverrideConfiguration { .. } => true,
             _ => false,
         }
     } 
@@ -105,6 +129,7 @@ impl Asserv {
         let mut left_motor_filter = MotorFilter::new(&config.left_motor);
         let mut right_motor_filter = MotorFilter::new(&config.right_motor);
 
+        let mut last_event_sent= Instant::now().as_millis();
 
         loop {
             //run the asserv at 20Hz
@@ -144,9 +169,21 @@ impl Asserv {
             
             //compute new control loop target
             let ramp = position.get_ramps_as_mut();
-            let distance_target = ramp[1].compute();
-            let angle_target = ramp[0].compute();
+            let mut distance_target = ramp[1].compute();
+            let mut angle_target = ramp[0].compute();
             drop(position);
+
+            if let Some(ovr) = &instance.pid_override_setpoint {
+                distance_target = ovr.distance;
+                angle_target = ovr.angle;
+            }
+
+            if let Some(ovr) = instance.pid_distance_override_config {
+                instance.pid_distance.set_configuration(ovr);
+            }
+            if let Some(ovr) = instance.pid_angle_override_config {
+                instance.pid_angle.set_configuration(ovr);
+            }
 
             //compute the control loop
             let distance_sp = instance.pid_distance.compute(distance_target - robot_distance);
@@ -154,8 +191,6 @@ impl Asserv {
 
             //log::info!("PID D: {:8.3} {:8.3} {:8.3} {:8.3}", distance_target, robot_distance, distance_sp, distance_target - robot_distance);
             //log::info!("PID A: {:8.3} {:8.3} {:8.3} {:8.3}", angle_target, robot_angle, angle_sp, angle_target - robot_angle);
-
-            
             //assign the control loop output to the motors
             let left_speed = distance_sp - angle_sp;
             let right_speed = distance_sp + angle_sp;
@@ -180,12 +215,26 @@ impl Asserv {
                 }
             }
 
+
             if instance.emergency_stop.is_low() {
                 left_pwm_filtered = 0;
                 right_pwm_filtered = 0;
             }
 
-            event.send_event(Event::MotorDebug { timestamp: (now & 0xFFFF) as u16, left_tick: instance.encoders[0], right_tick: instance.encoders[1], left_pwm: left_pwm_filtered, right_pwm: right_pwm_filtered });
+            if now - last_event_sent > 100 {
+                last_event_sent = now;
+               
+                event.send_event(Event::MotorDebug { timestamp: (now & 0xFFFF) as u16, left_tick: instance.encoders[0], right_tick: instance.encoders[1], left_pwm: left_pwm_filtered, right_pwm: right_pwm_filtered });
+                event.send_event(Event::PIDDebug { 
+                    timestamp: (now & 0xFFFF) as u16,
+                    target_d: distance_target,
+                    current_d: robot_distance,
+                    output_d: distance_sp,
+                    target_a: angle_target,
+                    current_a: robot_angle,
+                    output_a: angle_sp,
+                });
+            }
 
             if left_pwm_filtered >= 0 {
                 instance.left_pwm.1.set_timestamp(left_pwm_filtered as u16);

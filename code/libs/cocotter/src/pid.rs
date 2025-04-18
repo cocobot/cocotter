@@ -1,3 +1,5 @@
+
+#[derive(Debug, Clone, Copy)]
 pub struct PIDConfiguration {
     pub kp: f32,
     pub ki: f32,
@@ -34,6 +36,10 @@ impl PID {
 
             output: 0.0,
         }
+    }
+
+    pub fn set_configuration(&mut self, configuration: PIDConfiguration) {
+        self.configuration = configuration;
     }
 
     pub fn compute(&mut self, error: f32) -> f32 {

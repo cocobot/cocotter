@@ -1,11 +1,11 @@
 use core::{future::Future, pin::Pin};
 
 use alloc::{boxed::Box, sync::Arc, vec::Vec};
-use cocotter::position::robot_coordinate::RobotCoordinate;
+use cocotter::{pid::PIDConfiguration, position::robot_coordinate::RobotCoordinate};
 use embassy_executor::Spawner;
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::{Channel, Sender, TrySendError}, mutex::Mutex};
 
-use crate::{asserv::MotorSetpointOverride, pwm::{OverrideState, PWMEvent}};
+use crate::{asserv::{MotorSetpointOverride, PIDSetpointOverride}, pwm::{OverrideState, PWMEvent}};
 extern crate alloc;
 pub const EVENT_QUEUE_COUNT: usize = 32;
 
@@ -27,7 +27,10 @@ pub enum Event {
     //asserv
     Position { coords: RobotCoordinate::<2> },
     MotorDebug {timestamp: u16, left_tick: i32, right_tick: i32, left_pwm: i16, right_pwm: i16}, 
+    PIDDebug {timestamp: u16, target_d: f32, current_d: f32, output_d: f32, target_a: f32, current_a: f32, output_a: f32},
     MotorOverrideSetpoint { ovr : Option<MotorSetpointOverride>},
+    PidOverrideSetpoint { ovr : Option<PIDSetpointOverride>},
+    PidOverrideConfiguration { ovr : Option<PIDConfiguration>, pid_id: u8},
 }
 
 #[derive(Clone)]

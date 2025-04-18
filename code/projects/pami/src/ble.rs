@@ -1,6 +1,7 @@
-use crate::config::PAMIConfig;
+use crate::{asserv::PIDSetpointOverride, config::PAMIConfig};
 use alloc::format;
 use bt_hci::controller::ExternalController;
+use cocotter::pid::PIDConfiguration;
 use embassy_executor::Spawner;
 use embassy_futures::{join::join, select::select};
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel};
@@ -53,6 +54,15 @@ struct PamiService {
 
     #[characteristic(uuid = "c10e0004-5a32-42a0-886b-cf9d57a5fd4a", write)]
     override_motor: [u8; 5],
+
+    #[characteristic(uuid = "c10e0005-5a32-42a0-886b-cf9d57a5fd4a", notify)]
+    pid_debug: [u8; 26],
+
+    #[characteristic(uuid = "c10e0006-5a32-42a0-886b-cf9d57a5fd4a", write)]
+    override_pid_sp: [u8; 9],
+
+    #[characteristic(uuid = "c10e0007-5a32-42a0-886b-cf9d57a5fd4a", write)]
+    override_pid_config: [u8; 21],
 }
 
 
@@ -80,6 +90,7 @@ impl CommBle {
             Event::Position { .. } => true,
             Event::VbattPercent { .. } => true,
             Event::MotorDebug { .. } => true,
+            Event::PIDDebug { .. } => true,
             _ => false,
         }
     }
@@ -95,7 +106,7 @@ async fn start_ble_thread(
     event: EventSystem) 
 {
 
-    let controller: ExternalController<_, 20> = ExternalController::new(connector);
+    let controller: ExternalController<_, 64> = ExternalController::new(connector);
 
     let mac_address = Efuse::read_base_mac_address();
     let address: Address = Address::random(mac_address);
@@ -148,6 +159,8 @@ async fn gatt_events_task(server: &Server<'_>, conn: &Connection<'_>, event: &Ev
     let level = server.battery_service.level;
     let override_pwm = server.pami.override_pwm;
     let override_motor = server.pami.override_motor;
+    let override_pid_sp = server.pami.override_pid_sp;
+    let override_pid_config = server.pami.override_pid_config;
 
     loop {
         match conn.next().await {
@@ -181,7 +194,6 @@ async fn gatt_events_task(server: &Server<'_>, conn: &Connection<'_>, event: &Ev
                                 }
                                 if evt.handle() == override_motor.handle {
                                     let data = evt.data();
-                                    log::info!("[gatt] Write Event to Override Motor Characteristic: {:?}", data);
                                     if data.len() == 5 {
                                         let after_filter = data[0] > 0;
                                         let left = i16::from_le_bytes([data[1], data[2]]);
@@ -194,6 +206,52 @@ async fn gatt_events_task(server: &Server<'_>, conn: &Connection<'_>, event: &Ev
                                                 right,
                                             })
                                         });
+                                    }
+                                }
+                                if evt.handle() == override_pid_sp.handle {
+                                    let data = evt.data();
+                                    if data.len() == 9 {
+                                        let enable = data[0] > 0;
+                                        let distance = f32::from_le_bytes([data[1], data[2], data[3], data[4]]);
+                                        let angle = f32::from_le_bytes([data[5], data[6], data[7], data[8]]);
+                                        if enable {
+                                            event.send_event(Event::PidOverrideSetpoint { 
+                                                ovr: Some(PIDSetpointOverride {
+                                                    distance,
+                                                    angle,
+                                                })
+                                            });
+                                        }
+                                        else {
+                                            event.send_event(Event::PidOverrideSetpoint { ovr: None });
+                                        }
+                                    }
+                                }
+                                if evt.handle() == override_pid_config.handle {
+                                    let data = evt.data();
+                                    if data.len() == 21 {
+                                        let id = data[0] & 0x0F;
+                                        let enable = data[0] & 0x80 > 0;
+                                        let kp = f32::from_le_bytes([data[1], data[2], data[3], data[4]]);
+                                        let ki = f32::from_le_bytes([data[5], data[6], data[7], data[8]]);
+                                        let kd = f32::from_le_bytes([data[9], data[10], data[11], data[12]]);
+                                        let max_integral = f32::from_le_bytes([data[13], data[14], data[15], data[16]]);
+                                        let max_err_for_integral = f32::from_le_bytes([data[17], data[18], data[19], data[20]]);
+                                        if enable {
+                                            event.send_event(Event::PidOverrideConfiguration { 
+                                                pid_id: id,
+                                                ovr: Some(PIDConfiguration {
+                                                    kp,
+                                                    ki,
+                                                    kd,
+                                                    max_integral,
+                                                    max_err_for_integral,
+                                                })
+                                            });
+                                        }
+                                        else {
+                                            event.send_event(Event::PidOverrideConfiguration { pid_id:id, ovr: None });
+                                        }
                                     }
                                 }
                             }
@@ -254,6 +312,7 @@ async fn custom_task<C: Controller>(server: &Server<'_>, conn: &Connection<'_>, 
     let level = server.battery_service.level;
     let position = server.pami.position;
     let motor_debug = server.pami.motor_debug;
+    let pid_debug = server.pami.pid_debug;
 
     let receiver = EVENT_QUEUE.receiver();
     receiver.clear();
@@ -292,6 +351,20 @@ async fn custom_task<C: Controller>(server: &Server<'_>, conn: &Connection<'_>, 
                 data[12..14].copy_from_slice(&i16::to_le_bytes(right_pwm));
 
                 motor_debug.notify(server, conn, &data).await
+            }
+
+            Event::PIDDebug { timestamp, target_d, current_d, output_d, target_a, current_a, output_a } => {
+                let mut data = [0 as u8; 26];
+
+                data[0..2].copy_from_slice(&u16::to_le_bytes(timestamp));
+                data[2..6].copy_from_slice(&f32::to_le_bytes(target_d));
+                data[6..10].copy_from_slice(&f32::to_le_bytes(current_d));
+                data[10..14].copy_from_slice(&f32::to_le_bytes(output_d));
+                data[14..18].copy_from_slice(&f32::to_le_bytes(target_a));
+                data[18..22].copy_from_slice(&f32::to_le_bytes(current_a));
+                data[22..26].copy_from_slice(&f32::to_le_bytes(output_a));
+
+                pid_debug.notify(server, conn, &data).await
             }
 
             Event::VbattPercent { percent } => {

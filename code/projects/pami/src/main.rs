@@ -11,29 +11,36 @@ mod events;
 
 extern crate alloc;
 
+use core::cmp::Ordering;
+
 use asserv::Asserv;
 use ble::CommBle;
 use board_pami_2023::{Pami2023, PamiAdc, PamiAdcChannel};
 use cocotter::trajectory::{order::Order, RampCfg, Trajectory, TrajectoryOrderList};
 use embassy_executor::Spawner;
 use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
-use embassy_time::{Duration, Timer};
+use embassy_time::{Duration, Instant, Timer};
 use esp_backtrace as _;
 use esp_hal_embassy::main;
 use events::{Event, EventSystem};
 use log::LevelFilter;
 use pwm::PWM;
 use ui::UI;
-
+use libm::{sqrt, sqrtf};
 
 async fn analog_reading(adc: &mut PamiAdc, event: &EventSystem) {
 
     let vbatt_mv : u16 = adc.read(PamiAdcChannel::VBat).await;    
+
     event.send_event(Event::Vbatt { voltage_mv: vbatt_mv as f32 });
 }
 
 #[embassy_executor::task]
 async fn game_logic(trajectory: Trajectory<CriticalSectionRawMutex, 2>) {
+    //add small delay before starting the trajectory
+    //loop {
+        Timer::after(Duration::from_secs(3)).await;
+    //}
     //loop {
     //    let order = TrajectoryOrderList::new()
     //        .add_order(Order::GotoA { a_rad: 0_f32.to_radians() });
@@ -78,7 +85,7 @@ async fn game_logic(trajectory: Trajectory<CriticalSectionRawMutex, 2>) {
             .add_order(Order::GotoA { a_rad: -90_f32.to_radians() })
             .add_order(Order::GotoD { d_mm: 100.0 })
             ;
-        
+        */
 
         let order = TrajectoryOrderList::new()
             .set_backwards(true) //all orders will be executed backwards
@@ -89,14 +96,23 @@ async fn game_logic(trajectory: Trajectory<CriticalSectionRawMutex, 2>) {
             .add_order(Order::GotoXY { x_mm: 0.0, y_mm: 100.0 })
             .add_order(Order::GotoXY { x_mm: 0.0, y_mm: 0.0 })
             .add_order(Order::GotoA { a_rad: 0.0 })
-            ;*/
+            ;
+        
 
-       /*  match trajectory.execute(order).await {
-            Ok(_) => log::info!("Trajectory done"),
-            Err(e) => log::error!("Trajectory error: {:?}", e),
-        }*/
-        Timer::after(Duration::from_secs(3)).await;
+       // let order = TrajectoryOrderList::new()
+        //    .add_order(Order::GotoA { a_rad: 90_f32.to_radians() });
+
+         match trajectory.execute(order).await {
+                Ok(_) => log::info!("Trajectory done"),
+                Err(e) => log::error!("Trajectory error: {:?}", e),
+            }
+
+        loop {
+            Timer::after(Duration::from_secs(3)).await;
+        }
     }
+
+    
 }
 
 
@@ -140,6 +156,9 @@ async fn main(spawner: Spawner) {
     match config.color {
         "Violet" => {
             event.send_event(Event::Pwm { pwm_event: pwm::PWMEvent::LedBottom([0.5, 0.0, 0.5]) });
+        },
+        "Red" => {
+            event.send_event(Event::Pwm { pwm_event: pwm::PWMEvent::LedBottom([1.0, 0.0, 0.0]) });
         },
         "Yellow" => {
             event.send_event(Event::Pwm { pwm_event: pwm::PWMEvent::LedBottom([1.0, 0.8, 0.0]) });
