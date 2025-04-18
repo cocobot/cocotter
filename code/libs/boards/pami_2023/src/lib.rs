@@ -188,8 +188,8 @@ impl Pami2023 {
       
         let adc = PamiAdc {
             vbatt: adc1_config.enable_pin_with_cal(peripherals.GPIO1, Attenuation::_11dB), // 0-3100mV
-            i_mot_left: adc1_config.enable_pin_with_cal(peripherals.GPIO9, Attenuation::_11dB), // 0-3100mV
-            i_mot_right: adc1_config.enable_pin_with_cal(peripherals.GPIO10, Attenuation::_11dB), // 0-3100mV
+            i_mot_left: adc1_config.enable_pin_with_cal(peripherals.GPIO9, Attenuation::_0dB),
+            i_mot_right: adc1_config.enable_pin_with_cal(peripherals.GPIO10, Attenuation::_0dB),
 
             adc: Adc::new(peripherals.ADC1, adc1_config),
         };
