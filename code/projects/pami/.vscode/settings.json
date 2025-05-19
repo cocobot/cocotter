@@ -1,3 +1,5 @@
 {
-    "rust-analyzer.check.allTargets": false,
+    "files.associations": {
+        "cstdint": "c"
+    }
 }

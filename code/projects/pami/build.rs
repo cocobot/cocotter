@@ -1,1 +1,3 @@
-fn main() {}
+fn main() {
+    embuild::espidf::sysenv::output();
+}

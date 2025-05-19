@@ -3,7 +3,7 @@
 // a lire : https://github.com/inazarenko/ssd1331-async/blob/main/src/lib.rs
 
 use esp_hal::spi::master::Spi;
-use core::ops::AddAssign;
+use core::{ops::AddAssign, time};
 
 #[allow(dead_code)]
 enum RegistersAddr {
@@ -208,6 +208,8 @@ impl Lsm6dso32x{
     const ODR_BM        : u8 = 0b1111_0000;   // output data rate bit mask  in register CTRL1_XL
     const FS_BP         : u8 = 2;
     const FS_BM         : u8 = 0b0000_1100;   
+    const TIMESTAMP_EN_BM : u8 = 0b0010_0000;   // timestamp enable bit in register CTRL10_C
+
     //const STATUS_REG_GYRO_SETTLING_BM   : u8 = 0x04;   // temperature new data available bit in status reg
     const STATUS_REG_XLDA_BM    : u8 = 0b0000_0001;   // accelerometer new data available bit in status reg
     const STATUS_REG_GDA_BM     : u8 = 0b0000_0010;   // gyroscope new data available bit in status reg
@@ -256,6 +258,12 @@ impl Lsm6dso32x{
         ctrl2_g_val[0] |= ((self.dev_conf.gyroscope.full_scale.clone() as u8) << Lsm6dso32x::FS_BP) & Lsm6dso32x::FS_BM;
         self.write_reg(RegistersAddr::Ctrl2G, &ctrl2_g_val);
 
+        //enable timestamp
+        let mut ctrl10_c_val : [u8 ;1]  = [0x00];
+        ctrl10_c_val[0] |= Lsm6dso32x::TIMESTAMP_EN_BM;
+        self.write_reg(RegistersAddr::Ctrl10C, &ctrl10_c_val);
+        //enable temperature
+
         let mut angular_rate = Meas3d::from([0,0, 0,0, 0,0], 1.0);
 
         for _it in 0..200{
@@ -303,6 +311,9 @@ impl Lsm6dso32x{
             self.acceleration = Meas3d::from(angle_rate_val, AccelerometerFullScale::from(self.dev_conf.accelerometer.full_scale.clone()));
 
             // todo : update timestamp
+            let mut timestamp_val : [u8 ;4] = [0x00, 0x00, 0x00, 0x00];
+            self.read_reg(RegistersAddr::Timestamp0, &mut timestamp_val);
+            self.timestamp_us = (((timestamp_val[3] as u64) << 24) | ((timestamp_val[2] as u64) << 16) | ((timestamp_val[1] as u64) << 8) | (timestamp_val[0] as u64)) * 25;
         }
         if status_reg_val[0] & Lsm6dso32x::STATUS_REG_TDA_BM == Lsm6dso32x::STATUS_REG_TDA_BM
         {

@@ -3,8 +3,7 @@
 #![allow(non_snake_case)]
 
 use core::ffi::c_void;
-
-use embassy_time::{Duration, Instant};
+use std::time::Duration;
 
 pub const VL53L5CX_NB_TARGET_PER_ZONE: u8 = 1;
 pub const VL53L5CX_NB_TARGET_PER_ZONsE2: u8 = 1;
@@ -52,13 +51,7 @@ pub extern fn VL53L5CX_RdMulti(platform: &mut VL53L5CX_Platform, register_addr: 
 
 #[no_mangle]
 pub extern fn VL53L5CX_WaitMs(_platform: &mut VL53L5CX_Platform, time_ms: u32) -> u8 {
-    let start = Instant::now();
-    loop {
-        if start.elapsed() >= Duration::from_millis(time_ms as u64) {
-            break;
-        }
-    }
-
+    std::thread::sleep(Duration::from_millis(time_ms as u64));
     0
 }
 

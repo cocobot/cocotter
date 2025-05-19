@@ -1,61 +1,49 @@
-use embassy_executor::Spawner;
-use embassy_futures::select::{select, Either};
-use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::{Channel, Receiver, TrySendError}};
-use embassy_time::{Duration, Timer};
+mod screens;
+
+use board_pami_2023::DisplayType;
+use embedded_graphics::{pixelcolor::BinaryColor, prelude::{Drawable, Point, Primitive, Size}, primitives::{PrimitiveStyle, Rectangle}};
+use esp_idf_svc::sys::random;
+use screens::{bottom::Bottom, score::Score, start::Start, tof::Tof, top::Top};
 
 use crate::{events::{Event, EventSystem}, pwm::PWMEvent};
+use std::{sync::mpsc, time::{Duration, Instant}};
 
-static EVENT_QUEUE: Channel<CriticalSectionRawMutex, Event, 32> = Channel::new();
-
-#[derive(Clone)]
 pub struct UI {
+    event: EventSystem,
+    display: DisplayType,
+
+    top: Top,
+    bottom: Bottom,
+
+    screens: Vec<Box<dyn UIScreen + Send>>,
 }
 
 impl UI {
-    pub async fn new(spawner: Spawner, event: &EventSystem) {
-        let thread = UIThread::new(EVENT_QUEUE.receiver(), event.clone());
+    pub fn new(display: DisplayType, id: usize, color: String, event: &EventSystem) {
+        let instance: UI = UI {
+            event: event.clone(),
+            display,
+            top: Top::new(id, color),
+            bottom: Bottom::new(),
+            screens: vec![
+                Box::new(Score::new()),
+                Box::new(Start::new()),
+                Box::new(Tof::new()),
+            ],
+        };
 
-        spawner.spawn(start_ui_thread(thread)).unwrap();
+        let (sender, receiver) = mpsc::channel();
 
-        event.register_receiver_callback(Some(UI::filter_events), move |evt| {
-            async move {
-                UI::send_event(evt);
-            }
-        }).await;
+        event.register_receiver_callback(None, move |evt| {
+            sender.send(evt).ok();
+        });
+
+        std::thread::Builder::new().stack_size(16 * 8192).name("UI".to_string()).spawn(move || {
+            instance.run(receiver);
+        }).unwrap();
     }
 
-    fn filter_events(evt: &Event) -> bool {
-        match evt {
-            Event::Vbatt { .. } => true,
-            _ => false,
-        }
-    } 
-
-    fn send_event(event: Event) {
-        match EVENT_QUEUE.try_send(event) {
-            Ok(_) => {}
-            Err(TrySendError::Full(_)) => {
-                log::error!("UI event queue full");
-            }
-        }
-    }
-}
-
-
-struct UIThread {
-    event_receiver: Receiver<'static, CriticalSectionRawMutex, Event, 32>,
-    event: EventSystem,
-}
-
-impl UIThread {
-    pub fn new(event_receiver: Receiver<'static, CriticalSectionRawMutex, Event, 32>, event: EventSystem) -> Self {
-        Self {
-            event_receiver,
-            event,
-        }
-    }
-
-    fn handle_battery_event(&self, voltage_mv: f32) {
+    fn handle_battery_event(&mut self, voltage_mv: f32) {        
         // LiFePO4 voltage to percentage lookup table (voltage in mV, percentage points)
         const LIFEPO4_CURVE: [(f32, f32); 11] = [
             (3400.0, 100.0),
@@ -84,10 +72,10 @@ impl UIThread {
             }
             
             // Linear interpolation between the two points
-            let v1 = LIFEPO4_CURVE[i].0;
-            let p1 = LIFEPO4_CURVE[i].1;
-            let v2 = LIFEPO4_CURVE[i + 1].0;
-            let p2 = LIFEPO4_CURVE[i + 1].1;
+            let v1 = LIFEPO4_CURVE[i - 1].0;
+            let p1 = LIFEPO4_CURVE[i - 1].1;
+            let v2 = LIFEPO4_CURVE[i].0;
+            let p2 = LIFEPO4_CURVE[i].1;
             
             p1 + (p2 - p1) * (voltage_mv - v1) / (v2 - v1)
         };
@@ -103,30 +91,85 @@ impl UIThread {
         }
 
         self.event.send_event(Event::VbattPercent { percent: percentage.clamp(0.0, 100.0) as u8 });
+
+        self.top.set_battery(voltage_mv, percentage);
     }
 
-    fn handle_event(&self, event: Event) {
-        match event {
-            Event::Vbatt { voltage_mv } => self.handle_battery_event(voltage_mv),
-
-            _ => {}
-        }
-    }
-
-    async fn run(self) {
+    fn run(mut self, receiver: mpsc::Receiver<Event>) {
+        let mut last_screen_refresh = Instant::now();
+        let mut current_screen = 0;
+        let mut last_screen_change = Instant::now();
         loop {
-            let rx_evt = select(self.event_receiver.receive(), Timer::after(Duration::from_millis(250))).await;
-            if let Either::First(rx_evt) = rx_evt {
-                self.handle_event(rx_evt);
+            match receiver.recv() {
+                Ok(event) => {
+                    match event {
+                        Event::Vbatt { voltage_mv } => self.handle_battery_event(voltage_mv),
+                        _ => {}
+                    }
+                    for i in 0..self.screens.len() {
+                        self.screens[i].handle_event(&event);
+                    }
+                }
+                Err(_) => {}
             }
 
-            //update display
-            //TODO !!!
+            if last_screen_refresh.elapsed() > Duration::from_millis(250) {                
+             
+                //select the screen to draw
+                let mut highest_priority = 0;
+                let mut highest_priority_screen_id = 0;
+                for i in 0..self.screens.len() {
+                        let prio = self.screens[i].get_priority();
+                        if prio > highest_priority {
+                            highest_priority = self.screens[i].get_priority();
+                            highest_priority_screen_id = i;
+                        }
+                }
+                if highest_priority > 0 {
+                    if current_screen != highest_priority_screen_id {
+                        last_screen_change = Instant::now();
+                        current_screen = highest_priority_screen_id;
+                    }
+                }
+                else if last_screen_change.elapsed() > Duration::from_millis(3000) {
+                    let mut candidates = Vec::new();
+                    for i in 0..self.screens.len() {
+                        if self.screens[i].get_priority() == 0 && i != current_screen {
+                            candidates.push(i);
+                        }
+                    }
+                    if candidates.len() > 0 {
+                        current_screen = candidates[((unsafe { random() } & 0xFFFF) as usize) % candidates.len()];
+                        last_screen_change = Instant::now();
+                    }
+                }
+
+                let current_screen = &mut self.screens[current_screen];
+
+                self.bottom.set_screen_name(current_screen.get_screen_name());
+
+                self.top.draw(&mut self.display, Point::zero(), Size::new(128, 7));
+                self.bottom.draw(&mut self.display, Point::new(0, 64 - 7), Size::new(128, 7));
+
+                Rectangle::new(Point::new(0, 7), Size::new(128, 64 - 14))
+                    .into_styled(PrimitiveStyle::with_fill(BinaryColor::Off))
+                    .draw(&mut self.display)
+                    .unwrap();
+                current_screen.draw(&mut self.display, Point::new(0, 7), Size::new(128, 64 - 14));
+
+                self.display.flush().unwrap();
+
+                last_screen_refresh = Instant::now();
+            }
         }
     }
 }
 
-#[embassy_executor::task]
-async fn start_ui_thread(thread: UIThread) {
-    thread.run().await;
+trait UIScreen {
+    fn draw(&mut self, display: &mut DisplayType, offset: Point, size: Size);
+    fn get_screen_name(&self) -> &'static str;
+    fn handle_event(&mut self, _event: &Event) {}
+    fn get_priority(&self) -> usize {
+        0
+    }
 }

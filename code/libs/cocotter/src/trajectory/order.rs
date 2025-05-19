@@ -1,8 +1,7 @@
 use core::f32::consts::{PI, TAU}; // TAU = 2 * PI
+use std::time::Duration;
 
 use either::Either;
-use embassy_sync::blocking_mutex::raw::RawMutex;
-use embassy_time::{Duration, Timer};
 use libm::{atan2f, floorf, sqrtf};
 
 use crate::position::PositionMutex;
@@ -27,12 +26,12 @@ impl Order {
     const A_INDEX: usize = 0;
     const D_INDEX_IN_NON_HOLONOMIC_ROBOT: usize = 1;
 
-    pub async fn execute<M: RawMutex, const N: usize>(&self, order_index: usize, config: &OrderConfig<N>, position: &PositionMutex<M, N>) -> Result<usize, TrajectorError> {
+    pub fn execute<const N: usize>(&self, order_index: usize, config: &OrderConfig<N>, position: &PositionMutex<N>) -> Result<usize, TrajectorError> {
         match self {
             Order::GotoD { d_mm } => {
                 match N {
                     2 => {
-                        let mut locked_position = position.lock().await;
+                        let mut locked_position = position.lock().unwrap();
                         let initial_position = locked_position.get_coordinates();
                         let initial_d = initial_position.get_raw_linear_coordonate()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
                         if config.is_backwards() {
@@ -44,14 +43,14 @@ impl Order {
                         drop(locked_position);
         
                         loop {
-                            let locked_position = position.lock().await;
+                            let locked_position = position.lock().unwrap();
                             let d_ramp =  &locked_position.get_ramps()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
                             if d_ramp.is_done() {
                                 break;
                             }
                             drop(locked_position);
                             
-                            Timer::after(Duration::from_millis(75)).await;
+                            std::thread::sleep(Duration::from_millis(75));
                         }
                         
                         Ok(order_index + 1)
@@ -65,7 +64,7 @@ impl Order {
             Order::GotoA { a_rad } => {   
                 log::info!("gotoa {a_rad}");
 
-                let mut locked_position = position.lock().await;
+                let mut locked_position = position.lock().unwrap();
                 let initial_position = locked_position.get_coordinates();
                 let initial_a = initial_position.get_a_rad();
                 if config.is_backwards() {
@@ -77,14 +76,14 @@ impl Order {
                 drop(locked_position);
 
                 loop {
-                    let locked_position = position.lock().await;
+                    let locked_position = position.lock().unwrap();
                     let a_ramp =  &locked_position.get_ramps()[Order::A_INDEX];
                     if a_ramp.is_done() {
                         break;
                     }
                     drop(locked_position);
                     
-                    Timer::after(Duration::from_millis(75)).await;
+                    std::thread::sleep(Duration::from_millis(75));
                 }
                 
                 Ok(order_index + 1)
@@ -95,7 +94,7 @@ impl Order {
                     return Err(TrajectorError::InvalidOrder);
                 }
 
-                let mut locked_position = position.lock().await;
+                let mut locked_position = position.lock().unwrap();
                 let initial_position = locked_position.get_coordinates();
 
                 let delta_x = x_mm - initial_position.get_x_mm();
@@ -117,14 +116,14 @@ impl Order {
                     drop(locked_position);
 
                     loop {
-                        let locked_position = position.lock().await;
+                        let locked_position = position.lock().unwrap();
                         let a_ramp =  &locked_position.get_ramps()[Order::A_INDEX];
                         if a_ramp.is_done() {
                             break;
                         }
                         drop(locked_position);
                         
-                        Timer::after(Duration::from_millis(75)).await;
+                        std::thread::sleep(Duration::from_millis(75));
                     }
                 }
                 else {
@@ -132,7 +131,7 @@ impl Order {
                 }
 
                 //run to target
-                let mut locked_position =   position.lock().await;
+                let mut locked_position =   position.lock().unwrap();
                 let initial_position = locked_position.get_coordinates();
                 let delta_x = x_mm - initial_position.get_x_mm();
                 let delta_y = y_mm - initial_position.get_y_mm();
@@ -148,7 +147,7 @@ impl Order {
                 drop(locked_position);
 
                 loop {
-                    let mut locked_position =   position.lock().await;
+                    let mut locked_position =   position.lock().unwrap();
                     let ramps =  locked_position.get_ramps_as_mut();
 
                     let mut done = true;
@@ -163,7 +162,7 @@ impl Order {
                     }
                     drop(locked_position);
                     
-                    Timer::after(Duration::from_millis(75)).await;
+                    std::thread::sleep(Duration::from_millis(75));
                 }
                 
                 Ok(order_index + 1)
@@ -171,7 +170,7 @@ impl Order {
 
             Order::MoveUntil { callback } => {
                 loop {
-                    let mut locked_position = position.lock().await;
+                    let mut locked_position = position.lock().unwrap();
 
                     let initial_position = locked_position.get_coordinates();
                     let initial_d = initial_position.get_raw_linear_coordonate()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
@@ -190,7 +189,7 @@ impl Order {
                         }
                     }
 
-                    Timer::after(Duration::from_millis(75)).await;
+                    std::thread::sleep(Duration::from_millis(75));
                 }
                 Ok(order_index + 1)
             }

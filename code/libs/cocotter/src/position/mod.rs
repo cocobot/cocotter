@@ -1,11 +1,12 @@
-use embassy_sync::{blocking_mutex::raw::RawMutex, mutex::Mutex};
+use std::{sync::{Arc, Mutex}, time::Instant};
 
 use crate::ramp::{Ramp, RampConfiguration};
 
 use self::robot_coordinate::RobotCoordinate;
-use alloc::sync::Arc;
 
 pub mod robot_coordinate;
+
+pub type PositionMutex<const N: usize> = Arc<Mutex<Position<N>>>;
 
 pub struct PositionConfiguration {
     pub tick_to_mm : f32,
@@ -18,7 +19,7 @@ pub struct Position<const N: usize> {
 
     //encoder data
     encoders : [i32; N],
-    timestamp_ms : u64,
+    timestamp_ms : Instant,
 
     //robot position
     current_position : RobotCoordinate<N>,
@@ -35,14 +36,14 @@ impl<const N: usize> Position<N> {
         Position { 
             configuration, 
             encoders: [0; N],
-            timestamp_ms : 0,
+            timestamp_ms : Instant::now(),
             current_position: RobotCoordinate::from(0.0, 0.0, 0.0),
             ramps,
         }
     }
 
     //compute new position from updated encoder values
-    pub fn set_new_encoder_values(&mut self, timestamp_ms: u64, encoders: [i32; N]) {
+    pub fn set_new_encoder_values(&mut self, timestamp_ms: Instant, encoders: [i32; N]) {
         
         if timestamp_ms != self.timestamp_ms
         {
@@ -51,7 +52,7 @@ impl<const N: usize> Position<N> {
                 delta_tick_encoder[i] = (encoders[i] - self.encoders[i]) as f32;
             }
 
-            let delta_time_ms : f32 = (timestamp_ms - self.timestamp_ms) as f32;
+            let delta_time_ms : f32 = (timestamp_ms - self.timestamp_ms).as_millis() as f32;
             let mut delta_computation = [0.0; N];
             match N {
                 2 => {
@@ -98,9 +99,6 @@ impl<const N: usize> Position<N> {
         self.current_position.mark_a_as_imprecise();
     }
 }
-
-#[allow(type_alias_bounds)]
-pub type PositionMutex<M : RawMutex, const N: usize> = Arc<Mutex<M, Position<N>>>;
 
 
 #[cfg(test)]

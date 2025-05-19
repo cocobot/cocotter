@@ -1,12 +1,10 @@
-use board_pami_2023::{I2C0PamiDevice, Pca9685, PWM_EXTENDED_CHANEL_SERVO, PWM_EXTENDED_CHANEL_VACCUM, PWM_EXTENDED_ENABLE_TOF, PWM_EXTENDED_LED_RGB, PWM_EXTENDED_LINE_LED, PWM_EXTENDED_RESET_TOF, PWM_EXTENDED_VBAT_RGB};
-use embassy_executor::Spawner;
-use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::{Channel, TrySendError}};
-
+use board_pami_2023::{I2CType, Pca9685, PWM_EXTENDED_CHANEL_SERVO, PWM_EXTENDED_CHANEL_VACCUM, PWM_EXTENDED_ENABLE_TOF, PWM_EXTENDED_LED_RGB, PWM_EXTENDED_LINE_LED, PWM_EXTENDED_RESET_TOF, PWM_EXTENDED_VBAT_RGB};
+use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
+use std::sync::mpsc;
 use crate::events::{Event, EventSystem};
 
 const PWM_MAX_EVENT_COUNT: usize = 10;
 
-static EVENT_QUEUE: Channel<CriticalSectionRawMutex, (PWMEvent, Option<OverrideState>), 32> = Channel::new();
 
 #[derive(Debug, Clone, Copy)]
 pub enum OverrideState {
@@ -85,37 +83,39 @@ impl TryFrom<&[u8]> for PWMEvent {
 }
 
 pub struct PWM {
-    device: Pca9685<I2C0PamiDevice>,
+    device: Pca9685<I2CType>,
     overrided: [bool; PWM_MAX_EVENT_COUNT],
 }
 
 impl PWM {
-    pub async fn new(mut device: Pca9685<I2C0PamiDevice>, spawner: Spawner, event: &EventSystem) {
-        // 60Hz for servomotor        
-        if device.set_prescale(100).await.is_err() {
-            //only display error once if device is not soldered
-            log::error!("No pca9685 working");
-        }
-        device.enable().await.ok();
-        let instance = Self {
+    pub fn new(device: Pca9685<I2CType>, event: &EventSystem) {
+        let instance = PWM {
             device,
             overrided: [false; PWM_MAX_EVENT_COUNT],
         };
-        spawner.spawn(start_pwm_thread(instance)).unwrap();
 
-        event.register_receiver_callback(Some(PWM::filter_events), |evt| {
-            async move {
-                match evt {
-                    Event::Pwm { pwm_event } => {
-                        PWM::send_event(pwm_event, None);
-                    }
-                    Event::OverridePwm { pwm_event , override_state} => {
-                        PWM::send_event(pwm_event, Some(override_state));
-                    }
-                    _ => {}
+        let (sender, receiver) = mpsc::channel();
+
+        event.register_receiver_callback(Some(PWM::filter_events), move |evt| {
+            match evt {
+                Event::Pwm { pwm_event } => {
+                    sender.send((pwm_event, None)).ok();
                 }
+                Event::OverridePwm { pwm_event , override_state} => {
+                    sender.send((pwm_event, Some(override_state))).ok();
+                }
+                _ => {}
             }
-        }).await;
+        });
+
+        ThreadSpawnConfiguration {
+            name: Some("PWM\0".as_bytes()),
+            stack_size: 8192 * 4,
+            ..Default::default()
+        }.set().unwrap();
+        std::thread::Builder::new().spawn(move || {
+            instance.run(receiver);
+        }).unwrap();
     }
 
     pub fn filter_events(evt: &Event) -> bool {
@@ -123,18 +123,9 @@ impl PWM {
             Event::Pwm { .. } | Event::OverridePwm { .. } => true,
             _ => false,
         }
-    } 
-
-    fn send_event(event: PWMEvent, override_event: Option<OverrideState>) {
-        match EVENT_QUEUE.try_send((event, override_event)) {
-            Ok(_) => {}
-            Err(TrySendError::Full(_)) => {
-                log::error!("PWM event queue full");
-            }
-        }
     }
 
-    pub async fn run(mut self) {
+    pub fn run(mut self, receiver: mpsc::Receiver<(PWMEvent, Option<OverrideState>)>) {
         fn clamp_duty(v: i16) -> u16 {
             if v > 4095 {
                 4095
@@ -147,8 +138,15 @@ impl PWM {
             }
         }
 
+        // 60Hz for servomotor        
+        if self.device.set_prescale(100).is_err() {
+            //only display error once if device is not soldered
+            log::error!("No pca9685 working");
+        }
+        self.device.enable().ok();
+     
         loop {
-            let (evt, override_state) = EVENT_QUEUE.receive().await;
+            let (evt, override_state) = receiver.recv().unwrap();
 
             if let Some(override_state) = override_state {
                 match override_state {
@@ -166,52 +164,46 @@ impl PWM {
 
             match evt {
                 PWMEvent::LedVbatt(color) => {
-                    self.device.set_channel_off(PWM_EXTENDED_VBAT_RGB[0], clamp_duty((4095.0 * (1.0 - color[0])) as i16)).await.ok();
-                    self.device.set_channel_off(PWM_EXTENDED_VBAT_RGB[1], clamp_duty((4095.0 * (1.0 - color[1])) as i16)).await.ok();
-                    self.device.set_channel_off(PWM_EXTENDED_VBAT_RGB[2], clamp_duty((4095.0 * (1.0 - color[2])) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_VBAT_RGB[0], clamp_duty((4095.0 * (1.0 - color[0])) as i16)).ok();
+                    self.device.set_channel_off(PWM_EXTENDED_VBAT_RGB[1], clamp_duty((4095.0 * (1.0 - color[1])) as i16)).ok();
+                    self.device.set_channel_off(PWM_EXTENDED_VBAT_RGB[2], clamp_duty((4095.0 * (1.0 - color[2])) as i16)).ok();
                 }
                 PWMEvent::LedBottom(color) => {
-                    self.device.set_channel_off(PWM_EXTENDED_LED_RGB[0], clamp_duty((4095.0 * (1.0 - color[0])) as i16)).await.ok();
-                    self.device.set_channel_off(PWM_EXTENDED_LED_RGB[1], clamp_duty((4095.0 * (1.0 - color[1])) as i16)).await.ok();
-                    self.device.set_channel_off(PWM_EXTENDED_LED_RGB[2], clamp_duty((4095.0 * (1.0 - color[2])) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_LED_RGB[0], clamp_duty((4095.0 * (1.0 - color[0])) as i16)).ok();
+                    self.device.set_channel_off(PWM_EXTENDED_LED_RGB[1], clamp_duty((4095.0 * (1.0 - color[1])) as i16)).ok();
+                    self.device.set_channel_off(PWM_EXTENDED_LED_RGB[2], clamp_duty((4095.0 * (1.0 - color[2])) as i16)).ok();
                 }
                 PWMEvent::Vaccum(speed) => {
-                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_VACCUM, clamp_duty((4095.0 * speed) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_VACCUM, clamp_duty((4095.0 * speed) as i16)).ok();
                 }
                 PWMEvent::Servo0(pos) => {
-                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[0], clamp_duty((4095.0 * pos/10.0) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[0], clamp_duty((4095.0 * pos/10.0) as i16)).ok();
                 }
                 PWMEvent::Servo1(pos) => {
-                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[1], clamp_duty((4095.0 * pos/10.0) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[1], clamp_duty((4095.0 * pos/10.0) as i16)).ok();
                 }
                 PWMEvent::Servo2(pos) => {
-                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[2], clamp_duty((4095.0 * pos/10.0) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[2], clamp_duty((4095.0 * pos/10.0) as i16)).ok();
                 }
                 PWMEvent::Servo3(pos) => {
-                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[3], clamp_duty((4095.0 * pos/10.0) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[3], clamp_duty((4095.0 * pos/10.0) as i16)).ok();
                 }
                 PWMEvent::LineLedLvl(lvl) => {
-                    self.device.set_channel_off(PWM_EXTENDED_LINE_LED, clamp_duty((4095.0 * lvl) as i16)).await.ok();
+                    self.device.set_channel_off(PWM_EXTENDED_LINE_LED, clamp_duty((4095.0 * lvl) as i16)).ok();
                 }
                 PWMEvent::ResetTof(state) => {
                     match state{
-                        true => self.device.set_channel_off(PWM_EXTENDED_RESET_TOF,4095).await.ok(),
-                        false => self.device.set_channel_off(PWM_EXTENDED_RESET_TOF, 0).await.ok(),
+                        true => self.device.set_channel_off(PWM_EXTENDED_RESET_TOF,4095).ok(),
+                        false => self.device.set_channel_off(PWM_EXTENDED_RESET_TOF, 0).ok(),
                     };
                 }
                 PWMEvent::EnableTof(state) => {
                         match state{
-                            true => self.device.set_channel_off(PWM_EXTENDED_ENABLE_TOF, 4095).await.ok(),
-                            false => self.device.set_channel_off(PWM_EXTENDED_ENABLE_TOF, 0).await.ok(),
+                            true => self.device.set_channel_off(PWM_EXTENDED_ENABLE_TOF, 4095).ok(),
+                            false => self.device.set_channel_off(PWM_EXTENDED_ENABLE_TOF, 0).ok(),
                         };
                 }
             }
         }
     }
-}
-
-
-#[embassy_executor::task]
-async fn start_pwm_thread(thread: PWM) {
-    thread.run().await;
 }

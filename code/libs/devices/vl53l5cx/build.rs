@@ -51,13 +51,10 @@ fn main() {
         .expect("Couldn't write bindings!");
 
     let mut build = &mut cc::Build::new();
-    let target = std::env::var("TARGET").unwrap();
-    if target == "xtensa-esp32s3-none-elf" {
-        build = build
-            .compiler("xtensa-esp32s3-elf-gcc")
-            .flag("-mlongcalls")
-            ;
-    }
+    build = build
+        .compiler("xtensa-esp32s3-elf-gcc")
+        .flag("-mlongcalls")
+        ;
 
     build
         .include("c_src/inc")

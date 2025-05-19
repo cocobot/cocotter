@@ -1,5 +1,5 @@
 use cocotter::{pid::PIDConfiguration, position::PositionConfiguration, ramp::RampConfiguration};
-use esp_hal::efuse::Efuse;
+use esp_idf_svc::sys::{esp_mac_type_t_ESP_MAC_BT, esp_read_mac};
 use phf::phf_map;
 
 pub const ASSERV_PERIOD_MS : u64 = 10;
@@ -64,8 +64,8 @@ pub struct PAMIConfig {
 
 
 static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
-    //violet (ID = 0)
-    [116, 77, 189, 81, 207, 136] => PAMIConfig {
+    //red (ID = 0)
+    [116, 77, 189, 81, 207, 138] => PAMIConfig {
         id: 0,
         color: "Red",
 
@@ -139,7 +139,15 @@ static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
 
 impl PAMIConfig {
     pub fn get_config() -> Option<&'static PAMIConfig> {
-        let mac = Efuse::read_base_mac_address();
+
+        let mut mac: [u8; 6] = [0; 6];
+        log::info!("MAC address : {:?}", mac);
+        unsafe {
+            let raw_ptr = &mut mac as *mut [u8; 6] as *mut u8;
+            esp_read_mac(raw_ptr, esp_mac_type_t_ESP_MAC_BT);
+        };
+
+        log::info!("MAC address : {:?}", mac);
 
         match CONFIGS.get(&mac) {
             Some(config) => Some(config),

@@ -1,5 +1,3 @@
-use alloc::vec::Vec;
-use embassy_sync::blocking_mutex::raw::RawMutex;
 use order::Order;
 
 use crate::position::PositionMutex;
@@ -17,8 +15,8 @@ pub enum RampCfg {
     Angular,
 }
 
-pub struct Trajectory<M: RawMutex, const N: usize> {
-    position: PositionMutex<M, N>,
+pub struct Trajectory<const N: usize> {
+    position: PositionMutex<N>,
 }
 
 #[derive(Debug)]
@@ -40,8 +38,8 @@ impl<const N: usize> OrderConfig<N> {
         }
     }
 
-    pub async fn apply<M: RawMutex>(&mut self, position: &PositionMutex<M, N>) {
-        let mut position = position.lock().await;
+    pub fn apply(&mut self, position: &PositionMutex<N>) {
+        let mut position = position.lock().unwrap();
         let ramps = position.get_ramps_as_mut();
         for i in 0..N {
             if let Some(max_speed) = self.max_speed[i] {
@@ -53,9 +51,9 @@ impl<const N: usize> OrderConfig<N> {
         }
     }
 
-    pub async fn revert<M: RawMutex>(&mut self, position: &PositionMutex<M, N>) {
+    pub fn revert(&mut self, position: &PositionMutex<N>) {
         //reset max speed an acceleration
-        let mut position = position.lock().await;
+        let mut position = position.lock().unwrap();
         let ramps = position.get_ramps_as_mut();
         for i in 0..N {
             ramps[i].set_max_speed_factor(1.0);
@@ -73,15 +71,15 @@ impl<const N: usize> OrderConfig<N> {
     }
 }
 
-impl<M: RawMutex, const N: usize> Trajectory<M, N> {
-    pub fn new(position: PositionMutex<M, N>) -> Trajectory<M, N> {
+impl<const N: usize> Trajectory<N> {
+    pub fn new(position: PositionMutex<N>) -> Trajectory<N> {
         Trajectory {
             position,
         }
     }
 
-    pub async fn execute(&self, list: TrajectoryOrderList<N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
-        list.execute(&self.position).await
+    pub fn execute(&self, list: TrajectoryOrderList<N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
+        list.execute(&self.position)
     }
 }
 
@@ -162,16 +160,16 @@ impl<const N: usize>  TrajectoryOrderList<N> {
         self
     }
 
-    async fn execute<M: RawMutex>(mut self, position: &PositionMutex<M, N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
+    fn execute(mut self, position: &PositionMutex<N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
         loop {
             if self.current_order_index >= self.orders.len() {
                 return Ok(())
             }
 
             let (order, config) = &mut self.orders[self.current_order_index];
-            config.apply(position).await;
-            let result = order.execute(self.current_order_index, config, position).await;
-            config.revert(position).await;
+            config.apply(position);
+            let result = order.execute(self.current_order_index, config, position);
+            config.revert(position);
 
             match result {
                 Ok(index) => {
