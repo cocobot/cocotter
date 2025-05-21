@@ -43,13 +43,13 @@ impl<const N: usize> Position<N> {
     }
 
     //compute new position from updated encoder values
-    pub fn set_new_encoder_values(&mut self, timestamp_ms: Instant, encoders: [i32; N]) {
+    pub fn set_new_encoder_values(&mut self, timestamp_ms: Instant, encoders: [i32; N], gain: [f32; N]) {
         
         if timestamp_ms != self.timestamp_ms
         {
             let mut delta_tick_encoder = [0.0; N];
             for i in 0..N {
-                delta_tick_encoder[i] = (encoders[i] - self.encoders[i]) as f32;
+                delta_tick_encoder[i] = ((encoders[i] - self.encoders[i]) as f32);
             }
 
             let delta_time_ms : f32 = (timestamp_ms - self.timestamp_ms).as_millis() as f32;
@@ -57,7 +57,7 @@ impl<const N: usize> Position<N> {
             match N {
                 2 => {
                     //argument 0 is the angle in rad, argument 1 is the linear distance in
-                    delta_computation[0] = (delta_tick_encoder[1] - delta_tick_encoder[0]) / self.configuration.tick_to_rad;
+                    delta_computation[0] = ((encoders[1] as f32) * gain[1] - (encoders[0] as f32) * gain[0]) / self.configuration.tick_to_rad;
                     delta_computation[1] = (delta_tick_encoder[0] + delta_tick_encoder[1]) / 2.0 / self.configuration.tick_to_mm; 
                 },
                 _ => {
@@ -67,6 +67,8 @@ impl<const N: usize> Position<N> {
 
             self.encoders = encoders;
             self.timestamp_ms = timestamp_ms;
+
+            //log::info!("delta_tick_encoder : {:?} delta_time_ms : {} delta_computation : {:?}", delta_tick_encoder, delta_time_ms, delta_computation);
 
             self.current_position.compute_new_position(delta_computation, delta_time_ms);
         }

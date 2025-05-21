@@ -6,9 +6,9 @@ use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
 use crate::{asserv::{MotorSetpointOverride, PIDSetpointOverride}, pwm::{OverrideState, PWMEvent}};
 
 pub type EventFilter = fn(&Event) -> bool;
-pub type EventCallback = Box<dyn Fn(Event) -> () + Send + 'static>;
+pub type EventCallback = Box<dyn FnMut(&Event) -> () + Send + 'static>;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum Event {
     //analog inputs
     Vbatt {voltage_mv: f32},
@@ -16,6 +16,7 @@ pub enum Event {
 
     //sensors
     BackDistance { distance: [i16; 8] },
+    Line { activated: [bool; 8]},
     
     ////pwm outputs
     Pwm { pwm_event : PWMEvent},
@@ -64,9 +65,9 @@ impl EventSystem {
             match receiver.recv() {
                 Ok(event) => {
                     // Process the event
-                    for (filter, callback) in self.callbacks.lock().unwrap().iter() {
+                    for (filter, callback) in self.callbacks.lock().unwrap().iter_mut() {
                         if filter.is_none() || filter.unwrap()(&event) {
-                            callback(event.clone());
+                            callback(&event);
                         }
                     }
                 }
@@ -92,11 +93,22 @@ impl EventSystem {
         filter: Option<EventFilter>, 
         callback: F
     ) where 
-        F: Fn(Event) -> () + Send + 'static,
+        F: FnMut(&Event) -> () + Send + 'static,
     {
         self.callbacks.lock().unwrap().push((
             filter, 
             Box::new(callback)
         ));
+    }
+
+    pub fn no_debug_filter(evt: &Event) -> bool {
+        match evt {
+            Event::MotorDebug { .. } => false,
+            Event::PIDDebug { .. } => false,
+            Event::MotorOverrideSetpoint { .. } => false,
+            Event::PidOverrideSetpoint { .. } => false,
+            Event::PidOverrideConfiguration { .. } => false,
+            _ => true,
+        }
     }
 }

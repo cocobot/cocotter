@@ -68,10 +68,10 @@ impl Order {
                 let initial_position = locked_position.get_coordinates();
                 let initial_a = initial_position.get_a_rad();
                 if config.is_backwards() {
-                    locked_position.get_ramps_as_mut()[Order::A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad));
+                    locked_position.get_ramps_as_mut()[Order::A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad  + PI));
                 }
                 else {
-                    locked_position.get_ramps_as_mut()[Order::A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad + PI));
+                    locked_position.get_ramps_as_mut()[Order::A_INDEX].set_target(Order::find_closest_angle(initial_a, *a_rad));
                 }
                 drop(locked_position);
 

@@ -18,15 +18,15 @@ use ssd1306::mode::DisplayConfig;
 use ssd1306::prelude::DisplayRotation;
 use ssd1306::size::DisplaySize128x64;
 use ssd1306::{I2CDisplayInterface, Ssd1306};
+use tca6408a::Tca6408a;
 use vl53l5cx::Vl53l5cx;
 
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type EmergencyStop = PinDriver<'static, gpio::Gpio15, gpio::Input>;
 pub type MotorPwmType = LedcDriver<'static>;
-pub type MotorLeftDirType = PinDriver<'static, gpio::Gpio14, Output>;
-pub type MotorRightDirType = PinDriver<'static, gpio::Gpio12, Output>;
 pub type DisplayType = Ssd1306<ssd1306::prelude::I2CInterface<MutexDevice<'static, I2cDriver<'static>>>, DisplaySize128x64, ssd1306::mode::BufferedGraphicsMode<DisplaySize128x64>>;
 pub type VlxType = Vl53l5cx<I2CType>;
+pub type TCA6408AType = Tca6408a<I2CType>;
 
 pub const PWM_EXTENDED_CHANEL_SERVO: [Channel; 4] =
     [Channel::C0, Channel::C1, Channel::C2, Channel::C3];
@@ -44,13 +44,13 @@ pub struct Pami2023 {
     pub adc: Option<PamiAdc>,
     pub encoder_left: Option<Encoder<'static>>,
     pub encoder_right: Option<Encoder<'static>>,
-    pub left_pwm: Option<MotorPwmType>,
-    pub right_pwm: Option<MotorPwmType>,
-    pub left_dir: Option<MotorLeftDirType>,
-    pub right_dir: Option<MotorRightDirType>,
+    pub left_pwm: Option<(MotorPwmType, MotorPwmType)>,
+    pub right_pwm: Option<(MotorPwmType, MotorPwmType)>,
     pub emergency_stop: Option<EmergencyStop>,
     pub display: Option<DisplayType>,
     pub tof: Option<VlxType>,
+    pub line_sensor: Option<TCA6408AType>,
+    pub buttons: Option<TCA6408AType>,
 }
 
 impl Pami2023{
@@ -77,18 +77,24 @@ impl Pami2023{
                 peripherals.ledc.timer0,
                 &TimerConfig::new().frequency(25.kHz().into()).resolution(esp_idf_svc::hal::ledc::Resolution::Bits10),
             ).unwrap();
-        let left_pwm = LedcDriver::new(
+        let left_pwm = (LedcDriver::new(
             peripherals.ledc.channel0,
             &timer_pwm,
             peripherals.pins.gpio21,
-        ).unwrap();
-        let right_pwm = LedcDriver::new(
+        ).unwrap(), LedcDriver::new(
             peripherals.ledc.channel1,
             &timer_pwm,
+            peripherals.pins.gpio14,
+        ).unwrap());
+        let right_pwm = (LedcDriver::new(
+            peripherals.ledc.channel2,
+            &timer_pwm,
+            peripherals.pins.gpio12,
+        ).unwrap(), LedcDriver::new(
+            peripherals.ledc.channel3,
+            &timer_pwm,
             peripherals.pins.gpio13,
-        ).unwrap();
-        let left_dir = PinDriver::output(peripherals.pins.gpio14).unwrap();
-        let right_dir = PinDriver::output(peripherals.pins.gpio12).unwrap();
+        ).unwrap());
         let emergency_stop = PinDriver::input(peripherals.pins.gpio15).unwrap();
 
         // Initialize the I2C bus
@@ -98,11 +104,24 @@ impl Pami2023{
         let i2c_bus : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_driver_static);
         let i2c_bus_screen : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_driver_static);
         let i2c_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_driver_static);
+        let i2c_bus_line_sensor : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_driver_static);
+        let i2c_bus_buttons : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_driver_static);
 
         // Initialize the PCA9685
         let pwm_extended = Pca9685::new(i2c_bus, Pca9685Address::from(0b110_1001))
             .ok()
             .unwrap();
+
+        // Initialize the TCA3108A for the screen
+        let mut line_sensor = Tca6408a::new(
+            i2c_bus_line_sensor,
+            tca6408a::Address::from_pin_state(false),
+        );
+        let buttons = Tca6408a::new(
+            i2c_bus_buttons,
+            tca6408a::Address::from_pin_state(false),
+        );
+        line_sensor.configure_output(0b00000000).ok();
 
         // Initialize the Vl53l5cx
         let mut enable_front_tof = PinDriver::output(peripherals.pins.gpio3).unwrap();
@@ -130,11 +149,11 @@ impl Pami2023{
             encoder_right: Some(right_encoder),
             left_pwm: Some(left_pwm),
             right_pwm: Some(right_pwm),
-            left_dir: Some(left_dir),
-            right_dir: Some(right_dir),
             emergency_stop: Some(emergency_stop),
             display: Some(display),
             tof: Some(tof),
+            line_sensor: Some(line_sensor),
+            buttons: Some(buttons),
         }
     }
 }

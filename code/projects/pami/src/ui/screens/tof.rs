@@ -1,15 +1,19 @@
+use std::time::Instant;
+
 use board_pami_2023::DisplayType;
-use embedded_graphics::{pixelcolor::BinaryColor, prelude::{Drawable, Point, Primitive, Size}, primitives::{Line, PrimitiveStyle, Rectangle}, text::{Alignment, Baseline, Text, TextStyleBuilder}};
+use embedded_graphics::{pixelcolor::BinaryColor, prelude::{Drawable, Point, Primitive, Size}, primitives::{Line, PrimitiveStyle, Rectangle}};
 
 use crate::{events::Event, ui::UIScreen};
 
 pub struct Tof {
+    last_trigger: Option<Instant>,
     back_distance: [i16; 8],
 }
 
 impl Tof {
     pub fn new() -> Self {
         Self {
+            last_trigger: None,
             back_distance: [i16::MAX; 8],
         }
     }
@@ -41,7 +45,6 @@ impl UIScreen for Tof {
             let d = self.back_distance[i as usize] as f32;
 
             let x = x_min + ((x_max - x_min) * (d_max - d)) / d_max;
-            log::info!("x_min: {}, x_max: {}, d: {}, x: {} | {} | {}", x_min, x_max, d, x, (x >= x_min) && (x <= x_max), x.floor() as i32);
             if (x >= x_min) && (x <= x_max) {
                 let x = x.floor() as i32;
                 Line::new(
@@ -58,13 +61,42 @@ impl UIScreen for Tof {
         match event {
             Event::BackDistance { distance } => {
                 self.back_distance = *distance;
+
+                let mut alert = false;
+                for i in 0..self.back_distance.len() {
+                    if self.back_distance[i] < 100 {
+                        alert = true;
+                        break;
+                    }
+                }
+
+                if alert {
+                    if self.last_trigger.is_none() {
+                        self.last_trigger = Some(Instant::now());
+                    } else {
+                        let elapsed = self.last_trigger.unwrap().elapsed();
+                        if elapsed.as_secs() > 10 {
+                            log::info!("Alert triggered!");
+                            self.last_trigger = Some(Instant::now());
+                        }
+                    }
+                }
+                else {
+                    self.last_trigger = None;
+                }
             }
             _ => {}
         }
     }
 
-    fn get_priority(&self) -> usize {
-        10
+    fn get_priority(&self) -> isize {
+        if let Some(last_trigger) = self.last_trigger {
+            if last_trigger.elapsed().as_secs() < 7 {
+                return 1;
+            }
+        }
+
+        return -1;
     }
 
     fn get_screen_name(&self) -> &'static str {

@@ -3,37 +3,37 @@ use esp_idf_svc::sys::{esp_mac_type_t_ESP_MAC_BT, esp_read_mac};
 use phf::phf_map;
 
 pub const ASSERV_PERIOD_MS : u64 = 10;
-
+pub const DETECTION_DISTANCE_MM: f32 = 50.0;
 
 pub const POSITION_CONFIG : PositionConfiguration = PositionConfiguration {
-    tick_to_mm: 2.71666,
-    tick_to_rad: 225.448, //112.724,
+    tick_to_mm: 2.67666666666667,
+    tick_to_rad: 203.3183431, 
 };
 
 //unit are mm/s and mm/s^2
 pub const DISTANCE_RAMP_CONFIG : RampConfiguration = RampConfiguration {
     max_speed: 200.0,
-    acceleration: 200.0,
+    acceleration: 750.0,
 };
 
 //unit are deg/s and deg/s^2
 pub const ANGLE_RAMP_CONFIG : RampConfiguration = RampConfiguration {
-    max_speed: 300.0,
-    acceleration: 5.0,
+    max_speed: 2.5,
+    acceleration: 35.0,
 };
 
 pub const DISTANCE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
     kp: 40.0,
     ki: 0.0,
-    kd: 0.0,
+    kd: 10.0,
     max_integral: 0.0,
     max_err_for_integral: 0.0,
 };
 
 pub const ANGLE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
-    kp: 2250.0,
+    kp: 1500.0,
     ki: 0.0,
-    kd: 0.0,
+    kd: 1000.0,
     max_integral: 0.0,
     max_err_for_integral: 0.0,
 };
@@ -101,7 +101,7 @@ static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
     },
 
     //yellow (ID = 1)
-    [116, 77, 189, 81, 239, 32] => PAMIConfig {
+    [116, 77, 189, 81, 239, 34] => PAMIConfig {
         id: 1,
         color: "Yellow",
 

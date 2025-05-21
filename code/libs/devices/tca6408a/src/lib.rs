@@ -1,7 +1,6 @@
 #![no_std]
 
-use embedded_hal::digital::PinState;
-use embedded_hal_async::i2c::I2c as AsyncI2c;
+use embedded_hal::i2c::I2c;
 
 /// I2C device address
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -14,10 +13,10 @@ impl From<u8> for Address {
 }
 
 impl Address {
-    pub fn from_pin_state(addr: PinState) -> Self {
+    pub fn from_pin_state(addr: bool) -> Self {
         match addr {
-            PinState::Low => Address(0b010_0000),
-            PinState::High  => Address(0b010_0001),
+            false => Address(0b010_0000),
+            true  => Address(0b010_0001),
         }
     }
 }
@@ -40,7 +39,7 @@ impl Register {
 
 impl<I2C, E> Tca6408a<I2C>
 where
-    I2C: AsyncI2c<Error = E>,
+    I2C: I2c<Error = E>,
 {
     /// Create a new instance of the TCA6408A device.
     pub fn new(i2c: I2C, address: Address) -> Self {
@@ -52,32 +51,29 @@ where
 
     /// Configure the pins as input or output.
     /// 0 = output, 1 = input
-    pub async fn configure_output(&mut self, pins: u8) -> Result<(), E> {
+    pub fn configure_output(&mut self, pins: u8) -> Result<(), E> {
         self.i2c
             .write(self.address, &[Register::CONFIG, !pins])
-            .await
     }
 
     /// Set the output state of the pins.
-    pub async fn set_output(&mut self, pins: u8) -> Result<(), E> {
+    pub fn set_output(&mut self, pins: u8) -> Result<(), E> {
         self.i2c
             .write(self.address, &[Register::OUTPUT, pins])
-            .await
     }
 
     /// Get the input state of the pins.
-    pub async fn get_input(&mut self) -> Result<u8, E> {
+    pub fn get_input(&mut self) -> Result<u8, E> {
         let mut data: [u8; 1] = [0];
         self.i2c
-            .write_read(self.address, &[Register::INPUT], &mut data)
-            .await?;
+            .write_read(self.address, &[Register::INPUT], &mut data)?;
+
         Ok(data[0])
     }
 
     /// Set the polarity of the pins.
-    pub async fn set_polarity(&mut self, polarity: u8) -> Result<(), E> {
+    pub fn set_polarity(&mut self, polarity: u8) -> Result<(), E> {
         self.i2c
             .write(self.address, &[Register::POLARITY, polarity])
-            .await
     }
 }

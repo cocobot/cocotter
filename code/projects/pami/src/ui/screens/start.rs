@@ -81,7 +81,7 @@ impl UIScreen for Start {
         ).draw(display).unwrap();
     }
 
-    fn get_priority(&self) -> usize {
+    fn get_priority(&self) -> isize {
         0
     }
 

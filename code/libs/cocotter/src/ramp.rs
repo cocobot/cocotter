@@ -78,9 +78,6 @@ impl Ramp {
         //compute how much distance the robot will do if we start decreasing the speed now
         let delta_position = self.speed * self.speed / (2.0 * acceleration);
 
-        //log::info!("delta_position: {} {} {}", delta_position, self.position, self.target);
-        //log::info!("speed: {}/{} ({})", self.speed, self.configuration.max_speed, self.configuration.acceleration);
-
         //check if we want to move forward or backward
         let forward = (self.target - self.position) >= 0.0;
         if forward {
@@ -107,13 +104,17 @@ impl Ramp {
         }
 
 
-       // log::info!("speed: {}", self.speed);
-
         //set speed limit (because of cops !)
         self.speed = self.speed.clamp(-max_speed, max_speed);
 
         //compute next output
-        let mut output = self.position + self.speed;
+        let mut output = if forward {
+            (self.position + self.speed).min(self.target)
+        }
+        else {
+            (self.position + self.speed).max(self.target)
+        };
+
         // log::info!("output: {}", output);
         let mut abs_diff : f32 = self.target - self.position;
 
@@ -142,12 +143,11 @@ impl Ramp {
         
         //assign output
         self.position = output;
-        //log::info!("eoutput: {}", output);
         output
     }
 
     pub fn is_done(&self) -> bool {
-        let diff = self.position - self.target;
+        let diff: f32 = self.position - self.target;
         diff.abs() <= EPSILON
     }
 

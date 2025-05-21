@@ -11,3 +11,4 @@ esp-idf-svc = { version = "0.51", features = ["critical-section", "embassy-time-
 pwm-pca9685 = { version = "1.0.0"}
 ssd1306 = "0.10.0"
 vl53l5cx = { path = "../../devices/vl53l5cx" }
+tca6408a = { path = "../../devices/tca6408a" }

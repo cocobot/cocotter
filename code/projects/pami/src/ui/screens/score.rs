@@ -2,7 +2,7 @@ use board_pami_2023::DisplayType;
 use embedded_graphics::{mono_font::MonoTextStyleBuilder, pixelcolor::BinaryColor, prelude::{Drawable, Point, Primitive, Size}, primitives::{PrimitiveStyle, Rectangle}, text::{Alignment, Baseline, Text, TextStyleBuilder}};
 use embedded_vintage_fonts::FONT_24X32;
 
-use crate::ui::UIScreen;
+use crate::{events::Event, ui::UIScreen};
 
 pub struct Score {
     current_score: usize,
@@ -42,11 +42,22 @@ impl UIScreen for Score {
         ).draw(display).unwrap();
     }
 
-    fn get_priority(&self) -> usize {
-        0
+    fn get_priority(&self) -> isize {
+        100
     }
 
     fn get_screen_name(&self) -> &'static str {
         "Score"
+    }
+
+    fn handle_event(&mut self, event: &Event) {
+        match event {
+            Event::Position { coords } => {
+                // Handle position event
+                log::info!("Position event: {:?}", coords);
+                self.current_score = coords.get_a_deg() as usize;
+            }
+            _ => {}
+        }
     }
 }

@@ -1,14 +1,19 @@
+#![feature(const_float_methods)]
+
 mod events;
 mod pwm;
 mod ui;
 mod config;
 mod asserv;
 mod sensors;
+mod game;
+
 use std::{thread, time::Duration};
 
 use asserv::Asserv;
 use board_pami_2023::{adc::{PamiAdc, PamiAdcChannel}, Pami2023};
 use events::{Event, EventSystem};
+use game::Game;
 use pwm::PWM;
 use sensors::Sensors;
 use ui::UI;
@@ -18,8 +23,7 @@ fn analog_reading(adc: &mut PamiAdc, event: &EventSystem) {
     let vbatt_mv : u16 = adc.read(PamiAdcChannel::VBat);//.await;    
 
     //log::info!("VBat: {} mV", vbatt_mv);
-    //log::info!("IMotLeft: {} mA", adc.read(PamiAdcChannel::IMotLeft));
-    //log::info!("IMotRight: {} mA", adc.read(PamiAdcChannel::IMotRight));
+    //log::info!("I: {} {}", adc.read(PamiAdcChannel::IMotLeft), adc.read(PamiAdcChannel::IMotRight));
 
     event.send_event(Event::Vbatt { voltage_mv: vbatt_mv as f32 });
 }
@@ -56,20 +60,20 @@ fn main() {
 
     UI::new(board.display.take().unwrap(), config.id, config.color.to_string(), &event);
     PWM::new(board.pwm_extended.take().unwrap(), &event);
-    Asserv::new(
+    let asserv = Asserv::new(
         board.emergency_stop.take().unwrap(),
         board.encoder_left.take().unwrap(),
         board.encoder_right.take().unwrap(),
         board.left_pwm.take().unwrap(),
         board.right_pwm.take().unwrap(),
-        board.left_dir.take().unwrap(),
-        board.right_dir.take().unwrap(),
         &event,
     );
-    Sensors::new(board.tof.take().unwrap(), &event);
+    Sensors::new(board.tof.take().unwrap(), board.line_sensor.take().unwrap(), &event);    
     
     let mut adc = board.adc.take().unwrap(); 
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
+
+    Game::new(asserv, &event);
 
     loop {
         led_heartbeat.toggle().ok();

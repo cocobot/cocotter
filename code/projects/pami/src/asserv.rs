@@ -1,8 +1,7 @@
 use std::{sync::{Arc, Mutex}, time::{Duration, Instant}};
 
-use board_pami_2023::{encoder::Encoder, EmergencyStop, MotorLeftDirType, MotorPwmType, MotorRightDirType};
+use board_pami_2023::{encoder::Encoder, EmergencyStop, MotorPwmType};
 use cocotter::{pid::{PIDConfiguration, PID}, position::{Position, PositionMutex}};
-use esp_idf_svc::hal::{task::thread::ThreadSpawnConfiguration};
 
 use crate::{config::{MotorConfiguration, MotorQuadrantConfiguration, PAMIConfig, ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG}, events::{Event, EventSystem}};
 
@@ -27,10 +26,8 @@ pub struct Asserv {
     left_wheel_counter: Encoder<'static>,
     right_wheel_counter: Encoder<'static>,
 
-    left_pwm: MotorPwmType,
-    right_pwm: MotorPwmType,
-    left_dir: MotorLeftDirType,
-    right_dir: MotorRightDirType,
+    left_pwm: (MotorPwmType, MotorPwmType),
+    right_pwm: (MotorPwmType, MotorPwmType),
 
     last_encoders_read: [i32; 2],
     encoders: [i32; 2],
@@ -51,10 +48,8 @@ impl Asserv {
              emergency_stop: EmergencyStop,
              left_wheel_counter: Encoder<'static>,
              right_wheel_counter: Encoder<'static>,
-             left_pwm: MotorPwmType,
-             right_pwm: MotorPwmType,
-             left_dir: MotorLeftDirType,
-             right_dir: MotorRightDirType,
+             left_pwm: (MotorPwmType, MotorPwmType),
+             right_pwm: (MotorPwmType, MotorPwmType),
              event: &EventSystem,
         ) -> AsservMutexProtected {  
         let instance = Arc::new(Mutex::new(Self {
@@ -63,8 +58,6 @@ impl Asserv {
             right_wheel_counter,
             left_pwm,
             right_pwm,
-            left_dir,
-            right_dir,
             last_encoders_read: [0, 0],
             encoders: [0, 0],
 
@@ -87,12 +80,13 @@ impl Asserv {
 
         let cloned_instance = instance.clone();
         let cloned_event = event.clone();
-        ThreadSpawnConfiguration {
-            name: Some("Asserv\0".as_bytes()),
-            stack_size: 8192,
-            ..Default::default()
-        }.set().unwrap();
-        std::thread::spawn(|| Asserv::run(cloned_instance, cloned_event));
+        std::thread::Builder::new()
+            .stack_size(8192)
+            .name("Asserv".to_string())
+            .spawn(move || {
+                Asserv::run(cloned_instance, cloned_event);
+            })
+            .unwrap();
 
         /* 
         let ble_instance = instance.clone();
@@ -137,13 +131,12 @@ impl Asserv {
     pub fn run(instance: AsservMutexProtected, event: EventSystem) {
         let config = PAMIConfig::get_config().unwrap();
 
-        let mut left_motor_filter = MotorFilter::new(&config.left_motor);
-        let mut right_motor_filter = MotorFilter::new(&config.right_motor);
-
         let mut last_event_sent= Instant::now();
 
+        let start = Instant::now();
+
         loop {
-            //run the asserv at 20Hz
+            //run the asserv at 100Hz
             std::thread::sleep(Duration::from_millis(ASSERV_PERIOD_MS));
 
             let mut instance = instance.lock().unwrap();
@@ -169,15 +162,19 @@ impl Asserv {
                 }
             }
             //log::info!("Encoders: {} {}", instance.encoders[0], instance.encoders[1]);
-
+        
             //compute new position
             let mut position = instance.position.lock().unwrap();
-            position.set_new_encoder_values(now, instance.encoders);
+            position.set_new_encoder_values(now, instance.encoders, [1.0, 1.0]);
             
             let robot_coord = position.get_coordinates();
-            event.send_event(Event::Position { coords: *robot_coord });
+            if (now - last_event_sent).as_millis() > 100 {
+                event.send_event(Event::Position { coords: *robot_coord });
+            }
             let robot_distance = robot_coord.get_distance_mm();
             let robot_angle = robot_coord.get_angle_rad();
+
+            //log::info!("Position: {:?} {} {} {}", instance.encoders, robot_distance, robot_angle.to_degrees(), now.elapsed().as_millis());
             
             //compute new control loop target
             let ramp = position.get_ramps_as_mut();
@@ -201,8 +198,7 @@ impl Asserv {
             let distance_sp = instance.pid_distance.compute(distance_target - robot_distance);
             let angle_sp = instance.pid_angle.compute(angle_target - robot_angle);
 
-            //log::info!("PID D: {:8.3} {:8.3} {:8.3} {:8.3}", distance_target, robot_distance, distance_sp, distance_target - robot_distance);
-            //log::info!("PID A: {:8.3} {:8.3} {:8.3} {:8.3}", angle_target, robot_angle, angle_sp, angle_target - robot_angle);
+          //  log::info!("PID D: {:8.3} {:8.3} {:8.3} {:8.3} || PID A: {:8.3} {:8.3} {:8.3} {:8.3}", distance_target, robot_distance, distance_sp, distance_target - robot_distance, angle_target, robot_angle, angle_sp, angle_target - robot_angle);
             //assign the control loop output to the motors
             let left_speed = distance_sp - angle_sp;
             let right_speed = distance_sp + angle_sp;
@@ -220,20 +216,12 @@ impl Asserv {
             let mut left_pwm_filtered = left_pwm;
             let mut right_pwm_filtered = right_pwm;
 
-            //let mut left_pwm_filtered = left_motor_filter.apply_pwm(left_pwm, moving_forward[0], moving_backward[0]);
-            //let mut right_pwm_filtered = right_motor_filter.apply_pwm(right_pwm, moving_forward[1], moving_backward[1]);
-
             if let Some(ovr) = &instance.motor_override_setpoint {
                 if ovr.after_filter {
                     left_pwm_filtered = ovr.left;
                     right_pwm_filtered = ovr.right;
                 }
             }
-
-            let gain = 7;
-
-            left_pwm_filtered = -75;
-            right_pwm_filtered = -75* gain;
 
             if instance.emergency_stop.is_low() {
                 left_pwm_filtered = 0;
@@ -255,16 +243,30 @@ impl Asserv {
                 });
             }
             
+            let pwm_max: u32 = 1023;
             if left_pwm_filtered >= 0 {
-                instance.left_dir.set_low().unwrap();
-                instance.left_pwm.set_duty(left_pwm_filtered.clamp(0, 1023) as u32).ok();
+                let min_max = left_pwm_filtered.clamp(0, pwm_max as i16) as u32;
+                instance.left_pwm.0.set_duty(pwm_max).ok();
+                instance.left_pwm.1.set_duty(pwm_max - min_max).ok();
             }
             else {
-                instance.left_dir.set_high().unwrap();
-                instance.left_pwm.set_duty(1023 - (-left_pwm_filtered).clamp(0, 1023) as u32).ok();
+                let min_max = (-left_pwm_filtered).clamp(0, pwm_max as i16) as u32;
+                instance.left_pwm.1.set_duty(pwm_max).ok();
+                instance.left_pwm.0.set_duty(pwm_max - min_max).ok();
             }
 
             if right_pwm_filtered >= 0 {
+                let min_max = right_pwm_filtered.clamp(0, pwm_max as i16) as u32;
+                instance.right_pwm.0.set_duty(pwm_max).ok();
+                instance.right_pwm.1.set_duty(pwm_max - min_max).ok();
+            }
+            else {
+                let min_max = (-right_pwm_filtered).clamp(0, pwm_max as i16) as u32;
+                instance.right_pwm.1.set_duty(pwm_max).ok();
+                instance.right_pwm.0.set_duty(pwm_max - min_max).ok();
+            }
+            /*
+            if right_pwm_filtered > 0 {
                 instance.right_dir.set_high().unwrap();
                 instance.right_pwm.set_duty(1023 - right_pwm_filtered.clamp(0, 1023) as u32).ok();
             }
@@ -272,83 +274,12 @@ impl Asserv {
                 instance.right_dir.set_low().unwrap();
                 instance.right_pwm.set_duty((-right_pwm_filtered).clamp(0, 1023) as u32).ok();
             }
+            */
         }
+
     }
 
     pub fn get_position(&self) -> PositionMutex<2> {
         self.position.clone()
-    }
-}
-
-
-enum MotorFilterState {
-    Off,
-    Forward,
-    Backward,
-}
-
-struct MotorFilter {
-    state: MotorFilterState,
-    config: MotorConfiguration,
-}
-
-impl MotorFilter {
-    const THRESHOLD: i16 = 5;
-
-    fn new(config: &MotorConfiguration) -> Self {
-        MotorFilter {
-            state: MotorFilterState::Off,
-            config: *config,
-        }
-    }
-
-    pub fn apply_pwm(&mut self, pwm: i16, moving_forward: bool, moving_backward: bool) -> i16 {
-        let apply_gain =|pwm: i16, config: MotorQuadrantConfiguration| {
-            (((pwm - config.min_pwm) as f32) * config.gain) as i16 
-        };
-
-        let res = if pwm > MotorFilter::THRESHOLD {
-            match self.state {
-                MotorFilterState::Off | MotorFilterState::Backward => {
-                    if moving_forward {
-                        self.state = MotorFilterState::Forward;
-                        return self.apply_pwm(pwm, moving_forward, moving_backward);
-                    }
-                    else {
-                        self.config.forward.boost_pwm + apply_gain(pwm, self.config.forward)
-                    }
-                }
-                MotorFilterState::Forward => {
-                    self.config.forward.min_pwm + apply_gain(pwm, self.config.forward)
-                }
-            }
-        }
-        else if pwm < -MotorFilter::THRESHOLD {
-            match self.state {
-                MotorFilterState::Off | MotorFilterState::Forward => {
-                    if moving_backward {
-                        self.state = MotorFilterState::Backward;
-                        return self.apply_pwm(pwm, moving_forward, moving_backward);
-                    }
-                    else {
-                        -self.config.backward.boost_pwm - apply_gain(-pwm, self.config.backward)
-                    }
-                }
-                MotorFilterState::Backward => {
-                    -self.config.backward.min_pwm - apply_gain(-pwm, self.config.backward)
-                }
-            }
-        }
-        else {
-            self.state = MotorFilterState::Off;
-            0
-        };
-
-        if self.config.invert {
-            -res
-        }
-        else {
-            res
-        }
     }
 }

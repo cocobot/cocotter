@@ -35,7 +35,7 @@ impl UI {
         let (sender, receiver) = mpsc::channel();
 
         event.register_receiver_callback(None, move |evt| {
-            sender.send(evt).ok();
+            sender.send(evt.clone()).ok();
         });
 
         std::thread::Builder::new().stack_size(16 * 8192).name("UI".to_string()).spawn(move || {
@@ -169,7 +169,7 @@ trait UIScreen {
     fn draw(&mut self, display: &mut DisplayType, offset: Point, size: Size);
     fn get_screen_name(&self) -> &'static str;
     fn handle_event(&mut self, _event: &Event) {}
-    fn get_priority(&self) -> usize {
+    fn get_priority(&self) -> isize {
         0
     }
 }

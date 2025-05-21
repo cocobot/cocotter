@@ -1,3 +1,5 @@
+use std::{sync::mpsc::{self, Receiver}, time::Duration};
+
 use order::Order;
 
 use crate::position::PositionMutex;
@@ -10,13 +12,22 @@ pub enum TrajectorError {
     Interruted,
 }
 
+pub enum TrajectoryEvent<Event> {
+    OpponentDetected,
+    OpponentLost,
+    CustomEvent(Event),
+}
+
 pub enum RampCfg {
     Linear,
     Angular,
 }
 
-pub struct Trajectory<const N: usize> {
+pub struct Trajectory<const N: usize, Event> {
     position: PositionMutex<N>,
+    receiver: Receiver<TrajectoryEvent<Event>>,
+
+    //paused: Option<Instant>,
 }
 
 #[derive(Debug)]
@@ -71,14 +82,43 @@ impl<const N: usize> OrderConfig<N> {
     }
 }
 
-impl<const N: usize> Trajectory<N> {
-    pub fn new(position: PositionMutex<N>) -> Trajectory<N> {
-        Trajectory {
-            position,
+impl<const N: usize, Event> Trajectory<N, Event> {
+    pub fn new(position: PositionMutex<N>) -> (Trajectory<N, Event>, mpsc::Sender<TrajectoryEvent<Event>>) {
+        let (sender, receiver) = mpsc::channel();
+
+        (
+            Trajectory {
+                position,
+                receiver,
+            },
+            sender,
+        )
+    }
+
+
+    fn parse_event(&mut self, wait: Option<Duration>) {
+        loop {
+            match self.receiver.recv_timeout(wait.unwrap_or(Duration::from_millis(0))) {
+                Ok(event) => {
+                    match event {
+                        TrajectoryEvent::OpponentDetected => {
+                        }
+                        TrajectoryEvent::OpponentLost => {
+                            //self.current_order_index = 0;
+                        }
+                        TrajectoryEvent::CustomEvent(_) => {}
+                    }
+                }
+                _ => {
+                    break;
+                }
+            }
         }
     }
 
-    pub fn execute(&self, list: TrajectoryOrderList<N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
+    pub fn execute(&mut self, list: TrajectoryOrderList<N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
+        self.parse_event(None);
+
         list.execute(&self.position)
     }
 }
@@ -167,7 +207,8 @@ impl<const N: usize>  TrajectoryOrderList<N> {
             }
 
             let (order, config) = &mut self.orders[self.current_order_index];
-            config.apply(position);
+            config.apply(position);            
+
             let result = order.execute(self.current_order_index, config, position);
             config.revert(position);
 

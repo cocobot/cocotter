@@ -99,10 +99,10 @@ impl PWM {
         event.register_receiver_callback(Some(PWM::filter_events), move |evt| {
             match evt {
                 Event::Pwm { pwm_event } => {
-                    sender.send((pwm_event, None)).ok();
+                    sender.send((*pwm_event, None)).ok();
                 }
                 Event::OverridePwm { pwm_event , override_state} => {
-                    sender.send((pwm_event, Some(override_state))).ok();
+                    sender.send((*pwm_event, Some(*override_state))).ok();
                 }
                 _ => {}
             }

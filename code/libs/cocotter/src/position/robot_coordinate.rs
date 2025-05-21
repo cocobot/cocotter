@@ -84,7 +84,12 @@ impl<const N: usize> RobotCoordinate<N> {
     {
         for i in 0..N {
             self.linear_velocity[i] = delta_computation[i] / (delta_time_ms / 1000.0);
-            self.linear_coordonate[i] += delta_computation[i];
+            if i == 0 {
+               self.linear_coordonate[0] = delta_computation[i];
+            }
+            else {
+                self.linear_coordonate[i] += delta_computation[i];
+            }            
         }
 
         match N {
