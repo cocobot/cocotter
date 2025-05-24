@@ -3,7 +3,7 @@ mod screens;
 use board_pami_2023::DisplayType;
 use embedded_graphics::{pixelcolor::BinaryColor, prelude::{Drawable, Point, Primitive, Size}, primitives::{PrimitiveStyle, Rectangle}};
 use esp_idf_svc::sys::random;
-use screens::{bottom::Bottom, score::Score, start::Start, tof::Tof, top::Top};
+use screens::{bottom::Bottom, score::Score, start::Start, tof::Tof, top::Top, position::Position};
 
 use crate::{events::{Event, EventSystem}, pwm::PWMEvent};
 use std::{sync::mpsc, time::{Duration, Instant}};
@@ -29,6 +29,7 @@ impl UI {
                 Box::new(Score::new()),
                 Box::new(Start::new()),
                 Box::new(Tof::new()),
+                Box::new(Position::new()),
             ],
         };
 

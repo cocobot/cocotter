@@ -170,7 +170,14 @@ where
 
         for x in 0..8 {
             for y in 0..8 {
-                result_2d[x][y] = results.distance_mm[x + y * 8];
+                match results.target_status[x + y * 8] {
+                    5 | 6 | 9=> {
+                        result_2d[x][y] = results.distance_mm[x + y * 8];
+                    }
+                    _ => {
+                        result_2d[x][y] = i16::MAX;
+                    }
+                }
             }
         }
 

@@ -9,12 +9,12 @@ pub mod order;
 #[derive(Debug, Clone, Copy)]
 pub enum TrajectorError {
     InvalidOrder,
+    OrderInProgress,
     Interruted,
 }
 
 pub enum TrajectoryEvent<Event> {
-    OpponentDetected,
-    OpponentLost,
+    BackOpponentDetected(f32),
     CustomEvent(Event),
 }
 
@@ -27,16 +27,20 @@ pub struct Trajectory<const N: usize, Event> {
     position: PositionMutex<N>,
     receiver: Receiver<TrajectoryEvent<Event>>,
 
-    //paused: Option<Instant>,
+    back_opponent_detected: f32,
+    front_opponent_detected: f32,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct OrderConfig<const N: usize> {
     max_speed: [Option<f32>; N],
     acceleration: [Option<f32>; N],
 
     backwards: Option<bool>,
     max_angle_diff_in_xy: f32,
+
+    opponent_stop_distance_mm: Option<f32>,
+    opponent_resume_margin_distance_mm: f32,
 }
 
 impl<const N: usize> OrderConfig<N> {
@@ -46,6 +50,8 @@ impl<const N: usize> OrderConfig<N> {
             acceleration: [Some(1.0); N],
             backwards: Some(false),
             max_angle_diff_in_xy: 30_f32.to_radians(),
+            opponent_stop_distance_mm: Some(150.0),
+            opponent_resume_margin_distance_mm: 50.0,
         }
     }
 
@@ -80,33 +86,44 @@ impl<const N: usize> OrderConfig<N> {
             false
         }
     }
+    
 }
 
 impl<const N: usize, Event> Trajectory<N, Event> {
     pub fn new(position: PositionMutex<N>) -> (Trajectory<N, Event>, mpsc::Sender<TrajectoryEvent<Event>>) {
         let (sender, receiver) = mpsc::channel();
-
         (
             Trajectory {
                 position,
                 receiver,
+                back_opponent_detected: f32::MAX,
+                front_opponent_detected: f32::MAX,
             },
             sender,
         )
     }
 
+    fn get_opponent_distance(&self, forward: bool) -> f32 {
+        if forward {
+            return self.front_opponent_detected;
+        }
+        else {
+            return self.back_opponent_detected;
+        }
+    }
 
-    fn parse_event(&mut self, wait: Option<Duration>) {
+    fn parse_event(&mut self, wait: Option<Duration>) -> Vec<Event>{
+        let mut events = Vec::new(); 
         loop {
             match self.receiver.recv_timeout(wait.unwrap_or(Duration::from_millis(0))) {
                 Ok(event) => {
                     match event {
-                        TrajectoryEvent::OpponentDetected => {
+                        TrajectoryEvent::BackOpponentDetected (distance_mm)=> {
+                            self.back_opponent_detected = distance_mm;
                         }
-                        TrajectoryEvent::OpponentLost => {
-                            //self.current_order_index = 0;
+                        TrajectoryEvent::CustomEvent( evt ) => {
+                            events.push(evt);
                         }
-                        TrajectoryEvent::CustomEvent(_) => {}
                     }
                 }
                 _ => {
@@ -114,24 +131,28 @@ impl<const N: usize, Event> Trajectory<N, Event> {
                 }
             }
         }
+
+        return events;
     }
 
-    pub fn execute(&mut self, list: TrajectoryOrderList<N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
-        self.parse_event(None);
+    pub fn execute(&mut self, list: TrajectoryOrderList<N, Event>) -> Result<(), (TrajectorError, TrajectoryOrderList<N, Event>)> {
+        list.execute(self)
+    }
 
-        list.execute(&self.position)
+    pub fn get_position(&self) -> &PositionMutex<N> {
+        &self.position
     }
 }
 
 #[derive(Debug)]
-pub struct TrajectoryOrderList<const N: usize> {
-    orders: Vec<(Order, OrderConfig<N>)>,
+pub struct TrajectoryOrderList<const N: usize, Event> {
+    orders: Vec<(Order<N, Event>, OrderConfig<N>)>,
     current_order_index: usize,
     default_config: OrderConfig<N>,
 }
 
-impl<const N: usize>  TrajectoryOrderList<N> {
-    pub fn new() -> TrajectoryOrderList<N> {
+impl<const N: usize, Event>  TrajectoryOrderList<N, Event> {
+    pub fn new() -> TrajectoryOrderList<N, Event> {
         TrajectoryOrderList {
             orders: Vec::new(),
             current_order_index: 0,
@@ -139,8 +160,8 @@ impl<const N: usize>  TrajectoryOrderList<N> {
         }
     }
 
-    pub fn add_order(mut self, order: Order) -> Self {
-        self.orders.push((order, OrderConfig::new()));
+    pub fn add_order(mut self, order: Order<N, Event>) -> Self {
+        self.orders.push((order, self.default_config.clone()));
 
         self
     }
@@ -200,26 +221,43 @@ impl<const N: usize>  TrajectoryOrderList<N> {
         self
     }
 
-    fn execute(mut self, position: &PositionMutex<N>) -> Result<(), (TrajectorError, TrajectoryOrderList<N>)> {
+    fn execute(mut self, trajectory: &mut Trajectory<N, Event>) -> Result<(), (TrajectorError, TrajectoryOrderList<N, Event>)> {
         loop {
             if self.current_order_index >= self.orders.len() {
                 return Ok(())
             }
 
             let (order, config) = &mut self.orders[self.current_order_index];
-            config.apply(position);            
+            config.apply(trajectory.get_position());
 
-            let result = order.execute(self.current_order_index, config, position);
-            config.revert(position);
+            let mut order_state = order.init(trajectory.get_position());
 
-            match result {
-                Ok(index) => {
-                    self.current_order_index = index;
+            trajectory.parse_event(None);
+
+            let mut custom_events = Vec::new();
+            loop {
+                let result = order.execute(self.current_order_index, config, &mut order_state, &mut custom_events, trajectory);
+                custom_events.clear();
+
+                match result {
+                    Ok(index) => {
+                        if self.current_order_index != index {
+                            self.current_order_index = index;
+                            break;
+                        }
+                        else {
+                            custom_events = trajectory.parse_event(Some(Duration::from_millis(75)));
+                        }   
+                    }                 
+                    Err(e) => {
+                        config.revert(trajectory.get_position());
+                        return Err((e, self))
+                    }            
                 }
-                Err(e) => {
-                    return Err((e, self))
-                }
+
             }
+
+            config.revert(trajectory.get_position());            
         }
     }
 }

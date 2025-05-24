@@ -55,8 +55,17 @@ impl Ramp {
         self.configuration.acceleration = acceleration;
     }
 
-    pub fn set_target(&mut self, target: f32) {
+    pub fn set_target(&mut self, target: f32, emergency: bool) {
+        log::warn!("Ramp set target: {}", target);
         self.target = target;
+        if emergency {
+            self.position = target;
+            self.speed = 0.0;
+        }
+    }
+
+    pub fn get_target(&self) -> f32 {
+        self.target
     }
 
     pub fn get_output(&self) -> f32 {

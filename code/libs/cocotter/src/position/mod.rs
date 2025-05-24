@@ -49,7 +49,7 @@ impl<const N: usize> Position<N> {
         {
             let mut delta_tick_encoder = [0.0; N];
             for i in 0..N {
-                delta_tick_encoder[i] = ((encoders[i] - self.encoders[i]) as f32);
+                delta_tick_encoder[i] = (encoders[i] - self.encoders[i]) as f32;
             }
 
             let delta_time_ms : f32 = (timestamp_ms - self.timestamp_ms).as_millis() as f32;

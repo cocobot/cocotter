@@ -19,7 +19,7 @@ use ssd1306::prelude::DisplayRotation;
 use ssd1306::size::DisplaySize128x64;
 use ssd1306::{I2CDisplayInterface, Ssd1306};
 use tca6408a::Tca6408a;
-use vl53l5cx::Vl53l5cx;
+pub use vl53l5cx::Vl53l5cx;
 
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type EmergencyStop = PinDriver<'static, gpio::Gpio15, gpio::Input>;

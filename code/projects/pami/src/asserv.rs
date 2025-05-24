@@ -3,7 +3,7 @@ use std::{sync::{Arc, Mutex}, time::{Duration, Instant}};
 use board_pami_2023::{encoder::Encoder, EmergencyStop, MotorPwmType};
 use cocotter::{pid::{PIDConfiguration, PID}, position::{Position, PositionMutex}};
 
-use crate::{config::{MotorConfiguration, MotorQuadrantConfiguration, PAMIConfig, ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG}, events::{Event, EventSystem}};
+use crate::{config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG}, events::{Event, EventSystem}};
 
 pub type AsservMutexProtected = Arc<Mutex<Asserv>>;
 
@@ -88,52 +88,12 @@ impl Asserv {
             })
             .unwrap();
 
-        /* 
-        let ble_instance = instance.clone();
-        event.register_receiver_callback(
-            Some(Asserv::filter_events), 
-            move |evt| {
-                let ble_instance = ble_instance.clone();
-                async move {
-                    match evt {
-                        Event::MotorOverrideSetpoint { ovr }  => {
-                            ble_instance.lock().await.motor_override_setpoint = ovr;
-                        }
-                        Event::PidOverrideSetpoint { ovr } => {
-                            ble_instance.lock().await.pid_override_setpoint = ovr;
-                        }
-                        Event::PidOverrideConfiguration { ovr, pid_id } => {
-                            match pid_id {
-                                0 => ble_instance.lock().await.pid_distance_override_config = ovr,
-                                1 => ble_instance.lock().await.pid_angle_override_config = ovr,
-                                _ => {}
-                            }
-                        }
-                        _ => {}
-                    }
-                }
-            }
-        ).await;
-        */
         instance
     }
 
-    fn filter_events(evt: &Event) -> bool {
-        match evt {
-            Event::MotorOverrideSetpoint { .. } => true,
-            Event::PidOverrideSetpoint { .. } => true,
-            Event::PidOverrideConfiguration { .. } => true,
-            _ => false,
-        }
-    } 
-
 
     pub fn run(instance: AsservMutexProtected, event: EventSystem) {
-        let config = PAMIConfig::get_config().unwrap();
-
         let mut last_event_sent= Instant::now();
-
-        let start = Instant::now();
 
         loop {
             //run the asserv at 100Hz
@@ -147,10 +107,8 @@ impl Asserv {
             let mut moving_forward: [bool; 2] = [false; 2];
             let mut moving_backward: [bool; 2] = [false; 2];
             for i in 0..2 {
-                let mut delta = new_encoders[i].overflowing_sub(instance.last_encoders_read[i]).0;
-                if config.invert_encoder[i] {
-                    delta = -delta;
-                }
+                let delta = -new_encoders[i].overflowing_sub(instance.last_encoders_read[i]).0;
+                
                 instance.encoders[i] += delta as i32;
                 instance.last_encoders_read[i] = new_encoders[i];
 

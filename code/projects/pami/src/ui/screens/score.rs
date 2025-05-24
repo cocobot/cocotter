@@ -43,21 +43,10 @@ impl UIScreen for Score {
     }
 
     fn get_priority(&self) -> isize {
-        100
+        -1
     }
 
     fn get_screen_name(&self) -> &'static str {
         "Score"
-    }
-
-    fn handle_event(&mut self, event: &Event) {
-        match event {
-            Event::Position { coords } => {
-                // Handle position event
-                log::info!("Position event: {:?}", coords);
-                self.current_score = coords.get_a_deg() as usize;
-            }
-            _ => {}
-        }
     }
 }
