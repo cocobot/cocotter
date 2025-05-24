@@ -100,21 +100,8 @@ impl Game {
         drop(position);
 
         self.strat_superstar();
-        loop {          
-            loop {
-            let orders = TrajectoryOrderList::new()
-                .set_backwards(false)
-                .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
-                .add_order(Order::CustomOrder { callback: move_until_void })
-                ;
-            self.trajectory
-                .execute(orders)
-                .unwrap();    
-
+        
     
-                std::thread::sleep(Duration::from_millis(2500));
-        }
-        }
     }
 }
 
