@@ -56,7 +56,6 @@ impl Ramp {
     }
 
     pub fn set_target(&mut self, target: f32, emergency: bool) {
-        log::warn!("Ramp set target: {}", target);
         self.target = target;
         if emergency {
             self.position = target;

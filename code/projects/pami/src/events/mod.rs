@@ -1,4 +1,4 @@
-use std::sync::{mpsc, Arc, Mutex};
+use std::{sync::{mpsc, Arc, Mutex}, time::Instant};
 
 use cocotter::{position::robot_coordinate::RobotCoordinate};
 use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
@@ -10,6 +10,10 @@ pub type EventCallback = Box<dyn FnMut(&Event) -> () + Send + 'static>;
 
 #[derive(Debug, Clone)]
 pub enum Event {
+    //game events
+    GameStarted { timestamp: Instant},
+    GameInfo { message: String },
+
     //analog inputs
     Vbatt {voltage_mv: f32},
     VbattPercent {percent: u8},

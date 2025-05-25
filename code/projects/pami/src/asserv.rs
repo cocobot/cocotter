@@ -3,7 +3,7 @@ use std::{sync::{Arc, Mutex}, time::{Duration, Instant}};
 use board_pami_2023::{encoder::Encoder, EmergencyStop, MotorPwmType};
 use cocotter::{pid::{PIDConfiguration, PID}, position::{Position, PositionMutex}};
 
-use crate::{config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, POSITION_CONFIG}, events::{Event, EventSystem}};
+use crate::{config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, GAME_TIME_SECONDS, POSITION_CONFIG}, events::{Event, EventSystem}};
 
 pub type AsservMutexProtected = Arc<Mutex<Asserv>>;
 
@@ -22,6 +22,7 @@ pub struct PIDSetpointOverride {
 
 pub struct Asserv {
     emergency_stop: EmergencyStop,
+    start_time: Option<Instant>,
 
     left_wheel_counter: Encoder<'static>,
     right_wheel_counter: Encoder<'static>,
@@ -60,6 +61,7 @@ impl Asserv {
             right_pwm,
             last_encoders_read: [0, 0],
             encoders: [0, 0],
+            start_time: None,
 
             position: Arc::new(Mutex::new(Position::new(
                 POSITION_CONFIG, 
@@ -88,7 +90,25 @@ impl Asserv {
             })
             .unwrap();
 
+        let cloned_instance = instance.clone();
+        event.register_receiver_callback(Some(Asserv::event_filter), move |event| {
+            match event {
+                Event::GameStarted { timestamp } => {
+                    let mut asserv = cloned_instance.lock().unwrap();
+                    asserv.start_time = Some(*timestamp);
+                }
+                _ => {}
+            }
+        });
+
         instance
+    }
+
+    pub fn event_filter(event: &Event) -> bool {
+        match event {
+            Event::GameStarted { .. } => true,
+            _ => false,
+        }
     }
 
 
@@ -173,6 +193,14 @@ impl Asserv {
 
             let mut left_pwm_filtered = left_pwm;
             let mut right_pwm_filtered = right_pwm;
+
+            if let Some(start_time) = instance.start_time {
+                if start_time.elapsed().as_secs() > GAME_TIME_SECONDS {
+                    // After the game time, we stop the motors
+                    left_pwm_filtered = 0;
+                    right_pwm_filtered = 0;
+                }
+            }
 
             if let Some(ovr) = &instance.motor_override_setpoint {
                 if ovr.after_filter {

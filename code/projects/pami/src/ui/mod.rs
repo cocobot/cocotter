@@ -110,6 +110,7 @@ impl UI {
                     for i in 0..self.screens.len() {
                         self.screens[i].handle_event(&event);
                     }
+                    self.bottom.handle_event(&event);
                 }
                 Err(_) => {}
             }

@@ -1,21 +1,29 @@
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
+use board_pami_2023::Starter;
 use cocotter::trajectory::{order::{Order, OrderState}, OrderConfig, TrajectorError, Trajectory, TrajectoryEvent, TrajectoryOrderList};
-use linreg::linear_regression;
-
 use crate::{asserv::AsservMutexProtected, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
 
+pub struct GameConfiguration {
+    pub starter: Starter,
+}
+
 pub struct Game {
+    config: GameConfiguration,
+
+    start_time: Option<Instant>,
     trajectory: Trajectory<2, Event>,
     event: EventSystem,
 }
 
 impl Game {
-    pub fn new(asserv: AsservMutexProtected, event: &EventSystem) {
+    pub fn new(config: GameConfiguration, asserv: AsservMutexProtected, event: &EventSystem) {
         let (trajectory, sender) = Trajectory::new(asserv.lock().unwrap().get_position());
 
         let mut instance = Self {
-            trajectory: trajectory,
+            config,
+            trajectory,
+            start_time: None,
             event: event.clone(),
         };
 
@@ -36,7 +44,7 @@ impl Game {
 
                     sender.send(TrajectoryEvent::CustomEvent(event.clone())).unwrap();
                 }
-                Event::Line { activated } => {
+                Event::Line { activated: _ } => {
                     sender.send(TrajectoryEvent::CustomEvent(event.clone())).unwrap();
                 }
                 _ => {}
@@ -44,7 +52,39 @@ impl Game {
         });
     }
 
+    fn wait_for_start(&mut self) {
+        // Wait for the start signal to be low
+        loop {
+            if self.config.starter.is_low() {
+                break;
+            }
+            else {
+                std::thread::sleep(Duration::from_millis(50));
+            }
+        }
+
+        //wait a little bit to avoid bouncing
+        std::thread::sleep(Duration::from_millis(500));
+
+        // Wait for the start signal to be high
+        loop {
+            if self.config.starter.is_high() {
+                break;
+            }
+            else {
+                std::thread::sleep(Duration::from_millis(50));
+            }
+        }
+
+        let now = Instant::now();
+        self.start_time = Some(now);
+        self.event.send_event(Event::GameStarted { timestamp: now });
+        log::info!("Game started");
+    }
+
     fn strat_superstar(&mut self) {
+
+        self.wait_for_start();
 
         self.event.send_event(Event::OverridePwm {
             pwm_event: PWMEvent::LedBottom([0.0, 0.0, 1.0]),

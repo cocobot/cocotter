@@ -13,7 +13,7 @@ use std::{thread, time::Duration};
 use asserv::Asserv;
 use board_pami_2023::{adc::{PamiAdc, PamiAdcChannel}, Pami2023};
 use events::{Event, EventSystem};
-use game::Game;
+use game::{Game, GameConfiguration};
 use pwm::PWM;
 use sensors::Sensors;
 use ui::UI;
@@ -73,7 +73,10 @@ fn main() {
     let mut adc = board.adc.take().unwrap(); 
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
 
-    Game::new(asserv, &event);
+    let config = GameConfiguration {
+        starter: board.starter.take().unwrap(),
+    };
+    Game::new(config, asserv, &event);
 
     loop {
         led_heartbeat.toggle().ok();

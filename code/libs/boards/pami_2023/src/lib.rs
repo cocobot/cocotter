@@ -23,6 +23,7 @@ pub use vl53l5cx::Vl53l5cx;
 
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type EmergencyStop = PinDriver<'static, gpio::Gpio15, gpio::Input>;
+pub type Starter = PinDriver<'static, gpio::Gpio2, gpio::Input>;
 pub type MotorPwmType = LedcDriver<'static>;
 pub type DisplayType = Ssd1306<ssd1306::prelude::I2CInterface<MutexDevice<'static, I2cDriver<'static>>>, DisplaySize128x64, ssd1306::mode::BufferedGraphicsMode<DisplaySize128x64>>;
 pub type VlxType = Vl53l5cx<I2CType>;
@@ -47,6 +48,7 @@ pub struct Pami2023 {
     pub left_pwm: Option<(MotorPwmType, MotorPwmType)>,
     pub right_pwm: Option<(MotorPwmType, MotorPwmType)>,
     pub emergency_stop: Option<EmergencyStop>,
+    pub starter: Option<Starter>,
     pub display: Option<DisplayType>,
     pub tof: Option<VlxType>,
     pub line_sensor: Option<TCA6408AType>,
@@ -96,6 +98,8 @@ impl Pami2023{
             peripherals.pins.gpio13,
         ).unwrap());
         let emergency_stop = PinDriver::input(peripherals.pins.gpio15).unwrap();
+
+        let starter = PinDriver::input(peripherals.pins.gpio2).unwrap();
 
         // Initialize the I2C bus
         let config = I2cConfig::new().baudrate(400.kHz().into());
@@ -150,6 +154,7 @@ impl Pami2023{
             left_pwm: Some(left_pwm),
             right_pwm: Some(right_pwm),
             emergency_stop: Some(emergency_stop),
+            starter: Some(starter),
             display: Some(display),
             tof: Some(tof),
             line_sensor: Some(line_sensor),
