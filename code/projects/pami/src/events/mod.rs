@@ -34,7 +34,7 @@ pub enum Event {
 
 #[derive(Clone)]
 pub struct EventSystem {
-    sender: mpsc::Sender<Event>,
+    sender: mpsc::Sender<(Event, Instant)>,
     callbacks: Arc<Mutex<Vec<(Option<EventFilter>, EventCallback)>>>,
 }
 
@@ -61,10 +61,15 @@ impl EventSystem {
         ret
     }
 
-    fn run(self, receiver: mpsc::Receiver<Event>) {      
+    fn run(self, receiver: mpsc::Receiver<(Event, Instant)>) {      
         loop {
             match receiver.recv() {
-                Ok(event) => {
+                Ok(msg) => {
+                    let (event, timestamp) = msg;
+                    if timestamp.elapsed().as_millis() > 1000 {
+                        log::warn!("Event received with a delay of more than 1 second: {:?}", event);
+                    }
+
                     // Process the event
                     for (filter, callback) in self.callbacks.lock().unwrap().iter_mut() {
                         if filter.is_none() || filter.unwrap()(&event) {
@@ -81,7 +86,7 @@ impl EventSystem {
     
 
     pub fn send_event(&self, event: Event) {
-        match self.sender.send(event) {
+        match self.sender.send((event, Instant::now())) {
             Ok(_) => {}
             Err(e) => {
                 log::error!("Failed to send event: {:?}", e);

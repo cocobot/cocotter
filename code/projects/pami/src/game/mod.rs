@@ -61,6 +61,8 @@ impl Game {
             else {
                 std::thread::sleep(Duration::from_millis(50));
             }
+
+            self.trajectory.purge();
         }
 
         //wait a little bit to avoid bouncing
@@ -74,6 +76,8 @@ impl Game {
             else {
                 std::thread::sleep(Duration::from_millis(50));
             }
+
+            self.trajectory.purge();
         }
 
         let now = Instant::now();
@@ -127,6 +131,7 @@ impl Game {
                 });
 
                 std::thread::sleep(Duration::from_millis(100));
+                self.trajectory.purge();
             }
         }
     }

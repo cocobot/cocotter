@@ -23,13 +23,6 @@ pub enum RampCfg {
     Angular,
 }
 
-pub struct Trajectory<const N: usize, Event> {
-    position: PositionMutex<N>,
-    receiver: Receiver<TrajectoryEvent<Event>>,
-
-    back_opponent_detected: f32,
-    front_opponent_detected: f32,
-}
 
 #[derive(Debug, Clone)]
 pub struct OrderConfig<const N: usize> {
@@ -89,6 +82,15 @@ impl<const N: usize> OrderConfig<N> {
     
 }
 
+pub struct Trajectory<const N: usize, Event> {
+    position: PositionMutex<N>,
+    receiver: Receiver<TrajectoryEvent<Event>>,
+
+    back_opponent_detected: f32,
+    front_opponent_detected: f32,
+}
+
+
 impl<const N: usize, Event> Trajectory<N, Event> {
     pub fn new(position: PositionMutex<N>) -> (Trajectory<N, Event>, mpsc::Sender<TrajectoryEvent<Event>>) {
         let (sender, receiver) = mpsc::channel();
@@ -101,6 +103,11 @@ impl<const N: usize, Event> Trajectory<N, Event> {
             },
             sender,
         )
+    }
+
+    pub fn purge(&mut self) {
+        // Clear the receiver queue to avoid processing old events
+        self.parse_event(None);
     }
 
     fn get_opponent_distance(&self, forward: bool) -> f32 {

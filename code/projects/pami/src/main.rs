@@ -39,6 +39,7 @@ fn main() {
     let mut board = Pami2023::new();
     let event = EventSystem::new();
 
+    PWM::new(board.pwm_extended.take().unwrap(), &event);
 
     let config: &'static config::PAMIConfig = config::PAMIConfig::get_config().unwrap();
     log::info!("PAMI id={} color={}", config.id, config.color);
@@ -59,7 +60,6 @@ fn main() {
     }
 
     UI::new(board.display.take().unwrap(), config.id, config.color.to_string(), &event);
-    PWM::new(board.pwm_extended.take().unwrap(), &event);
     let asserv = Asserv::new(
         board.emergency_stop.take().unwrap(),
         board.encoder_left.take().unwrap(),
