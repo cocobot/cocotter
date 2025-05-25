@@ -83,13 +83,14 @@ fn main() {
 
         x_negative_color: (selector_value & 0b1000_0000) != 0,
         test_mode: conf_3_button.is_high(),
+
+        strategy: game::GameStrategy::Superstar,
     };
     Game::new(config, asserv, &event);
 
     loop {
         led_heartbeat.toggle().ok();
         analog_reading(&mut adc, &event);
-        log::info!("Selector value: {:X}", selector.get_input().unwrap());
 
         //log::info!("VL53L5CX: {:?}", vlx.get_distance());
 

@@ -4,11 +4,19 @@ use board_pami_2023::Starter;
 use cocotter::trajectory::{order::{Order, OrderState}, OrderConfig, TrajectorError, Trajectory, TrajectoryEvent, TrajectoryOrderList};
 use crate::{asserv::AsservMutexProtected, config::PAMI_START_TIME_SECONDS, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
 
+pub enum GameStrategy {
+    Superstar,
+    //NearPit,
+    //MidPit,
+    FarPit,
+}
+
 pub struct GameConfiguration {
     pub starter: Starter,
 
     pub test_mode: bool,
     pub x_negative_color: bool,
+    pub strategy: GameStrategy,
 }
 
 pub struct Game {
@@ -145,6 +153,12 @@ impl Game {
 
     fn strat_superstar(&mut self) {
 
+        let init_a = self.mirror_angle(180.0_f32.to_radians());
+        let mut position = self.trajectory.get_position().lock().unwrap();
+        position.set_coordinates(Some(2900.0), Some(1900.0), Some(init_a));
+        drop(position);
+
+
         self.wait_for_start();
          
         let orders = TrajectoryOrderList::new()
@@ -159,7 +173,7 @@ impl Game {
 
         let orders = TrajectoryOrderList::new()
             .set_backwards(false)
-            .add_order(Order::GotoA { a_rad: -90.0_f32.to_radians() })
+            .add_order(Order::GotoA { a_rad: self.mirror_angle(-90.0_f32.to_radians()) })
             .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
             .add_order(Order::CustomOrder { callback: move_until_void })
             ;
@@ -167,6 +181,40 @@ impl Game {
         self.trajectory
             .execute(orders)
             .unwrap();
+    }
+
+    fn start_far_pit(&mut self) {
+
+        let init_a = self.mirror_angle(180.0_f32.to_radians());
+        let mut position = self.trajectory.get_position().lock().unwrap();
+        position.set_coordinates(Some(2900.0), Some(1900.0), Some(init_a));
+        drop(position);
+
+
+        self.wait_for_start();
+
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(true)
+            .add_order(Order::GotoD { d_mm: 150.0 })
+            .add_order(Order::GotoA { a_rad: self.mirror_angle(-135.0_f32.to_radians()) })
+            .add_order(Order::GotoD { d_mm: 210.0 })
+            .add_order(Order::GotoA { a_rad: self.mirror_angle(180.0_f32.to_radians()) })
+            .add_order(Order::GotoD { d_mm: 1700.0 })
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+    }
+
+    fn run(&mut self) {
+
+        std::thread::sleep(Duration::from_millis(1000));
+
+        match self.config.strategy {
+            GameStrategy::Superstar => self.strat_superstar(),
+            GameStrategy::FarPit => self.start_far_pit(),
+        }
 
         let colors = [
             [1.0, 0.0, 0.0], // Red
@@ -188,17 +236,20 @@ impl Game {
         }
     }
 
-    fn run(&mut self) {
-
-        std::thread::sleep(Duration::from_millis(1000));
-
-        let mut position = self.trajectory.get_position().lock().unwrap();
-        position.set_coordinates(Some(2900.0), Some(1900.0), Some(180.0_f32.to_radians()));
-        drop(position);
-
-        self.strat_superstar();
-        
-    
+    fn mirror_angle(&self, angle: f32) -> f32 {
+        if self.config.x_negative_color {
+            //ensure the angle is between -PI and PI
+            let angle = angle.rem_euclid(std::f32::consts::PI * 2.0) - std::f32::consts::PI; // shift to range [-PI, PI]
+            //ensure the angle is mirrored for the negative X color
+            if angle < 0.0 {
+                angle + std::f32::consts::PI // mirror the angle by adding PI
+            } else {
+                std::f32::consts::PI - angle // mirror the angle by subtracting from PI
+            }
+        } else {
+            // Keep the angle as is for the positive X color
+            angle
+        }
     }
 }
 

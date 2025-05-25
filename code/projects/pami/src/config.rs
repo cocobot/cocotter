@@ -2,6 +2,8 @@ use cocotter::{pid::PIDConfiguration, position::PositionConfiguration, ramp::Ram
 use esp_idf_svc::sys::{esp_mac_type_t_ESP_MAC_BT, esp_read_mac};
 use phf::phf_map;
 
+use crate::game::GameStrategy;
+
 pub const ASSERV_PERIOD_MS : u64 = 10;
 pub const GAME_TIME_SECONDS : u64 = 100;
 pub const PAMI_START_TIME_SECONDS : u64 = 85;
@@ -42,6 +44,7 @@ pub const ANGLE_PID_CONFIG : PIDConfiguration = PIDConfiguration {
 pub struct PAMIConfig {
     pub id: usize,
     pub color: &'static str,
+    pub strategy: GameStrategy,
 }
 
 
@@ -50,12 +53,14 @@ static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
     [116, 77, 189, 81, 207, 138] => PAMIConfig {
         id: 0,
         color: "Red",
+        strategy: GameStrategy::FarPit,
     },
 
     //yellow (ID = 1)
     [116, 77, 189, 81, 239, 34] => PAMIConfig {
         id: 1,
         color: "Yellow",
+        strategy: GameStrategy::Superstar,
     },
 };
 
