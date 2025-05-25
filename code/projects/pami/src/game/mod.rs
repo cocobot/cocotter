@@ -40,7 +40,7 @@ impl Game {
                 Event::BackDistance { distance } => {
                     let min = (*distance.iter().min().unwrap()) as f32;
                     //TODO: remove comment: desactivate the back opponent detection for now....
-                    //sender.send(TrajectoryEvent::BackOpponentDetected(min)).unwrap();
+                    sender.send(TrajectoryEvent::BackOpponentDetected(min)).unwrap();
 
                     sender.send(TrajectoryEvent::CustomEvent(event.clone())).unwrap();
                 }

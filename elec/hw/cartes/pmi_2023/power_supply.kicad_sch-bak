@@ -1,14 +1,12 @@
 (kicad_sch
-	(version 20250114)
+	(version 20231120)
 	(generator "eeschema")
-	(generator_version "9.0")
+	(generator_version "8.0")
 	(uuid "56e3802f-a6e5-47a4-b831-c6aadde92940")
 	(paper "A4")
 	(lib_symbols
 		(symbol "cocotter_capacitors:C_10µF_25V_0805_X5R"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0.254)
 			)
@@ -99,7 +97,7 @@
 			(symbol "C_10µF_25V_0805_X5R_0_1"
 				(polyline
 					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -111,7 +109,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
+						(xy -2.032 0.762) (xy 2.032 0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -160,12 +158,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_capacitors:C_2nF_50V_0603"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0.254)
 			)
@@ -256,7 +251,7 @@
 			(symbol "C_2nF_50V_0603_0_1"
 				(polyline
 					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -268,7 +263,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
+						(xy -2.032 0.762) (xy 2.032 0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -317,12 +312,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_capacitors:C_47µF_10V_1206_X5R"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0.254)
 			)
@@ -413,7 +405,7 @@
 			(symbol "C_47µF_10V_1206_X5R_0_1"
 				(polyline
 					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -425,7 +417,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
+						(xy -2.032 0.762) (xy 2.032 0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -474,16 +466,11 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_connectors:254"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -558,17 +545,6 @@
 				)
 			)
 			(symbol "254_1_1"
-				(rectangle
-					(start 0.8636 2.667)
-					(end 0 2.413)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
 				(polyline
 					(pts
 						(xy 1.27 2.54) (xy 0.8636 2.54)
@@ -579,6 +555,17 @@
 					)
 					(fill
 						(type none)
+					)
+				)
+				(rectangle
+					(start 0.8636 2.667)
+					(end 0 2.413)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
 					)
 				)
 				(pin passive line
@@ -600,12 +587,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_connectors:MSS12C02LS-BB2.0"
-			(pin_names
-				(hide yes)
-			)
+			(pin_names hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -693,12 +677,23 @@
 						(type background)
 					)
 				)
-				(polyline
-					(pts
-						(xy -2.54 2.54) (xy -1.524 2.54)
-					)
+				(circle
+					(center -1.27 -2.54)
+					(radius 0.254)
 					(stroke
-						(width 0.2)
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -1.27 2.54)
+					(radius 0.254)
+					(stroke
+						(width 0)
 						(type default)
 						(color 0 0 0 1)
 					)
@@ -719,23 +714,12 @@
 						(type none)
 					)
 				)
-				(circle
-					(center -1.27 2.54)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
+				(polyline
+					(pts
+						(xy -2.54 2.54) (xy -1.524 2.54)
 					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 -2.54)
-					(radius 0.254)
 					(stroke
-						(width 0)
+						(width 0.2)
 						(type default)
 						(color 0 0 0 1)
 					)
@@ -746,6 +730,19 @@
 				(polyline
 					(pts
 						(xy 1.016 0.254) (xy -1.524 2.286)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.524 0) (xy 2.54 0)
 					)
 					(stroke
 						(width 0.2)
@@ -768,19 +765,6 @@
 						(type none)
 					)
 				)
-				(polyline
-					(pts
-						(xy 1.524 0) (xy 2.54 0)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
 				(pin passive line
 					(at -5.08 2.54 0)
 					(length 2.54)
@@ -792,6 +776,24 @@
 						)
 					)
 					(number "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "B"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -835,24 +837,6 @@
 						)
 					)
 				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 			)
 			(symbol "MSS12C02LS-BB2.0_2_1"
 				(rectangle
@@ -866,12 +850,23 @@
 						(type background)
 					)
 				)
-				(polyline
-					(pts
-						(xy -2.54 2.54) (xy -1.524 2.54)
-					)
+				(circle
+					(center -1.27 -2.54)
+					(radius 0.254)
 					(stroke
-						(width 0.2)
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -1.27 2.54)
+					(radius 0.254)
+					(stroke
+						(width 0)
 						(type default)
 						(color 0 0 0 1)
 					)
@@ -892,36 +887,14 @@
 						(type none)
 					)
 				)
-				(circle
-					(center -1.27 2.54)
-					(radius 0.254)
+				(polyline
+					(pts
+						(xy -2.54 2.54) (xy -1.524 2.54)
+					)
 					(stroke
-						(width 0)
+						(width 0.2)
 						(type default)
 						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 -2.54)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 8.89)
-					(radius 0.0001)
-					(stroke
-						(width 0)
-						(type default)
 					)
 					(fill
 						(type none)
@@ -940,11 +913,12 @@
 						(type none)
 					)
 				)
-				(circle
-					(center 1.27 0)
-					(radius 0.254)
+				(polyline
+					(pts
+						(xy 1.524 0) (xy 2.54 0)
+					)
 					(stroke
-						(width 0)
+						(width 0.2)
 						(type default)
 						(color 0 0 0 1)
 					)
@@ -952,12 +926,22 @@
 						(type none)
 					)
 				)
-				(polyline
-					(pts
-						(xy 1.524 0) (xy 2.54 0)
-					)
+				(circle
+					(center 0 8.89)
+					(radius 0.0001)
 					(stroke
-						(width 0.2)
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
 						(type default)
 						(color 0 0 0 1)
 					)
@@ -984,24 +968,6 @@
 					)
 				)
 				(pin passive line
-					(at -5.08 -2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "F"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
 					(at 5.08 0 180)
 					(length 2.54)
 					(name ""
@@ -1019,17 +985,30 @@
 						)
 					)
 				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "F"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_diodes:green_led_0603"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
+				(offset 1.016) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1125,6 +1104,18 @@
 			(symbol "green_led_0603_0_1"
 				(polyline
 					(pts
+						(xy -1.27 -1.27) (xy -1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
 						(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 					)
 					(stroke
@@ -1147,18 +1138,6 @@
 						(type none)
 					)
 				)
-				(polyline
-					(pts
-						(xy -1.27 -1.27) (xy -1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
 			)
 			(symbol "green_led_0603_1_1"
 				(polyline
@@ -1172,24 +1151,6 @@
 					(fill
 						(type color)
 						(color 0 194 0 1)
-					)
-				)
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
 					)
 				)
 				(pin passive line
@@ -1210,8 +1171,25 @@
 						)
 					)
 				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_ic:LDL1117S33R"
 			(exclude_from_sim no)
@@ -1272,24 +1250,6 @@
 						(type background)
 					)
 				)
-				(pin power_in line
-					(at -8.89 2.54 0)
-					(length 2.54)
-					(name "Vin"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 				(pin passive line
 					(at 0 -7.62 90)
 					(length 2.54)
@@ -1326,6 +1286,24 @@
 						)
 					)
 				)
+				(pin power_in line
+					(at -8.89 2.54 0)
+					(length 2.54)
+					(name "Vin"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 				(pin power_out line
 					(at 8.89 0 180)
 					(length 2.54)
@@ -1345,7 +1323,6 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_ic:TLV61070A"
 			(exclude_from_sim no)
@@ -1416,34 +1393,16 @@
 					)
 				)
 				(pin power_in line
-					(at -8.89 5.08 0)
+					(at 8.89 5.08 180)
 					(length 2.54)
-					(name "Vin"
+					(name "SW"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin input line
-					(at -8.89 -5.08 0)
-					(length 2.54)
-					(name "EN"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1469,35 +1428,17 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 8.89 5.08 180)
+				(pin input line
+					(at -8.89 -5.08 0)
 					(length 2.54)
-					(name "SW"
+					(name "EN"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 8.89 2.54 180)
-					(length 2.54)
-					(name "Vout"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1523,17 +1464,48 @@
 						)
 					)
 				)
+				(pin power_out line
+					(at 8.89 2.54 180)
+					(length 2.54)
+					(name "Vout"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -8.89 5.08 0)
+					(length 2.54)
+					(name "Vin"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_inductors:LMLP07A7M2R2DTAS"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1600,32 +1572,8 @@
 			)
 			(symbol "LMLP07A7M2R2DTAS_0_1"
 				(arc
-					(start 0 2.54)
-					(mid 0.6323 1.905)
-					(end 0 1.27)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start 0 1.27)
-					(mid 0.6323 0.635)
-					(end 0 0)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start 0 0)
-					(mid 0.6323 -0.635)
+					(start 0 -2.54)
+					(mid 0.6323 -1.905)
 					(end 0 -1.27)
 					(stroke
 						(width 0)
@@ -1637,8 +1585,32 @@
 				)
 				(arc
 					(start 0 -1.27)
-					(mid 0.6323 -1.905)
-					(end 0 -2.54)
+					(mid 0.6323 -0.635)
+					(end 0 0)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 0 0)
+					(mid 0.6323 0.635)
+					(end 0 1.27)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start 0 1.27)
+					(mid 0.6323 1.905)
+					(end 0 2.54)
 					(stroke
 						(width 0)
 						(type default)
@@ -1686,16 +1658,11 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_others:Battery_Cell-18650"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom no)
 			(on_board yes)
@@ -1778,7 +1745,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 1.778) (xy 0 2.54)
+						(xy 0 0.762) (xy 0 0)
 					)
 					(stroke
 						(width 0)
@@ -1790,7 +1757,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0.762) (xy 0 0)
+						(xy 0 1.778) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -1863,12 +1830,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_others:JFC2410-2100FS"
-			(pin_names
-				(hide yes)
-			)
+			(pin_names hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1987,16 +1951,11 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_others:TestPoint_for_pogo_pin-1mm"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0.762)
-				(hide yes)
-			)
+				(offset 0.762) hide)
 			(exclude_from_sim no)
 			(in_bom no)
 			(on_board yes)
@@ -2094,12 +2053,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:NRNE104H3435B2H"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0)
 			)
@@ -2169,9 +2125,9 @@
 			)
 			(symbol "NRNE104H3435B2H_0_1"
 				(arc
-					(start -3.175 2.413)
-					(mid -3.0506 2.3165)
-					(end -3.048 2.159)
+					(start -3.048 2.159)
+					(mid -3.0495 2.3143)
+					(end -3.175 2.413)
 					(stroke
 						(width 0)
 						(type default)
@@ -2181,56 +2137,8 @@
 					)
 				)
 				(arc
-					(start -3.048 2.794)
-					(mid -2.9736 2.9736)
-					(end -2.794 3.048)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start -2.794 3.048)
-					(mid -2.6144 2.9736)
-					(end -2.54 2.794)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start -2.794 2.54)
-					(mid -2.9736 2.6144)
-					(end -3.048 2.794)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start -2.794 1.905)
+					(start -3.048 2.159)
 					(mid -2.9736 1.9794)
-					(end -3.048 2.159)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start -2.54 2.159)
-					(mid -2.6144 1.9794)
 					(end -2.794 1.905)
 					(stroke
 						(width 0)
@@ -2241,9 +2149,80 @@
 					)
 				)
 				(arc
-					(start -2.159 2.794)
-					(mid -2.434 2.5608)
+					(start -3.048 2.794)
+					(mid -2.9736 2.6144)
 					(end -2.794 2.54)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.794 1.905)
+					(mid -2.6144 1.9794)
+					(end -2.54 2.159)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.794 2.54)
+					(mid -2.4393 2.5587)
+					(end -2.159 2.794)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.794 3.048)
+					(mid -2.9736 2.9736)
+					(end -3.048 2.794)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -2.54 2.794)
+					(mid -2.6144 2.9736)
+					(end -2.794 3.048)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -1.016 2.54)
+					(end 1.016 -2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 2.159) (xy -2.54 2.794)
+					)
 					(stroke
 						(width 0)
 						(type default)
@@ -2254,7 +2233,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.54 2.159) (xy -2.54 2.794)
+						(xy -1.778 2.54) (xy -1.778 1.524) (xy 1.778 -1.524) (xy 1.778 -2.54)
 					)
 					(stroke
 						(width 0)
@@ -2278,18 +2257,6 @@
 				)
 				(polyline
 					(pts
-						(xy -1.778 2.54) (xy -1.778 1.524) (xy 1.778 -1.524) (xy 1.778 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
 						(xy -1.778 -1.397) (xy -1.778 -3.683) (xy -2.032 -2.921) (xy -1.524 -2.921) (xy -1.778 -3.683)
 						(xy -1.778 -3.429)
 					)
@@ -2299,17 +2266,6 @@
 					)
 					(fill
 						(type outline)
-					)
-				)
-				(rectangle
-					(start -1.016 2.54)
-					(end 1.016 -2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
 					)
 				)
 			)
@@ -2351,12 +2307,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_0R_0603"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0)
 			)
@@ -2503,12 +2456,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_10k_0603_1%"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0)
 			)
@@ -2655,12 +2605,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_1k_0603_1%"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0)
 			)
@@ -2807,12 +2754,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_68k_0603_1%"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0)
 			)
@@ -2959,12 +2903,9 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_91k_0603_1%"
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
 				(offset 0)
 			)
@@ -3111,13 +3052,10 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "cocotter_transistors:DMP2008UFG-7"
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3174,16 +3112,26 @@
 				)
 			)
 			(symbol "DMP2008UFG-7_0_1"
-				(polyline
-					(pts
-						(xy -2.286 1.905) (xy -2.286 -1.905)
-					)
+				(circle
+					(center -0.889 0)
+					(radius 2.794)
 					(stroke
 						(width 0.254)
 						(type default)
 					)
 					(fill
 						(type none)
+					)
+				)
+				(circle
+					(center 0 -1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
 					)
 				)
 				(polyline
@@ -3200,31 +3148,7 @@
 				)
 				(polyline
 					(pts
-						(xy -1.778 2.286) (xy -1.778 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 1.778) (xy 0.762 1.778) (xy 0.762 -1.778) (xy -1.778 -1.778)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 0.508) (xy -1.778 -0.508)
+						(xy -2.286 1.905) (xy -2.286 -1.905)
 					)
 					(stroke
 						(width 0.254)
@@ -3246,9 +3170,10 @@
 						(type none)
 					)
 				)
-				(circle
-					(center -0.889 0)
-					(radius 2.794)
+				(polyline
+					(pts
+						(xy -1.778 0.508) (xy -1.778 -0.508)
+					)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -3259,19 +3184,19 @@
 				)
 				(polyline
 					(pts
-						(xy -0.254 0) (xy -1.27 0.381) (xy -1.27 -0.381) (xy -0.254 0)
+						(xy -1.778 2.286) (xy -1.778 1.27)
 					)
 					(stroke
-						(width 0)
+						(width 0.254)
 						(type default)
 					)
 					(fill
-						(type outline)
+						(type none)
 					)
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0 1.778)
+						(xy 0 -2.54) (xy 5.08 -2.54)
 					)
 					(stroke
 						(width 0)
@@ -3281,31 +3206,9 @@
 						(type none)
 					)
 				)
-				(circle
-					(center 0 1.778)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(circle
-					(center 0 -1.778)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
 				(polyline
 					(pts
-						(xy 0 -2.54) (xy 5.08 -2.54)
+						(xy 0 2.54) (xy 0 1.778)
 					)
 					(stroke
 						(width 0)
@@ -3325,6 +3228,30 @@
 					)
 					(fill
 						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 1.778) (xy 0.762 1.778) (xy 0.762 -1.778) (xy -1.778 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.254 0) (xy -1.27 0.381) (xy -1.27 -0.381) (xy -0.254 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
 					)
 				)
 				(polyline
@@ -3351,44 +3278,19 @@
 						(type none)
 					)
 				)
+				(circle
+					(center 0 1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
 			)
 			(symbol "DMP2008UFG-7_1_1"
-				(pin passive line
-					(at -7.62 0 0)
-					(length 2.54)
-					(name "G"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "D"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 				(pin passive line
 					(at 0 -5.08 90)
 					(length 2.54)
@@ -3443,18 +3345,49 @@
 						)
 					)
 				)
+				(pin passive line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 5.08 270)
+					(length 2.54)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "power:+3V3"
 			(power)
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3526,7 +3459,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -3538,7 +3471,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -3569,17 +3502,12 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "power:+5V"
 			(power)
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3651,7 +3579,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -3663,7 +3591,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -3694,17 +3622,12 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "power:+BATT"
 			(power)
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3776,7 +3699,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -3788,7 +3711,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -3819,17 +3742,12 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
 		(symbol "power:GND"
 			(power)
-			(pin_numbers
-				(hide yes)
-			)
+			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-				(hide yes)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -3920,745 +3838,7 @@
 					)
 				)
 			)
-			(embedded_fonts no)
 		)
-	)
-	(circle
-		(center 121.92 156.21)
-		(radius 0.0001)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid 09c6d115-59fc-4689-97f8-21e09971a9bc)
-	)
-	(circle
-		(center 121.92 146.05)
-		(radius 0.0001)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid dd2581d8-c7fd-4af2-b07f-59b2d31bbeee)
-	)
-	(circle
-		(center 121.92 135.89)
-		(radius 0.0001)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid ff10f4b6-6b6b-4968-9693-bcd21ba0ab84)
-	)
-	(text "ajouter CTN NRNE104H3435B2H pour BQ25308. plus 5 pastilles pour pogo pin >3.5A\nref 0908-0-15-20-75-14-11-0:\nvbatt"
-		(exclude_from_sim no)
-		(at 97.536 20.32 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "1135f949-4551-4874-af29-0798a43f89f0")
-	)
-	(text "0.3A"
-		(exclude_from_sim no)
-		(at 92.71 179.07 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1e77c6bf-5025-40e3-92b5-7edfa90510f9")
-	)
-	(text "1.3A"
-		(exclude_from_sim no)
-		(at 52.07 116.84 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1eec665b-5d85-4e77-a2ae-79eafcbe2b39")
-	)
-	(text "ajout lm74720"
-		(exclude_from_sim no)
-		(at 13.97 209.55 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "22ccb00c-9f0d-44b6-bef4-7d6b9c7e0708")
-	)
-	(text "POWER TREE"
-		(exclude_from_sim no)
-		(at 15.24 107.95 0)
-		(effects
-			(font
-				(size 2.54 2.54)
-				(thickness 0.508)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "3544ae54-7649-49ac-af14-88e68ffc19f0")
-	)
-	(text "passer en 18650, 1800mAh\nhttps://fr.aliexpress.com/item/1005005364329204.html?spm=a2g0o.productlist.main.1.79e32430zv9uBR&algo_pvid=b51d1612-023c-4deb-90a4-82b642b6877c&algo_exp_id=b51d1612-023c-4deb-90a4-82b642b6877c-0&pdp_npi=4%40dis%21EUR%2132.58%2120.2%21%21%2135.26%21%21%40211b813c17039785284962835e8012%2112000032749290547%21sea%21FR%210%21AB&curPageLogUid=3OSaMYC8x88B"
-		(exclude_from_sim no)
-		(at 13.97 204.47 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "4da2fde9-7162-4903-9d78-f8104075fd5d")
-	)
-	(text "0.4A"
-		(exclude_from_sim no)
-		(at 91.44 143.51 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "5efd8b8b-72d6-4e4b-aec2-5887830d84c6")
-	)
-	(text "2.1A"
-		(exclude_from_sim no)
-		(at 52.07 138.43 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "67e99511-cfa1-4ec4-918f-f9d2f1eac49b")
-	)
-	(text "tlv61070a\n"
-		(exclude_from_sim no)
-		(at 73.66 195.58 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "7db8b757-b3ec-4d19-bdf4-eb056e3ed4aa")
-	)
-	(text "utiliser bq25173"
-		(exclude_from_sim no)
-		(at 13.97 207.01 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "8f92f7f4-9ac9-41d9-bd69-904a37633888")
-	)
-	(text "0.6A"
-		(exclude_from_sim no)
-		(at 91.44 133.35 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "981eb305-80cf-4c74-b308-b3cfc9a07f88")
-	)
-	(text "2.3A"
-		(exclude_from_sim no)
-		(at 52.07 177.8 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "9bb4df8a-5514-483f-979a-9b62ef542162")
-	)
-	(text "boost : TLV61070A "
-		(exclude_from_sim no)
-		(at 64.77 193.04 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "b5b8c7b1-eb44-42f7-90ce-9ec19225b66f")
-	)
-	(text "SPARE FUSES"
-		(exclude_from_sim no)
-		(at 16.51 17.78 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(thickness 0.254)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "c1fc9fbb-6f18-4e51-952a-868fb11a53bd")
-	)
-	(text "7.0A"
-		(exclude_from_sim no)
-		(at 41.91 127 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "c47de46c-da96-44cc-9fed-e557c0749843")
-	)
-	(text "0.5A"
-		(exclude_from_sim no)
-		(at 92.71 166.37 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "c83eceda-9da1-4857-adc6-ea6ffe173d4f")
-	)
-	(text "1.3A"
-		(exclude_from_sim no)
-		(at 52.07 160.02 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "d4a8af19-3430-494c-acfc-2141654ab461")
-	)
-	(text "730mA"
-		(exclude_from_sim no)
-		(at 114.3 116.84 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "f0b02299-fa14-4fbc-94e1-2e2b61bb52f4")
-	)
-	(text "0.3A"
-		(exclude_from_sim no)
-		(at 92.71 191.77 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "ff90e72a-1538-49fb-aa5d-4c194d505b08")
-	)
-	(text_box "FAN motor\nI stalled: 400mA\nI max : 200mA"
-		(exclude_from_sim no)
-		(at 116.84 140.97 0)
-		(size 19.05 7.62)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "0a6d8303-d58a-464d-aa14-2a6ad69991d8")
-	)
-	(text_box "H bridge \nleft motor"
-		(exclude_from_sim no)
-		(at 96.52 130.81 0)
-		(size 16.51 6.35)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "218fcb4f-b815-4de2-899e-4d9196d0e902")
-	)
-	(text_box "micro servomotor\nsupply : 5V\nconsumption @no load: 300mA\nconsumption @stalled: 500mA"
-		(exclude_from_sim no)
-		(at 97.79 173.99 0)
-		(size 36.83 10.16)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "2657d940-36da-439f-8237-e2983bf3dd08")
-	)
-	(text_box "right motor\nI stalled: 600mA\nI max : 400mA"
-		(exclude_from_sim no)
-		(at 116.84 151.13 0)
-		(size 19.05 7.62)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "381bb583-a736-40ec-926a-bef9f5c6c7df")
-	)
-	(text_box "BATTERY : \n1x LiFePO4 18650 1200mAh min\nVrange : [2.9V; 3.45V]"
-		(exclude_from_sim no)
-		(at 15.24 119.38 0)
-		(size 25.4 31.75)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "45a2ed26-50a4-412b-8e9f-79a9d7091515")
-	)
-	(text_box "encoders\nconsumption : 2*9mA"
-		(exclude_from_sim no)
-		(at 142.24 121.92 0)
-		(size 27.94 5.08)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "4d47703c-5840-4005-a3f7-4ea6944a5d5b")
-	)
-	(text_box "BOOST Right Motor\nVin: [2.8V; 3.3V]\nVout:  5V \nIout max : 0.6A\nIout nom : 0.4A\nefficiency: [85%; 90%]"
-		(exclude_from_sim no)
-		(at 60.96 151.13 0)
-		(size 25.4 16.51)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "59edfd95-2ccf-4fcb-b469-a7e15fdd9ae3")
-	)
-	(text_box "FAN transistor"
-		(exclude_from_sim no)
-		(at 96.52 140.97 0)
-		(size 16.51 6.35)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "5db51b99-f262-4081-84e6-a67e39ab87d5")
-	)
-	(text_box "left motor\nI stalled: 600mA\nI max : 400mA"
-		(exclude_from_sim no)
-		(at 116.84 130.81 0)
-		(size 19.05 7.62)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "60855a83-8392-4bab-9fad-b2378c05a6aa")
-	)
-	(text_box "ESP32\nconsumption max: 360mA"
-		(exclude_from_sim no)
-		(at 142.24 109.22 0)
-		(size 27.94 5.08)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "61d114bc-f052-4eae-a658-15bab663b458")
-	)
-	(text_box "H bridge \nright motor"
-		(exclude_from_sim no)
-		(at 96.52 151.13 0)
-		(size 16.51 6.35)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "71a50010-b042-4f20-bd5d-b5e027ace954")
-	)
-	(text_box "Others\nconsumption : 50 mA"
-		(exclude_from_sim no)
-		(at 142.24 134.62 0)
-		(size 27.94 5.08)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "773c256c-379f-49df-b948-ad7f983c2f1a")
-	)
-	(text_box "micro servomotor\nsupply : 5V\nconsumption @no load: 300mA\nconsumption @stalled: 500mA"
-		(exclude_from_sim no)
-		(at 97.79 161.29 0)
-		(size 36.83 10.16)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "77dfd64c-1ced-43d3-994e-e1593c00e248")
-	)
-	(text_box "BOOST Left Motor\nVin: [2.8V; 3.3V]\nVout:  5V \nIout max : 1A\nIout nom : 0.6A\nefficiency: [85%; 90%]"
-		(exclude_from_sim no)
-		(at 60.96 130.81 0)
-		(size 25.4 16.51)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "85a96600-dd19-4f9f-8acc-51081112b625")
-	)
-	(text_box "BOOST Logic supply\nVin: [2.7V; 3.3V]\nVout:  4V \nIout max : 730mA\nIout nom : 450mA\nefficiency: [85%; 90%]"
-		(exclude_from_sim no)
-		(at 60.96 109.22 0)
-		(size 25.4 16.51)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "890c4307-0f6f-42bf-85bb-e4f4e37e14a8")
-	)
-	(text_box "PCA9685\nconsumption : 10mA"
-		(exclude_from_sim no)
-		(at 142.24 128.27 0)
-		(size 27.94 5.08)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "89a39c8f-091c-4b89-854e-e09adef3ef61")
-	)
-	(text_box "SW8:\n - POS A : robot power is OFF\n - POS A : robot power is ON"
-		(exclude_from_sim no)
-		(at 82.55 71.12 0)
-		(size 33.02 7.62)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(italic yes)
-				(color 255 255 255 1)
-			)
-			(justify left top)
-		)
-		(uuid "91c65f76-9acb-4e42-b0cb-aea96e65597d")
-	)
-	(text_box "micro servomotor\nsupply : 5V\nconsumption @no load: 300mA\nconsumption @stalled: 500mA"
-		(exclude_from_sim no)
-		(at 97.79 186.69 0)
-		(size 36.83 10.16)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "a5f5550f-48c9-4f82-aa41-7ed3ac32a041")
-	)
-	(text_box "test point added to allow use of custom charger : \n- 2*TP on battery supply (GND, BATT after fuse)\n- 1*TP to force the power off state of the robot (connected to enable_pw_conv_3v7)\n- 1*TP to verify that the robot is connected to the charger (connectd to GND)\n- 1*TP to battery NTC (other one uses the logical connection to GND)"
-		(exclude_from_sim no)
-		(at 13.97 86.36 0)
-		(size 88.9 11.43)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-				(italic yes)
-				(color 255 255 255 1)
-			)
-			(justify left top)
-		)
-		(uuid "a69212b2-e785-4c00-a590-47a1f46b4f63")
-	)
-	(text_box "margin : 30%"
-		(exclude_from_sim no)
-		(at 123.19 114.3 0)
-		(size 10.16 5.08)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "a69d06c2-650f-4cda-adfb-d039bf706a15")
-	)
-	(text_box "BOOST Analog servos\nVin: [2.8V; 3.3V]\nVout:  5V \nIout max : 1.1A\nIout nom : 0.9A\nefficiency: [85%; 90%]"
-		(exclude_from_sim no)
-		(at 60.96 171.45 0)
-		(size 25.4 16.51)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 255 0 0.48)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "adbb98c2-6268-4f2f-a47d-220749f55a12")
-	)
-	(text_box "LDO : LDL1117S33R\nIout : 730mA\nVout : 3V3\nThot = Tamb + 60°C"
-		(exclude_from_sim no)
-		(at 90.17 111.76 0)
-		(size 22.86 10.16)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "b086b95d-c9a5-43b8-affe-1623b60037b8")
-	)
-	(text_box "sensors, line folower\nconsumption : 8*15mA"
-		(exclude_from_sim no)
-		(at 142.24 115.57 0)
-		(size 27.94 5.08)
-		(margins 0.9525 0.9525 0.9525 0.9525)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(fill
-			(type color)
-			(color 0 194 0 1)
-		)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left top)
-		)
-		(uuid "c7c8325b-b7bc-4ac2-8d3f-2272f9078f84")
 	)
 	(junction
 		(at 45.72 67.31)
@@ -6711,6 +5891,42 @@
 			(type default)
 		)
 		(uuid "fffab381-70be-4517-bd15-4b00c7d60a0f")
+	)
+	(circle
+		(center 121.92 156.21)
+		(radius 0.0001)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid 09c6d115-59fc-4689-97f8-21e09971a9bc)
+	)
+	(circle
+		(center 121.92 146.05)
+		(radius 0.0001)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid dd2581d8-c7fd-4af2-b07f-59b2d31bbeee)
+	)
+	(circle
+		(center 121.92 135.89)
+		(radius 0.0001)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid ff10f4b6-6b6b-4968-9693-bcd21ba0ab84)
 	)
 	(image
 		(at 27.94 140.97)
@@ -9562,29 +8778,690 @@
 			"hmkBWLgzDMMwDMMwTAvAwp1hGIZhGIZhWgAW7gzDMAzDMAzTArBwZxiGYRiGYZgWgIU7wzAMwzAM"
 			"w7QALNwZhmEYhmEYpgVg4c4wDMMwDMMwLQALd4ZhGIZhGIZpAVi4MwzDMAzDMEwLwMKdYRiGYRiG"
 			"YVoAFu4MwzAMwzAM0wKwcGcYhmEYhmGYFoCFO8MwDMMwDMO0AI4x5rW+BoZhGIZhGIZh/gD/P5sk"
-			"kvUBmdn5AAAAAElFTkSuQmCCeQAAAHIAAABFAAAAUAAAAFYAAABCAAAAbQAAAEkAAABzAAAAVgAA"
-			"AEYAAABRAAAATQAAAEsAAABLAAAAUgAAAHgAAAA4AAAARAAAAFYAAAAzAAAATAAAADAAAABpAAAA"
-			"WAAAAGIAAABpAAAAWAAAAHAAAABNAAAAdgAAAFoAAABDAAAAcAAAAHMAAAAvAAAAaAAAAEIAAABB"
-			"AAAAcQAAAEQAAABpAAAARwAAAGcAAABCAAAAaAAAAEgAAABGAAAAbQAAAGcAAABBAAAAbwAAAGwA"
-			"AAB4AAAAcQAAADgAAABPAAAAcgAAAHUAAAA1AAAAWgAAAFAAAABTAAAAdgAAAHUAAAB1AAAAZQAA"
-			"AFoAAABlAAAAbgAAAFYAAABSAAAAMQAAAFcAAAB6AAAAWgAAADMAAABjAAAAdAAAAEEAAABiAAAA"
-			"UQAAAG4AAAAzAAAAbAAAAFoAAABWAAAAbwAAAHMAAABPAAAAVQAAAHkAAABNAAAAbQAAAFYAAAAw"
-			"AAAAeQAAAE0AAABaAAAARQAAAFgAAABIAAAAagAAADAAAAA2AAAAdQAAADcAAABnAAAARAAAAEkA"
-			"AABhAAAARQAAAGMAAABrAAAAZQAAAEYAAABDAAAAcQAAAGYAAABHAAAANAAAAFcAAAA0AAAARQAA"
-			"AEQAAAA1AAAARwAAAE0AAABRAAAATwAAAFoAAABXAAAAcgAAAGkAAABRAAAASAAAAFYAAABPAAAA"
-			"eAAAAEEAAABvAAAATwAAAEIAAABBAAAAcwAAAHYAAABMAAAAUQAAAEcAAABwAAAARAAAAFkAAABp"
-			"AAAAMQAAAHEAAAB1AAAASQAAAHYAAABvAAAAcgAAAGUAAABOAAAAQwAAAGUAAAB0AAAAagAAAGQA"
-			"AABCAAAAdgAAAGEAAABaAAAAUQAAAGMAAAAvAAAAQQAAAHYAAABwAAAASAAAAGEAAABDAAAASwAA"
-			"AG4AAABXAAAAWgAAAHUAAAA3AAAAWgAAAHgAAABQAAAAbQAAAHgAAABtAAAAWgAAADYAAABGAAAA"
-			"NQAAADcAAAA1AAAAMwAAAHoAAAA0AAAAeQAAAGQAAABuAAAAeAAAAC8AAABXAAAANwAAADcAAAB5"
-			"AAAAeQAAAE8AAAAzAAAAMQAAADIAAABjAAAAWAAAAE0AAAB3AAAATwAAAEwAAABxAAAAZwAAADYA"
-			"AAB5AAAASAAAAFMAAABZAAAATAAAAGQAAAA1AAAAcwAAADgAAABoAAAAYwAAAHYAAABOAAAAcAAA"
-			"ADkAAAArAAAAdgAAAHYAAAByAAAAWgAAAFoAAAA2AAAAdgAAAFAAAAB2AAAAdQAAAHAAAABmAAAA"
-			"dgAAAEsAAABCAAAAMQAAAA=="
+			"kvUBmdn5AAAAAElFTkSuQmCC"
 		)
+	)
+	(text_box "FAN motor\nI stalled: 400mA\nI max : 200mA"
+		(exclude_from_sim no)
+		(at 116.84 140.97 0)
+		(size 19.05 7.62)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "0a6d8303-d58a-464d-aa14-2a6ad69991d8")
+	)
+	(text_box "H bridge \nleft motor"
+		(exclude_from_sim no)
+		(at 96.52 130.81 0)
+		(size 16.51 6.35)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "218fcb4f-b815-4de2-899e-4d9196d0e902")
+	)
+	(text_box "micro servomotor\nsupply : 5V\nconsumption @no load: 300mA\nconsumption @stalled: 500mA"
+		(exclude_from_sim no)
+		(at 97.79 173.99 0)
+		(size 36.83 10.16)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "2657d940-36da-439f-8237-e2983bf3dd08")
+	)
+	(text_box "right motor\nI stalled: 600mA\nI max : 400mA"
+		(exclude_from_sim no)
+		(at 116.84 151.13 0)
+		(size 19.05 7.62)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "381bb583-a736-40ec-926a-bef9f5c6c7df")
+	)
+	(text_box "BATTERY : \n1x LiFePO4 18650 1200mAh min\nVrange : [2.9V; 3.45V]"
+		(exclude_from_sim no)
+		(at 15.24 119.38 0)
+		(size 25.4 31.75)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "45a2ed26-50a4-412b-8e9f-79a9d7091515")
+	)
+	(text_box "encoders\nconsumption : 2*9mA"
+		(exclude_from_sim no)
+		(at 142.24 121.92 0)
+		(size 27.94 5.08)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "4d47703c-5840-4005-a3f7-4ea6944a5d5b")
+	)
+	(text_box "BOOST Right Motor\nVin: [2.8V; 3.3V]\nVout:  5V \nIout max : 0.6A\nIout nom : 0.4A\nefficiency: [85%; 90%]"
+		(exclude_from_sim no)
+		(at 60.96 151.13 0)
+		(size 25.4 16.51)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "59edfd95-2ccf-4fcb-b469-a7e15fdd9ae3")
+	)
+	(text_box "FAN transistor"
+		(exclude_from_sim no)
+		(at 96.52 140.97 0)
+		(size 16.51 6.35)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "5db51b99-f262-4081-84e6-a67e39ab87d5")
+	)
+	(text_box "left motor\nI stalled: 600mA\nI max : 400mA"
+		(exclude_from_sim no)
+		(at 116.84 130.81 0)
+		(size 19.05 7.62)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "60855a83-8392-4bab-9fad-b2378c05a6aa")
+	)
+	(text_box "ESP32\nconsumption max: 360mA"
+		(exclude_from_sim no)
+		(at 142.24 109.22 0)
+		(size 27.94 5.08)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "61d114bc-f052-4eae-a658-15bab663b458")
+	)
+	(text_box "H bridge \nright motor"
+		(exclude_from_sim no)
+		(at 96.52 151.13 0)
+		(size 16.51 6.35)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "71a50010-b042-4f20-bd5d-b5e027ace954")
+	)
+	(text_box "Others\nconsumption : 50 mA"
+		(exclude_from_sim no)
+		(at 142.24 134.62 0)
+		(size 27.94 5.08)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "773c256c-379f-49df-b948-ad7f983c2f1a")
+	)
+	(text_box "micro servomotor\nsupply : 5V\nconsumption @no load: 300mA\nconsumption @stalled: 500mA"
+		(exclude_from_sim no)
+		(at 97.79 161.29 0)
+		(size 36.83 10.16)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "77dfd64c-1ced-43d3-994e-e1593c00e248")
+	)
+	(text_box "BOOST Left Motor\nVin: [2.8V; 3.3V]\nVout:  5V \nIout max : 1A\nIout nom : 0.6A\nefficiency: [85%; 90%]"
+		(exclude_from_sim no)
+		(at 60.96 130.81 0)
+		(size 25.4 16.51)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "85a96600-dd19-4f9f-8acc-51081112b625")
+	)
+	(text_box "BOOST Logic supply\nVin: [2.7V; 3.3V]\nVout:  4V \nIout max : 730mA\nIout nom : 450mA\nefficiency: [85%; 90%]"
+		(exclude_from_sim no)
+		(at 60.96 109.22 0)
+		(size 25.4 16.51)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "890c4307-0f6f-42bf-85bb-e4f4e37e14a8")
+	)
+	(text_box "PCA9685\nconsumption : 10mA"
+		(exclude_from_sim no)
+		(at 142.24 128.27 0)
+		(size 27.94 5.08)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "89a39c8f-091c-4b89-854e-e09adef3ef61")
+	)
+	(text_box "SW8:\n - POS A : robot power is OFF\n - POS A : robot power is ON"
+		(exclude_from_sim no)
+		(at 82.55 71.12 0)
+		(size 33.02 7.62)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(italic yes)
+				(color 255 255 255 1)
+			)
+			(justify left top)
+		)
+		(uuid "91c65f76-9acb-4e42-b0cb-aea96e65597d")
+	)
+	(text_box "micro servomotor\nsupply : 5V\nconsumption @no load: 300mA\nconsumption @stalled: 500mA"
+		(exclude_from_sim no)
+		(at 97.79 186.69 0)
+		(size 36.83 10.16)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "a5f5550f-48c9-4f82-aa41-7ed3ac32a041")
+	)
+	(text_box "test point added to allow use of custom charger : \n- 2*TP on battery supply (GND, BATT after fuse)\n- 1*TP to force the power off state of the robot (connected to enable_pw_conv_3v7)\n- 1*TP to verify that the robot is connected to the charger (connectd to GND)\n- 1*TP to battery NTC (other one uses the logical connection to GND)"
+		(exclude_from_sim no)
+		(at 13.97 86.36 0)
+		(size 88.9 11.43)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(italic yes)
+				(color 255 255 255 1)
+			)
+			(justify left top)
+		)
+		(uuid "a69212b2-e785-4c00-a590-47a1f46b4f63")
+	)
+	(text_box "margin : 30%"
+		(exclude_from_sim no)
+		(at 123.19 114.3 0)
+		(size 10.16 5.08)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "a69d06c2-650f-4cda-adfb-d039bf706a15")
+	)
+	(text_box "BOOST Analog servos\nVin: [2.8V; 3.3V]\nVout:  5V \nIout max : 1.1A\nIout nom : 0.9A\nefficiency: [85%; 90%]"
+		(exclude_from_sim no)
+		(at 60.96 171.45 0)
+		(size 25.4 16.51)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 255 0 0.48)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "adbb98c2-6268-4f2f-a47d-220749f55a12")
+	)
+	(text_box "LDO : LDL1117S33R\nIout : 730mA\nVout : 3V3\nThot = Tamb + 60°C"
+		(exclude_from_sim no)
+		(at 90.17 111.76 0)
+		(size 22.86 10.16)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "b086b95d-c9a5-43b8-affe-1623b60037b8")
+	)
+	(text_box "sensors, line folower\nconsumption : 8*15mA"
+		(exclude_from_sim no)
+		(at 142.24 115.57 0)
+		(size 27.94 5.08)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left top)
+		)
+		(uuid "c7c8325b-b7bc-4ac2-8d3f-2272f9078f84")
+	)
+	(text "ajouter CTN NRNE104H3435B2H pour BQ25308. plus 5 pastilles pour pogo pin >3.5A\nref 0908-0-15-20-75-14-11-0:\nvbatt"
+		(exclude_from_sim no)
+		(at 97.536 20.32 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "1135f949-4551-4874-af29-0798a43f89f0")
+	)
+	(text "0.3A"
+		(exclude_from_sim no)
+		(at 92.71 179.07 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1e77c6bf-5025-40e3-92b5-7edfa90510f9")
+	)
+	(text "1.3A"
+		(exclude_from_sim no)
+		(at 52.07 116.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1eec665b-5d85-4e77-a2ae-79eafcbe2b39")
+	)
+	(text "ajout lm74720"
+		(exclude_from_sim no)
+		(at 13.97 209.55 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "22ccb00c-9f0d-44b6-bef4-7d6b9c7e0708")
+	)
+	(text "POWER TREE"
+		(exclude_from_sim no)
+		(at 15.24 107.95 0)
+		(effects
+			(font
+				(size 2.54 2.54)
+				(thickness 0.508)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "3544ae54-7649-49ac-af14-88e68ffc19f0")
+	)
+	(text "passer en 18650, 1800mAh\nhttps://fr.aliexpress.com/item/1005005364329204.html?spm=a2g0o.productlist.main.1.79e32430zv9uBR&algo_pvid=b51d1612-023c-4deb-90a4-82b642b6877c&algo_exp_id=b51d1612-023c-4deb-90a4-82b642b6877c-0&pdp_npi=4%40dis%21EUR%2132.58%2120.2%21%21%2135.26%21%21%40211b813c17039785284962835e8012%2112000032749290547%21sea%21FR%210%21AB&curPageLogUid=3OSaMYC8x88B"
+		(exclude_from_sim no)
+		(at 13.97 204.47 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "4da2fde9-7162-4903-9d78-f8104075fd5d")
+	)
+	(text "0.4A"
+		(exclude_from_sim no)
+		(at 91.44 143.51 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5efd8b8b-72d6-4e4b-aec2-5887830d84c6")
+	)
+	(text "2.1A"
+		(exclude_from_sim no)
+		(at 52.07 138.43 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "67e99511-cfa1-4ec4-918f-f9d2f1eac49b")
+	)
+	(text "tlv61070a\n"
+		(exclude_from_sim no)
+		(at 73.66 195.58 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7db8b757-b3ec-4d19-bdf4-eb056e3ed4aa")
+	)
+	(text "utiliser bq25173"
+		(exclude_from_sim no)
+		(at 13.97 207.01 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "8f92f7f4-9ac9-41d9-bd69-904a37633888")
+	)
+	(text "0.6A"
+		(exclude_from_sim no)
+		(at 91.44 133.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "981eb305-80cf-4c74-b308-b3cfc9a07f88")
+	)
+	(text "2.3A"
+		(exclude_from_sim no)
+		(at 52.07 177.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9bb4df8a-5514-483f-979a-9b62ef542162")
+	)
+	(text "boost : TLV61070A "
+		(exclude_from_sim no)
+		(at 64.77 193.04 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "b5b8c7b1-eb44-42f7-90ce-9ec19225b66f")
+	)
+	(text "SPARE FUSES"
+		(exclude_from_sim no)
+		(at 16.51 17.78 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "c1fc9fbb-6f18-4e51-952a-868fb11a53bd")
+	)
+	(text "7.0A"
+		(exclude_from_sim no)
+		(at 41.91 127 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c47de46c-da96-44cc-9fed-e557c0749843")
+	)
+	(text "0.5A"
+		(exclude_from_sim no)
+		(at 92.71 166.37 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c83eceda-9da1-4857-adc6-ea6ffe173d4f")
+	)
+	(text "1.3A"
+		(exclude_from_sim no)
+		(at 52.07 160.02 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d4a8af19-3430-494c-acfc-2141654ab461")
+	)
+	(text "730mA"
+		(exclude_from_sim no)
+		(at 114.3 116.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f0b02299-fa14-4fbc-94e1-2e2b61bb52f4")
+	)
+	(text "0.3A"
+		(exclude_from_sim no)
+		(at 92.71 191.77 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ff90e72a-1538-49fb-aa5d-4c194d505b08")
 	)
 	(label "enable_pw_conv_3v7"
 		(at 193.04 73.66 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9595,6 +9472,7 @@
 	)
 	(label "P3V9"
 		(at 213.36 30.48 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9605,6 +9483,7 @@
 	)
 	(label "enable_pw_conv_3v7"
 		(at 138.43 38.1 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9615,6 +9494,7 @@
 	)
 	(label "enable_pw_conv_3v7"
 		(at 193.04 113.03 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9625,6 +9505,7 @@
 	)
 	(label "enable_pw_conv_3v7"
 		(at 193.04 152.4 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9635,6 +9516,7 @@
 	)
 	(label "enable_pw_conv_3v7"
 		(at 83.82 57.15 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9645,6 +9527,7 @@
 	)
 	(label "+batt_unprotected"
 		(at 40.64 53.34 90)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9655,6 +9538,7 @@
 	)
 	(label "+batt_fuse"
 		(at 49.53 46.99 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9666,6 +9550,7 @@
 	(hierarchical_label "vbatt_mon_3.45V"
 		(shape output)
 		(at 102.87 43.18 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9677,6 +9562,7 @@
 	(hierarchical_label "Vmot_left_5V"
 		(shape output)
 		(at 262.89 105.41 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9688,6 +9574,7 @@
 	(hierarchical_label "enable_pw_conv_3v7"
 		(shape output)
 		(at 109.22 57.15 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9699,6 +9586,7 @@
 	(hierarchical_label "Vmot_right_5V"
 		(shape output)
 		(at 262.89 144.78 0)
+		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
