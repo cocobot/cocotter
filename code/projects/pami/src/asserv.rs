@@ -3,7 +3,7 @@ use std::{sync::{Arc, Mutex}, time::{Duration, Instant}};
 use board_pami_2023::{encoder::Encoder, EmergencyStop, MotorPwmType};
 use cocotter::{pid::{PIDConfiguration, PID}, position::{Position, PositionMutex}};
 
-use crate::{config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, GAME_TIME_SECONDS, POSITION_CONFIG}, events::{Event, EventSystem}};
+use crate::{config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, GAME_TIME_SECONDS, PAMI_START_TIME_SECONDS, POSITION_CONFIG}, events::{Event, EventSystem}};
 
 pub type AsservMutexProtected = Arc<Mutex<Asserv>>;
 
@@ -23,6 +23,7 @@ pub struct PIDSetpointOverride {
 pub struct Asserv {
     emergency_stop: EmergencyStop,
     start_time: Option<Instant>,
+    test_mode: bool,
 
     left_wheel_counter: Encoder<'static>,
     right_wheel_counter: Encoder<'static>,
@@ -62,6 +63,7 @@ impl Asserv {
             last_encoders_read: [0, 0],
             encoders: [0, 0],
             start_time: None,
+            test_mode: false,
 
             position: Arc::new(Mutex::new(Position::new(
                 POSITION_CONFIG, 
@@ -93,9 +95,10 @@ impl Asserv {
         let cloned_instance = instance.clone();
         event.register_receiver_callback(Some(Asserv::event_filter), move |event| {
             match event {
-                Event::GameStarted { timestamp } => {
+                Event::GameStarted { timestamp , test_mode  } => {
                     let mut asserv = cloned_instance.lock().unwrap();
                     asserv.start_time = Some(*timestamp);
+                    asserv.test_mode = *test_mode;
                 }
                 _ => {}
             }
@@ -195,7 +198,12 @@ impl Asserv {
             let mut right_pwm_filtered = right_pwm;
 
             if let Some(start_time) = instance.start_time {
-                if start_time.elapsed().as_secs() > GAME_TIME_SECONDS {
+                let game_time = if instance.test_mode {
+                    GAME_TIME_SECONDS - PAMI_START_TIME_SECONDS
+                } else {
+                    GAME_TIME_SECONDS
+                };
+                if start_time.elapsed().as_secs() > game_time {
                     // After the game time, we stop the motors
                     left_pwm_filtered = 0;
                     right_pwm_filtered = 0;

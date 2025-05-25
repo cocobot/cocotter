@@ -11,7 +11,7 @@ pub type EventCallback = Box<dyn FnMut(&Event) -> () + Send + 'static>;
 #[derive(Debug, Clone)]
 pub enum Event {
     //game events
-    GameStarted { timestamp: Instant},
+    GameStarted { timestamp: Instant, test_mode: bool },
     GameInfo { message: String },
 
     //analog inputs

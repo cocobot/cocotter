@@ -2,10 +2,13 @@ use std::time::{Duration, Instant};
 
 use board_pami_2023::Starter;
 use cocotter::trajectory::{order::{Order, OrderState}, OrderConfig, TrajectorError, Trajectory, TrajectoryEvent, TrajectoryOrderList};
-use crate::{asserv::AsservMutexProtected, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
+use crate::{asserv::AsservMutexProtected, config::PAMI_START_TIME_SECONDS, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
 
 pub struct GameConfiguration {
     pub starter: Starter,
+
+    pub test_mode: bool,
+    pub x_negative_color: bool,
 }
 
 pub struct Game {
@@ -65,6 +68,17 @@ impl Game {
             self.trajectory.purge();
         }
 
+        //set the bottom led to the color of the team
+        let team_color = if self.config.x_negative_color {
+            [1.0, 1.0, 0.0] // yellow
+        } else {
+            [0.0, 0.0, 1.0] // blue
+        };
+        self.event.send_event(Event::OverridePwm {
+            pwm_event: PWMEvent::LedBottom(team_color),
+            override_state: OverrideState::Override,
+        });
+
         //wait a little bit to avoid bouncing
         std::thread::sleep(Duration::from_millis(500));
 
@@ -74,26 +88,64 @@ impl Game {
                 break;
             }
             else {
-                std::thread::sleep(Duration::from_millis(50));
+                if self.config.test_mode {
+                    // In test mode, we need to inform user with blinking led
+                    self.event.send_event(Event::OverridePwm {
+                        pwm_event: PWMEvent::LedBottom([1.0, 0.0, 0.0]),
+                        override_state: OverrideState::Override,
+                    });
+                    std::thread::sleep(Duration::from_millis(100));
+                    self.event.send_event(Event::OverridePwm {
+                        pwm_event: PWMEvent::LedBottom(team_color),
+                        override_state: OverrideState::Override,
+                    });
+                    std::thread::sleep(Duration::from_millis(100));
+                }
+                else {
+                    std::thread::sleep(Duration::from_millis(50));
+                }
             }
 
             self.trajectory.purge();
         }
 
-        let now = Instant::now();
-        self.start_time = Some(now);
-        self.event.send_event(Event::GameStarted { timestamp: now });
-        log::info!("Game started");
+        let start_time = Instant::now();
+        self.start_time = Some(start_time);
+        self.event.send_event(Event::GameStarted { timestamp: start_time, test_mode: self.config.test_mode });
+        log::info!("Game started (test: {})", self.config.test_mode);
+
+        //set the bottom led to white while waiting for the first order
+        self.event.send_event(Event::OverridePwm {
+            pwm_event: PWMEvent::LedBottom([1.0, 1.0, 1.0]),
+            override_state: OverrideState::Override,
+        });
+
+        //wait for our time to shine
+        if !self.config.test_mode {
+            loop {
+                if start_time.elapsed().as_secs() >= PAMI_START_TIME_SECONDS {
+                    break;
+                }
+                else {
+                    std::thread::sleep(Duration::from_millis(100));
+                }
+
+                self.trajectory.purge();
+            }
+        }
+
+        //set the bottom led to green
+        log::info!("Go go go!");
+        self.event.send_event(Event::OverridePwm {
+            pwm_event: PWMEvent::LedBottom([0.0, 1.0, 0.0]),
+            override_state: OverrideState::Override,
+        });
+
     }
 
     fn strat_superstar(&mut self) {
 
         self.wait_for_start();
-
-        self.event.send_event(Event::OverridePwm {
-            pwm_event: PWMEvent::LedBottom([0.0, 0.0, 1.0]),
-            override_state: OverrideState::Override,
-        });
          
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)

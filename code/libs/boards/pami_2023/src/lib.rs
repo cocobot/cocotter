@@ -7,7 +7,7 @@ use std::sync::Mutex;
 use adc::PamiAdc;
 use embedded_hal_bus::i2c::MutexDevice;
 use encoder::Encoder;
-use esp_idf_svc::hal::gpio::{Output, PinDriver};
+use esp_idf_svc::hal::gpio::{Output, Pin, PinDriver};
 use esp_idf_svc::hal::ledc::config::TimerConfig;
 use esp_idf_svc::hal::ledc::{LedcDriver, LedcTimerDriver};
 use esp_idf_svc::hal::prelude::*;
@@ -53,6 +53,7 @@ pub struct Pami2023 {
     pub tof: Option<VlxType>,
     pub line_sensor: Option<TCA6408AType>,
     pub buttons: Option<TCA6408AType>,
+    pub conf_3_button: Option<PinDriver<'static, gpio::Gpio7, gpio::Input>>,
 }
 
 impl Pami2023{
@@ -100,6 +101,7 @@ impl Pami2023{
         let emergency_stop = PinDriver::input(peripherals.pins.gpio15).unwrap();
 
         let starter = PinDriver::input(peripherals.pins.gpio2).unwrap();
+        let conf_3_button = PinDriver::input(peripherals.pins.gpio7).unwrap();
 
         // Initialize the I2C bus
         let config = I2cConfig::new().baudrate(400.kHz().into());
@@ -123,7 +125,7 @@ impl Pami2023{
         );
         let buttons = Tca6408a::new(
             i2c_bus_buttons,
-            tca6408a::Address::from_pin_state(false),
+            tca6408a::Address::from_pin_state(true),
         );
         line_sensor.configure_output(0b00000000).ok();
 
@@ -159,6 +161,7 @@ impl Pami2023{
             tof: Some(tof),
             line_sensor: Some(line_sensor),
             buttons: Some(buttons),
+            conf_3_button: Some(conf_3_button),
         }
     }
 }

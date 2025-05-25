@@ -4,6 +4,7 @@ use phf::phf_map;
 
 pub const ASSERV_PERIOD_MS : u64 = 10;
 pub const GAME_TIME_SECONDS : u64 = 100;
+pub const PAMI_START_TIME_SECONDS : u64 = 85;
 
 pub const POSITION_CONFIG : PositionConfiguration = PositionConfiguration {
     tick_to_mm: 2.67666666666667,

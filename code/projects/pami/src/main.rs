@@ -73,14 +73,23 @@ fn main() {
     let mut adc = board.adc.take().unwrap(); 
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
 
+
+    let mut selector = board.buttons.take().unwrap();
+    let conf_3_button = board.conf_3_button.take().unwrap();
+    let selector_value = selector.get_input().unwrap();
+
     let config = GameConfiguration {
         starter: board.starter.take().unwrap(),
+
+        x_negative_color: (selector_value & 0b1000_0000) != 0,
+        test_mode: conf_3_button.is_high(),
     };
     Game::new(config, asserv, &event);
 
     loop {
         led_heartbeat.toggle().ok();
         analog_reading(&mut adc, &event);
+        log::info!("Selector value: {:X}", selector.get_input().unwrap());
 
         //log::info!("VL53L5CX: {:?}", vlx.get_distance());
 
