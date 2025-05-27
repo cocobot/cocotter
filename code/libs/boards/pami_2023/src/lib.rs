@@ -121,7 +121,7 @@ impl Pami2023{
             i2c_bus_buttons,
             tca6408a::Address::from_pin_state(false),
         );
-        line_sensor.configure_output(0b00000000).ok();
+        //line_sensor.configure_output(0b00000000).ok();
 
         // Initialize the Vl53l5cx
         let mut enable_front_tof = PinDriver::output(peripherals.pins.gpio3).unwrap();
@@ -132,6 +132,13 @@ impl Pami2023{
         tof.init().unwrap();
         Box::leak(Box::new(enable_back_tof));
         Box::leak(Box::new(enable_front_tof));
+
+        loop {
+            if let Ok(distance) = tof.get_distance() {
+                  println!("VL53L5CX: {} mm", distance);
+            }
+            std::thread::sleep(std::time::Duration::from_millis(1000));
+        }
 
         // Initialize the GPIO for the heartbeat LED
         let led_heartbeat = PinDriver::output(peripherals.pins.gpio4).unwrap();
