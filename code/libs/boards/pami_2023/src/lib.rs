@@ -38,7 +38,7 @@ pub const PWM_EXTENDED_LINE_LED: Channel = Channel::C11;
 pub const PWM_EXTENDED_LED_RGB: [Channel; 3] = [Channel::C12, Channel::C13, Channel::C14];
 
 
-pub struct Pami2023 {
+pub struct  Pami2023 {
     pub led_heartbeat: Option<PinDriver<'static, gpio::Gpio4, Output>>,
     pub pwm_extended: Option<Pca9685<I2CType>>,
     pub adc: Option<PamiAdc>,
@@ -128,7 +128,8 @@ impl Pami2023{
         let mut enable_back_tof = PinDriver::output(peripherals.pins.gpio16).unwrap();
         enable_front_tof.set_high().ok();
         enable_back_tof.set_low().ok();
-        let tof = Vl53l5cx::new(i2c_bus_vlx, None);
+        let mut tof = Vl53l5cx::new(i2c_bus_vlx, None);
+        tof.init().unwrap();
         Box::leak(Box::new(enable_back_tof));
         Box::leak(Box::new(enable_front_tof));
 
