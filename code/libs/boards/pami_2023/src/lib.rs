@@ -135,7 +135,7 @@ impl Pami2023{
 
         loop {
             if let Ok(distance) = tof.get_distance() {
-                  println!("VL53L5CX: {} mm", distance);
+                  println!("VL53L5CX: {:?} mm", distance);
             }
             std::thread::sleep(std::time::Duration::from_millis(1000));
         }
