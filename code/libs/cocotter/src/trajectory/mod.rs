@@ -172,32 +172,20 @@ impl<const N: usize, Event>  TrajectoryOrderList<N, Event> {
     }
 
     pub fn set_backwards(mut self, backwards: bool) -> Self {
-        if self.orders.is_empty() {
-            self.default_config.backwards = Some(backwards);
-        }
-        else {
-            self.orders.last_mut().unwrap().1.backwards = Some(backwards);
-        }
+        self.default_config.backwards = Some(backwards);
         
         self
     }
 
     pub fn set_max_speed(mut self, ramp: RampCfg, max_speed: f32) -> Self {
-        let order_config = if self.orders.is_empty() {
-            &mut self.default_config
-        }
-        else {
-            &mut self.orders.last_mut().unwrap().1
-        };
-
         match ramp {
             RampCfg::Linear => {
                 for i in 1..N {
-                    order_config.max_speed[i] = Some(max_speed);
+                    self.default_config.max_speed[i] = Some(max_speed);
                 }
             }
             RampCfg::Angular => {
-                order_config.max_speed[0] = Some(max_speed);
+                self.default_config.max_speed[0] = Some(max_speed);
             }
         }
 
@@ -205,21 +193,14 @@ impl<const N: usize, Event>  TrajectoryOrderList<N, Event> {
     }
 
     pub fn set_acceleration(mut self, ramp: RampCfg, acceleration: f32) -> Self {
-        let order_config = if self.orders.is_empty() {
-            &mut self.default_config
-        }
-        else {
-            &mut self.orders.last_mut().unwrap().1
-        };
-
         match ramp {
             RampCfg::Linear => {
                 for i in 1..N {
-                    order_config.acceleration[i] = Some(acceleration);
+                    self.default_config.acceleration[i] = Some(acceleration);
                 }
             }
             RampCfg::Angular => {
-                order_config.acceleration[0] = Some(acceleration);
+                self.default_config.acceleration[0] = Some(acceleration);
             }
         }
 
