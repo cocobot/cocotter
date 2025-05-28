@@ -91,7 +91,7 @@ impl UI {
             self.event.send_event(Event::Pwm { pwm_event: PWMEvent::LedVbatt([0.0, 1.0, 0.0]) } ); // ok battery
         }
 
-        self.event.send_event(Event::VbattPercent { percent: percentage.clamp(0.0, 100.0) as u8 });
+        self.event.send_event(Event::VbattPercent { _percent: percentage.clamp(0.0, 100.0) as u8 });
 
         self.top.set_battery(voltage_mv, percentage);
     }

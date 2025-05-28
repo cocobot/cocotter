@@ -7,7 +7,7 @@ use std::sync::Mutex;
 use adc::PamiAdc;
 use embedded_hal_bus::i2c::MutexDevice;
 use encoder::Encoder;
-use esp_idf_svc::hal::gpio::{Output, Pin, PinDriver};
+use esp_idf_svc::hal::gpio::{Output, PinDriver};
 use esp_idf_svc::hal::ledc::config::TimerConfig;
 use esp_idf_svc::hal::ledc::{LedcDriver, LedcTimerDriver};
 use esp_idf_svc::hal::prelude::*;

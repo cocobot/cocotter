@@ -225,16 +225,16 @@ impl Asserv {
             if (now - last_event_sent).as_millis() > 100 {
                 last_event_sent = now;
                
-                event.send_event(Event::MotorDebug { timestamp: (now.elapsed().as_millis() & 0xFFFF) as u16, left_tick: instance.encoders[0], right_tick: instance.encoders[1], left_pwm: left_pwm_filtered, right_pwm: right_pwm_filtered });
-                event.send_event(Event::PIDDebug { 
-                    timestamp: (now.elapsed().as_millis() & 0xFFFF) as u16,
-                    target_d: distance_target,
-                    current_d: robot_distance,
-                    output_d: distance_sp,
-                    target_a: angle_target,
-                    current_a: robot_angle,
-                    output_a: angle_sp,
-                });
+                //event.send_event(Event::MotorDebug { timestamp: (now.elapsed().as_millis() & 0xFFFF) as u16, left_tick: instance.encoders[0], right_tick: instance.encoders[1], left_pwm: left_pwm_filtered, right_pwm: right_pwm_filtered });
+                //event.send_event(Event::PIDDebug { 
+                //    timestamp: (now.elapsed().as_millis() & 0xFFFF) as u16,
+                //    target_d: distance_target,
+                //    current_d: robot_distance,
+                //    output_d: distance_sp,
+                //    target_a: angle_target,
+                //    current_a: robot_angle,
+                //    output_a: angle_sp,
+                //});
             }
             
             let pwm_max: u32 = 1023;

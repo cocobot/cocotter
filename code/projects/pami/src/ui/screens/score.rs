@@ -2,7 +2,7 @@ use board_pami_2023::DisplayType;
 use embedded_graphics::{mono_font::MonoTextStyleBuilder, pixelcolor::BinaryColor, prelude::{Drawable, Point, Primitive, Size}, primitives::{PrimitiveStyle, Rectangle}, text::{Alignment, Baseline, Text, TextStyleBuilder}};
 use embedded_vintage_fonts::FONT_24X32;
 
-use crate::{events::Event, ui::UIScreen};
+use crate::ui::UIScreen;
 
 pub struct Score {
     current_score: usize,

@@ -147,79 +147,73 @@ impl<const N: usize, Event> Order<N, Event> {
                 if N != 2 {
                     return Err(TrajectorError::InvalidOrder);
                 }
-/*
+
                 let mut locked_position = position.lock().unwrap();
                 let initial_position = locked_position.get_coordinates();
-
                 let delta_x = x_mm - initial_position.get_x_mm();
                 let delta_y = y_mm - initial_position.get_y_mm();
-
-                //check if angle is close enough
-                let target_a = atan2f(delta_y, delta_x);
-                let initial_d = initial_position.get_raw_linear_coordonate()[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
-                let target_a = match config.is_backwards() {
-                    false => Order::find_closest_angle(initial_position.get_a_rad(), target_a),
-                    true => Order::find_closest_angle(initial_position.get_a_rad(), target_a + PI),
-                };
-
-                let angle_diff = (target_a - initial_position.get_a_rad()).abs();
-                if angle_diff >= config.max_angle_diff_in_xy {
-                    let ramps =  locked_position.get_ramps_as_mut();
-                    ramps[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d);
-                    ramps[Order::A_INDEX].set_target(target_a);
-                    drop(locked_position);
-
-                    loop {
-                        let locked_position = position.lock().unwrap();
-                        let a_ramp =  &locked_position.get_ramps()[Order::A_INDEX];
-                        if a_ramp.is_done() {
-                            break;
-                        }
-                        drop(locked_position);
-                        
-                        std::thread::sleep(Duration::from_millis(75));
-                    }
-                }
-                else {
-                    drop(locked_position);
-                }
-
-                //run to target
-                let mut locked_position =   position.lock().unwrap();
-                let initial_position = locked_position.get_coordinates();
-                let delta_x = x_mm - initial_position.get_x_mm();
-                let delta_y = y_mm - initial_position.get_y_mm();
-                let target_d = sqrtf(delta_x * delta_x + delta_y * delta_y);
-                let target_d = match config.is_backwards() {
-                    false => target_d,
-                    true => -target_d,
-                };
-
+                let current_a = initial_position.get_a_rad();
+                let current_d = initial_position.get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
                 let ramps =  locked_position.get_ramps_as_mut();
-                ramps[Order::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(initial_d + target_d);
-                ramps[Order::A_INDEX].set_target(target_a);
-                drop(locked_position);
+                match state.state_index {
+                    0 => {
+                        //orient to target without moving
+                        
+                        
+                        let target_a = atan2f(delta_y, delta_x);
+                        let target_a = match config.is_backwards() {
+                            false => Order::<N, Event>::find_closest_angle(current_a, target_a),
+                            true => Order::<N, Event>::find_closest_angle(current_a, target_a + PI),
+                        };
+                        ramps[Order::<N, Event>::A_INDEX].set_target(target_a, false);
+                        state.state_index = 1;
+                        Ok(order_index)
+                    }
 
-                loop {
-                    let mut locked_position =   position.lock().unwrap();
-                    let ramps =  locked_position.get_ramps_as_mut();
-
-                    let mut done = true;
-                    for ramp in ramps.iter() {
-                        if !ramp.is_done() {
-                            done = false;
-                            break;
+                    1 => {
+                        if ramps[Order::<N, Event>::A_INDEX].is_done() {
+                            state.state_index = 2;
                         }
+                        Ok(order_index)
                     }
-                    if done {
-                        break;
+
+                    2 | 3 => {
+                        //move to target
+                        let target_d = sqrtf(delta_x * delta_x + delta_y * delta_y);
+
+                        if (target_d < 50.0) && (state.state_index == 3) {
+                            //if less than 50mm, just let the ramp finish
+                            if ramps[Order::<N, Event>::A_INDEX].is_done() && ramps [Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].is_done() {
+                                return Ok(order_index + 1);
+                            }
+                            else {
+                                return Ok(order_index);
+                            }
+                        }
+                        else {
+                            let target_d = match config.is_backwards() {
+                                false => current_d + target_d,
+                                true => current_d - target_d,
+                            };
+                            let target_a = atan2f(delta_y, delta_x);
+                            let target_a = match config.is_backwards() {
+                                false => Order::<N, Event>::find_closest_angle(current_a, target_a),
+                                true => Order::<N, Event>::find_closest_angle(current_a, target_a + PI),
+                            };
+
+                            ramps[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(target_d, false);
+                            ramps[Order::<N, Event>::A_INDEX].set_target(target_a, false);
+                        }
+
+                        state.state_index = 3;
+                        Ok(order_index)
                     }
-                    drop(locked_position);
-                    
-                    std::thread::sleep(Duration::from_millis(75));
+
+                    _ => {
+                        log::error!("Should never happen");
+                        Err(TrajectorError::InvalidOrder)
+                    }
                 }
-                */
-                Ok(order_index + 1)
             }
 
             Order::CustomOrder { callback } => {

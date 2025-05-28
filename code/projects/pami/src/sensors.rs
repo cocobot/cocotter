@@ -43,7 +43,7 @@ impl Sensors {
                     }
                     self.event.send_event(Event::BackDistance { distance: min_distance });
                 }
-                Err(e) => {
+                Err(_e) => {
                     //log::error!("Error reading sensor data: {:?}", e);
                 }
             }
@@ -58,7 +58,6 @@ impl Sensors {
                 line_sensor & 0b010_00000 != 0,
                 line_sensor & 0b100_00000 != 0,
             ];
-            log::info!("Line sensor activated: {:?}", activated);
             self.event.send_event(Event::Line { activated });
 
             std::thread::sleep(std::time::Duration::from_millis(50));

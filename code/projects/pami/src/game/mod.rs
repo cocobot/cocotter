@@ -4,6 +4,7 @@ use board_pami_2023::Starter;
 use cocotter::trajectory::{order::{Order, OrderState}, OrderConfig, TrajectorError, Trajectory, TrajectoryEvent, TrajectoryOrderList};
 use crate::{asserv::AsservMutexProtected, config::PAMI_START_TIME_SECONDS, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
 
+#[derive(Debug, Clone, Copy)]
 pub enum GameStrategy {
     Superstar,
     //NearPit,
@@ -286,7 +287,7 @@ fn move_until_void<const N: usize>(order_index: usize, config: &OrderConfig<N>, 
     Ok(order_index)
 }
 
-fn align_with_wall<const N: usize>(order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, trajectory: &Trajectory<N, Event>) -> Result<usize, TrajectorError> {
+fn _align_with_wall<const N: usize>(order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, _trajectory: &Trajectory<N, Event>) -> Result<usize, TrajectorError> {
     if !config.is_backwards() {
         //not supported as front opponent is not detected yet
         return Err(TrajectorError::InvalidOrder);

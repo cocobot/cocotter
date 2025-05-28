@@ -84,7 +84,7 @@ fn main() {
         x_negative_color: (selector_value & 0b1000_0000) != 0,
         test_mode: conf_3_button.is_high(),
 
-        strategy: game::GameStrategy::Superstar,
+        strategy: config.strategy,
     };
     Game::new(config, asserv, &event);
 

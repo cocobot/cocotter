@@ -12,11 +12,10 @@ pub type EventCallback = Box<dyn FnMut(&Event) -> () + Send + 'static>;
 pub enum Event {
     //game events
     GameStarted { timestamp: Instant, test_mode: bool },
-    GameInfo { message: String },
 
     //analog inputs
     Vbatt {voltage_mv: f32},
-    VbattPercent {percent: u8},
+    VbattPercent {_percent: u8},
 
     //sensors
     BackDistance { distance: [i16; 8] },
@@ -28,8 +27,8 @@ pub enum Event {
 
     ////asserv
     Position { coords: RobotCoordinate::<2> },
-    MotorDebug {timestamp: u16, left_tick: i32, right_tick: i32, left_pwm: i16, right_pwm: i16}, 
-    PIDDebug {timestamp: u16, target_d: f32, current_d: f32, output_d: f32, target_a: f32, current_a: f32, output_a: f32},
+    //MotorDebug {timestamp: u16, left_tick: i32, right_tick: i32, left_pwm: i16, right_pwm: i16}, 
+    //PIDDebug {timestamp: u16, target_d: f32, current_d: f32, output_d: f32, target_a: f32, current_a: f32, output_a: f32},
 }
 
 #[derive(Clone)]
@@ -109,8 +108,8 @@ impl EventSystem {
 
     pub fn no_debug_filter(evt: &Event) -> bool {
         match evt {
-            Event::MotorDebug { .. } => false,
-            Event::PIDDebug { .. } => false,
+            //Event::MotorDebug { .. } => false,
+            //Event::PIDDebug { .. } => false,
             _ => true,
         }
     }
