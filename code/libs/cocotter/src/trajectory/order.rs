@@ -52,8 +52,8 @@ impl<const N: usize, Event> Order<N, Event> {
         OrderState::new(locked_position.get_coordinates())
     }
 
-    pub fn execute(&self, order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, trajectory: &Trajectory<N, Event>) -> Result<usize, TrajectorError> {
-        let position = trajectory.get_position();
+    pub fn execute(&self, order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, trajectory: &mut Trajectory<N, Event>) -> Result<usize, TrajectorError> {
+        let position = trajectory.get_position().clone();
 
         let r = match self {
             Order::GotoD { d_mm } => {
@@ -66,9 +66,9 @@ impl<const N: usize, Event> Order<N, Event> {
                                 let mut locked_position = position.lock().unwrap();
                                 let current_d = locked_position.get_coordinates().get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
                                 let target_d = if config.is_backwards() {
-                                    state.initial_coordinate.get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT] - d_mm
+                                    current_d - d_mm
                                 } else {
-                                    state.initial_coordinate.get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT] + d_mm
+                                    current_d + d_mm
                                 };
                                 let can_move = if config.is_backwards() {
                                     opponent_distance_mm > (current_d - target_d + config.opponent_resume_margin_distance_mm).abs()
@@ -79,6 +79,7 @@ impl<const N: usize, Event> Order<N, Event> {
                                 if !can_move {
                                     if state.pause_since.is_none() {                                
                                         state.pause_since = Some(Instant::now()); 
+                                        trajectory.set_opponent_detected(true);
                                         locked_position.get_ramps_as_mut()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(current_d, true);                            
                                     }
                                     return Ok(order_index);
@@ -88,6 +89,7 @@ impl<const N: usize, Event> Order<N, Event> {
 
                         if state.first_run_call || state.pause_since.is_some() {
                             state.pause_since = None;
+                            trajectory.set_opponent_detected(true);
 
                             let initial_d = state.initial_coordinate.get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
 
@@ -180,6 +182,36 @@ impl<const N: usize, Event> Order<N, Event> {
                     2 | 3 => {
                         //move to target
                         let target_d = sqrtf(delta_x * delta_x + delta_y * delta_y);
+
+                        if let Some(stop_distance_mm) = config.opponent_stop_distance_mm {
+                            let opponent_distance_mm = trajectory.get_opponent_distance(!config.is_backwards());
+
+                            if opponent_distance_mm < stop_distance_mm {                             
+                                let target_d = if config.is_backwards() {
+                                    current_d - target_d
+                                } else {
+                                    current_d + target_d
+                                };
+                                let can_move = if config.is_backwards() {
+                                    opponent_distance_mm > (current_d - target_d + config.opponent_resume_margin_distance_mm).abs()
+                                } else {
+                                    opponent_distance_mm > (target_d - config.opponent_resume_margin_distance_mm - current_d).abs()
+                                };
+
+                                if !can_move {
+                                    if state.pause_since.is_none() {                                
+                                        state.pause_since = Some(Instant::now()); 
+                                        trajectory.set_opponent_detected(true);
+                                        ramps[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(current_d, true);
+                                        ramps[Order::<N, Event>::A_INDEX].set_target(current_a, true);
+                                    }
+                                    state.state_index = 2; //stay in state 2 to force ramp to be updated
+                                    return Ok(order_index);
+                                }
+                            }
+                        }
+                        
+                        trajectory.set_opponent_detected(false);
 
                         if (target_d < 50.0) && (state.state_index == 3) {
                             //if less than 50mm, just let the ramp finish

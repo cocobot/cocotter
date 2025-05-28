@@ -117,6 +117,10 @@ impl<const N: usize, Event> Trajectory<N, Event> {
         }
     }
 
+    fn set_opponent_detected(&mut self, status: bool) {
+        //TODO: display info on screen
+    }
+
     fn parse_event(&mut self, wait: Option<Duration>) -> Vec<Event>{
         let mut events = Vec::new(); 
         loop {
@@ -229,6 +233,7 @@ impl<const N: usize, Event>  TrajectoryOrderList<N, Event> {
                     Ok(index) => {
                         if self.current_order_index != index {
                             self.current_order_index = index;
+                            trajectory.set_opponent_detected(false);
                             break;
                         }
                         else {
