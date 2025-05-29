@@ -14,7 +14,7 @@ use asserv::Asserv;
 use board_pami_2023::{adc::{PamiAdc, PamiAdcChannel}, Pami2023};
 use events::{Event, EventSystem};
 use game::{Game, GameConfiguration};
-use pwm::PWM;
+use pwm::{PWMEvent, PWM};
 use sensors::Sensors;
 use ui::UI;
 
@@ -45,8 +45,11 @@ fn main() {
     log::info!("PAMI id={} color={}", config.id, config.color);
 
     match config.color {
-        "Violet" => {
-            event.send_event(Event::Pwm { pwm_event: pwm::PWMEvent::LedBottom([0.5, 0.0, 0.5]) });
+        "Rose" => {
+            event.send_event(Event::Pwm { pwm_event: pwm::PWMEvent::LedBottom([0.75, 0.0, 0.5]) });
+        },
+        "Blue" => {
+            event.send_event(Event::Pwm { pwm_event: pwm::PWMEvent::LedBottom([0.0, 0.0, 1.0]) });
         },
         "Red" => {
             event.send_event(Event::Pwm { pwm_event: pwm::PWMEvent::LedBottom([1.0, 0.0, 0.0]) });
@@ -85,15 +88,23 @@ fn main() {
         test_mode: conf_3_button.is_high(),
 
         strategy: config.strategy,
+        //strategy: game::GameStrategy::MidPit,
     };
     Game::new(config, asserv, &event);
+
+    event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+
 
     loop {
         led_heartbeat.toggle().ok();
         analog_reading(&mut adc, &event);
 
+       thread::sleep(Duration::from_millis(500));
         //log::info!("VL53L5CX: {:?}", vlx.get_distance());
-
-        thread::sleep(Duration::from_millis(500));
+/*
+        event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+        thread::sleep(Duration::from_millis(1000));
+        event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+        */
     }
 }

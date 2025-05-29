@@ -1,14 +1,14 @@
-use std::time::{Duration, Instant};
+use std::{sync::{Arc, Mutex}, thread, time::{Duration, Instant}};
 
 use board_pami_2023::Starter;
 use cocotter::trajectory::{order::{Order, OrderState}, OrderConfig, TrajectorError, Trajectory, TrajectoryEvent, TrajectoryOrderList};
-use crate::{asserv::AsservMutexProtected, config::PAMI_START_TIME_SECONDS, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
+use crate::{asserv::AsservMutexProtected, config::{GAME_TIME_SECONDS, PAMI_START_TIME_SECONDS}, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
 
 #[derive(Debug, Clone, Copy)]
 pub enum GameStrategy {
     Superstar,
-    //NearPit,
-    //MidPit,
+    NearPit,
+    MidPit,
     FarPit,
 }
 
@@ -20,8 +20,85 @@ pub struct GameConfiguration {
     pub strategy: GameStrategy,
 }
 
+pub struct FunnyAction {
+    start_time: Option<Instant>,
+    test_mode : bool,
+    event: EventSystem,
+}
+
+impl FunnyAction {
+    pub fn new(event: &EventSystem) -> Arc<Mutex<Self>> {
+        let instance = Arc::new(Mutex::new(Self {
+            start_time: None,
+            test_mode: false,
+            event: event.clone(),
+        }));
+
+        let cloned_instance = instance.clone();
+        event.register_receiver_callback(Some(FunnyAction::event_filter), move |e| {
+            match e {
+                Event::GameStarted { timestamp, test_mode } => {
+                    let mut instance = cloned_instance.lock().unwrap();
+                    instance.start_time = Some(*timestamp);
+                    instance.test_mode = *test_mode;
+                }
+                _ => {}
+            }
+        });
+        
+        let cloned_instance = instance.clone();
+        std::thread::Builder::new()
+            .stack_size(8192)
+            .name("EndGame".to_string())
+            .spawn(move || {
+                Self::run(cloned_instance);
+            })
+            .unwrap();
+
+        instance
+    }
+
+    fn event_filter(e: &Event) -> bool {
+        match e {
+            Event::GameStarted{ .. } => true,
+            _ => false,
+        }
+    }
+
+    fn run(instance: Arc<Mutex<Self>>) {
+        loop {
+            thread::sleep(Duration::from_millis(250));
+
+            let locked_instance = instance.lock().unwrap();
+            if locked_instance.test_mode {
+                if let Some(start_time) = locked_instance.start_time {
+                    if start_time.elapsed().as_secs() >= GAME_TIME_SECONDS - PAMI_START_TIME_SECONDS {
+                        break;
+                    }
+                }
+            }
+            else {
+                if let Some(start_time) = locked_instance.start_time {
+                    if start_time.elapsed().as_secs() >= GAME_TIME_SECONDS {
+                        break;
+                    }
+                }
+            }
+        }
+
+        loop {
+            instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+            thread::sleep(Duration::from_millis(1000));
+            instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+            thread::sleep(Duration::from_millis(500));
+        }
+    }
+}
+
 pub struct Game {
     config: GameConfiguration,
+
+    funny_action: Arc<Mutex<FunnyAction>>,
 
     start_time: Option<Instant>,
     trajectory: Trajectory<2, Event>,
@@ -30,13 +107,21 @@ pub struct Game {
 
 impl Game {
     pub fn new(config: GameConfiguration, asserv: AsservMutexProtected, event: &EventSystem) {
-        let (trajectory, sender) = Trajectory::new(asserv.lock().unwrap().get_position());
+        let event_clone = event.clone();
+        let (trajectory, sender) = Trajectory::new(
+            
+            asserv.lock().unwrap().get_position(), 
+            Box::new(move |opponent_detected| {
+                event_clone.send_event(Event::TrajectoryStatus { opponent_detected: opponent_detected });
+            })
+        );
 
         let mut instance = Self {
             config,
             trajectory,
             start_time: None,
             event: event.clone(),
+            funny_action: FunnyAction::new(event),
         };
 
         std::thread::Builder::new()
@@ -154,7 +239,7 @@ impl Game {
 
     fn strat_superstar(&mut self) {
 
-        let init_a = self.mirror_angle(180.0_f32.to_radians());
+        let init_a = 180.0_f32.to_radians();
         let mut position = self.trajectory.get_position().lock().unwrap();
         position.set_coordinates(Some(2900.0), Some(1900.0), Some(init_a));
         drop(position);
@@ -184,23 +269,61 @@ impl Game {
             .unwrap();
     }
 
-    fn start_far_pit(&mut self) {
+    fn start_pit(&mut self, game: GameStrategy) {
 
-        let init_a = self.mirror_angle(180.0_f32.to_radians());
+        let init_a = 0.0;
         let mut position = self.trajectory.get_position().lock().unwrap();
         position.set_coordinates(Some(2900.0), Some(1900.0), Some(init_a));
         drop(position);
 
 
+        //
         self.wait_for_start();
 
+        let (spd, d1, d2, d3, d4) = match game {
+            GameStrategy::FarPit => {
+                if self.config.x_negative_color {
+                    (1.2 , 500.0, 300.0, 1000.0, 400.0)
+                } else {
+                    (1.2 , 450.0, 650.0, 800.0, 400.0)
+                }
+            }
+
+            GameStrategy::MidPit => {
+                thread::sleep(Duration::from_millis(1000)); //let a bit for farPit
+                (1.1, 300.0, 500.0, 850.0, 200.0)
+            }
+            
+            GameStrategy::NearPit => {
+                thread::sleep(Duration::from_millis(1750)); //let a bit for farPit
+                (1.0, 150.0, 650.0, 350.0, 200.0)
+            }
+
+            _ => {
+                log::error!("bad strat");
+                (1.0, 0.0, 0.0, 0.0, 0.0)
+            }
+        };
+
+        let (a1, a2, a3) = if self.config.x_negative_color {
+            (135.0_f32, 180.0_f32, -90.0_f32)
+        }
+        else {
+            (-140.0_f32, 180.0_f32, 90.0_f32)
+        };
+
         let orders = TrajectoryOrderList::new()
+            .set_no_detection(true)
             .set_backwards(true)
-            .add_order(Order::GotoD { d_mm: 150.0 })
-            .add_order(Order::GotoA { a_rad: self.mirror_angle(-135.0_f32.to_radians()) })
-            .add_order(Order::GotoD { d_mm: 210.0 })
-            .add_order(Order::GotoA { a_rad: self.mirror_angle(180.0_f32.to_radians()) })
-            .add_order(Order::GotoD { d_mm: 1700.0 })
+            .set_max_speed(cocotter::trajectory::RampCfg::Linear, spd)
+            .add_order(Order::GotoD { d_mm: d1 })
+            .add_order(Order::GotoA { a_rad: a1.to_radians()})
+            .set_no_detection(false)
+            .add_order(Order::GotoD { d_mm: d2 })
+            .add_order(Order::GotoA { a_rad: a2.to_radians() })
+            .add_order(Order::GotoD { d_mm: d3 })
+            .add_order(Order::GotoA { a_rad: a3.to_radians() })
+            .add_order(Order::GotoD { d_mm: d4 })
             ;
 
         self.trajectory
@@ -214,7 +337,7 @@ impl Game {
 
         match self.config.strategy {
             GameStrategy::Superstar => self.strat_superstar(),
-            GameStrategy::FarPit => self.start_far_pit(),
+            GameStrategy::FarPit | GameStrategy::MidPit | GameStrategy::NearPit => self.start_pit(self.config.strategy),
         }
 
         let colors = [
@@ -283,6 +406,51 @@ fn move_until_void<const N: usize>(order_index: usize, config: &OrderConfig<N>, 
         
         position.get_ramps_as_mut()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(target_d, false);
     }
+
+    Ok(order_index)
+}
+
+fn _follow_wall<const N: usize>(target_mm : f32, left: bool, order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, trajectory: &Trajectory<N, Event>) -> Result<usize, TrajectorError> {
+    let mut dst: Option<f32> = None;
+    for event in custom_events.iter() {
+        if let Event::BackDistance { distance } = event {
+            if left {
+                dst = Some(distance[7] as f32);
+            } else {
+                dst = Some(distance[0] as f32);
+            }
+        }
+    }
+    log::info!("Distance to wall: {:?}", dst);
+
+    if let Some(distance) = dst {
+        if target_mm < distance {
+            //we need to move closer to the wall
+            let mut position = trajectory.get_position().lock().unwrap();
+            let current_a = position.get_coordinates().get_raw_linear_coordonate()[Order::<N, Event>::A_INDEX];
+            let target_a = if left {
+                current_a + 0.075 //turn left
+            } else {
+                current_a - 0.075 //turn right
+            };
+            position.get_ramps_as_mut()[Order::<N, Event>::A_INDEX].set_target(target_a, false);
+        }
+        else if target_mm > distance {
+            //we need to move away from the wall
+            let mut position = trajectory.get_position().lock().unwrap();
+            let current_a = position.get_coordinates().get_raw_linear_coordonate()[Order::<N, Event>::A_INDEX];
+            let target_a = if left {
+                current_a - 0.075 //turn right
+            } else {
+                current_a + 0.075 //turn left
+            };
+            position.get_ramps_as_mut()[Order::<N, Event>::A_INDEX].set_target(target_a, false);
+        }   
+    }
+
+    let mut position = trajectory.get_position().lock().unwrap();
+    let current_d = position.get_coordinates().get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
+    position.get_ramps_as_mut()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(current_d - 100.0, false);
 
     Ok(order_index)
 }

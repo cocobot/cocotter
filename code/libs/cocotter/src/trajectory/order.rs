@@ -62,7 +62,7 @@ impl<const N: usize, Event> Order<N, Event> {
                         if let Some(stop_distance_mm) = config.opponent_stop_distance_mm {
                             let opponent_distance_mm = trajectory.get_opponent_distance(!config.is_backwards());
 
-                            if opponent_distance_mm < stop_distance_mm {                             
+                            if opponent_distance_mm < stop_distance_mm && !config.no_detection {                             
                                 let mut locked_position = position.lock().unwrap();
                                 let current_d = locked_position.get_coordinates().get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
                                 let target_d = if config.is_backwards() {

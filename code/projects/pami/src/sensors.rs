@@ -34,7 +34,7 @@ impl Sensors {
                 Ok(data) => {
                     //get min distance by column
                     let mut min_distance = [i16::MAX; 8];
-                    for row in 4..8 {
+                    for row in 5..8 {
                         for col in 0..8 {
                             if data[row][col] < min_distance[7 - col] {
                                 min_distance[7 - col] = data[row][col];
@@ -59,6 +59,7 @@ impl Sensors {
                 line_sensor & 0b100_00000 != 0,
             ];
             self.event.send_event(Event::Line { activated });
+          
 
             std::thread::sleep(std::time::Duration::from_millis(50));
         }

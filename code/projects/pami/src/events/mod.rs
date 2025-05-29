@@ -25,6 +25,9 @@ pub enum Event {
     Pwm { pwm_event : PWMEvent},
     OverridePwm { pwm_event : PWMEvent, override_state: OverrideState},
 
+    //trajectory
+    TrajectoryStatus { opponent_detected: bool},
+
     ////asserv
     Position { coords: RobotCoordinate::<2> },
     //MotorDebug {timestamp: u16, left_tick: i32, right_tick: i32, left_pwm: i16, right_pwm: i16}, 

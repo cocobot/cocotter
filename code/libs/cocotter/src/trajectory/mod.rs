@@ -6,6 +6,8 @@ use crate::position::PositionMutex;
 
 pub mod order;
 
+type TrajectoryStateCallback = Box<dyn FnMut(bool) -> () + Send>;
+
 #[derive(Debug, Clone, Copy)]
 pub enum TrajectorError {
     InvalidOrder,
@@ -30,6 +32,7 @@ pub struct OrderConfig<const N: usize> {
     acceleration: [Option<f32>; N],
 
     backwards: Option<bool>,
+    no_detection: bool,
 
     opponent_stop_distance_mm: Option<f32>,
     opponent_resume_margin_distance_mm: f32,
@@ -41,6 +44,7 @@ impl<const N: usize> OrderConfig<N> {
             max_speed: [Some(1.0); N],
             acceleration: [Some(1.0); N],
             backwards: Some(false),
+            no_detection: false,
             opponent_stop_distance_mm: Some(150.0),
             opponent_resume_margin_distance_mm: 50.0,
         }
@@ -80,17 +84,22 @@ impl<const N: usize> OrderConfig<N> {
     
 }
 
-pub struct Trajectory<const N: usize, Event> {
+pub struct Trajectory<const N: usize, Event> {    
     position: PositionMutex<N>,
     receiver: Receiver<TrajectoryEvent<Event>>,
 
     back_opponent_detected: f32,
     front_opponent_detected: f32,
+
+    opponent_detected: bool,
+
+    event_callback: TrajectoryStateCallback,
 }
 
 
 impl<const N: usize, Event> Trajectory<N, Event> {
-    pub fn new(position: PositionMutex<N>) -> (Trajectory<N, Event>, mpsc::Sender<TrajectoryEvent<Event>>) {
+    pub fn new(position: PositionMutex<N>, event_callback : TrajectoryStateCallback) -> (Trajectory<N, Event>, mpsc::Sender<TrajectoryEvent<Event>>) 
+    {
         let (sender, receiver) = mpsc::channel();
         (
             Trajectory {
@@ -98,6 +107,8 @@ impl<const N: usize, Event> Trajectory<N, Event> {
                 receiver,
                 back_opponent_detected: f32::MAX,
                 front_opponent_detected: f32::MAX,
+                opponent_detected: false,
+                event_callback,
             },
             sender,
         )
@@ -118,7 +129,10 @@ impl<const N: usize, Event> Trajectory<N, Event> {
     }
 
     fn set_opponent_detected(&mut self, status: bool) {
-        //TODO: display info on screen
+        if self.opponent_detected != status {
+            self.opponent_detected = status;
+            (*self.event_callback)(status);
+        }
     }
 
     fn parse_event(&mut self, wait: Option<Duration>) -> Vec<Event>{
@@ -178,6 +192,12 @@ impl<const N: usize, Event>  TrajectoryOrderList<N, Event> {
     pub fn set_backwards(mut self, backwards: bool) -> Self {
         self.default_config.backwards = Some(backwards);
         
+        self
+    }
+
+    pub fn set_no_detection(mut self, no_detection: bool) -> Self {
+        self.default_config.no_detection = no_detection;
+
         self
     }
 
