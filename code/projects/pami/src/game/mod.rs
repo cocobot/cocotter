@@ -246,27 +246,48 @@ impl Game {
 
 
         self.wait_for_start();
+
+        let angle = if self.config.x_negative_color {
+            90.0_f32
+        } else {
+            -90.0_f32
+        };
+
+        let initial_a = if self.config.x_negative_color {
+            181.5_f32
+        }
+        else {
+            180.0_f32
+        };
          
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)
-            .add_order(Order::GotoD { d_mm: 1000.0 });
-
-
-        self.trajectory
-            .execute(orders)
-            .unwrap();
-
-
-        let orders = TrajectoryOrderList::new()
-            .set_backwards(false)
-            .add_order(Order::GotoA { a_rad: self.mirror_angle(-90.0_f32.to_radians()) })
-            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
-            .add_order(Order::CustomOrder { callback: move_until_void })
+            .set_no_detection(true)
+            .add_order(Order::GotoA { a_rad: initial_a.to_radians() })
+            .add_order(Order::GotoD { d_mm: 1100.0 })
+            .add_order(Order::GotoA { a_rad: (-angle).to_radians() })
+            .add_order(Order::GotoD {d_mm: 100.0})
+            .add_order(Order::GotoD {d_mm: -100.0})
+            .add_order(Order::GotoA { a_rad: angle.to_radians() })
+            .add_order(Order::GotoD {d_mm: 315.0})
             ;
 
+
         self.trajectory
             .execute(orders)
             .unwrap();
+
+
+        //let orders = TrajectoryOrderList::new()
+        //    .set_backwards(false)
+        //    .add_order(Order::GotoA { a_rad: self.mirror_angle(-90.0_f32.to_radians()) })
+        //    .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
+        //    .add_order(Order::CustomOrder { callback: move_until_void })
+        //    ;
+//
+        //self.trajectory
+        //    .execute(orders)
+        //    .unwrap();
     }
 
     fn start_pit(&mut self, game: GameStrategy) {

@@ -1,9 +1,10 @@
 use std::{sync::{Arc, Mutex}, time::{Duration, Instant}};
 
-use board_pami_2023::{encoder::Encoder, EmergencyStop, MotorPwmType};
+use board_pami_2023::{encoder::Encoder, EmergencyStop, LedError, MotorPwmType};
 use cocotter::{pid::{PIDConfiguration, PID}, position::{Position, PositionMutex}};
 
 use crate::{config::{ANGLE_PID_CONFIG, ANGLE_RAMP_CONFIG, ASSERV_PERIOD_MS, DISTANCE_PID_CONFIG, DISTANCE_RAMP_CONFIG, GAME_TIME_SECONDS, PAMI_START_TIME_SECONDS, POSITION_CONFIG}, events::{Event, EventSystem}};
+use crate::pwm::{PWMEvent, OverrideState};
 
 pub type AsservMutexProtected = Arc<Mutex<Asserv>>;
 
@@ -22,6 +23,7 @@ pub struct PIDSetpointOverride {
 
 pub struct Asserv {
     emergency_stop: EmergencyStop,
+    led_error: LedError,
     start_time: Option<Instant>,
     test_mode: bool,
 
@@ -48,6 +50,7 @@ pub struct Asserv {
 impl Asserv {
     pub fn new(
              emergency_stop: EmergencyStop,
+             led_error: LedError,
              left_wheel_counter: Encoder<'static>,
              right_wheel_counter: Encoder<'static>,
              left_pwm: (MotorPwmType, MotorPwmType),
@@ -56,6 +59,7 @@ impl Asserv {
         ) -> AsservMutexProtected {  
         let instance = Arc::new(Mutex::new(Self {
             emergency_stop,
+            led_error,
             left_wheel_counter,
             right_wheel_counter,
             left_pwm,
@@ -117,6 +121,8 @@ impl Asserv {
 
     pub fn run(instance: AsservMutexProtected, event: EventSystem) {
         let mut last_event_sent= Instant::now();
+
+        let mut emergency_set = false;
 
         loop {
             //run the asserv at 100Hz
@@ -217,9 +223,13 @@ impl Asserv {
                 }
             }
 
-            if instance.emergency_stop.is_low() {
+            if instance.emergency_stop.is_low() || emergency_set {
+                if !emergency_set {
+                    event.send_event(Event::OverridePwm { pwm_event: PWMEvent::Vaccum(0.0), override_state: OverrideState::Override })
+                }
                 left_pwm_filtered = 0;
                 right_pwm_filtered = 0;
+                emergency_set = true;
             }
 
             if (now - last_event_sent).as_millis() > 100 {
@@ -259,16 +269,11 @@ impl Asserv {
                 instance.right_pwm.1.set_duty(pwm_max).ok();
                 instance.right_pwm.0.set_duty(pwm_max - min_max).ok();
             }
-            /*
-            if right_pwm_filtered > 0 {
-                instance.right_dir.set_high().unwrap();
-                instance.right_pwm.set_duty(1023 - right_pwm_filtered.clamp(0, 1023) as u32).ok();
+           
+           
+            if emergency_set {
+                instance.led_error.toggle().ok();
             }
-            else {
-                instance.right_dir.set_low().unwrap();
-                instance.right_pwm.set_duty((-right_pwm_filtered).clamp(0, 1023) as u32).ok();
-            }
-            */
         }
 
     }

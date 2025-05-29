@@ -21,6 +21,7 @@ use ssd1306::{I2CDisplayInterface, Ssd1306};
 use tca6408a::Tca6408a;
 pub use vl53l5cx::Vl53l5cx;
 
+pub type LedError = PinDriver<'static, gpio::Gpio5, Output>;
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type EmergencyStop = PinDriver<'static, gpio::Gpio15, gpio::Input>;
 pub type Starter = PinDriver<'static, gpio::Gpio2, gpio::Input>;
@@ -41,6 +42,7 @@ pub const PWM_EXTENDED_LED_RGB: [Channel; 3] = [Channel::C12, Channel::C13, Chan
 
 pub struct Pami2023 {
     pub led_heartbeat: Option<PinDriver<'static, gpio::Gpio4, Output>>,
+    pub led_error: Option<LedError>,
     pub pwm_extended: Option<Pca9685<I2CType>>,
     pub adc: Option<PamiAdc>,
     pub encoder_left: Option<Encoder<'static>>,
@@ -140,6 +142,7 @@ impl Pami2023{
 
         // Initialize the GPIO for the heartbeat LED
         let led_heartbeat = PinDriver::output(peripherals.pins.gpio4).unwrap();
+        let led_error = PinDriver::output(peripherals.pins.gpio5).unwrap();
 
         //Initialize the screen
         let interface = I2CDisplayInterface::new(i2c_bus_screen);
@@ -149,6 +152,7 @@ impl Pami2023{
 
         Self {
             led_heartbeat: Some(led_heartbeat),
+            led_error: Some(led_error),
             adc: Some(adc),
             pwm_extended: Some(pwm_extended),
             encoder_left: Some(left_encoder),

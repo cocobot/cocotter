@@ -65,11 +65,12 @@ fn main() {
     UI::new(board.display.take().unwrap(), config.id, config.color.to_string(), &event);
     let asserv = Asserv::new(
         board.emergency_stop.take().unwrap(),
+        board.led_error.take().unwrap(),
         board.encoder_left.take().unwrap(),
         board.encoder_right.take().unwrap(),
         board.left_pwm.take().unwrap(),
         board.right_pwm.take().unwrap(),
-        &event,
+        &event
     );
     Sensors::new(board.tof.take().unwrap(), board.line_sensor.take().unwrap(), &event);    
     
