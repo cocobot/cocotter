@@ -4,3 +4,4 @@ pub mod score;
 pub mod start;
 pub mod tof;
 pub mod position;
+pub mod emergency;

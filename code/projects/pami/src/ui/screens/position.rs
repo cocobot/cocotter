@@ -50,7 +50,7 @@ impl UIScreen for Position {
     }
 
     fn get_priority(&self) -> isize {
-        100
+        0
     }
 
     fn get_screen_name(&self) -> &'static str {

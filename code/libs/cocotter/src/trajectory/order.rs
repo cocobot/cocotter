@@ -4,7 +4,7 @@ use std::time::Instant; // TAU = 2 * PI
 use either::Either;
 use libm::{atan2f, floorf, sqrtf};
 
-use crate::position::{robot_coordinate::RobotCoordinate, PositionMutex};
+use crate::position::{self, robot_coordinate::RobotCoordinate, PositionMutex};
 
 use super::{OrderConfig, TrajectorError, Trajectory};
 
@@ -35,7 +35,9 @@ pub enum Order<const N: usize, Event> {
     GotoA { a_rad: f32 },
     GotoXY { x_mm: f32, y_mm: f32 },
     
+    SetPosition { x_mm: Option<f32>, y_mm: Option<f32>, a_rad: Option<f32>},
     CustomOrder { callback: fn(order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, trajectory: &Trajectory<N, Event>) -> Result<usize, TrajectorError> },
+
 
     Label { label: &'static str },
     GotoLabel { label: &'static str },
@@ -246,6 +248,19 @@ impl<const N: usize, Event> Order<N, Event> {
                         Err(TrajectorError::InvalidOrder)
                     }
                 }
+            }
+
+            Order::SetPosition { x_mm, y_mm, a_rad} => {
+                let mut locked_position = position.lock().unwrap();
+
+                locked_position.set_coordinates(*x_mm, *y_mm, *a_rad);
+
+                if let Some(a_rad) = *a_rad {
+                    let ramps = locked_position.get_ramps_as_mut();
+                    ramps[Order::<N, Event>::A_INDEX].set_target(a_rad, true);
+                }
+
+                Ok(order_index + 1)
             }
 
             Order::CustomOrder { callback } => {

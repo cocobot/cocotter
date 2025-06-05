@@ -26,6 +26,8 @@ pub struct Position<const N: usize> {
 
     //robot asserv
     ramps : [Ramp; N],
+
+    no_angle: bool,
 }
 
 //Specific implementation of a regular robot
@@ -39,6 +41,7 @@ impl<const N: usize> Position<N> {
             timestamp_ms : Instant::now(),
             current_position: RobotCoordinate::from(0.0, 0.0, 0.0),
             ramps,
+            no_angle: false,
         }
     }
 
@@ -72,6 +75,14 @@ impl<const N: usize> Position<N> {
 
             self.current_position.compute_new_position(delta_computation, delta_time_ms);
         }
+    }
+
+    pub fn set_no_angle(&mut self, no_angle: bool) {
+        self.no_angle = no_angle;
+    }
+
+    pub fn get_no_angle(&self) -> bool {
+        self.no_angle
     }
 
      //Return the current robot position

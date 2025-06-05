@@ -3,7 +3,7 @@ use std::{sync::{mpsc, Arc, Mutex}, time::Instant};
 use cocotter::{position::robot_coordinate::RobotCoordinate};
 use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
 
-use crate::pwm::{OverrideState, PWMEvent};
+use crate::{game::GameConfiguration, pwm::{OverrideState, PWMEvent}};
 
 pub type EventFilter = fn(&Event) -> bool;
 pub type EventCallback = Box<dyn FnMut(&Event) -> () + Send + 'static>;
@@ -11,6 +11,7 @@ pub type EventCallback = Box<dyn FnMut(&Event) -> () + Send + 'static>;
 #[derive(Debug, Clone)]
 pub enum Event {
     //game events
+    GameConfiguration(GameConfiguration),
     GameStarted { timestamp: Instant, test_mode: bool },
 
     //analog inputs
@@ -30,6 +31,7 @@ pub enum Event {
 
     ////asserv
     Position { coords: RobotCoordinate::<2> },
+    EmergencyTriggered,
     //MotorDebug {timestamp: u16, left_tick: i32, right_tick: i32, left_pwm: i16, right_pwm: i16}, 
     //PIDDebug {timestamp: u16, target_d: f32, current_d: f32, output_d: f32, target_a: f32, current_a: f32, output_a: f32},
 }

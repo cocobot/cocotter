@@ -13,6 +13,7 @@ pub struct RobotCoordinate<const N: usize> {
     //first element is always the angle in rad
     //others are coordonate of the distance vector in mm 
     linear_coordonate : [f32; N],
+    linear_coordonate_offset: [f32; N],
     linear_velocity : [f32; N],
 
     //store if axis has been recalibrated recentrly
@@ -33,6 +34,7 @@ impl<const N: usize> RobotCoordinate<N> {
             
             linear_coordonate: linear_coordonate, 
             linear_velocity: [0.0; N],
+            linear_coordonate_offset: [0.0; N],
             
             x_is_precise: true, 
             y_is_precise: true, 
@@ -75,7 +77,7 @@ impl<const N: usize> RobotCoordinate<N> {
             self.y_is_precise = true;
         }
         if let Some(a_rad) = a_rad{
-            self.linear_coordonate[0] = a_rad;
+            self.linear_coordonate_offset[0] = a_rad - self.linear_coordonate[0];
             self.a_is_precise = true;
         }
     }
@@ -85,7 +87,7 @@ impl<const N: usize> RobotCoordinate<N> {
         for i in 0..N {
             self.linear_velocity[i] = delta_computation[i] / (delta_time_ms / 1000.0);
             if i == 0 {
-               self.linear_coordonate[0] = delta_computation[i];
+               self.linear_coordonate[0] = delta_computation[i] + self.linear_coordonate_offset[0];
             }
             else {
                 self.linear_coordonate[i] += delta_computation[i];

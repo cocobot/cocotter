@@ -83,15 +83,13 @@ fn main() {
     let selector_value = selector.get_input().unwrap();
 
     let config = GameConfiguration {
-        starter: board.starter.take().unwrap(),
-
         x_negative_color: (selector_value & 0b1000_0000) != 0,
         test_mode: conf_3_button.is_high(),
 
         strategy: config.strategy,
         //strategy: game::GameStrategy::MidPit,
     };
-    Game::new(config, asserv, &event);
+    Game::new(config,board.starter.take().unwrap(), asserv, &event);
 
     event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
 

@@ -123,6 +123,9 @@ impl Asserv {
         let mut last_event_sent= Instant::now();
 
         let mut emergency_set = false;
+        let mut last_emergency_led_toggle = Instant::now();
+
+        let mut no_angle_mode = false;
 
         loop {
             //run the asserv at 100Hz
@@ -154,6 +157,7 @@ impl Asserv {
             let mut position = instance.position.lock().unwrap();
             position.set_new_encoder_values(now, instance.encoders, [1.0, 1.0]);
             
+            let no_angle = position.get_no_angle();
             let robot_coord = position.get_coordinates();
             if (now - last_event_sent).as_millis() > 100 {
                 event.send_event(Event::Position { coords: *robot_coord });
@@ -183,7 +187,18 @@ impl Asserv {
 
             //compute the control loop
             let distance_sp = instance.pid_distance.compute(distance_target - robot_distance);
-            let angle_sp = instance.pid_angle.compute(angle_target - robot_angle);
+            let angle_sp = if !no_angle { 
+                if no_angle_mode {
+                    no_angle_mode = false;
+                    log::warn!("End of no angle {} {}", angle_target.to_degrees(), robot_angle.to_degrees())
+                }
+                //log::info!("angle_target: {} robot_angle: {}", angle_target.to_degrees(), robot_angle.to_degrees());
+                instance.pid_angle.compute(angle_target - robot_angle)
+            }
+            else {
+                no_angle_mode = true;
+                0.0
+            };
 
           //  log::info!("PID D: {:8.3} {:8.3} {:8.3} {:8.3} || PID A: {:8.3} {:8.3} {:8.3} {:8.3}", distance_target, robot_distance, distance_sp, distance_target - robot_distance, angle_target, robot_angle, angle_sp, angle_target - robot_angle);
             //assign the control loop output to the motors
@@ -225,7 +240,8 @@ impl Asserv {
 
             if instance.emergency_stop.is_low() || emergency_set {
                 if !emergency_set {
-                    event.send_event(Event::OverridePwm { pwm_event: PWMEvent::Vaccum(0.0), override_state: OverrideState::Override })
+                    event.send_event(Event::OverridePwm { pwm_event: PWMEvent::Vaccum(0.0), override_state: OverrideState::Override });
+                    event.send_event(Event::EmergencyTriggered);
                 }
                 left_pwm_filtered = 0;
                 right_pwm_filtered = 0;
@@ -272,7 +288,10 @@ impl Asserv {
            
            
             if emergency_set {
-                instance.led_error.toggle().ok();
+                if last_emergency_led_toggle.elapsed().as_millis() > 100 {
+                    last_emergency_led_toggle = Instant::now();
+                    instance.led_error.toggle().ok();
+                }
             }
         }
 

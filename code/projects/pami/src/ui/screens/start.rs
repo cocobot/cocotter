@@ -1,16 +1,20 @@
 use board_pami_2023::DisplayType;
 use embedded_graphics::{mono_font::{iso_8859_15::FONT_6X10, MonoTextStyleBuilder}, pixelcolor::BinaryColor, prelude::{Drawable, Point, Primitive, Size}, primitives::{Line, PrimitiveStyle, Rectangle}, text::{Alignment, Baseline, Text, TextStyleBuilder}};
 
-use crate::ui::UIScreen;
+use crate::{events::Event, game::{GameConfiguration, GameStrategy}, ui::UIScreen};
 
 pub struct Start {
     last_blink: bool,
+    config: Option<GameConfiguration>,
+    game_started: bool,
 }
 
 impl Start {
     pub fn new() -> Self {
         Self {
             last_blink: true,
+            config: None,
+            game_started: false,
         }
     }
 }
@@ -35,17 +39,57 @@ impl UIScreen for Start {
             .draw(display)
             .unwrap();
 
-        Line::new(
-            offset + Point { x: size.width as i32 - 3, y: 3 },
-            offset + Point { x: size.width as i32 - 3, y: size.height as i32 - 2 },
-        ).into_styled(PrimitiveStyle::with_stroke(BinaryColor::On, 2))
-            .draw(display)
-            .unwrap();
+        if let Some(config) = &self.config {
+            let x = if config.x_negative_color { 2 } else { size.width as i32 - 3 };
+            Line::new(
+                offset + Point { x: x, y: 3 },
+                offset + Point { x: x, y: size.height as i32 - 2 },
+            ).into_styled(PrimitiveStyle::with_stroke(BinaryColor::On, 2))
+                .draw(display)
+                .unwrap();
+        }
 
         for i in 0..4 {
             let mut stroke_size = 1;
 
-            if i == 2 {
+            let mut selected = false;
+            if let Some(config) = &self.config {
+                match config.strategy {
+                    GameStrategy::FarPit => {
+                        if i == 0 && !config.x_negative_color {
+                            selected = true;
+                        }
+                        else if i == 3 && config.x_negative_color {
+                            selected = true;
+                        }
+                    }
+                    GameStrategy::MidPit => {
+                        if i == 1 && !config.x_negative_color {
+                            selected = true;
+                        }
+                        else if i == 2 && config.x_negative_color {
+                            selected = true;
+                        }
+                    }
+                    GameStrategy::NearPit => {
+                        if i == 2 && !config.x_negative_color {
+                            selected = true;
+                        }
+                        else if i == 1 && config.x_negative_color {
+                            selected = true;
+                        }
+                    }
+                    GameStrategy::Superstar => {
+                        if i == 3 && !config.x_negative_color {
+                            selected = true;
+                        }
+                        else if i == 0 && config.x_negative_color {
+                            selected = true;
+                        }
+                    }
+                }
+            }
+            if selected {
                 if self.last_blink {
                     stroke_size = 3;
                 }
@@ -73,19 +117,43 @@ impl UIScreen for Start {
             .alignment(Alignment::Center)
             .build();
 
-        Text::with_text_style(
-            &format!("Violet"), 
-            Point::new(offset.x + size.width as i32 / 2, offset.y + size.height as i32 - 1), 
-            text_style,
-            text_style_center
-        ).draw(display).unwrap();
+        if let Some(config) = &self.config {
+            let text = if config.x_negative_color {
+                "Jaune"
+            } else {
+                "Bleu"
+            };
+
+            Text::with_text_style(
+                text, 
+                Point::new(offset.x + size.width as i32 / 2, offset.y + size.height as i32 - 1), 
+                text_style,
+                text_style_center
+            ).draw(display).unwrap();
+        }
     }
 
     fn get_priority(&self) -> isize {
-        0
+        if self.game_started {
+            -1
+        } else {
+            1
+        }
     }
 
     fn get_screen_name(&self) -> &'static str {
         "Start"
+    }
+
+    fn handle_event(&mut self, event: &Event) {
+        match event {
+            Event::GameConfiguration(config) => {
+                self.config = Some(*config);
+            }
+            Event::GameStarted { .. } => {
+                self.game_started = true;
+            }
+            _ => {}
+        }
     }
 }

@@ -12,9 +12,8 @@ pub enum GameStrategy {
     FarPit,
 }
 
+#[derive(Debug, Clone, Copy)]
 pub struct GameConfiguration {
-    pub starter: Starter,
-
     pub test_mode: bool,
     pub x_negative_color: bool,
     pub strategy: GameStrategy,
@@ -97,6 +96,7 @@ impl FunnyAction {
 
 pub struct Game {
     config: GameConfiguration,
+    starter: Starter,
 
     funny_action: Arc<Mutex<FunnyAction>>,
 
@@ -106,7 +106,7 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(config: GameConfiguration, asserv: AsservMutexProtected, event: &EventSystem) {
+    pub fn new(config: GameConfiguration, starter: Starter, asserv: AsservMutexProtected, event: &EventSystem) {
         let event_clone = event.clone();
         let (trajectory, sender) = Trajectory::new(
             
@@ -118,6 +118,7 @@ impl Game {
 
         let mut instance = Self {
             config,
+            starter,
             trajectory,
             start_time: None,
             event: event.clone(),
@@ -152,7 +153,7 @@ impl Game {
     fn wait_for_start(&mut self) {
         // Wait for the start signal to be low
         loop {
-            if self.config.starter.is_low() {
+            if self.starter.is_low() {
                 break;
             }
             else {
@@ -178,7 +179,7 @@ impl Game {
 
         // Wait for the start signal to be high
         loop {
-            if self.config.starter.is_high() {
+            if self.starter.is_high() {
                 break;
             }
             else {
@@ -239,9 +240,8 @@ impl Game {
 
     fn strat_superstar(&mut self) {
 
-        let init_a = 180.0_f32.to_radians();
         let mut position = self.trajectory.get_position().lock().unwrap();
-        position.set_coordinates(Some(2900.0), Some(1900.0), Some(init_a));
+        position.set_coordinates(Some(2900.0), Some(1900.0), None);
         drop(position);
 
 
@@ -257,7 +257,7 @@ impl Game {
             181.5_f32
         }
         else {
-            180.0_f32
+            181.0_f32
         };
          
         let orders = TrajectoryOrderList::new()
@@ -266,7 +266,10 @@ impl Game {
             .add_order(Order::GotoA { a_rad: initial_a.to_radians() })
             .add_order(Order::GotoD { d_mm: 1100.0 })
             .add_order(Order::GotoA { a_rad: (-angle).to_radians() })
-            .add_order(Order::GotoD {d_mm: 100.0})
+            .set_no_angle(true)
+            .add_order(Order::GotoD {d_mm: 150.0})
+            .add_order(Order::SetPosition { x_mm: None, y_mm:  None, a_rad: Some(angle.to_radians()) })
+            .set_no_angle(false)
             .add_order(Order::GotoD {d_mm: -100.0})
             .add_order(Order::GotoA { a_rad: angle.to_radians() })
             .add_order(Order::GotoD {d_mm: 315.0})
@@ -292,9 +295,8 @@ impl Game {
 
     fn start_pit(&mut self, game: GameStrategy) {
 
-        let init_a = 0.0;
         let mut position = self.trajectory.get_position().lock().unwrap();
-        position.set_coordinates(Some(2900.0), Some(1900.0), Some(init_a));
+        position.set_coordinates(Some(2900.0), Some(1900.0), None);
         drop(position);
 
 
@@ -312,12 +314,18 @@ impl Game {
 
             GameStrategy::MidPit => {
                 thread::sleep(Duration::from_millis(1000)); //let a bit for farPit
-                (1.1, 300.0, 500.0, 850.0, 200.0)
+                
+                if self.config.x_negative_color {
+                    (1.1, 300.0, 550.0, 650.0, 500.0)
+                }
+                else {
+                    (1.1, 300.0, 675.0, 650.0, 500.0)
+                }
             }
             
             GameStrategy::NearPit => {
                 thread::sleep(Duration::from_millis(1750)); //let a bit for farPit
-                (1.0, 150.0, 650.0, 350.0, 200.0)
+                (1.0, 150.0, 640.0, 350.0, 200.0)
             }
 
             _ => {
@@ -353,6 +361,8 @@ impl Game {
     }
 
     fn run(&mut self) {
+
+        self.event.send_event(Event::GameConfiguration(self.config.clone()));
 
         std::thread::sleep(Duration::from_millis(1000));
 

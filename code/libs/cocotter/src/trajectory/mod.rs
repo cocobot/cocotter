@@ -33,6 +33,7 @@ pub struct OrderConfig<const N: usize> {
 
     backwards: Option<bool>,
     no_detection: bool,
+    no_angle: bool,
 
     opponent_stop_distance_mm: Option<f32>,
     opponent_resume_margin_distance_mm: f32,
@@ -45,6 +46,7 @@ impl<const N: usize> OrderConfig<N> {
             acceleration: [Some(1.0); N],
             backwards: Some(false),
             no_detection: false,
+            no_angle: false,
             opponent_stop_distance_mm: Some(150.0),
             opponent_resume_margin_distance_mm: 50.0,
         }
@@ -61,6 +63,8 @@ impl<const N: usize> OrderConfig<N> {
                 ramps[i].set_acceleration_factor(acceleration);
             }
         }
+
+        position.set_no_angle(self.no_angle);
     }
 
     pub fn revert(&mut self, position: &PositionMutex<N>) {
@@ -197,6 +201,12 @@ impl<const N: usize, Event>  TrajectoryOrderList<N, Event> {
 
     pub fn set_no_detection(mut self, no_detection: bool) -> Self {
         self.default_config.no_detection = no_detection;
+
+        self
+    }
+
+    pub fn set_no_angle(mut self, no_angle: bool) -> Self {
+        self.default_config.no_angle = no_angle;
 
         self
     }
