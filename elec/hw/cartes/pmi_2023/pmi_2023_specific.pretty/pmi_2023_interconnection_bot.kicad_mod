@@ -1,4 +1,4 @@
-(footprint "pmi_2023_interconnection"
+(footprint "pmi_2023_interconnection_bot"
 	(version 20240108)
 	(generator "pcbnew")
 	(generator_version "8.0")
@@ -7,6 +7,7 @@
 		(at -4.25 -0.5 0)
 		(unlocked yes)
 		(layer "F.SilkS")
+		(hide yes)
 		(uuid "fea88393-abee-42bf-8890-26df56247818")
 		(effects
 			(font
@@ -15,10 +16,11 @@
 			)
 		)
 	)
-	(property "Value" "pmi_2023_interconnection"
+	(property "Value" "pmi_2023_interconnection_bot"
 		(at -4.25 1 0)
 		(unlocked yes)
 		(layer "F.Fab")
+		(hide yes)
 		(uuid "046872e0-6010-40e0-ad32-5c49d8d7e79e")
 		(effects
 			(font
@@ -76,13 +78,13 @@
 		)
 		(fill none)
 		(layer "F.CrtYd")
-		(uuid "a61ae634-e236-484a-bbe5-cf73290baa86")
+		(uuid "8585ce63-ad41-4ff9-9a65-b597957636d5")
 	)
 	(fp_text user "${REFERENCE}"
 		(at -4.25 2.5 0)
 		(unlocked yes)
 		(layer "F.Fab")
-		(uuid "89220fb6-8584-4fe7-b7d5-ff9c605ff9fa")
+		(uuid "ecc494b6-10f3-47fd-9076-8d01dd00805f")
 		(effects
 			(font
 				(size 1 1)
@@ -100,7 +102,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "fc510f69-ddbd-4a23-9631-2dcb3eaaeed1")
+		(uuid "b31c8e36-d34d-46fb-b1a8-c7607e6a2c08")
 	)
 	(pad "1" smd roundrect
 		(at -14.25 0 90)
@@ -108,7 +110,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "ab1a7e9f-c2cf-4eec-a7f9-26e8ac946428")
+		(uuid "4285db30-1755-4b61-8802-000cf1b4329d")
+	)
+	(pad "1" thru_hole circle
+		(at -14.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "5bad8519-8013-4c22-8618-0be41cc292d8")
 	)
 	(pad "2" thru_hole circle
 		(at -12.75 0 90)
@@ -120,7 +134,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "a1ce3fee-0dd6-482d-ac2e-16d10e6ea44a")
+		(uuid "0a6f4ad2-024f-4b9b-a79f-5f5c01a9fe2b")
 	)
 	(pad "2" smd roundrect
 		(at -12.75 0 90)
@@ -128,7 +142,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "38cc4a76-35aa-4982-8258-64949abec3ce")
+		(uuid "3865ec44-51ec-40d8-a41c-7661d2490137")
+	)
+	(pad "2" thru_hole circle
+		(at -12.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "ae81635e-5747-43e5-98b7-d3574d04fe61")
 	)
 	(pad "3" thru_hole circle
 		(at -11.25 0 90)
@@ -140,7 +166,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "43616f1c-c882-4b52-8a9d-1b315c1c1594")
+		(uuid "a7832bc8-6aaa-4eca-ba94-583fc9d64a2e")
 	)
 	(pad "3" smd roundrect
 		(at -11.25 0 90)
@@ -148,7 +174,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "f5c2bfe8-506a-4dbc-93c3-3026b250be4c")
+		(uuid "274a4219-9296-46de-bc0a-f20e300b461d")
+	)
+	(pad "3" thru_hole circle
+		(at -11.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "2c632565-ae07-4eb2-bb3f-9e777f1770ed")
 	)
 	(pad "4" thru_hole circle
 		(at -9.75 0 90)
@@ -160,7 +198,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "f8dcab12-80d8-4ae2-b9a5-1f87526d2ba8")
+		(uuid "e116a8b4-9059-42e0-8088-961f0ee09538")
 	)
 	(pad "4" smd roundrect
 		(at -9.75 0 90)
@@ -168,7 +206,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "0ffc7a7b-5029-4bd3-bbc4-f9066b54d4a9")
+		(uuid "809cb1a5-fc5a-414c-b510-78994e0b451b")
+	)
+	(pad "4" thru_hole circle
+		(at -9.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "88e36306-6b9a-4268-8f4c-dc7134114d8d")
 	)
 	(pad "5" thru_hole circle
 		(at -8.25 0 90)
@@ -180,7 +230,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "df64bd78-9778-4dff-aa3b-bf4376df31be")
+		(uuid "3b929280-b667-4a04-9718-d4aa45e8aa31")
 	)
 	(pad "5" smd roundrect
 		(at -8.25 0 90)
@@ -188,7 +238,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "c659c15d-ca92-4e4f-9c3f-9da1b627448d")
+		(uuid "b9aafbb9-2343-40c5-b465-7897ec0791ed")
+	)
+	(pad "5" thru_hole circle
+		(at -8.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "a7892479-1917-477c-9973-afa7e16bfa00")
 	)
 	(pad "6" thru_hole circle
 		(at -6.75 0 90)
@@ -200,7 +262,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "ac7efd16-4cb8-4abc-87e1-64078666a530")
+		(uuid "2a2e7f47-e6c7-4c73-9fe3-9085cc9b2d2e")
 	)
 	(pad "6" smd roundrect
 		(at -6.75 0 90)
@@ -208,7 +270,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "915bc46a-ca45-4e64-adf9-40b30133d197")
+		(uuid "4e1939f7-86f2-4bf9-817b-b6512234e9c9")
+	)
+	(pad "6" thru_hole circle
+		(at -6.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "e7da7ae2-00f3-437c-8c6a-b185343b6b5e")
 	)
 	(pad "7" thru_hole circle
 		(at -5.25 0 90)
@@ -220,7 +294,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "3e518c5b-7368-455a-a2f6-be8fb45b9a99")
+		(uuid "768d6f62-1925-4802-a80f-be5479ad8a52")
 	)
 	(pad "7" smd roundrect
 		(at -5.25 0 90)
@@ -228,7 +302,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "de0899d9-506a-4f5a-80da-90127b911f0f")
+		(uuid "72439e35-10c4-49ed-a701-05cf3ee57714")
+	)
+	(pad "7" thru_hole circle
+		(at -5.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "05905039-6b76-4f9f-bbe4-00f5ba9bdc8b")
 	)
 	(pad "8" thru_hole circle
 		(at -3.75 0 90)
@@ -240,7 +326,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "51a81bfc-86ff-4c73-b388-2d499618fbc9")
+		(uuid "bd7298d5-aa0c-426c-a203-e418a55019c9")
 	)
 	(pad "8" smd roundrect
 		(at -3.75 0 90)
@@ -248,7 +334,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "594b33ea-89f2-42e3-ade7-84d9b2dc7902")
+		(uuid "1b7067c2-3f91-4ab8-9bdf-bc23874487a8")
+	)
+	(pad "8" thru_hole circle
+		(at -3.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "d94248e5-ab21-4469-bb6f-d4c7d67f035a")
 	)
 	(pad "9" thru_hole circle
 		(at -2.25 0 90)
@@ -260,7 +358,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "c1f09d0b-2fe2-457a-92fe-bc015c8c12d3")
+		(uuid "ecd4ffe4-0396-4d6f-85bf-98fbebdd1eed")
 	)
 	(pad "9" smd roundrect
 		(at -2.25 0 90)
@@ -268,7 +366,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "2cf45076-74c1-4d74-8623-22f5a7d42fd5")
+		(uuid "45977d0e-4b73-4f6e-8ed0-e37b913d72a4")
+	)
+	(pad "9" thru_hole circle
+		(at -2.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "ebb9dccd-c567-4a53-90f1-2ffef3f128e7")
 	)
 	(pad "10" thru_hole circle
 		(at -0.75 0 90)
@@ -280,7 +390,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "d7d4eac7-6038-4333-86b7-9e19ee9dfc1f")
+		(uuid "286d75aa-f902-4c0e-aef7-ecf35be49cd7")
 	)
 	(pad "10" smd roundrect
 		(at -0.75 0 90)
@@ -288,7 +398,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "63358099-3fea-45f4-a8e3-84d728742885")
+		(uuid "e9f1b425-ed79-4341-bfdf-fb9c8d1f1869")
+	)
+	(pad "10" thru_hole circle
+		(at -0.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "91ee96c5-d14b-4c36-9005-c8a700850aaa")
 	)
 	(pad "11" thru_hole circle
 		(at 0.75 0 90)
@@ -300,7 +422,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "8087a3d8-d766-4903-a0b8-fad7180bdb32")
+		(uuid "88ede84d-0890-43ec-9e53-9a2122c26e24")
 	)
 	(pad "11" smd roundrect
 		(at 0.75 0 90)
@@ -308,7 +430,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "173d2fb2-d19f-4b87-9abe-ea7cce2d5386")
+		(uuid "5ef2db2a-9410-4bd5-83f5-02032af56740")
+	)
+	(pad "11" thru_hole circle
+		(at 0.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "03ef1d50-54fa-492a-8455-acb7b198db81")
 	)
 	(pad "12" thru_hole circle
 		(at 2.25 0 90)
@@ -320,7 +454,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "169104b6-3044-490c-abd0-d9db5a62abf0")
+		(uuid "8bd38777-b293-4c76-bc0e-8a309ce81b48")
 	)
 	(pad "12" smd roundrect
 		(at 2.25 0 90)
@@ -328,7 +462,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "d9ecc177-cbfd-451b-b48e-1f5a91609094")
+		(uuid "d5f21ebe-a16b-4172-93a5-9d923211281b")
+	)
+	(pad "12" thru_hole circle
+		(at 2.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "9fd80964-f648-4bb7-94d2-0a062d59cf6d")
 	)
 	(pad "13" thru_hole circle
 		(at 3.75 0 90)
@@ -340,7 +486,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "e7964ecd-1e81-49d0-bd4b-c4a5dd20677c")
+		(uuid "42fa744e-0e7c-41e6-bcca-2406008759a8")
 	)
 	(pad "13" smd roundrect
 		(at 3.75 0 90)
@@ -348,7 +494,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "77d3409d-bc22-4590-883f-7275e672f170")
+		(uuid "1cd36182-fcf3-4b9f-ba84-cfb931ca02e0")
+	)
+	(pad "13" thru_hole circle
+		(at 3.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "d132998d-27c5-40a0-bc25-032772175771")
 	)
 	(pad "14" thru_hole circle
 		(at 5.25 0 90)
@@ -360,7 +518,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "4149ad30-8822-482e-af97-40313f4532f6")
+		(uuid "5ffca758-d7f0-4252-a7a5-a5aac162f542")
 	)
 	(pad "14" smd roundrect
 		(at 5.25 0 90)
@@ -368,7 +526,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "096e98a9-876c-406c-a4b4-ef52c184ac96")
+		(uuid "a5a39654-fc04-4e22-8778-13109cf49356")
+	)
+	(pad "14" thru_hole circle
+		(at 5.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "093cd798-dbbe-41c2-b82f-1c8d430ab978")
 	)
 	(pad "15" thru_hole circle
 		(at 6.75 0 90)
@@ -380,7 +550,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "05705a3e-6f8c-41e8-9131-cc828f809106")
+		(uuid "24f3c84b-9cb8-4af0-9e77-d005f5ff672b")
 	)
 	(pad "15" smd roundrect
 		(at 6.75 0 90)
@@ -388,7 +558,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "23274d5c-e164-424f-86be-d26a67b6526d")
+		(uuid "5a6526a1-d2ca-49dd-850a-396f5cc5b0df")
+	)
+	(pad "15" thru_hole circle
+		(at 6.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "f630e8d0-6ad0-4aab-aaf9-67f9cc8369d8")
 	)
 	(pad "16" thru_hole circle
 		(at 8.25 0 90)
@@ -400,7 +582,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "c4c688cb-1aa2-413e-b960-d386c883d205")
+		(uuid "cf564b92-90de-4826-8d1b-1a622a5e9341")
 	)
 	(pad "16" smd roundrect
 		(at 8.25 0 90)
@@ -408,7 +590,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "1f00dab9-7958-490f-a1df-3f39cbb34cdc")
+		(uuid "23c60b14-48da-46be-b4e2-7f67582d06a8")
+	)
+	(pad "16" thru_hole circle
+		(at 8.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "0717c403-e6a8-4a98-8767-e6b007090147")
 	)
 	(pad "17" thru_hole circle
 		(at 9.75 0 90)
@@ -420,7 +614,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "8c5bd4ab-d46c-417e-99ed-27c7c28a7632")
+		(uuid "c908eef8-49e0-4866-a719-e7a3e58a139f")
 	)
 	(pad "17" smd roundrect
 		(at 9.75 0 90)
@@ -428,7 +622,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "23ec7e04-6057-4807-b931-e0c2bf20cf69")
+		(uuid "f4d1d67b-f4f1-4d25-a343-f83ceeb5f07f")
+	)
+	(pad "17" thru_hole circle
+		(at 9.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "5dc58322-90c6-42e6-a278-01e500e49725")
 	)
 	(pad "18" thru_hole circle
 		(at 11.25 0 90)
@@ -440,7 +646,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "c60a655c-b9e0-489e-b6be-e1dc37dbc01b")
+		(uuid "54275dc9-c487-4cac-9dcb-e911f47160fc")
 	)
 	(pad "18" smd roundrect
 		(at 11.25 0 90)
@@ -448,7 +654,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "b8063496-b56a-4478-aa58-cdc240f9eeb2")
+		(uuid "2f75b546-716d-435d-8419-2c9e195ab7f4")
+	)
+	(pad "18" thru_hole circle
+		(at 11.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "a7a6a0c3-3a1f-4ac1-89f9-7a2a20c0debc")
 	)
 	(pad "19" thru_hole circle
 		(at 12.75 0 90)
@@ -460,7 +678,7 @@
 			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
 		)
 		(remove_unused_layers no)
-		(uuid "62b818c6-407a-4859-ada1-f123174e5e35")
+		(uuid "42b4ded5-e3d3-41b5-9be4-181f5a16d1a1")
 	)
 	(pad "19" smd roundrect
 		(at 12.75 0 90)
@@ -468,7 +686,19 @@
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
-		(uuid "c07f9add-4ccb-4b3c-b3d1-022d0063d8c4")
+		(uuid "31414ca9-ee6a-4beb-aa83-d4686ddab1b6")
+	)
+	(pad "19" thru_hole circle
+		(at 12.75 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "f991d58e-adaa-4e9e-9cab-6381e30fbb80")
 	)
 	(pad "20" thru_hole circle
 		(at 14.25 0 90)
@@ -489,5 +719,17 @@
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
 		(uuid "026bfedd-93c6-41ff-bb12-0fa28abdd7e4")
+	)
+	(pad "20" thru_hole circle
+		(at 14.25 0.75 90)
+		(size 0.7 0.7)
+		(drill 0.4)
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "1eedfb84-d454-4504-92af-e7a0f0b288ea")
 	)
 )

@@ -2339,7 +2339,7 @@
 				)
 			)
 		)
-		(property "Footprint" "pmi_2023_specific:pmi_2023_interconnection"
+		(property "Footprint" "pmi_2023_specific:pmi_2023_interconnection_bot"
 			(at 242.57 93.98 0)
 			(effects
 				(font
