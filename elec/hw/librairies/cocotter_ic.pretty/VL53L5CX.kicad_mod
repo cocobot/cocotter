@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,30 +62,11 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
 	(attr smd)
-	(fp_line
-		(start -1.07 -1.815)
-		(end -0.17 -1.815)
-		(stroke
-			(width 0.3)
-			(type solid)
-		)
-		(layer "F.SilkS")
-		(uuid "aa5c0cfb-7c54-4297-8f3d-e14d43c56088")
-	)
-	(fp_line
-		(start -1.07 -0.815)
-		(end -1.07 -1.815)
-		(stroke
-			(width 0.3)
-			(type default)
-		)
-		(layer "F.SilkS")
-		(uuid "cccb0027-9ffb-45e2-8b51-a973b8b9a5fa")
-	)
 	(fp_line
 		(start -0.87 -1.615)
 		(end 5.53 -1.615)
@@ -123,6 +106,46 @@
 		)
 		(layer "F.SilkS")
 		(uuid "b779291e-e9dd-46f1-9549-92128a1f9a9e")
+	)
+	(fp_line
+		(start 5.6 0.7)
+		(end 5.6 1.5)
+		(stroke
+			(width 0.3)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "038e0007-7cdf-4866-a4c9-e9b34c7098c4")
+	)
+	(fp_line
+		(start 5.6 1.5)
+		(end 4.8 1.5)
+		(stroke
+			(width 0.3)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "42d09875-c901-484d-ad45-8c71c282e777")
+	)
+	(fp_line
+		(start -1.07 -1.815)
+		(end -0.17 -1.815)
+		(stroke
+			(width 0.3)
+			(type solid)
+		)
+		(layer "Dwgs.User")
+		(uuid "aa5c0cfb-7c54-4297-8f3d-e14d43c56088")
+	)
+	(fp_line
+		(start -1.07 -0.815)
+		(end -1.07 -1.815)
+		(stroke
+			(width 0.3)
+			(type default)
+		)
+		(layer "Dwgs.User")
+		(uuid "cccb0027-9ffb-45e2-8b51-a973b8b9a5fa")
 	)
 	(fp_circle
 		(center 0 0)

@@ -9621,7 +9621,7 @@
 				(hide yes)
 			)
 		)
-		(property "ki_fp_filters" "Connector*:*_1x??_*"
+		(property "ki_fp_filters" "Connector*:*_1x??_* cocotter_connectors:tof_sensor_male*"
 			(at 0 0 0)
 			(effects
 				(font

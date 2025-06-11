@@ -309,6 +309,18 @@
 	)
 	(fp_poly
 		(pts
+			(xy -0.3 2.8) (xy 0 2.5) (xy 0.3 2.8)
+		)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.SilkS")
+		(uuid "5669c52e-e140-4020-ac16-ede1e30cf47a")
+	)
+	(fp_poly
+		(pts
 			(xy 3.75 3.75) (xy 2.7 3.8) (xy 2.7 4.2) (xy 4.2 4.2) (xy 4.2 2.8) (xy 3.8 2.8)
 		)
 		(stroke
@@ -400,13 +412,13 @@
 	(pad "" np_thru_hole circle
 		(at 0 -1.9 180)
 		(size 0.8 0.8)
-		(drill 1)
+		(drill 1.1)
 		(layers "F&B.Cu" "*.Mask")
 		(uuid "13eab86b-9e1b-4512-a325-fd4f82984c7e")
 	)
 	(pad "" np_thru_hole circle
 		(at 0 1.9 180)
-		(size 1.1 1.1)
+		(size 0.8 0.8)
 		(drill 1)
 		(layers "F&B.Cu" "*.Mask")
 		(uuid "5228502d-eaf5-47c5-886f-04bd1b152499")
