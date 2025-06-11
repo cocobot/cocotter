@@ -2122,155 +2122,6 @@
 				)
 			)
 		)
-		(symbol "cocotter_resistors:R_150R_0805_1%"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "150R 1%"
-				(at 5.08 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0805_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "150R 0805 1% 100mW"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C17471"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_150R_0805_1%_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_150R_0805_1%_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_resistors:R_27k_0603_1%"
 			(pin_numbers hide)
 			(pin_names
@@ -2382,6 +2233,155 @@
 				)
 			)
 			(symbol "R_27k_0603_1%_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "cocotter_resistors:R_82R_0805_1%"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "82R 1%"
+				(at 5.08 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0805_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "82R 0805 1% 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C17841"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_82R_0805_1%_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_82R_0805_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -2841,6 +2841,12 @@
 		(uuid "47be9784-772b-42e3-89d4-e3e298604e9b")
 	)
 	(junction
+		(at 95.25 146.05)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5f587354-61a8-4828-b35e-8c18fd8e0346")
+	)
+	(junction
 		(at 166.37 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2869,6 +2875,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8d12a582-9899-4b66-9969-72e722e04dc1")
+	)
+	(junction
+		(at 93.98 143.51)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9a9d0957-76ca-4487-9e10-9dd91c7959de")
 	)
 	(junction
 		(at 68.58 33.02)
@@ -2961,6 +2973,18 @@
 		(uuid "e3e916d4-69c1-4bb8-be89-5528e5fad015")
 	)
 	(junction
+		(at 96.52 148.59)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e8c2c03e-71aa-4d8e-8105-9e682b1c6e34")
+	)
+	(junction
+		(at 144.78 151.13)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ebc44174-afb2-4681-9a7f-749932980134")
+	)
+	(junction
 		(at 109.22 50.8)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3050,6 +3074,16 @@
 	)
 	(wire
 		(pts
+			(xy 96.52 148.59) (xy 153.67 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c469cba-dde0-4f04-975c-1013adbe3b4d")
+	)
+	(wire
+		(pts
 			(xy 147.32 50.8) (xy 151.13 50.8)
 		)
 		(stroke
@@ -3097,6 +3131,16 @@
 			(type default)
 		)
 		(uuid "0fa02e68-e20b-4943-9737-61026787b799")
+	)
+	(wire
+		(pts
+			(xy 157.48 116.84) (xy 158.75 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "119f3417-04ed-4f5f-abc9-3de7d3ccb881")
 	)
 	(wire
 		(pts
@@ -3157,6 +3201,16 @@
 			(type default)
 		)
 		(uuid "2092c4c3-e3e1-4641-b8fe-2d19a9a19325")
+	)
+	(wire
+		(pts
+			(xy 152.4 146.05) (xy 152.4 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2124a005-9a2a-44bc-94f7-31990639d1e6")
 	)
 	(wire
 		(pts
@@ -3250,6 +3304,16 @@
 	)
 	(wire
 		(pts
+			(xy 151.13 125.73) (xy 158.75 125.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3fae27a7-ffd3-414e-9646-f1122e4cad38")
+	)
+	(wire
+		(pts
 			(xy 33.02 125.73) (xy 35.56 125.73)
 		)
 		(stroke
@@ -3277,6 +3341,16 @@
 			(type default)
 		)
 		(uuid "41f610c9-beef-4446-9bc8-1e8e306eb065")
+	)
+	(wire
+		(pts
+			(xy 151.13 125.73) (xy 151.13 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "44fcdc01-b073-41d8-aaa4-843f37fe817e")
 	)
 	(wire
 		(pts
@@ -3410,6 +3484,16 @@
 	)
 	(wire
 		(pts
+			(xy 144.78 120.65) (xy 158.75 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68091a25-2558-4138-9e6c-0de66a187efe")
+	)
+	(wire
+		(pts
 			(xy 95.25 146.05) (xy 95.25 128.27)
 		)
 		(stroke
@@ -3530,6 +3614,16 @@
 	)
 	(wire
 		(pts
+			(xy 153.67 130.81) (xy 158.75 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7bfb8330-95d4-4a82-a65b-ada9e4aee6fd")
+	)
+	(wire
+		(pts
 			(xy 66.04 83.82) (xy 27.94 83.82)
 		)
 		(stroke
@@ -3597,6 +3691,16 @@
 			(type default)
 		)
 		(uuid "8f0e86ce-7baf-48cf-a68e-8dad67e87fbd")
+	)
+	(wire
+		(pts
+			(xy 207.01 127) (xy 207.01 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "90bfcdba-3e4a-47e8-8dc3-b6a4d4cd317a")
 	)
 	(wire
 		(pts
@@ -3800,6 +3904,16 @@
 	)
 	(wire
 		(pts
+			(xy 207.01 151.13) (xy 144.78 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b31ec5bb-4ab8-4f6e-bed5-b83cf01e5565")
+	)
+	(wire
+		(pts
 			(xy 44.45 58.42) (xy 54.61 58.42)
 		)
 		(stroke
@@ -3847,6 +3961,16 @@
 			(type default)
 		)
 		(uuid "bb8c026b-902d-44ed-adb9-e82b137360d9")
+	)
+	(wire
+		(pts
+			(xy 153.67 148.59) (xy 153.67 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bd19f1d4-15f9-49ec-97e1-b0dad3eab249")
 	)
 	(wire
 		(pts
@@ -3980,6 +4104,16 @@
 	)
 	(wire
 		(pts
+			(xy 152.4 128.27) (xy 158.75 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d3835ea6-ccbd-40a3-8463-f0a22ead839c")
+	)
+	(wire
+		(pts
 			(xy 96.52 74.93) (xy 109.22 74.93)
 		)
 		(stroke
@@ -4090,6 +4224,16 @@
 	)
 	(wire
 		(pts
+			(xy 157.48 113.03) (xy 157.48 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e092bd7d-da43-4aaf-a5b0-f622faa23e38")
+	)
+	(wire
+		(pts
 			(xy 27.94 81.28) (xy 66.04 81.28)
 		)
 		(stroke
@@ -4147,6 +4291,16 @@
 			(type default)
 		)
 		(uuid "e4903cf4-bd53-4db2-8644-e117116293d0")
+	)
+	(wire
+		(pts
+			(xy 151.13 143.51) (xy 93.98 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e4f113e1-84d0-4e29-8d64-62c7551d421f")
 	)
 	(wire
 		(pts
@@ -4270,6 +4424,16 @@
 	)
 	(wire
 		(pts
+			(xy 95.25 146.05) (xy 152.4 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fd46a514-87bd-467b-9bf4-45ad312c296a")
+	)
+	(wire
+		(pts
 			(xy 190.5 43.18) (xy 195.58 43.18)
 		)
 		(stroke
@@ -4287,6 +4451,25 @@
 			(type default)
 		)
 		(uuid "ff10bfa2-8a7c-4aac-bb0a-c0ffc23eca1a")
+	)
+	(text_box "default I2C@ : 0b0101001"
+		(exclude_from_sim no)
+		(at 163.83 133.35 0)
+		(size 13.97 7.62)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "203ac8f3-9e67-430a-95a8-f691e282b34a")
 	)
 	(text_box "250mA out max\npwm frequency > 16kHz"
 		(exclude_from_sim no)
@@ -4411,9 +4594,18 @@
 		)
 		(uuid "c1a670d0-83ec-4c29-b607-be6833822c75")
 	)
+	(label "enable_tof2"
+		(at 146.05 120.65 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "068781ea-a8c2-43be-9051-39c9861c0edc")
+	)
 	(label "line_detect_r0"
 		(at 118.11 50.8 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4424,7 +4616,6 @@
 	)
 	(label "line_detect_r2"
 		(at 223.52 50.8 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4435,7 +4626,6 @@
 	)
 	(label "ctc_right"
 		(at 67.31 179.07 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4446,7 +4636,6 @@
 	)
 	(label "line_detect_l1"
 		(at 175.26 25.4 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4457,7 +4646,6 @@
 	)
 	(label "line_detect_r2"
 		(at 97.79 74.93 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4467,8 +4655,7 @@
 		(uuid "2a8a7ee6-b693-4fc0-8220-470d85ebcefb")
 	)
 	(label "line_detect_l1"
-		(at 97.79 87.63 0)
-		(fields_autoplaced yes)
+		(at 97.79 85.09 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4479,7 +4666,6 @@
 	)
 	(label "line_led_3v3"
 		(at 142.24 17.78 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4489,8 +4675,7 @@
 		(uuid "2f9d50c6-6e68-4f3e-a738-8d78fe539b64")
 	)
 	(label "line_detect_l2"
-		(at 97.79 90.17 0)
-		(fields_autoplaced yes)
+		(at 97.79 87.63 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4501,7 +4686,6 @@
 	)
 	(label "line_detect_r0"
 		(at 97.79 80.01 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4512,7 +4696,6 @@
 	)
 	(label "line_led_3v3"
 		(at 68.58 33.02 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4523,7 +4706,6 @@
 	)
 	(label "line_detect_l0"
 		(at 97.79 82.55 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4534,7 +4716,6 @@
 	)
 	(label "line_led_3v3"
 		(at 85.09 17.78 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4545,7 +4726,6 @@
 	)
 	(label "line_led_3v3"
 		(at 190.5 43.18 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4556,7 +4736,6 @@
 	)
 	(label "line_detect_l0"
 		(at 118.11 25.4 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4567,7 +4746,6 @@
 	)
 	(label "ctc_left"
 		(at 41.91 179.07 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4578,7 +4756,6 @@
 	)
 	(label "line_led_3v3"
 		(at 237.49 43.18 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4589,7 +4766,6 @@
 	)
 	(label "enable_tof1"
 		(at 83.82 120.65 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4600,7 +4776,6 @@
 	)
 	(label "line_led_3v3"
 		(at 85.09 43.18 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4611,7 +4786,6 @@
 	)
 	(label "line_detect_l3"
 		(at 270.51 25.4 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4622,7 +4796,6 @@
 	)
 	(label "line_led_3v3"
 		(at 190.5 17.78 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4633,7 +4806,6 @@
 	)
 	(label "line_detect_r3"
 		(at 270.51 50.8 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4644,7 +4816,6 @@
 	)
 	(label "line_detect_l2"
 		(at 223.52 25.4 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4655,7 +4826,6 @@
 	)
 	(label "line_detect_r1"
 		(at 97.79 77.47 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4666,7 +4836,6 @@
 	)
 	(label "line_detect_r1"
 		(at 175.26 50.8 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4677,7 +4846,6 @@
 	)
 	(label "line_led_3v3"
 		(at 142.24 43.18 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4688,7 +4856,6 @@
 	)
 	(label "line_detect_r3"
 		(at 97.79 72.39 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4699,7 +4866,6 @@
 	)
 	(label "line_led_3v3"
 		(at 237.49 17.78 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4709,8 +4875,7 @@
 		(uuid "e37e559f-ae52-440f-ab27-0dba1b80137a")
 	)
 	(label "line_detect_l3"
-		(at 97.79 85.09 0)
-		(fields_autoplaced yes)
+		(at 97.79 90.17 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4721,7 +4886,6 @@
 	)
 	(label "tof_irq"
 		(at 85.09 127 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4730,10 +4894,9 @@
 		)
 		(uuid "f78cb9f6-e607-42c1-ba18-629e3f64bdc7")
 	)
-	(hierarchical_label "sda_tof_3v3"
+	(hierarchical_label "sda_3v3"
 		(shape input)
 		(at 27.94 81.28 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4745,7 +4908,6 @@
 	(hierarchical_label "scl_tof_3v3"
 		(shape input)
 		(at 30.48 148.59 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4757,7 +4919,6 @@
 	(hierarchical_label "line_led_pwm_3v3"
 		(shape input)
 		(at 31.75 20.32 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4766,10 +4927,9 @@
 		)
 		(uuid "16fb461b-7bbd-49a3-8de1-3b6d7ff5e42c")
 	)
-	(hierarchical_label "scl_tof_3v3"
+	(hierarchical_label "scl_3v3"
 		(shape input)
 		(at 27.94 83.82 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4781,7 +4941,6 @@
 	(hierarchical_label "tof_irq"
 		(shape output)
 		(at 30.48 151.13 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4793,7 +4952,6 @@
 	(hierarchical_label "enable_tof_3v3"
 		(shape input)
 		(at 30.48 120.65 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4805,7 +4963,6 @@
 	(hierarchical_label "i2C_io_int_3v3"
 		(shape output)
 		(at 27.94 72.39 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4817,7 +4974,6 @@
 	(hierarchical_label "ctc_left"
 		(shape output)
 		(at 71.12 186.69 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4829,7 +4985,6 @@
 	(hierarchical_label "{slash}reset_tof_3v3"
 		(shape input)
 		(at 30.48 143.51 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4841,7 +4996,6 @@
 	(hierarchical_label "sda_tof_3v3"
 		(shape input)
 		(at 30.48 146.05 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4853,7 +5007,6 @@
 	(hierarchical_label "ctc_right"
 		(shape output)
 		(at 71.12 184.15 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5429,6 +5582,91 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_connectors:tof_sensor_master")
+		(at 120.65 123.19 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "146b9150-f8ff-44c1-83f0-e8587d0ef6b6")
+		(property "Reference" "U26"
+			(at 120.65 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "tof_sensor_master"
+			(at 120.65 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:tof_sensor_male_without_center"
+			(at 120.65 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 101.092 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "tof sensor board connector - female"
+			(at 120.65 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6882010b-b01e-4f59-98ce-21b49a70f9fd")
+		)
+		(pin "2"
+			(uuid "d47994dc-7b88-4538-9640-26cad86229da")
+		)
+		(pin "3"
+			(uuid "e1498ccc-74af-4ab8-a3a0-8d8078b9e8a3")
+		)
+		(pin "4"
+			(uuid "7fa87218-e783-4d8b-b353-a0b1402dbd0c")
+		)
+		(pin "5"
+			(uuid "4f371de2-4f43-4213-9684-43dfc05b2226")
+		)
+		(pin "6"
+			(uuid "03f3b1e5-3818-4d55-8763-8ebcb8a39702")
+		)
+		(pin "7"
+			(uuid "5a4dbca1-e9ed-41c6-a1dd-93b00e37d5bc")
+		)
+		(pin "8"
+			(uuid "7617425d-0e89-441c-bfad-6603b4f76ee0")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/7e29bdf2-f1b2-4a04-a6a0-e1a9d40b2651"
+					(reference "U26")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 54.61 62.23 0)
 		(unit 1)
@@ -5985,7 +6223,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 242.57 21.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6002,8 +6240,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 247.65 22.86 0)
+		(property "Value" "82R"
+			(at 246.38 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6037,7 +6275,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 242.57 21.59 0)
 			(effects
 				(font
@@ -6055,7 +6293,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 242.57 21.59 0)
 			(effects
 				(font
@@ -7820,7 +8058,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:tof_sensor_master")
-		(at 120.65 123.19 0)
+		(at 59.69 123.19 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -7829,7 +8067,7 @@
 		(fields_autoplaced yes)
 		(uuid "772eea70-ff8d-433e-ade3-ef6e2f8d3525")
 		(property "Reference" "U10"
-			(at 120.65 106.68 0)
+			(at 59.69 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7837,7 +8075,7 @@
 			)
 		)
 		(property "Value" "tof_sensor_master"
-			(at 120.65 109.22 0)
+			(at 59.69 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7845,7 +8083,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:tof_sensor_male"
-			(at 120.65 111.76 0)
+			(at 59.69 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7853,7 +8091,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 101.092 123.19 0)
+			(at 40.132 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7862,7 +8100,7 @@
 			)
 		)
 		(property "Description" "tof sensor board connector - female"
-			(at 120.65 123.19 0)
+			(at 59.69 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7904,7 +8142,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 147.32 46.99 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7921,8 +8159,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 152.4 48.26 0)
+		(property "Value" "82R"
+			(at 151.13 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7956,7 +8194,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 147.32 46.99 0)
 			(effects
 				(font
@@ -7974,7 +8212,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 147.32 46.99 0)
 			(effects
 				(font
@@ -8404,7 +8642,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 90.17 21.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8421,8 +8659,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 95.25 22.86 0)
+		(property "Value" "82R"
+			(at 93.98 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8456,7 +8694,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 90.17 21.59 0)
 			(effects
 				(font
@@ -8474,7 +8712,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 90.17 21.59 0)
 			(effects
 				(font
@@ -8586,7 +8824,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 195.58 46.99 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8603,8 +8841,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 200.66 48.26 0)
+		(property "Value" "82R"
+			(at 199.39 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8638,7 +8876,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 195.58 46.99 0)
 			(effects
 				(font
@@ -8656,7 +8894,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 195.58 46.99 0)
 			(effects
 				(font
@@ -8939,7 +9177,73 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "power:+3V3")
+		(at 157.48 113.03 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a0fb4898-46f1-4f85-a7fb-b3067ac815d5")
+		(property "Reference" "#PWR137"
+			(at 157.48 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 157.48 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 157.48 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 157.48 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 157.48 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8016d4e1-77fa-476b-af68-574e4d341443")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/7e29bdf2-f1b2-4a04-a6a0-e1a9d40b2651"
+					(reference "#PWR137")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 242.57 46.99 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8956,8 +9260,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 247.65 48.26 0)
+		(property "Value" "82R"
+			(at 246.38 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8991,7 +9295,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 242.57 46.99 0)
 			(effects
 				(font
@@ -9009,7 +9313,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 242.57 46.99 0)
 			(effects
 				(font
@@ -9246,6 +9550,72 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/7e29bdf2-f1b2-4a04-a6a0-e1a9d40b2651"
 					(reference "#PWR019")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 182.88 135.89 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b88c3887-042b-459f-863e-8e334c70a5b8")
+		(property "Reference" "#PWR139"
+			(at 182.88 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 182.88 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 182.88 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "08993469-afb1-425d-9d4b-925b8e914343")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/7e29bdf2-f1b2-4a04-a6a0-e1a9d40b2651"
+					(reference "#PWR139")
 					(unit 1)
 				)
 			)
@@ -9692,7 +10062,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 90.17 46.99 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -9709,8 +10079,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 95.25 48.26 0)
+		(property "Value" "82R"
+			(at 93.98 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9744,7 +10114,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 90.17 46.99 0)
 			(effects
 				(font
@@ -9762,7 +10132,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 90.17 46.99 0)
 			(effects
 				(font
@@ -10401,7 +10771,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:tof_sensor_master")
-		(at 59.69 123.19 0)
+		(at 182.88 123.19 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -10410,7 +10780,7 @@
 		(fields_autoplaced yes)
 		(uuid "d6dd2164-7ac8-4045-9d33-bb2ef2bc6df5")
 		(property "Reference" "U6"
-			(at 59.69 106.68 0)
+			(at 182.88 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10418,7 +10788,7 @@
 			)
 		)
 		(property "Value" "tof_sensor_master"
-			(at 59.69 109.22 0)
+			(at 182.88 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10426,7 +10796,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:tof_sensor_male"
-			(at 59.69 111.76 0)
+			(at 182.88 111.76 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10434,7 +10804,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 40.132 123.19 0)
+			(at 163.322 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10443,7 +10813,7 @@
 			)
 		)
 		(property "Description" "tof sensor board connector - female"
-			(at 59.69 123.19 0)
+			(at 182.88 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10633,7 +11003,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 195.58 21.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10650,8 +11020,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 200.66 22.86 0)
+		(property "Value" "82R"
+			(at 199.39 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10685,7 +11055,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 195.58 21.59 0)
 			(effects
 				(font
@@ -10703,7 +11073,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 195.58 21.59 0)
 			(effects
 				(font
@@ -11149,7 +11519,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_150R_0805_1%")
+		(lib_id "cocotter_resistors:R_82R_0805_1%")
 		(at 147.32 21.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11166,8 +11536,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "150R 1%"
-			(at 152.4 22.86 0)
+		(property "Value" "82R"
+			(at 151.13 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11201,7 +11571,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "150R 0805 1% 100mW"
+		(property "Specification" "82R 0805 1% 100mW"
 			(at 147.32 21.59 0)
 			(effects
 				(font
@@ -11219,7 +11589,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C17471"
+		(property "JLCPCB Part #" "C17841"
 			(at 147.32 21.59 0)
 			(effects
 				(font

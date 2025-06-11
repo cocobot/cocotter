@@ -3217,155 +3217,6 @@
 				)
 			)
 		)
-		(symbol "cocotter_resistors:R_1k_0603_1%"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "1k 1%"
-				(at 3.81 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "10k 0603 1% 100mW"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" "603-RC0603FR-10100KL"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C2991540"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_1k_0603_1%_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_1k_0603_1%_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_resistors:R_390R_0603_1%"
 			(pin_numbers hide)
 			(pin_names
@@ -3882,12 +3733,6 @@
 		)
 	)
 	(junction
-		(at 153.67 161.29)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "04919e9e-1f9a-4352-b9a3-a3bbb888042c")
-	)
-	(junction
 		(at 176.53 151.13)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3924,12 +3769,6 @@
 		(uuid "233e6670-8fc6-4875-a66f-29ad6b180848")
 	)
 	(junction
-		(at 163.83 161.29)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "285023f3-ff9c-4efa-bd9f-b608d8ad79e4")
-	)
-	(junction
 		(at 118.11 180.34)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3942,22 +3781,10 @@
 		(uuid "2edd89ba-e226-4c88-b3bb-1717139ca162")
 	)
 	(junction
-		(at 153.67 177.8)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "2f03dfe3-bfdb-4b05-9d14-8f9a6cbe64e8")
-	)
-	(junction
 		(at 121.92 161.29)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "328c8ba6-8db5-468e-a13d-6168ffc8e8c7")
-	)
-	(junction
-		(at 163.83 175.26)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "36b3eb5e-621d-4cfb-a422-9c48ee269a49")
 	)
 	(junction
 		(at 35.56 172.72)
@@ -4527,16 +4354,6 @@
 			(type default)
 		)
 		(uuid "1c158b15-36f3-40e6-b46e-a5736ff16b80")
-	)
-	(wire
-		(pts
-			(xy 118.11 175.26) (xy 163.83 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1cd836c3-6e68-4114-a10d-287b334f29fd")
 	)
 	(wire
 		(pts
@@ -5110,16 +4927,6 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 177.8) (xy 153.67 177.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "66001973-40b1-45ad-93cb-0a79d38bc513")
-	)
-	(wire
-		(pts
 			(xy 50.8 190.5) (xy 40.64 190.5)
 		)
 		(stroke
@@ -5147,6 +4954,16 @@
 			(type default)
 		)
 		(uuid "67ad030b-8477-43b0-ac0c-9bac17d2c7c7")
+	)
+	(wire
+		(pts
+			(xy 118.11 175.26) (xy 160.02 175.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68fa880f-61f3-4f88-8248-f8b07f236fe6")
 	)
 	(wire
 		(pts
@@ -5400,16 +5217,6 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 165.1) (xy 163.83 161.29)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "852d2944-0701-4b18-8dab-03ade7d5ff68")
-	)
-	(wire
-		(pts
 			(xy 35.56 144.78) (xy 40.64 144.78)
 		)
 		(stroke
@@ -5427,16 +5234,6 @@
 			(type default)
 		)
 		(uuid "87de8851-2bf2-4f44-a6ec-96fb4a40a2db")
-	)
-	(wire
-		(pts
-			(xy 153.67 172.72) (xy 153.67 177.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "88498bcc-33db-4ffa-8adb-db617093706a")
 	)
 	(wire
 		(pts
@@ -5710,16 +5507,6 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 172.72) (xy 163.83 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ad954d80-5af0-4a3a-9880-6411954082eb")
-	)
-	(wire
-		(pts
 			(xy 194.31 69.85) (xy 194.31 68.58)
 		)
 		(stroke
@@ -5777,16 +5564,6 @@
 			(type default)
 		)
 		(uuid "b5d3f817-f210-4294-ac8e-f6300ef0c7e4")
-	)
-	(wire
-		(pts
-			(xy 153.67 165.1) (xy 153.67 161.29)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b6339ace-a9f9-44f2-9188-0137b595d49b")
 	)
 	(bus
 		(pts
@@ -5887,26 +5664,6 @@
 			(type default)
 		)
 		(uuid "c56d14b6-fc48-4cb2-a7db-69c356216fad")
-	)
-	(wire
-		(pts
-			(xy 163.83 175.26) (xy 171.45 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c8b82238-ce78-4814-8f35-c41fe8beae4f")
-	)
-	(wire
-		(pts
-			(xy 153.67 177.8) (xy 171.45 177.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cbcf6db4-c65f-4899-9538-feb0f3a8f327")
 	)
 	(wire
 		(pts
@@ -6088,16 +5845,6 @@
 		)
 		(uuid "e83d12bd-54dd-4322-8199-958245c77a35")
 	)
-	(wire
-		(pts
-			(xy 153.67 161.29) (xy 163.83 161.29)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e85bab12-dfa9-4da2-8e12-bba4efb8a98d")
-	)
 	(bus
 		(pts
 			(xy 121.92 45.72) (xy 121.92 48.26)
@@ -6137,6 +5884,16 @@
 			(type default)
 		)
 		(uuid "ea2ca716-cf19-4a0c-a0da-0c399b25093c")
+	)
+	(wire
+		(pts
+			(xy 118.11 177.8) (xy 160.02 177.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ecb28ac6-a273-467b-a12d-50b3d8d95536")
 	)
 	(wire
 		(pts
@@ -6356,7 +6113,6 @@
 	)
 	(label "select2"
 		(at 110.49 53.34 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6367,7 +6123,6 @@
 	)
 	(label "conf2"
 		(at 58.42 177.8 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6378,7 +6133,6 @@
 	)
 	(label "select3"
 		(at 110.49 43.18 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6388,8 +6142,7 @@
 		(uuid "20c6ac1d-4ada-4dd6-8848-7f89c26e6297")
 	)
 	(label "sda_3v3"
-		(at 165.1 175.26 0)
-		(fields_autoplaced yes)
+		(at 146.05 175.26 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6400,7 +6153,6 @@
 	)
 	(label "select[0..4]"
 		(at 121.92 40.64 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6410,8 +6162,7 @@
 		(uuid "2dc20908-2959-48c7-880c-1f9a99f7500f")
 	)
 	(label "scl_3v3"
-		(at 165.1 177.8 0)
-		(fields_autoplaced yes)
+		(at 146.05 177.8 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6422,7 +6173,6 @@
 	)
 	(label "conf0"
 		(at 110.49 60.96 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6433,7 +6183,6 @@
 	)
 	(label "conf3"
 		(at 58.42 180.34 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6444,7 +6193,6 @@
 	)
 	(label "conf[0..2]"
 		(at 121.92 53.34 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6455,7 +6203,6 @@
 	)
 	(label "select4"
 		(at 110.49 50.8 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6466,7 +6213,6 @@
 	)
 	(label "select4"
 		(at 73.66 130.81 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6477,7 +6223,6 @@
 	)
 	(label "select1"
 		(at 27.94 130.81 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6488,7 +6233,6 @@
 	)
 	(label "select1"
 		(at 110.49 48.26 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6499,7 +6243,6 @@
 	)
 	(label "select[0..4]"
 		(at 21.59 116.84 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6510,7 +6253,6 @@
 	)
 	(label "conf2"
 		(at 110.49 55.88 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6521,7 +6263,6 @@
 	)
 	(label "sda_3v3"
 		(at 30.48 52.07 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6532,7 +6273,6 @@
 	)
 	(label "conf[0..3]"
 		(at 69.85 170.18 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6543,7 +6283,6 @@
 	)
 	(label "select0"
 		(at 110.49 45.72 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6554,7 +6293,6 @@
 	)
 	(label "scl_3v3"
 		(at 30.48 54.61 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6565,7 +6303,6 @@
 	)
 	(label "conf1"
 		(at 58.42 175.26 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6576,7 +6313,6 @@
 	)
 	(label "select0"
 		(at 73.66 125.73 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6587,7 +6323,6 @@
 	)
 	(label "select3"
 		(at 73.66 128.27 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6598,7 +6333,6 @@
 	)
 	(label "conf1"
 		(at 110.49 58.42 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6609,7 +6343,6 @@
 	)
 	(label "conf0"
 		(at 58.42 172.72 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6620,7 +6353,6 @@
 	)
 	(label "select2"
 		(at 27.94 128.27 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6632,7 +6364,6 @@
 	(hierarchical_label "right_encod_raw_B_3v3"
 		(shape input)
 		(at 175.26 77.47 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6644,7 +6375,6 @@
 	(hierarchical_label "sda_3v3"
 		(shape bidirectional)
 		(at 27.94 52.07 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6656,7 +6386,6 @@
 	(hierarchical_label "left_encod_B_3v3"
 		(shape output)
 		(at 234.95 41.91 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6668,7 +6397,6 @@
 	(hierarchical_label "left_encod_A_3v3"
 		(shape output)
 		(at 234.95 36.83 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6680,7 +6408,6 @@
 	(hierarchical_label "left_encod_raw_A_3v3"
 		(shape input)
 		(at 175.26 36.83 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6692,7 +6419,6 @@
 	(hierarchical_label "left_encod_raw_B_3v3"
 		(shape input)
 		(at 175.26 41.91 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6704,7 +6430,6 @@
 	(hierarchical_label "start_robot_3v3"
 		(shape output)
 		(at 251.46 137.16 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6716,7 +6441,6 @@
 	(hierarchical_label "right_encod_A_3v3"
 		(shape output)
 		(at 234.95 82.55 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6728,7 +6452,6 @@
 	(hierarchical_label "right_encod_B_3v3"
 		(shape output)
 		(at 234.95 77.47 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6740,7 +6463,6 @@
 	(hierarchical_label "i2C_io_int_3v3"
 		(shape output)
 		(at 27.94 43.18 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6752,7 +6474,6 @@
 	(hierarchical_label "conf3"
 		(shape output)
 		(at 78.74 182.88 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6764,7 +6485,6 @@
 	(hierarchical_label "scl_3v3"
 		(shape input)
 		(at 27.94 54.61 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6776,7 +6496,6 @@
 	(hierarchical_label "right_encod_raw_A_3v3"
 		(shape input)
 		(at 175.26 82.55 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6788,7 +6507,6 @@
 	(hierarchical_label "emergency_stop_3v3"
 		(shape output)
 		(at 142.24 127 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7660,103 +7378,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_1k_0603_1%")
-		(at 153.67 168.91 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp yes)
-		(fields_autoplaced yes)
-		(uuid "2350ea04-5f07-4fd4-b24c-9544782a8aec")
-		(property "Reference" "R80"
-			(at 156.21 167.6399 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1k 1%"
-			(at 156.21 170.1799 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 151.892 168.91 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 153.67 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 153.67 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "10k 0603 1% 100mW"
-			(at 153.67 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" "603-RC0603FR-10100KL"
-			(at 153.67 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C2991540"
-			(at 153.67 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a7a05db4-d1dd-439e-b818-d1fb38b686cf")
-		)
-		(pin "2"
-			(uuid "e5f2ff0f-ef22-4ab4-9e4e-8a203183ca74")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/70ec626c-1f87-41a0-95c0-5e3c50204455"
-					(reference "R80")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_resistors:R_91k_0603_1%")
 		(at 30.48 34.29 0)
 		(unit 1)
@@ -8045,7 +7666,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 163.83 161.29 0)
+		(at 153.67 161.29 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8053,7 +7674,7 @@
 		(dnp no)
 		(uuid "338200d0-13cf-4d2a-b917-fc07d12cb184")
 		(property "Reference" "#PWR033"
-			(at 163.83 165.1 0)
+			(at 153.67 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8062,7 +7683,7 @@
 			)
 		)
 		(property "Value" "+3V3_m"
-			(at 163.83 157.734 0)
+			(at 153.67 157.734 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8070,7 +7691,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 163.83 161.29 0)
+			(at 153.67 161.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8079,7 +7700,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 163.83 161.29 0)
+			(at 153.67 161.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8088,7 +7709,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 163.83 161.29 0)
+			(at 153.67 161.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11808,103 +11429,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/70ec626c-1f87-41a0-95c0-5e3c50204455"
 					(reference "R79")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_resistors:R_1k_0603_1%")
-		(at 163.83 168.91 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp yes)
-		(fields_autoplaced yes)
-		(uuid "e1bd8648-f74b-441c-affc-98c21f956e6c")
-		(property "Reference" "R81"
-			(at 166.37 167.6399 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1k 1%"
-			(at 166.37 170.1799 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 162.052 168.91 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 163.83 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 163.83 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "10k 0603 1% 100mW"
-			(at 163.83 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" "603-RC0603FR-10100KL"
-			(at 163.83 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C2991540"
-			(at 163.83 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "702cb25b-53a1-48d9-b4b1-59f22e3ec67a")
-		)
-		(pin "2"
-			(uuid "e8b829b9-5d39-41c2-bab6-3c3b291a6c99")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/70ec626c-1f87-41a0-95c0-5e3c50204455"
-					(reference "R81")
 					(unit 1)
 				)
 			)

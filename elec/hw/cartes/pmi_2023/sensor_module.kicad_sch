@@ -3547,9 +3547,31 @@
 		)
 		(uuid "9e442999-73ee-4252-af4b-5b07996a7882")
 	)
-	(label "SDA_3v3"
+	(text "Front multizone TOF sensor"
+		(exclude_from_sim no)
+		(at 32.512 74.93 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "4a555a0f-d2c4-49e2-8bff-b660927d9936")
+	)
+	(text "Back multizone TOF sensor"
+		(exclude_from_sim no)
+		(at 151.892 74.676 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "cc8b788b-bf21-4a91-968d-647a2225f0e0")
+	)
+	(label "sda_tof_3v3"
 		(at 165.1 114.3 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3560,7 +3582,6 @@
 	)
 	(label "tof_irq_3v3"
 		(at 48.26 106.68 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3569,9 +3590,8 @@
 		)
 		(uuid "1ae37c5e-0bae-4f6a-9aea-b358d93ecd33")
 	)
-	(label "SDA_3v3"
+	(label "sda_tof_3v3"
 		(at 44.45 114.3 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3580,9 +3600,8 @@
 		)
 		(uuid "49a190d3-b389-45db-ba48-2aa5a1318b03")
 	)
-	(label "SCL_3V3"
+	(label "scl_tof_3v3"
 		(at 44.45 116.84 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3593,7 +3612,6 @@
 	)
 	(label "VL53L5_I2C_RST_u22_3v3"
 		(at 44.45 109.22 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3602,9 +3620,8 @@
 		)
 		(uuid "5f531b3d-56aa-4ffb-917a-ff4757d6b600")
 	)
-	(label "SCL_3V3"
+	(label "scl_tof_3v3"
 		(at 165.1 116.84 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3615,7 +3632,6 @@
 	)
 	(label "enable_front_tof_3v3"
 		(at 44.45 121.92 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3626,7 +3642,6 @@
 	)
 	(label "p3v3_gyro"
 		(at 58.42 22.86 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3637,7 +3652,6 @@
 	)
 	(label "enable_back_tof_3v3"
 		(at 160.02 121.92 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3648,7 +3662,6 @@
 	)
 	(label "VL53L5_I2C_RST_u30_3v3"
 		(at 161.29 109.22 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3659,7 +3672,6 @@
 	)
 	(label "tof_irq_3v3"
 		(at 165.1 106.68 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3671,7 +3683,6 @@
 	(hierarchical_label "gyro_miso_3v3"
 		(shape output)
 		(at 45.72 49.53 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3683,7 +3694,6 @@
 	(hierarchical_label "gyro_ncs_3v3"
 		(shape input)
 		(at 45.72 41.91 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3692,10 +3702,9 @@
 		)
 		(uuid "0f747e9a-756e-4694-84aa-23c9926923e0")
 	)
-	(hierarchical_label "scl_3v3"
+	(hierarchical_label "scl_tof_3v3"
 		(shape input)
 		(at 33.02 116.84 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3707,7 +3716,6 @@
 	(hierarchical_label "enable_back_tof_3v3"
 		(shape input)
 		(at 160.02 121.92 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3719,7 +3727,6 @@
 	(hierarchical_label "tof_irq"
 		(shape output)
 		(at 33.02 106.68 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3731,7 +3738,6 @@
 	(hierarchical_label "gyro_irq_3v3"
 		(shape output)
 		(at 45.72 33.02 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3743,7 +3749,6 @@
 	(hierarchical_label "gyro_mosi_3v3"
 		(shape input)
 		(at 45.72 46.99 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3752,10 +3757,9 @@
 		)
 		(uuid "a695391b-263b-4942-9286-4e54e5e2d362")
 	)
-	(hierarchical_label "sda_3v3"
+	(hierarchical_label "sda_tof_3v3"
 		(shape bidirectional)
 		(at 33.02 114.3 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3767,7 +3771,6 @@
 	(hierarchical_label "gyro_sck_3v3"
 		(shape input)
 		(at 45.72 44.45 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3779,7 +3782,6 @@
 	(hierarchical_label "enable_front_tof_3v3"
 		(shape input)
 		(at 33.02 121.92 180)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6946,7 +6948,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "c94dcd65-9b20-43ef-9823-8b8494e4b38a")
 		(property "Reference" "U22"
 			(at 73.66 100.33 0)
