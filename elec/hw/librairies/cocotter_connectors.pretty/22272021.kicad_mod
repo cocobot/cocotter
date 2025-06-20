@@ -1,0 +1,243 @@
+(footprint "22272021"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -3.8 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "3c21d998-2270-4cd6-b087-07abe9570533")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "22272021"
+		(at 0 3.6 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "d3abe847-416c-4d0a-8258-be9c825d4703")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "68781f8e-f687-4b8e-86cf-d4233e09d511")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "c02092b5-f304-4601-89a1-eaf2f1713d9a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "6248508a-ac3c-4cda-8ed8-be676775a45c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -2.9 -2.54)
+		(end -2.9 2.54)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "e2fe61e2-76cd-4406-bdc6-e6d9f1e318ff")
+	)
+	(fp_line
+		(start -2.9 -2.54)
+		(end 2.9 -2.54)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "693e8ecd-6e58-4fa4-b3cd-2b7b28566169")
+	)
+	(fp_line
+		(start -1.9 -2.54)
+		(end -1.9 2.54)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "1a9265f3-30fb-4ecc-a481-5e8b7edf5292")
+	)
+	(fp_line
+		(start 2.9 2.54)
+		(end -2.9 2.54)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "8ddbc7ff-6f05-49e6-9a73-bc742ba21290")
+	)
+	(fp_line
+		(start 2.9 2.54)
+		(end 2.9 -2.54)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "1be406f7-684e-48eb-a8e6-69bed765b5df")
+	)
+	(fp_rect
+		(start -2.9 -2.54)
+		(end -1.9 2.54)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(fill solid)
+		(layer "F.SilkS")
+		(uuid "e2011d3b-264b-4e1d-9738-0d811e20d69c")
+	)
+	(fp_rect
+		(start -3.4 -3)
+		(end 3.4 3)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill none)
+		(layer "F.CrtYd")
+		(uuid "c6979891-1b0b-4909-ad01-3378c2e477a9")
+	)
+	(fp_line
+		(start -2.9 -2.54)
+		(end 2.9 -2.54)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "60bf85d5-db07-4b5d-86b2-e63d2c4e3af3")
+	)
+	(fp_line
+		(start -2.9 2.54)
+		(end -2.9 -2.54)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "a1fd081d-57b3-4a24-a4f5-a3e8df7bad6a")
+	)
+	(fp_line
+		(start 2.9 -2.54)
+		(end 2.9 2.54)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "ca82d51f-f769-43fc-a9d1-0fa704a6e8b6")
+	)
+	(fp_line
+		(start 2.9 2.54)
+		(end -2.9 2.54)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "7230af5e-0f73-47ee-b169-a9fb176681bc")
+	)
+	(fp_rect
+		(start -2.9 -2.54)
+		(end -1.9 2.54)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill solid)
+		(layer "F.Fab")
+		(uuid "77b0de7e-cae6-4305-a69c-bfa5cd64b222")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "e2ebeae3-c7ca-446d-9360-6a91da64d168")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole rect
+		(at 0 -1.27)
+		(size 2 2)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
+			"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
+			"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
+			"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
+			"In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "9d663655-71ae-4536-a75f-9509f3a48b38")
+	)
+	(pad "2" thru_hole oval
+		(at 0 1.27)
+		(size 2 2)
+		(drill 1.2)
+		(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
+			"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
+			"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
+			"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
+			"In29.Cu" "In30.Cu"
+		)
+		(remove_unused_layers no)
+		(uuid "3baf2ad9-eb24-44af-9710-fa79ad054eb4")
+	)
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/0022272021.stp"
+		(offset
+			(xyz 0 0 1.6)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 -90)
+		)
+	)
+)
