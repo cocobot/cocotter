@@ -9848,7 +9848,7 @@
 			(uuid "9bc299ab-4b33-4c9d-8589-3c453f70b6db")
 		)
 		(instances
-			(project ""
+			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
 					(reference "TP3")
 					(unit 1)

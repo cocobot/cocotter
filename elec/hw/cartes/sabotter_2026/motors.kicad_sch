@@ -549,6 +549,155 @@
 				)
 			)
 		)
+		(symbol "cocotter_resistors:R_0R_0603"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "0R"
+				(at 3.81 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0603_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "0R 0603 20mOhms max 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C431718"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_0R_0603_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_0R_0603_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "pmi_2023_specific:+3V3_m"
 			(power)
 			(pin_numbers hide)
@@ -1020,6 +1169,16 @@
 	)
 	(wire
 		(pts
+			(xy 81.28 44.45) (xy 90.17 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "126ce96c-e240-4d96-a5be-e8cfcbccf92b")
+	)
+	(wire
+		(pts
 			(xy 33.02 93.98) (xy 96.52 93.98)
 		)
 		(stroke
@@ -1190,6 +1349,16 @@
 	)
 	(wire
 		(pts
+			(xy 53.34 41.91) (xy 73.66 41.91)
+		)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(uuid "48ab2211-e843-4744-a868-97f47e87e733")
+	)
+	(wire
+		(pts
 			(xy 139.7 114.3) (xy 160.02 114.3)
 		)
 		(stroke
@@ -1240,6 +1409,16 @@
 	)
 	(wire
 		(pts
+			(xy 81.28 41.91) (xy 90.17 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "58c3bdff-07ca-4507-aea1-420a1ed44df7")
+	)
+	(wire
+		(pts
 			(xy 139.7 116.84) (xy 160.02 116.84)
 		)
 		(stroke
@@ -1267,6 +1446,16 @@
 			(type solid)
 		)
 		(uuid "5face55c-84b5-41e0-bc97-372d5a07a490")
+	)
+	(wire
+		(pts
+			(xy 53.34 44.45) (xy 73.66 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5fe6797c-9f34-45f5-815a-d2de117e1e5f")
 	)
 	(wire
 		(pts
@@ -1648,6 +1837,16 @@
 		)
 		(uuid "fbe83ecb-8b79-422c-8aa0-1d180346ce47")
 	)
+	(text "Option to use ribbon cable between sabotter and motor control board.\nSimplify robot wiring."
+		(exclude_from_sim no)
+		(at 80.01 51.308 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "5ca74b8d-9bff-4266-9793-d9513727f90f")
+	)
 	(label "+3V3"
 		(at 39.37 93.98 0)
 		(effects
@@ -1758,6 +1957,16 @@
 		)
 		(uuid "33e5ca8f-1fbc-4d68-919e-9cf8213bd940")
 	)
+	(label "SCK_MOT_3V3"
+		(at 58.42 44.45 0)
+		(effects
+			(font
+				(size 1.2446 1.2446)
+			)
+			(justify left bottom)
+		)
+		(uuid "3da10d09-3477-457e-9f2b-59574c924508")
+	)
 	(label "MISO_MOT_3V3"
 		(at 222.25 115.57 0)
 		(effects
@@ -1797,6 +2006,16 @@
 			(justify left bottom)
 		)
 		(uuid "485c54ac-7e6a-4e46-9927-c376e96a8a7a")
+	)
+	(label "MISO_MOT_3V3"
+		(at 58.42 41.91 0)
+		(effects
+			(font
+				(size 1.2446 1.2446)
+			)
+			(justify left bottom)
+		)
+		(uuid "48655908-9b49-41d6-ba25-8428c8b516c5")
 	)
 	(label "brake_mot_3v3"
 		(at 222.25 92.71 0)
@@ -2326,6 +2545,17 @@
 		)
 		(uuid "8c1a6865-5376-4163-9081-67d6d4455e48")
 	)
+	(hierarchical_label "ctc_right_3v3"
+		(shape input)
+		(at 90.17 41.91 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a5fe4e1e-ddd7-48d3-844b-0169ffe7de23")
+	)
 	(hierarchical_label "miso_mot_3v3"
 		(shape input)
 		(at 53.34 114.3 0)
@@ -2402,6 +2632,111 @@
 			(justify left)
 		)
 		(uuid "eade6615-fa72-4239-98ac-be2af86034bd")
+	)
+	(hierarchical_label "ctc_left_3v3"
+		(shape input)
+		(at 90.17 44.45 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f58144a0-a698-4828-ba30-b7851759cfff")
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_0R_0603")
+		(at 77.47 44.45 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "26b2966f-700e-4e4a-8d7d-fa3b09149439")
+		(property "Reference" "R60"
+			(at 82.296 45.72 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 77.47 44.45 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 77.47 46.228 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 77.47 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 77.47 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 77.47 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 77.47 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 77.47 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "0ef652b5-02d8-4ea1-a493-8a95b7650a73")
+		)
+		(pin "1"
+			(uuid "acf5f13e-faae-428a-997d-97db1df2eea2")
+		)
+		(instances
+			(project "sabotter_2026"
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/11696dad-2dfc-4360-945c-24904b2d5e80"
+					(reference "R60")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "cocotter_connectors:unioc_motor")
@@ -3056,6 +3391,100 @@
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/11696dad-2dfc-4360-945c-24904b2d5e80"
 					(reference "#PWR86")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_0R_0603")
+		(at 77.47 41.91 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "b7da8373-73c9-4ffb-ad77-605f125393c7")
+		(property "Reference" "R59"
+			(at 82.296 40.894 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 77.47 41.91 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 77.47 43.688 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 77.47 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 77.47 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 77.47 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 77.47 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 77.47 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "d1146f93-90ec-4532-b6c8-0e1199aca2c5")
+		)
+		(pin "1"
+			(uuid "d11696da-eacb-4640-9b47-d6d368e2a6f1")
+		)
+		(instances
+			(project ""
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/11696dad-2dfc-4360-945c-24904b2d5e80"
+					(reference "R59")
 					(unit 1)
 				)
 			)

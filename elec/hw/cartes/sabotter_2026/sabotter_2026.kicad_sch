@@ -127,7 +127,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 130.81) (xy 83.82 130.81)
+			(xy 58.42 123.19) (xy 83.82 123.19)
 		)
 		(stroke
 			(width 0)
@@ -297,7 +297,7 @@
 	)
 	(wire
 		(pts
-			(xy 83.82 130.81) (xy 83.82 161.29)
+			(xy 83.82 123.19) (xy 83.82 161.29)
 		)
 		(stroke
 			(width 0)
@@ -356,7 +356,7 @@
 		(uuid "f880272f-3704-4264-9ba6-5e374832e932")
 	)
 	(label "brake_mot_3v3"
-		(at 62.23 130.81 0)
+		(at 62.23 123.19 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -396,7 +396,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "com.kicad_sch"
+		(property "Sheetfile" "uc.kicad_sch"
 			(at 110.49 150.4446 0)
 			(effects
 				(font
@@ -725,7 +725,7 @@
 	)
 	(sheet
 		(at 217.17 78.74)
-		(size 27.94 67.31)
+		(size 27.94 77.47)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -745,7 +745,7 @@
 			)
 		)
 		(property "Sheetfile" "motors.kicad_sch"
-			(at 217.17 146.6346 0)
+			(at 217.17 156.7946 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1091,26 +1091,6 @@
 			)
 			(uuid "60b99f39-7002-4fcf-b518-3a0eb1d402f3")
 		)
-		(pin "ctc_left_3v3" input
-			(at 58.42 123.19 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "5abb8723-a9ad-41e8-ad42-aa63ef58fd5a")
-		)
-		(pin "ctc_right_3v3" input
-			(at 58.42 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "b181c9c1-da06-4125-a7c5-eeaa33ec29ca")
-		)
 		(pin "i2C_io_int_3v3" output
 			(at 29.21 106.68 180)
 			(effects
@@ -1122,7 +1102,7 @@
 			(uuid "56264f91-068f-45fc-8075-d559c0796548")
 		)
 		(pin "brake_mot_3v3" output
-			(at 58.42 130.81 0)
+			(at 58.42 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1130,6 +1110,26 @@
 				(justify right)
 			)
 			(uuid "d47d18ee-a1a9-456f-91b8-5b434d9a196b")
+		)
+		(pin "ctc_left_3v3" input
+			(at 58.42 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "282098ab-6b90-48a8-85b6-0e64baa8dd51")
+		)
+		(pin "ctc_right_3v3" input
+			(at 58.42 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "cfdaa4bd-3c9e-4d4f-add2-f141fe7c26ba")
 		)
 		(instances
 			(project "sabotter_2026"

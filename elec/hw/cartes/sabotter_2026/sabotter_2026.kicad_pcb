@@ -182,6 +182,8 @@
 	(net 100 "Net-(J11-Pad4)")
 	(net 101 "/interfaces/led_com_3v3")
 	(net 102 "Net-(U3-IO7,RTC_GPIO7,GPIO7,TOUCH7,ADC1_CH6)")
+	(net 103 "/motors/ctc_right_3v3")
+	(net 104 "/motors/ctc_left_3v3")
 	(footprint "cocotter_inductors:L_Kyocera_07A7_7.3x6.6mm"
 		(layer "F.Cu")
 		(uuid "0004f412-7f9f-44f5-8d86-bb22194db6a4")
@@ -1385,7 +1387,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/72b6aca8-a633-466c-8e74-12e571f6e6fd")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd dnp)
 		(fp_line
 			(start -0.15 -0.45)
@@ -1584,7 +1586,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/856c6c99-eaa6-439d-a124-b6f00f1a6c3b")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -3191,7 +3193,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/7fe98dc6-ede1-4de4-9ca9-249f9ada8981")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -3642,7 +3644,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/37918f18-4fc8-4c56-8d89-43f10e5a38c4")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -4066,7 +4068,7 @@
 		)
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/7f7835f2-0ddc-46e7-8276-a5dcc0a224ef")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start 3.5 1.45)
@@ -4367,7 +4369,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/6176f27c-a234-4dfa-9cdb-8cc18c150c0a")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -5033,7 +5035,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/933201df-d7b3-4d94-a561-9b02ba281b4a")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -5248,7 +5250,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/b105db03-e267-47d5-bd06-20083619a7e0")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -6684,7 +6686,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/90614d10-3cb6-4004-a603-9e541316fd20")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -6899,7 +6901,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/d01ae69d-33a5-43cf-b5e9-283e88790de2")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd dnp)
 		(fp_line
 			(start -0.15 -0.45)
@@ -7329,7 +7331,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/f7bc70c2-633d-464a-96f5-abf620f286a8")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -7759,7 +7761,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/6333da7e-c435-42d8-9ef2-cc2e6f66458d")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -8661,7 +8663,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/a5ca81f7-bf97-441e-a427-8a130095f52e")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -9327,7 +9329,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/0bc00ed6-975f-4512-b406-de891a417c24")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -15955,7 +15957,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/eda34343-c8c3-416b-96f7-640016b953c2")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -16607,6 +16609,221 @@
 	)
 	(footprint "cocotter_resistor:r0603_reflow"
 		(layer "F.Cu")
+		(uuid "696f4e25-5f28-44da-be09-c1fcc5a24d8e")
+		(at 88.25 -19.95)
+		(property "Reference" "R59"
+			(at 0 -1.330652 0)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "87adfd07-4ab7-493e-9f95-8801c7a49fcc")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.1)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 0 1 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "85975343-e51c-4caa-b5fe-dd8aaea9bd62")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "19c862c9-5a94-44cd-875b-99bf07efe7c1")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "9a2e9990-440c-41a6-a015-98f91be2dc38")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "cc4be91a-208e-4773-9cee-be360cb160a1")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a589ca73-6953-4bfe-9b62-c3c2b0c51c88")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "mouser" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "87558ffa-a721-4880-b7e8-9f966aa021ee")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "99bb98fe-09ac-4e2b-ac55-3d5fb8c4e6da")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property ki_fp_filters "R_*")
+		(path "/11696dad-2dfc-4360-945c-24904b2d5e80/b7da8373-73c9-4ffb-ad77-605f125393c7")
+		(sheetname "motors")
+		(sheetfile "motors.kicad_sch")
+		(attr smd)
+		(fp_line
+			(start -0.15 -0.45)
+			(end 0.15 -0.45)
+			(stroke
+				(width 0.15)
+				(type default)
+			)
+			(layer "F.SilkS")
+			(uuid "e9e06436-18a9-4a36-9ed2-b0925155e502")
+		)
+		(fp_line
+			(start -0.15 0.45)
+			(end 0.15 0.45)
+			(stroke
+				(width 0.15)
+				(type default)
+			)
+			(layer "F.SilkS")
+			(uuid "9e9402f5-8c3c-42a5-b39d-f7746ababf87")
+		)
+		(fp_line
+			(start -1.275 -0.7)
+			(end 1.275 -0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "c9f537f6-6cb5-47ad-9768-630841d2503d")
+		)
+		(fp_line
+			(start -1.275 0.7)
+			(end -1.275 -0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "35b3c94d-e487-49c6-9c31-86ca9bf632ff")
+		)
+		(fp_line
+			(start 1.275 -0.7)
+			(end 1.275 0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "c0daabe4-ef60-45da-b49c-3d41feaa5383")
+		)
+		(fp_line
+			(start 1.275 0.7)
+			(end -1.275 0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "c79a6863-8912-44ac-a474-7cb4415d941e")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 2.5 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "9814fbbd-9940-40d1-8601-87fad7e71f7e")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" smd roundrect
+			(at -0.75 0)
+			(size 0.8 0.8)
+			(layers "F.Cu" "F.Paste" "F.Mask")
+			(roundrect_rratio 0.05)
+			(net 60 "/motors/MISO_MOT_3V3")
+			(pintype "passive")
+			(thermal_bridge_angle 45)
+			(uuid "aeb940f7-8574-49d5-8b43-4ce47b582020")
+		)
+		(pad "2" smd roundrect
+			(at 0.75 0)
+			(size 0.8 0.8)
+			(layers "F.Cu" "F.Paste" "F.Mask")
+			(roundrect_rratio 0.05)
+			(net 103 "/motors/ctc_right_3v3")
+			(pintype "passive")
+			(thermal_bridge_angle 45)
+			(uuid "6f0240a4-0ceb-45a1-bd09-18f88b158e29")
+		)
+		(model "3d/RC0603N_VIS.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
+	(footprint "cocotter_resistor:r0603_reflow"
+		(layer "F.Cu")
 		(uuid "69e4f2a6-793d-4154-8cc7-d339093a37c4")
 		(at 125.151 -68.27)
 		(property "Reference" "R20"
@@ -16714,7 +16931,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/b7f9e847-0f1e-463a-8a03-ab84d140262e")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -17771,7 +17988,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/e1d49760-bad0-42e6-b3b6-bb36058c60ae")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -17986,7 +18203,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/e6aba527-15f1-4482-a428-c3bee61c89d5")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -18815,7 +19032,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/ef360db5-7c58-4511-83cc-7a6364742fc2")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr through_hole exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -19417,7 +19634,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/4cecaa03-26ad-44d4-993d-90f394e4f92a")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -19831,7 +20048,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/23822efd-2f35-4477-bc11-6957172c3049")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -20282,7 +20499,7 @@
 		(property ki_fp_filters "C_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/80be4023-d517-4d8f-8699-d8d2eeeb341a")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.261252 -0.735)
@@ -20855,6 +21072,221 @@
 			)
 		)
 	)
+	(footprint "cocotter_resistor:r0603_reflow"
+		(layer "F.Cu")
+		(uuid "a5154701-cd5c-4667-89d0-fea9c73a230d")
+		(at 88.25 -17.5)
+		(property "Reference" "R60"
+			(at 0 -1.330652 0)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "89265dd8-6242-4d2c-a77c-1e8f05b06578")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.1)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 0 1 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "6d9450ff-5052-448d-8a13-fd4f5ada29b5")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "1f5ae9f5-d03f-4399-8876-8e16323e193e")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "a4c7003e-dfc5-4a00-999f-d9ddc767fa30")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "fefdf9db-15fc-4c9e-a3eb-6cd72d1dcd59")
+			(effects
+				(font
+					(size 1.27 1.27)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "2da1b196-9b2a-41d3-a1f9-b11fb0a9f895")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "mouser" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e7e6f7d1-5d7d-4fe1-8a79-e7adec166156")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "cbb621ad-0cac-4a1b-a0f5-b9609b34e6fb")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property ki_fp_filters "R_*")
+		(path "/11696dad-2dfc-4360-945c-24904b2d5e80/26b2966f-700e-4e4a-8d7d-fa3b09149439")
+		(sheetname "motors")
+		(sheetfile "motors.kicad_sch")
+		(attr smd)
+		(fp_line
+			(start -0.15 -0.45)
+			(end 0.15 -0.45)
+			(stroke
+				(width 0.15)
+				(type default)
+			)
+			(layer "F.SilkS")
+			(uuid "032fee40-09d4-4f12-9925-e03ef134b297")
+		)
+		(fp_line
+			(start -0.15 0.45)
+			(end 0.15 0.45)
+			(stroke
+				(width 0.15)
+				(type default)
+			)
+			(layer "F.SilkS")
+			(uuid "d4901e21-6006-4a61-a72d-f8f41a29993a")
+		)
+		(fp_line
+			(start -1.275 -0.7)
+			(end 1.275 -0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "524d7281-8cba-4235-9d3b-c43184c69228")
+		)
+		(fp_line
+			(start -1.275 0.7)
+			(end -1.275 -0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "a2a10c75-d8b6-4991-a6e4-cc215a35061d")
+		)
+		(fp_line
+			(start 1.275 -0.7)
+			(end 1.275 0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "d3acf010-43fc-4062-a8d1-7cf8e1744b06")
+		)
+		(fp_line
+			(start 1.275 0.7)
+			(end -1.275 0.7)
+			(stroke
+				(width 0.05)
+				(type default)
+			)
+			(layer "F.CrtYd")
+			(uuid "2e88b868-8598-4c95-b3fe-231a7af23b57")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 2.5 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "577821e4-75bb-4360-b221-04eb81346391")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" smd roundrect
+			(at -0.75 0)
+			(size 0.8 0.8)
+			(layers "F.Cu" "F.Paste" "F.Mask")
+			(roundrect_rratio 0.05)
+			(net 66 "/motors/SCK_MOT_3V3")
+			(pintype "passive")
+			(thermal_bridge_angle 45)
+			(uuid "7169b8e4-510c-4bab-af18-cba96316fa5e")
+		)
+		(pad "2" smd roundrect
+			(at 0.75 0)
+			(size 0.8 0.8)
+			(layers "F.Cu" "F.Paste" "F.Mask")
+			(roundrect_rratio 0.05)
+			(net 104 "/motors/ctc_left_3v3")
+			(pintype "passive")
+			(thermal_bridge_angle 45)
+			(uuid "a345335a-000d-43e6-a6ba-8f9930e31a59")
+		)
+		(model "3d/RC0603N_VIS.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
+	)
 	(footprint "cocotter_others:testpoint-THT-0.5mm"
 		(layer "F.Cu")
 		(uuid "a553807b-e880-4777-bc06-bc02326edb54")
@@ -20925,7 +21357,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/ff9d3a1b-72a2-452f-9e54-53968580130e")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr through_hole exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -21691,7 +22123,7 @@
 		)
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/522e5070-6d96-4d82-83ea-0c2832850b4f")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr through_hole dnp)
 		(fp_line
 			(start -1.33 16.57)
@@ -22434,7 +22866,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/4172e240-437d-422b-b389-d12497531165")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -22872,7 +23304,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/1a55a14d-b625-40f6-9cc5-38e79fd3522b")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -24628,7 +25060,7 @@
 		(property ki_fp_filters "USB*C*Receptacle*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/95211c3a-957b-4459-b04a-476c936d0840")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -4.47 -5.6)
@@ -24707,14 +25139,24 @@
 			(at -2.89 -6.28 180)
 			(size 0.7 0.7)
 			(drill 0.65)
-			(layers "*.Cu" "*.Mask")
+			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
+				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
+				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
+				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
+				"In29.Cu" "In30.Cu"
+			)
 			(uuid "bf1ac3a6-d60d-439a-8d00-01feba27641d")
 		)
 		(pad "" np_thru_hole circle
 			(at 2.89 -6.28 180)
 			(size 0.7 0.7)
 			(drill 0.65)
-			(layers "*.Cu" "*.Mask")
+			(layers "*.Cu" "*.Mask" "In1.Cu" "In2.Cu" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu"
+				"In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu"
+				"In15.Cu" "In16.Cu" "In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu"
+				"In22.Cu" "In23.Cu" "In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu"
+				"In29.Cu" "In30.Cu"
+			)
 			(uuid "aaded84f-e85a-4223-b8d5-ff8b4f4391ec")
 		)
 		(pad "A1" smd roundrect
@@ -25399,7 +25841,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/0012120d-c33b-4529-8ea5-d56e349f896f")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -26774,7 +27216,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/8ac03caa-e1a7-4332-9ace-c3683a4683bb")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.14058 -0.51)
@@ -27287,7 +27729,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/f776ee68-377a-466e-a19b-e506a02da2dd")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -27614,7 +28056,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/38224d6f-4641-48bc-84ec-4705a0f9f6b0")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
@@ -27790,7 +28232,7 @@
 		(property ki_fp_filters "Pin* Test*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/1c75a355-ffd9-4e78-b704-4ff6d3b9f03e")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr through_hole exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -28386,7 +28828,7 @@
 		)
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/038d836b-6b26-4498-b56c-9665c7838b5f")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -9 9.755)
@@ -31112,7 +31554,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0627c134-32e1-430c-bbd1-677b8ecf53c1/15d1139c-d9ac-4ef0-b63f-79d3892411d0")
 		(sheetname "uc")
-		(sheetfile "com.kicad_sch")
+		(sheetfile "uc.kicad_sch")
 		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
