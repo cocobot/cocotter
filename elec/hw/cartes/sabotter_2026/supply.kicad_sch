@@ -463,15 +463,15 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "J"
-				(at -2.032 -41.656 0)
+				(at -9.144 3.556 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" ""
-				(at 0 -8.89 0)
+			(property "Value" "22272021"
+				(at -5.588 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -479,7 +479,7 @@
 				)
 			)
 			(property "Footprint" "cocotter_connectors:22272021"
-				(at 0 -8.89 0)
+				(at -3.302 -11.938 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -533,7 +533,7 @@
 			)
 			(symbol "unioc_pw_in_1_1"
 				(rectangle
-					(start -13.97 2.54)
+					(start -10.16 2.54)
 					(end -1.27 -5.08)
 					(stroke
 						(width 0)
@@ -2485,12 +2485,6 @@
 		(color 0 0 0 0)
 		(uuid "d4c9c037-9d5d-46f7-b0a1-01b35ad194a5")
 	)
-	(junction
-		(at 269.24 157.48)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "eff43dd1-c3a8-4c0e-9a09-416c9268bd46")
-	)
 	(wire
 		(pts
 			(xy 123.19 81.28) (xy 123.19 58.42)
@@ -2510,16 +2504,6 @@
 			(type default)
 		)
 		(uuid "02f00004-0e64-4b94-a38b-ee7e6bd65d50")
-	)
-	(wire
-		(pts
-			(xy 269.24 157.48) (xy 276.86 157.48)
-		)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(uuid "0f16c1f5-7c37-4fa6-8ab1-622beebc926c")
 	)
 	(wire
 		(pts
@@ -3000,16 +2984,6 @@
 			(type default)
 		)
 		(uuid "eb53cac7-42d3-4862-8ecc-8030b2efeb4b")
-	)
-	(wire
-		(pts
-			(xy 276.86 157.48) (xy 276.86 154.94)
-		)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(uuid "eb7b0362-6393-44fa-a4f9-5e8b7a65c4f5")
 	)
 	(wire
 		(pts
@@ -3941,15 +3915,15 @@
 		(dnp no)
 		(uuid "701d214b-b257-4e14-9b54-ec7bc196ca70")
 		(property "Reference" "J1"
-			(at 83.566 21.59 0)
+			(at 82.296 21.844 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "~"
-			(at 91.44 34.29 0)
+		(property "Value" "22272021"
+			(at 85.852 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3957,7 +3931,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:22272021"
-			(at 91.44 34.29 0)
+			(at 88.138 37.338 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5299,73 +5273,6 @@
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
 					(reference "C5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_others:MountingHole_Pad_M3")
-		(at 276.86 152.4 0)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "f329fe69-66c2-4c22-93a5-39c5c4d7b440")
-		(property "Reference" "H5"
-			(at 275.082 148.844 0)
-			(effects
-				(font
-					(size 1.778 1.5113)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Value" "MOUNT-PAD-ROUND3.3"
-			(at 279.654 154.8638 0)
-			(effects
-				(font
-					(size 1.778 1.5113)
-				)
-				(justify left bottom)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
-			(at 276.86 152.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 276.86 152.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Mounting Hole with connection"
-			(at 276.86 152.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "95c2c5ea-504a-48a6-9fb7-59e047a528f1")
-		)
-		(instances
-			(project "sabotter_2026"
-				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
-					(reference "H5")
 					(unit 1)
 				)
 			)

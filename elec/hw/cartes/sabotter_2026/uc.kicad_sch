@@ -313,42 +313,28 @@
 				)
 			)
 		)
-		(symbol "cocotter_connectors:USB-TYPE-C-019"
-			(pin_names
-				(offset 1.016)
-			)
+		(symbol "cocotter_connectors:USB4120-03-C"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "J"
-				(at -10.16 19.05 0)
+				(at 0 1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left)
 				)
 			)
-			(property "Value" "USB-TYPE-C-019"
-				(at 19.05 19.05 0)
+			(property "Value" "USB4120-03-C"
+				(at 0 1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify right)
 				)
 			)
-			(property "Footprint" "cocotter_connectors:USB4105"
-				(at 3.81 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
-				(at 3.81 0 0)
+			(property "Footprint" "cocotter_connectors:USB4120-03-C"
+				(at 0 1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -356,7 +342,34 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "USB-C receptacle, SMD"
+			(property "Datasheet" "https://gct.co/connector/usb4120"
+				(at 0 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLC" "C7450621"
+				(at 0 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "USB C, vertical"
 				(at 0 0 0)
 				(effects
 					(font
@@ -365,43 +378,7 @@
 					(hide yes)
 				)
 			)
-			(property "DIGIKEY_REF" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C2927039"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "usb universal serial bus type-C USB2.0 3A 1 Surface Mount，Right Angle 16P Female"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "USB*C*Receptacle*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "USB-TYPE-C-019_0_0"
+			(symbol "USB4120-03-C_0_0"
 				(rectangle
 					(start -0.254 -17.78)
 					(end 0.254 -16.764)
@@ -513,7 +490,7 @@
 					)
 				)
 			)
-			(symbol "USB-TYPE-C-019_0_1"
+			(symbol "USB4120-03-C_0_1"
 				(rectangle
 					(start -10.16 17.78)
 					(end 10.16 -17.78)
@@ -714,7 +691,7 @@
 					)
 				)
 			)
-			(symbol "USB-TYPE-C-019_1_1"
+			(symbol "USB4120-03-C_1_1"
 				(pin passive line
 					(at 0 -22.86 90)
 					(length 5.08)
@@ -2367,11 +2344,10 @@
 				)
 			)
 		)
-		(symbol "cocotter_others:TSB001A3526A02"
+		(symbol "cocotter_others:PTS525 SK15 SMTR2 LFS"
 			(pin_numbers hide)
 			(pin_names
-				(offset 0)
-			)
+				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -2383,7 +2359,7 @@
 					)
 				)
 			)
-			(property "Value" "TSB001A3526A02"
+			(property "Value" "PTS525 SK15 SMTR2 LFS"
 				(at 2.54 -5.08 0)
 				(effects
 					(font
@@ -2392,7 +2368,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "cocotter_others:TSB001A3526A02"
+			(property "Footprint" "cocotter_others:PTS525 SK15 SMTR2 LFS"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2401,7 +2377,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2108252230_BZCN-TSB001A3526A02_C2888889.pdf"
+			(property "Datasheet" ""
 				(at 0 -5.08 0)
 				(effects
 					(font
@@ -2410,7 +2386,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "50mA max, 12Vdc, 100mohms max"
+			(property "Description" "20mA max, 15Vdc, 100mohms max, 500k cycle, 260gf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2419,7 +2395,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C2888889"
+			(property "JLCPCB Part #" "C2689599"
 				(at -1.27 -5.08 0)
 				(effects
 					(font
@@ -2437,7 +2413,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "TSB001A3526A02_1_1"
+			(symbol "PTS525 SK15 SMTR2 LFS_1_1"
 				(rectangle
 					(start -2.54 2.54)
 					(end 2.54 -2.54)
@@ -2515,14 +2491,14 @@
 				(pin passive line
 					(at -3.81 0 0)
 					(length 1.27)
-					(name ""
+					(name "1"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "1"
+					(number "A"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2533,32 +2509,14 @@
 				(pin passive line
 					(at 3.81 0 180)
 					(length 1.27)
-					(name ""
+					(name "2"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin free line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "MP"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "MP"
+					(number "B"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -3484,12 +3442,6 @@
 		)
 	)
 	(junction
-		(at 69.85 143.51)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0511eff9-74a3-412e-a3d6-3c04a4c4e726")
-	)
-	(junction
 		(at 64.77 59.69)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3506,6 +3458,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "20d40ed0-a871-412b-b140-01ecb3fd92ff")
+	)
+	(junction
+		(at 81.28 78.74)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2c50854f-85d6-4964-a916-d5aab4338451")
 	)
 	(junction
 		(at 82.55 143.51)
@@ -3530,12 +3488,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "549f465f-47f7-45f2-a3e5-27266286088f")
-	)
-	(junction
-		(at 69.85 153.67)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "73287324-d4e0-4294-940a-1272d1bc7179")
 	)
 	(junction
 		(at 231.14 119.38)
@@ -3638,6 +3590,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f6594086-9af9-4112-b20d-3e101c1256c7")
+	)
+	(junction
+		(at 81.28 76.2)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fba67f65-b547-4db9-bedb-745b1dc73813")
 	)
 	(junction
 		(at 273.05 146.05)
@@ -3747,7 +3705,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 78.74) (xy 134.62 78.74)
+			(xy 58.42 78.74) (xy 81.28 78.74)
 		)
 		(stroke
 			(width 0)
@@ -4057,6 +4015,16 @@
 	)
 	(wire
 		(pts
+			(xy 81.28 76.2) (xy 134.62 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "55659bbf-05e9-4115-8999-6362a172f981")
+	)
+	(wire
+		(pts
 			(xy 39.37 171.45) (xy 46.99 171.45)
 		)
 		(stroke
@@ -4084,16 +4052,6 @@
 			(type default)
 		)
 		(uuid "5e0b393f-db49-41d0-943d-78bb61008f5e")
-	)
-	(wire
-		(pts
-			(xy 69.85 153.67) (xy 73.66 153.67)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5e33b4fa-d00c-490c-a91e-d9e25d68a551")
 	)
 	(wire
 		(pts
@@ -4267,16 +4225,6 @@
 	)
 	(wire
 		(pts
-			(xy 66.04 143.51) (xy 69.85 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "85e1798f-8bc5-4f14-a1a1-ec4c98076c8d")
-	)
-	(wire
-		(pts
 			(xy 92.71 168.91) (xy 116.84 168.91)
 		)
 		(stroke
@@ -4417,6 +4365,16 @@
 	)
 	(wire
 		(pts
+			(xy 81.28 78.74) (xy 134.62 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a748b163-c2e9-4dab-bb81-f12ceea4004b")
+	)
+	(wire
+		(pts
 			(xy 147.32 189.23) (xy 147.32 191.77)
 		)
 		(stroke
@@ -4477,7 +4435,7 @@
 	)
 	(wire
 		(pts
-			(xy 71.12 76.2) (xy 134.62 76.2)
+			(xy 71.12 76.2) (xy 81.28 76.2)
 		)
 		(stroke
 			(width 0)
@@ -4687,6 +4645,16 @@
 	)
 	(wire
 		(pts
+			(xy 78.74 143.51) (xy 80.01 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dcf1227c-a103-435f-8a77-956a4782ad5d")
+	)
+	(wire
+		(pts
 			(xy 172.72 148.59) (xy 172.72 149.86)
 		)
 		(stroke
@@ -4727,7 +4695,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 143.51) (xy 80.01 143.51)
+			(xy 69.85 143.51) (xy 71.12 143.51)
 		)
 		(stroke
 			(width 0)
@@ -4784,16 +4752,6 @@
 			(type default)
 		)
 		(uuid "ea4817ae-fc70-446d-a94d-3d205c412caa")
-	)
-	(wire
-		(pts
-			(xy 73.66 148.59) (xy 73.66 153.67)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f2bc75de-2ec0-40d0-a552-2f532a019b7a")
 	)
 	(wire
 		(pts
@@ -5231,17 +5189,6 @@
 			(justify right)
 		)
 		(uuid "64c2b8a7-545b-412a-8dbe-c50d9cfad8fe")
-	)
-	(hierarchical_label "EN_ESP32_3v3"
-		(shape input)
-		(at 66.04 143.51 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "6fc0aaeb-8b5f-4fa0-8079-c3121a7649bc")
 	)
 	(hierarchical_label "encod_mot1_B_3v3"
 		(shape input)
@@ -6266,6 +6213,73 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 81.28 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2927ee95-f1f8-4995-9a8a-dd10f80a5d8a")
+		(property "Reference" "TP7"
+			(at 83.82 71.6279 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 83.82 74.1679 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 86.36 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 86.36 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 81.28 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bfc65b8d-fbef-4e2c-89de-5fb6a2035045")
+		)
+		(instances
+			(project "sabotter_2026"
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
+					(reference "TP7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
 		(at 273.05 151.13 0)
 		(unit 1)
@@ -7231,6 +7245,101 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_resistors:R_0R_0603")
+		(at 74.93 143.51 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7cd59e05-7509-4526-a482-b49eb5db0060")
+		(property "Reference" "R65"
+			(at 74.93 137.16 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 74.93 139.7 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 74.93 145.288 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 74.93 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 74.93 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 74.93 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 74.93 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 74.93 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "360ed89b-0773-49cb-9a1f-e8e47cd52d2d")
+		)
+		(pin "2"
+			(uuid "94cd7b34-8f3f-48c5-b9c5-47c6850fff11")
+		)
+		(instances
+			(project ""
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
+					(reference "R65")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 64.77 57.15 0)
 		(unit 1)
@@ -7297,7 +7406,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_others:TSB001A3526A02")
+		(lib_id "cocotter_others:PTS525 SK15 SMTR2 LFS")
 		(at 69.85 148.59 90)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7313,7 +7422,7 @@
 				)
 			)
 		)
-		(property "Value" "TSB001A3526A02"
+		(property "Value" "PTS525 SK15 SMTR2 LFS"
 			(at 74.93 146.05 0)
 			(effects
 				(font
@@ -7322,7 +7431,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "cocotter_others:TSB001A3526A02"
+		(property "Footprint" "cocotter_others:PTS525 SK15 SMTR2 LFS"
 			(at 69.85 148.59 0)
 			(effects
 				(font
@@ -7331,7 +7440,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2108252230_BZCN-TSB001A3526A02_C2888889.pdf"
+		(property "Datasheet" ""
 			(at 74.93 148.59 0)
 			(effects
 				(font
@@ -7340,7 +7449,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "50mA max, 12Vdc, 100mohms max"
+		(property "Description" "20mA max, 15Vdc, 100mohms max, 500k cycle, 260gf"
 			(at 69.85 148.59 0)
 			(effects
 				(font
@@ -7349,7 +7458,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C2888889"
+		(property "JLCPCB Part #" "C2689599"
 			(at 74.93 149.86 0)
 			(effects
 				(font
@@ -7358,14 +7467,11 @@
 				(hide yes)
 			)
 		)
-		(pin "1"
+		(pin "B"
 			(uuid "246bc1aa-f2e8-4559-8af2-7400af8ba8d1")
 		)
-		(pin "2"
+		(pin "A"
 			(uuid "e6cbca52-45e0-47ca-a5b8-40c6ca42a42b")
-		)
-		(pin "MP"
-			(uuid "de2a4075-3f04-49c2-8d64-a95950ab745d")
 		)
 		(instances
 			(project "sabotter_2026"
@@ -8006,7 +8112,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_connectors:USB-TYPE-C-019")
+		(lib_id "cocotter_connectors:USB4120-03-C")
 		(at 273.05 109.22 0)
 		(mirror y)
 		(unit 1)
@@ -8016,34 +8122,23 @@
 		(dnp no)
 		(uuid "95211c3a-957b-4459-b04a-476c936d0840")
 		(property "Reference" "J3"
-			(at 283.21 90.17 0)
+			(at 273.05 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "USB4105-GF-A-060"
-			(at 254 90.17 0)
+		(property "Value" "USB4120-03-C"
+			(at 273.05 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Footprint" "cocotter_connectors:USB4105"
-			(at 269.24 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
-			(at 269.24 109.22 0)
+		(property "Footprint" "cocotter_connectors:USB4120-03-C"
+			(at 273.05 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8051,8 +8146,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "USB-C receptacle, SMD"
-			(at 273.05 109.22 0)
+		(property "Datasheet" "https://gct.co/connector/usb4120"
+			(at 273.05 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8060,8 +8155,8 @@
 				(hide yes)
 			)
 		)
-		(property "DIGIKEY_REF" "2073-USB4105-GF-A-060TR-ND"
-			(at 273.05 109.22 0)
+		(property "Description" ""
+			(at 273.05 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8069,8 +8164,8 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C2927039"
-			(at 273.05 109.22 0)
+		(property "JLC" "C7450621"
+			(at 273.05 107.95 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8912,6 +9007,73 @@
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
 					(reference "#PWR11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 81.28 78.74 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "dad24718-d423-43ae-a93c-900212adf9e4")
+		(property "Reference" "TP8"
+			(at 83.82 80.7719 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 83.82 83.3119 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 76.2 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 76.2 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 81.28 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ef8bdd33-7188-48d3-b23a-c024a6676af4")
+		)
+		(instances
+			(project "sabotter_2026"
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
+					(reference "TP8")
 					(unit 1)
 				)
 			)

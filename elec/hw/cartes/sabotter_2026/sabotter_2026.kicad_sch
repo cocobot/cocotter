@@ -37,6 +37,16 @@
 	)
 	(wire
 		(pts
+			(xy 199.39 90.17) (xy 217.17 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "16994ff2-8d0e-4d0e-a636-e046a7d11135")
+	)
+	(wire
+		(pts
 			(xy 168.91 107.95) (xy 217.17 107.95)
 		)
 		(stroke
@@ -237,6 +247,16 @@
 	)
 	(wire
 		(pts
+			(xy 199.39 92.71) (xy 217.17 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b24ec056-564e-427f-b579-26216a570945")
+	)
+	(wire
+		(pts
 			(xy 168.91 133.35) (xy 217.17 133.35)
 		)
 		(stroke
@@ -355,6 +375,16 @@
 		)
 		(uuid "f880272f-3704-4264-9ba6-5e374832e932")
 	)
+	(label "scl_tof_3v3"
+		(at 199.39 90.17 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0078152e-1729-46e2-a67a-9241797702fa")
+	)
 	(label "brake_mot_3v3"
 		(at 62.23 123.19 0)
 		(effects
@@ -365,6 +395,26 @@
 		)
 		(uuid "5cfd1427-78e7-4a02-80a2-0d9ffd5ffa89")
 	)
+	(label "sda_tof_3v3"
+		(at 199.39 92.71 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7a91bec1-9726-43ae-86a1-ec3e84367877")
+	)
+	(label "scl_tof_3v3"
+		(at 80.01 109.22 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "92621a37-ed0f-4e52-be28-a0c8b7a00182")
+	)
 	(label "brake_mot_3v3"
 		(at 198.12 140.97 0)
 		(effects
@@ -374,6 +424,16 @@
 			(justify left bottom)
 		)
 		(uuid "9e0d770c-bf88-4e1e-b02b-a87279c61a60")
+	)
+	(label "sda_tof_3v3"
+		(at 80.01 111.76 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c8622fc5-07b1-4d0a-ab1a-ff278017c5c9")
 	)
 	(sheet
 		(at 110.49 21.59)
@@ -514,16 +574,6 @@
 				(justify left)
 			)
 			(uuid "1d918e90-c6b2-4e98-bfe3-39cf41150852")
-		)
-		(pin "EN_ESP32_3v3" input
-			(at 110.49 71.12 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "0836d650-ce8d-456c-ae3d-30dae6d55dcb")
 		)
 		(pin "color_sensor_3v3" input
 			(at 110.49 86.36 180)
@@ -753,46 +803,6 @@
 				(justify left top)
 			)
 		)
-		(pin "sck_mot_3v3" input
-			(at 217.17 82.55 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "be65290b-1b0d-42a5-996f-2995345ceb32")
-		)
-		(pin "mosi_mot_3v3" input
-			(at 217.17 85.09 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "084f0922-040e-489d-b4fc-1dbae36ab09a")
-		)
-		(pin "miso_mot_3v3" input
-			(at 217.17 87.63 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "39593571-8b68-4711-ad64-0adad40ceafb")
-		)
-		(pin "nCS_mot2_3v3" input
-			(at 217.17 95.25 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "98b3868e-909c-409e-8c08-002484f50289")
-		)
 		(pin "pwm_mot2_3v3" input
 			(at 217.17 129.54 180)
 			(effects
@@ -832,26 +842,6 @@
 				(justify left)
 			)
 			(uuid "f21506a5-caaa-440e-8e51-0e876824aa23")
-		)
-		(pin "nCS_mot1_3v3" input
-			(at 217.17 92.71 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "3ec2e8f5-66e1-4f46-8ccf-faa16a35b409")
-		)
-		(pin "nCS_mot0_3v3" input
-			(at 217.17 90.17 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "b1bc26d4-0218-49cc-b101-68dcc5863022")
 		)
 		(pin "dir_mot1_3v3" input
 			(at 217.17 114.3 180)
@@ -942,6 +932,46 @@
 				(justify left)
 			)
 			(uuid "5ce64380-303a-4032-be19-3e39f7d50770")
+		)
+		(pin "irq1_3v3" output
+			(at 217.17 87.63 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "f76bc5c9-82c6-4007-af47-2d61fd7f08b9")
+		)
+		(pin "irq0_3v3" output
+			(at 217.17 85.09 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "a38701c1-9797-4ff7-b376-6b19ea72c030")
+		)
+		(pin "sda_tof_3v3" bidirectional
+			(at 217.17 92.71 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "ca16322d-c6dd-4eec-a1a0-173a753587ab")
+		)
+		(pin "scl_tof_3v3" input
+			(at 217.17 90.17 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "bc7b758e-d6d9-4719-9480-388268ed0137")
 		)
 		(instances
 			(project "sabotter_2026"
