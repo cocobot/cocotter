@@ -1,4 +1,4 @@
-(footprint "2-1445055-3"
+(footprint "2-1445055-2"
 	(version 20240108)
 	(generator "pcbnew")
 	(generator_version "8.0")
@@ -15,7 +15,7 @@
 			)
 		)
 	)
-	(property "Value" "2-1445055-3"
+	(property "Value" "2-1445055-2"
 		(at 0 1 0)
 		(unlocked yes)
 		(layer "F.Fab")
@@ -68,28 +68,28 @@
 	)
 	(attr through_hole)
 	(fp_line
-		(start -6.57 0)
-		(end -6.57 8.92)
+		(start -5.3 0)
+		(end -5.3 8.92)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
 		(layer "F.SilkS")
-		(uuid "a5e5f04b-f632-4ca0-b354-a7899ead0ebf")
+		(uuid "194b6cbd-f268-4a6f-af61-250a5e2e5f47")
 	)
 	(fp_line
-		(start -6.57 0)
-		(end -4.57 0)
+		(start -5.3 0)
+		(end -3.3 0)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
 		(layer "F.SilkS")
-		(uuid "9fa8d080-8eea-45d6-bf3d-acd8e69fffdf")
+		(uuid "40f43ca0-a9ec-4cc1-9ce9-d0702f84444e")
 	)
 	(fp_line
-		(start -6.57 8.92)
-		(end 6.57 8.92)
+		(start -5.3 8.92)
+		(end 5.3 8.92)
 		(stroke
 			(width 0.1)
 			(type default)
@@ -98,18 +98,18 @@
 		(uuid "10fc762a-b6ef-440c-af2e-55b4654b8b3d")
 	)
 	(fp_line
-		(start 6.57 0)
-		(end 4.57 0)
+		(start 5.3 0)
+		(end 3.3 0)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
 		(layer "F.SilkS")
-		(uuid "2c826cc8-a22e-4311-acbf-5a8e5faddf6a")
+		(uuid "69803111-efe6-4123-b957-e5df5f79659f")
 	)
 	(fp_line
-		(start 6.57 0)
-		(end 6.57 8.92)
+		(start 5.3 0)
+		(end 5.3 8.92)
 		(stroke
 			(width 0.1)
 			(type default)
@@ -118,8 +118,8 @@
 		(uuid "87d753c2-fb06-4bc2-8e64-8790a028d874")
 	)
 	(fp_rect
-		(start -7 -1.8)
-		(end 7 8.92)
+		(start -5.7 -1.8)
+		(end 5.7 8.92)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -148,7 +148,7 @@
 		(uuid "2c5a6e65-c332-45ec-abe6-2683aff4e3f0")
 	)
 	(pad "1" thru_hole rect
-		(at 3 0)
+		(at 1.5 0)
 		(size 2 2)
 		(drill 1.1)
 		(layers "*.Cu" "*.Mask")
@@ -157,22 +157,14 @@
 		(uuid "d221afe5-e38d-4de5-863f-1489cc158ee6")
 	)
 	(pad "2" thru_hole circle
-		(at 0 0)
+		(at -1.5 0)
 		(size 2 2)
 		(drill 1.1)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(uuid "4be9d8df-9ad8-4813-abf3-fb57949d54e9")
 	)
-	(pad "3" thru_hole circle
-		(at -3 0)
-		(size 2 2)
-		(drill 1.1)
-		(layers "*.Cu" "*.Mask")
-		(remove_unused_layers no)
-		(uuid "d1e5ceb5-41ec-443a-8b91-4d93999fe9ca")
-	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/c-2-1445055-3-b-3d.stp"
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/c-2-1445055-2-b-3d.stp"
 		(offset
 			(xyz 0 -8.92 2.5)
 		)

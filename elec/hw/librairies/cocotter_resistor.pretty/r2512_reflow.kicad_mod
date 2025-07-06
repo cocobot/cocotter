@@ -1,11 +1,11 @@
-(footprint "r1206_reflow"
+(footprint "r2512_reflow"
 	(version 20240108)
 	(generator "pcbnew")
 	(generator_version "8.0")
 	(layer "F.Cu")
 	(descr "https://www.vishay.com/docs/60119/landpatterns.pdf")
 	(property "Reference" "REF**"
-		(at 0 -2 0)
+		(at 0 0 0)
 		(unlocked yes)
 		(layer "F.SilkS")
 		(uuid "c3f31673-83a0-4098-ac44-3b40c65983dc")
@@ -16,7 +16,7 @@
 			)
 		)
 	)
-	(property "Value" "r1206_reflow"
+	(property "Value" "r2512_reflow"
 		(at 0 1 0)
 		(unlocked yes)
 		(layer "F.Fab")
@@ -69,8 +69,8 @@
 	)
 	(attr smd)
 	(fp_line
-		(start -0.85 -0.851)
-		(end 0.85 -0.851)
+		(start -2.2 -1.6)
+		(end 2.2 -1.6)
 		(stroke
 			(width 0.15)
 			(type default)
@@ -79,8 +79,8 @@
 		(uuid "0c1c9a6a-b80f-49d4-a5d1-2b3b03367402")
 	)
 	(fp_line
-		(start -0.85 0.851)
-		(end 0.85 0.851)
+		(start -2.2 1.6)
+		(end 2.2 1.6)
 		(stroke
 			(width 0.15)
 			(type default)
@@ -89,8 +89,8 @@
 		(uuid "76a583a0-a26d-43e0-b617-b0af9cc9b6b9")
 	)
 	(fp_rect
-		(start -2.4 1.25)
-		(end 2.4 -1.25)
+		(start -4.2 2)
+		(end 4.2 -2)
 		(stroke
 			(width 0.05)
 			(type default)
@@ -112,30 +112,19 @@
 		)
 	)
 	(pad "1" smd roundrect
-		(at -1.524 0)
-		(size 0.914 1.702)
+		(at -3.188 0)
+		(size 1.245 3.2)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
 		(uuid "923aaf13-d003-4347-94aa-3f1f3eebc975")
 	)
 	(pad "2" smd roundrect
-		(at 1.524 0)
-		(size 0.914 1.702)
+		(at 3.188 0)
+		(size 1.245 3.2)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
 		(uuid "1431a10a-609d-49f0-9ce0-1a9cade172b0")
-	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_resistor.pretty/3d/RES_HMC1206_STP.step"
-		(offset
-			(xyz 0 0 0)
-		)
-		(scale
-			(xyz 1 1 1)
-		)
-		(rotate
-			(xyz 0 0 0)
-		)
 	)
 )
