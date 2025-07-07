@@ -1249,26 +1249,6 @@
 			)
 			(uuid "3a106a5c-1840-4219-b1a6-7bf75a62601c")
 		)
-		(pin "RX_from_detect_3v3" output
-			(at 217.17 40.64 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "f9af587a-9bf0-49fd-a5ed-1520caa87246")
-		)
-		(pin "TX_to_detect_3v3" input
-			(at 217.17 43.18 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "9ed6fdff-97b1-4a64-b00b-2726ccb74c9d")
-		)
 		(pin "lidar_rx_3v3" output
 			(at 217.17 50.8 180)
 			(effects

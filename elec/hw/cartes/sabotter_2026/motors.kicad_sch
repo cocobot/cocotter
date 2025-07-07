@@ -1648,6 +1648,16 @@
 		)
 		(uuid "fbe83ecb-8b79-422c-8aa0-1d180346ce47")
 	)
+	(text "ou connecter les irq tof ?\n"
+		(exclude_from_sim no)
+		(at 77.216 153.416 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "85b11fcc-cb0a-4d11-a13e-280190059c6d")
+	)
 	(label "+3V3"
 		(at 39.37 93.98 0)
 		(effects
