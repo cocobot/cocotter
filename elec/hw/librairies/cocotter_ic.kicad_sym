@@ -3001,7 +3001,7 @@
 					(justify left)
 				)
 			)
-			(text "GPIO45 @pull up   : VDD_SPI = 3v3\nGPIO45 @pull down : VDD_SPI = 1V8"
+			(text "GPIO45 @pull down : VDD_SPI = 3v3\nGPIO45 @pull up   : VDD_SPI = 1V8"
 				(at -33.02 -41.91 0)
 				(effects
 					(font
@@ -3893,7 +3893,7 @@
 					(justify left)
 				)
 			)
-			(text "GPIO45 @pull up   : VDD_SPI = 3v3\nGPIO45 @pull down : VDD_SPI = 1V8"
+			(text "GPIO45 @pull down : VDD_SPI = 3v3\nGPIO45 @pull up   : VDD_SPI = 1V8"
 				(at -33.02 -41.91 0)
 				(effects
 					(font
