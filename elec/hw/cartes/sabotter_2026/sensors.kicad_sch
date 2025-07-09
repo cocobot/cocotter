@@ -3789,7 +3789,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 177.8) (xy 86.36 177.8)
+			(xy 68.58 177.8) (xy 93.98 177.8)
 		)
 		(stroke
 			(width 0.1524)
@@ -4409,7 +4409,7 @@
 	)
 	(wire
 		(pts
-			(xy 63.5 177.8) (xy 68.58 177.8)
+			(xy 62.23 177.8) (xy 68.58 177.8)
 		)
 		(stroke
 			(width 0.1524)
@@ -4429,7 +4429,7 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 180.34) (xy 86.36 180.34)
+			(xy 81.28 180.34) (xy 93.98 180.34)
 		)
 		(stroke
 			(width 0.1524)
@@ -4769,7 +4769,7 @@
 	)
 	(wire
 		(pts
-			(xy 34.29 177.8) (xy 55.88 177.8)
+			(xy 34.29 177.8) (xy 54.61 177.8)
 		)
 		(stroke
 			(width 0.1524)
@@ -5107,6 +5107,16 @@
 		)
 		(uuid "0cf0a7ae-f5ab-49cf-b603-ddfc643d9b0e")
 	)
+	(text "consumption :\n  300mA at startup\n  180mA at work"
+		(exclude_from_sim no)
+		(at 23.876 95.504 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "17e01587-da30-492c-a33e-604f20677e7e")
+	)
 	(text "LIDAR (LD06)"
 		(exclude_from_sim no)
 		(at 17.78 87.63 0)
@@ -5174,15 +5184,15 @@
 		)
 		(uuid "06022160-e1bd-4d24-85cc-034a7208123f")
 	)
-	(label "lidar_tx_3v3"
-		(at 83.82 177.8 0)
+	(label "lidar_rx_3v3"
+		(at 83.82 180.34 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "17cc9a93-3d06-43fd-832c-347c42fbf4d0")
+		(uuid "16a699f2-814a-4424-b18f-d885dc3de005")
 	)
 	(label "gyro_sck_3v3"
 		(at 271.78 66.04 180)
@@ -5254,6 +5264,16 @@
 		)
 		(uuid "64c3073c-afa9-4f2d-89b9-4137722a5ec6")
 	)
+	(label "lidar_pwm_3v3"
+		(at 83.82 177.8 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "7afa2315-86ee-4c09-8f3f-12c792c7ff27")
+	)
 	(label "{slash}gyro_cs_3v3"
 		(at 271.78 58.42 180)
 		(effects
@@ -5293,16 +5313,6 @@
 			(justify right bottom)
 		)
 		(uuid "9e722e02-c8bf-41d1-ac0e-612837d39542")
-	)
-	(label "lidar_pwm_3v3"
-		(at 83.82 180.34 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "acd34bec-4d28-40ea-8030-d49cad89cd66")
 	)
 	(label "gyro_miso_3v3"
 		(at 271.78 60.96 180)
@@ -6398,7 +6408,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "2426989b-41ba-4fc3-a848-e756d94965d1")
 		(property "Reference" "R33"
@@ -8162,7 +8172,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "a8bf9319-b1bd-48ba-9251-d985fdb1d2c6")
 		(property "Reference" "R30"
@@ -9151,7 +9161,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_0R_0603")
-		(at 59.69 177.8 90)
+		(at 58.42 177.8 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9159,7 +9169,7 @@
 		(dnp no)
 		(uuid "e357e558-0ed1-488e-9058-8e5ad733a33a")
 		(property "Reference" "R28"
-			(at 59.69 175.514 90)
+			(at 58.42 175.514 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9167,7 +9177,7 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 59.69 177.8 90)
+			(at 58.42 177.8 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9175,7 +9185,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 59.69 179.578 90)
+			(at 58.42 179.578 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9184,7 +9194,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 59.69 177.8 0)
+			(at 58.42 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9193,7 +9203,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 59.69 177.8 0)
+			(at 58.42 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9202,7 +9212,7 @@
 			)
 		)
 		(property "Specification" "0R 0603 20mOhms max 100mW"
-			(at 59.69 177.8 0)
+			(at 58.42 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9211,7 +9221,7 @@
 			)
 		)
 		(property "mouser" ""
-			(at 59.69 177.8 0)
+			(at 58.42 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9220,7 +9230,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
-			(at 59.69 177.8 0)
+			(at 58.42 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)

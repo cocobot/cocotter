@@ -17,16 +17,6 @@
 	)
 	(wire
 		(pts
-			(xy 168.91 116.84) (xy 217.17 116.84)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "04fa8afb-2271-4777-bce1-dd39c10db859")
-	)
-	(wire
-		(pts
 			(xy 58.42 111.76) (xy 110.49 111.76)
 		)
 		(stroke
@@ -117,6 +107,16 @@
 	)
 	(wire
 		(pts
+			(xy 168.91 114.3) (xy 217.17 114.3)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4f703c76-3b1e-4e54-bca8-255f655d55dc")
+	)
+	(wire
+		(pts
 			(xy 58.42 48.26) (xy 110.49 48.26)
 		)
 		(stroke
@@ -137,6 +137,16 @@
 	)
 	(wire
 		(pts
+			(xy 168.91 116.84) (xy 217.17 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6b9f2f4e-eea0-4452-bc6c-abe7a57ece0c")
+	)
+	(wire
+		(pts
 			(xy 58.42 123.19) (xy 83.82 123.19)
 		)
 		(stroke
@@ -144,16 +154,6 @@
 			(type default)
 		)
 		(uuid "70602e8c-d823-400a-8a9e-7e3b8bcb8206")
-	)
-	(wire
-		(pts
-			(xy 168.91 129.54) (xy 217.17 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "78642b9f-b969-4e2e-919e-f5f23483329a")
 	)
 	(wire
 		(pts
@@ -227,16 +227,6 @@
 	)
 	(wire
 		(pts
-			(xy 168.91 114.3) (xy 217.17 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a6ad1d6f-5d95-43be-b9f8-1f72fe7dc2da")
-	)
-	(wire
-		(pts
 			(xy 58.42 99.06) (xy 110.49 99.06)
 		)
 		(stroke
@@ -287,16 +277,6 @@
 	)
 	(wire
 		(pts
-			(xy 168.91 127) (xy 217.17 127)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c24fe680-99a5-4be2-a1fa-5c27c52dfbcc")
-	)
-	(wire
-		(pts
 			(xy 83.82 161.29) (xy 196.85 161.29)
 		)
 		(stroke
@@ -327,6 +307,16 @@
 	)
 	(wire
 		(pts
+			(xy 168.91 129.54) (xy 217.17 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d7fbe3d4-c5b6-4b47-8632-afc215283929")
+	)
+	(wire
+		(pts
 			(xy 196.85 140.97) (xy 217.17 140.97)
 		)
 		(stroke
@@ -354,6 +344,16 @@
 			(type default)
 		)
 		(uuid "ef774c71-659d-400a-9681-683a7e74ab14")
+	)
+	(wire
+		(pts
+			(xy 168.91 127) (xy 217.17 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f2e4697f-029b-4239-adda-0ec7a9043558")
 	)
 	(wire
 		(pts
@@ -666,7 +666,7 @@
 			(uuid "7773543e-c358-4e79-9766-20e816a65ead")
 		)
 		(pin "dir_mot1_3v3" output
-			(at 168.91 114.3 0)
+			(at 168.91 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -676,7 +676,7 @@
 			(uuid "c868613d-8e19-418f-9d8e-1e43d1a3c9a9")
 		)
 		(pin "pwm_mot1_3v3" output
-			(at 168.91 116.84 0)
+			(at 168.91 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -804,7 +804,7 @@
 			)
 		)
 		(pin "pwm_mot2_3v3" input
-			(at 217.17 129.54 180)
+			(at 217.17 127 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -814,7 +814,7 @@
 			(uuid "79707fed-5012-4709-bd49-bb4644f5ba15")
 		)
 		(pin "dir_mot2_3v3" input
-			(at 217.17 127 180)
+			(at 217.17 129.54 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -844,7 +844,7 @@
 			(uuid "f21506a5-caaa-440e-8e51-0e876824aa23")
 		)
 		(pin "dir_mot1_3v3" input
-			(at 217.17 114.3 180)
+			(at 217.17 116.84 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -854,7 +854,7 @@
 			(uuid "b9e8adad-1cf9-43d1-83f5-911229c0cc1b")
 		)
 		(pin "pwm_mot1_3v3" input
-			(at 217.17 116.84 180)
+			(at 217.17 114.3 180)
 			(effects
 				(font
 					(size 1.27 1.27)
