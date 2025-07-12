@@ -1,8 +1,0 @@
-[target.'cfg(all(target_arch = "arm", target_os = "none"))']
-runner = "probe-rs-cli run --chip STM32L496RG"
-
-[build]
-target = "thumbv7em-none-eabi"
-
-[env]
-DEFMT_LOG = "trace"

@@ -1,0 +1,12 @@
+[package]
+name = "board-pami"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies] 
+esp-idf-svc = "0.51.0"
+
+[features]
+default = []
+
+experimental = ["esp-idf-svc/experimental"]

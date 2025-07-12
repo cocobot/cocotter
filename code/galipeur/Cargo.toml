@@ -1,0 +1,29 @@
+[package]
+name = "galipeur"
+version = "0.1.0"
+authors = ["Damien Espitallier <de.electronique@gmail.com>"]
+edition = "2021"
+resolver = "2"
+rust-version = "1.77"
+
+[[bin]]
+name = "galipeur"
+harness = false # do not use the built in cargo test harness -> resolve rust-analyzer errors
+
+[features]
+default = []
+
+experimental = ["esp-idf-svc/experimental"]
+
+[dependencies]
+log = "0.4"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+board-simulator = { path = "../boards/simulator" }
+
+[target.'cfg(target_os = "espidf")'.dependencies]
+esp-idf-svc = "0.51"
+board-sabotter = { path = "../boards/sabotter" }
+
+[build-dependencies]
+embuild = {version = "0.33", features = ["espidf"]}

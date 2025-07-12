@@ -1,0 +1,17 @@
+[workspace]
+members = [
+    "pami",
+    "galipeur",
+
+    "boards/pami",
+    "boards/sabotter",
+    "boards/simulator",
+]
+resolver = "2"
+
+[profile.release]
+opt-level = "s"
+
+[profile.dev]
+debug = true    # Symbols are nice and they don't increase the size on Flash
+opt-level = "z"
