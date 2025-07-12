@@ -3454,6 +3454,12 @@
 		(uuid "1149638c-85d4-4145-8665-e983155fc689")
 	)
 	(junction
+		(at 104.14 71.12)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "19e86937-9aa8-4092-ba32-6701a5872150")
+	)
+	(junction
 		(at 30.48 104.14)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3760,6 +3766,16 @@
 			(type default)
 		)
 		(uuid "14b5c62a-cbb0-4d36-9a3f-8a24fc01510a")
+	)
+	(wire
+		(pts
+			(xy 104.14 71.12) (xy 134.62 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1533025b-fa4a-4d76-bff2-b6fa07023531")
 	)
 	(wire
 		(pts
@@ -4183,6 +4199,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 71.12) (xy 104.14 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "79fb7acf-fed0-4233-9dd5-1857c077969f")
+	)
+	(wire
+		(pts
 			(xy 135.89 176.53) (xy 124.46 176.53)
 		)
 		(stroke
@@ -4263,7 +4289,7 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 71.12) (xy 134.62 71.12)
+			(xy 100.33 68.58) (xy 104.14 68.58)
 		)
 		(stroke
 			(width 0)
@@ -4610,6 +4636,16 @@
 			(type default)
 		)
 		(uuid "dcf1227c-a103-435f-8a77-956a4782ad5d")
+	)
+	(wire
+		(pts
+			(xy 104.14 68.58) (xy 104.14 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dec68f99-c8f2-4591-93bb-fba22f8f7d6d")
 	)
 	(wire
 		(pts
@@ -5035,6 +5071,17 @@
 			(justify right)
 		)
 		(uuid "07791faf-ff1e-4b69-a9d6-24c9051d84d0")
+	)
+	(hierarchical_label "tof_irq_3v3"
+		(shape input)
+		(at 99.06 71.12 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "0ec23dd5-5682-4ba3-89bc-4af18fd85982")
 	)
 	(hierarchical_label "encod_mot0_A_3v3"
 		(shape input)
@@ -9933,7 +9980,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:TestPoint")
-		(at 102.87 71.12 90)
+		(at 100.33 68.58 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -9941,7 +9988,7 @@
 		(dnp no)
 		(uuid "ff9d3a1b-72a2-452f-9e54-53968580130e")
 		(property "Reference" "TP3"
-			(at 90.932 68.58 90)
+			(at 88.392 66.04 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9949,7 +9996,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 93.472 70.866 90)
+			(at 90.932 68.326 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9957,7 +10004,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
-			(at 102.87 66.04 0)
+			(at 100.33 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9966,7 +10013,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 102.87 66.04 0)
+			(at 100.33 63.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9975,7 +10022,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 102.87 71.12 0)
+			(at 100.33 68.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)

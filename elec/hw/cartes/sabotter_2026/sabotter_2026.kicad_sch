@@ -107,6 +107,16 @@
 	)
 	(wire
 		(pts
+			(xy 168.91 81.28) (xy 217.17 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4db295a5-fc30-4ae1-b92b-1e4950645215")
+	)
+	(wire
+		(pts
 			(xy 168.91 114.3) (xy 217.17 114.3)
 		)
 		(stroke
@@ -765,6 +775,16 @@
 			)
 			(uuid "dee248a4-1240-4e91-90f8-6c78c1be2b11")
 		)
+		(pin "tof_irq_3v3" input
+			(at 168.91 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "5d14027b-c9e5-4e5e-b93d-8454fc89be24")
+		)
 		(instances
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249"
@@ -972,6 +992,16 @@
 				(justify left)
 			)
 			(uuid "bc7b758e-d6d9-4719-9480-388268ed0137")
+		)
+		(pin "tof_irq_3v3" output
+			(at 217.17 81.28 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "f25aeab3-f795-4cd0-af6e-3839d41c46e1")
 		)
 		(instances
 			(project "sabotter_2026"
