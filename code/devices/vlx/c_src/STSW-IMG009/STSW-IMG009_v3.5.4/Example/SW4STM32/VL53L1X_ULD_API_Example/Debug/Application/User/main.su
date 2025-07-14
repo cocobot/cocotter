@@ -1,0 +1,9 @@
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:365:13:MX_GPIO_Init	56	static
+c:\st\stm32cubeide_1.9.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127\tools\arm-none-eabi\include\stdio.h:214:5:fputc	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:73:6:HAL_GPIO_EXTI_Callback	0	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:407:6:AutonomousLowPowerRangingTest	0	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:418:6:Error_Handler	0	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:340:13:MX_USART2_UART_Init	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:285:13:MX_I2C1_Init	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:161:6:SystemClock_Config	88	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/main.c:83:5:main	40	static

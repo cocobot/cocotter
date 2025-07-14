@@ -1,0 +1,16 @@
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:78:5:_I2CWrite	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:90:5:_I2CRead	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:102:14:VL53L1_WriteMulti	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:121:14:VL53L1_ReadMulti	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:142:14:VL53L1_WrByte	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:159:14:VL53L1_WrWord	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:177:14:VL53L1_WrDWord	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:209:14:VL53L1_RdByte	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:195:14:VL53L1_UpdateByte	32	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:230:14:VL53L1_RdWord	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:255:14:VL53L1_RdDWord	16	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:280:14:VL53L1_GetTickCount	0	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:332:14:VL53L1_GetTimerFrequency	0	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:341:14:VL53L1_WaitMs	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:347:14:VL53L1_WaitUs	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/vl53l1_platform.c:353:14:VL53L1_WaitValueMaskEx	56	static

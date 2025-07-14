@@ -1,0 +1,9 @@
+[package]
+name = "vlx"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+cbindgen = "0.29.0"
+bindgen = "0.72.0"
+cc = "1.2.29"

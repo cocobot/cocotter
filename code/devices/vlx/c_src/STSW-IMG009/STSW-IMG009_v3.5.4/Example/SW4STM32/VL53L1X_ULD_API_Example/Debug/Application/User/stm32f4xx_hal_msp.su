@@ -1,0 +1,5 @@
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/stm32f4xx_hal_msp.c:44:6:HAL_MspInit	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/stm32f4xx_hal_msp.c:73:6:HAL_I2C_MspInit	32	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/stm32f4xx_hal_msp.c:103:6:HAL_I2C_MspDeInit	8	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/stm32f4xx_hal_msp.c:127:6:HAL_UART_MspInit	32	static
+C:/ST/VL53L1X/ULD/To ST com/en.STSW-IMG009_v3.5.4/Example/Src/stm32f4xx_hal_msp.c:157:6:HAL_UART_MspDeInit	8	static

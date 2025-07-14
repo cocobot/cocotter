@@ -3,6 +3,8 @@ members = [
     "pami",
     "galipeur",
 
+    "devices/vlx",
+
     "boards/pami",
     "boards/sabotter",
     "boards/simulator",
