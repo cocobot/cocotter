@@ -1,0 +1,10 @@
+[package]
+name = "tca6408"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+embedded-hal = "0.2"
+bitfield = "0.14"
+
+[dev-dependencies]
