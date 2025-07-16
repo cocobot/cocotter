@@ -45,15 +45,31 @@ fn main() {
     combined_header.write_all(format!("#include \"{}\"\n", l5_detection_plugin.display()).as_bytes()).unwrap();
     
     combined_header.write_all(format!("#include \"{}\"\n", l1_header_path.display()).as_bytes()).unwrap();
+    
+    // Don't include platform.h as it causes conflicts - just include original headers
 
     //generate combined rust headers
-    let rust_bindings = bindgen::Builder::default()
+    let mut bindgen_builder = bindgen::Builder::default()
         .use_core()
+        // Include platform dir again since we need minimal platform.h
         .clang_arg(format!("-I{}", output_platform_dir.display().to_string()))
         .clang_arg(format!("-I{}", crate_dir.join("c_src/STSW-IMG023/VL53L5CX_ULD_driver_2.0.1/VL53L5CX_ULD_API/inc").display()))
         .clang_arg(format!("-I{}", crate_dir.join("c_src/STSW-IMG009/STSW-IMG009_v3.5.4/API/core").display()))
         .header(combined_header_path.display().to_string())
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()));
+    
+
+    let target = std::env::var("TARGET").unwrap();
+    let is_esp32 = target == "xtensa-esp32s3-espidf";
+    
+    // Configure bindgen for consistent pointer sizes
+    if is_esp32 {
+        bindgen_builder = bindgen_builder.clang_arg("--target=i686-unknown-linux-gnu");
+    } else {
+        bindgen_builder = bindgen_builder.clang_arg("--target=x86_64-unknown-linux-gnu");
+    }
+    
+    let rust_bindings = bindgen_builder
         .generate()
         .expect("Unable to generate combined bindings");
 
@@ -62,8 +78,7 @@ fn main() {
         .expect("Couldn't write bindings!");
 
     let mut build = &mut cc::Build::new();
-    let target = std::env::var("TARGET").unwrap();
-    if target == "xtensa-esp32s3-none-elf" {
+    if is_esp32 {
         build = build
             .compiler("xtensa-esp32s3-elf-gcc")
             .flag("-mlongcalls")

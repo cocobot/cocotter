@@ -1,9 +1,10 @@
 use phf::phf_map;
+
+#[cfg(target_os = "linux")]
 use std::env;
 
 #[cfg(target_os = "espidf")]
 use esp_idf_svc::sys::{esp_mac_type_t_ESP_MAC_BT, esp_read_mac};
-
 
 pub struct PAMIConfig {
     pub id: usize,

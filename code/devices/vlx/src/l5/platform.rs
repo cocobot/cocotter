@@ -4,38 +4,6 @@
 
 use core::ffi::c_void;
 use std::{thread, time::Duration};
-use std::collections::HashMap;
-use std::sync::{Mutex, Arc};
-
-// Global registry for I2C drivers by device address
-type I2cDriverBox = Box<dyn crate::I2c<Error = Box<dyn std::error::Error + Send + Sync>> + Send + Sync>;
-static I2C_DRIVERS: Mutex<Option<HashMap<u16, Arc<Mutex<I2cDriverBox>>>>> = Mutex::new(None);
-
-// Initialize the global I2C registry
-pub fn init_i2c_registry() {
-    let mut drivers = I2C_DRIVERS.lock().unwrap();
-    if drivers.is_none() {
-        *drivers = Some(HashMap::new());
-    }
-}
-
-// Register an I2C driver for a specific device address
-pub fn register_i2c_driver(address: u16, driver: I2cDriverBox) {
-    let mut drivers = I2C_DRIVERS.lock().unwrap();
-    if let Some(ref mut map) = *drivers {
-        map.insert(address, Arc::new(Mutex::new(driver)));
-    }
-}
-
-// Get I2C driver for a device address
-fn get_i2c_driver(address: u16) -> Option<Arc<Mutex<I2cDriverBox>>> {
-    let drivers = I2C_DRIVERS.lock().unwrap();
-    if let Some(ref map) = *drivers {
-        map.get(&address).cloned()
-    } else {
-        None
-    }
-}
 
 pub const VL53L5CX_NB_TARGET_PER_ZONE: u8 = 1;
 pub const VL53L5CX_NB_TARGET_PER_ZONsE2: u8 = 1;
@@ -56,18 +24,11 @@ pub extern fn VL53L5CX_WrByte(platform: &mut VL53L5CX_Platform, register_addr: u
 
 #[no_mangle]
 pub extern fn VL53L5CX_WrMulti(platform: &mut VL53L5CX_Platform, register_addr: u16, p_values: *const u8, size: u32) -> u8 {
-    if let Some(driver) = get_i2c_driver(platform.address) {
-        let buffer = unsafe {
-            core::slice::from_raw_parts(p_values, size as usize)
-        };
-        let mut i2c = driver.lock().unwrap();
-        match i2c.write(platform.address as u8, register_addr, buffer) {
-            Ok(_) => 0,
-            Err(_) => 1,
-        }
-    } else {
-        1
-    }
+    let buffer = unsafe {
+        core::slice::from_raw_parts(p_values, size as usize)
+    };
+    let result = unsafe { crate::call_i2c_write(platform.address as u8, register_addr, buffer) };
+    if result == 0 { 0 } else { 1 }
 }
 
 #[no_mangle]
@@ -77,18 +38,11 @@ pub extern fn VL53L5CX_RdByte(platform: &mut VL53L5CX_Platform, register_addr: u
 
 #[no_mangle]
 pub extern fn VL53L5CX_RdMulti(platform: &mut VL53L5CX_Platform, register_addr: u16, p_values: *mut u8, size: u32) -> u8 {
-    if let Some(driver) = get_i2c_driver(platform.address) {
-        let buffer = unsafe {
-            core::slice::from_raw_parts_mut(p_values, size as usize)
-        };
-        let mut i2c = driver.lock().unwrap();
-        match i2c.read(platform.address as u8, register_addr, buffer) {
-            Ok(_) => 0,
-            Err(_) => 1,
-        }
-    } else {
-        1
-    }
+    let buffer = unsafe {
+        core::slice::from_raw_parts_mut(p_values, size as usize)
+    };
+    let result = unsafe { crate::call_i2c_read(platform.address as u8, register_addr, buffer) };
+    if result == 0 { 0 } else { 1 }
 }
 
 #[no_mangle]

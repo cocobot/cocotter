@@ -27,9 +27,27 @@ fn main() {
     //set the color of the led to the color of the board
     log::info!("Setting led color to {:?}", config.color);
 
+    let mut vlx = board.vlx_sensors.take().unwrap();
+    println!("DEBUG: About to initialize VLX sensors...");
+    if let Err(e) = vlx.init() {
+        log::error!("Failed to initialize VLX sensors: {:?}", e);
+    } else {
+        println!("DEBUG: VLX sensors initialized successfully!");
+    }
+
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
     loop {
         led_heartbeat.toggle().ok();
+
+        //debug print vlx sensors
+        for i in 0..vlx.sensor_count() {
+            if let Ok(distance) = vlx.get_distance(i) {
+                log::info!("VLX sensor {} distance: {:?}", i, distance);
+            } else {
+                log::error!("Failed to get distance from VLX sensor {}", i);
+            }
+        }
+
         thread::sleep(Duration::from_millis(500));
     }
 }

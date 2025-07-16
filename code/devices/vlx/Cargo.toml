@@ -3,6 +3,12 @@ name = "vlx"
 version = "0.1.0"
 edition = "2021"
 
+[dependencies]
+embedded-hal = "0.2"
+
+[features]
+default = []
+
 [build-dependencies]
 cbindgen = "0.29.0"
 bindgen = "0.72.0"

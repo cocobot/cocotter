@@ -3,38 +3,6 @@
 #![allow(non_snake_case)]
 
 use std::{thread, time::Duration};
-use std::collections::HashMap;
-use std::sync::{Mutex, Arc};
-
-// Global registry for I2C drivers by device address
-type I2cDriverBox = Box<dyn crate::I2c<Error = Box<dyn std::error::Error + Send + Sync>> + Send + Sync>;
-static I2C_DRIVERS: Mutex<Option<HashMap<u16, Arc<Mutex<I2cDriverBox>>>>> = Mutex::new(None);
-
-// Initialize the global I2C registry
-pub fn init_i2c_registry() {
-    let mut drivers = I2C_DRIVERS.lock().unwrap();
-    if drivers.is_none() {
-        *drivers = Some(HashMap::new());
-    }
-}
-
-// Register an I2C driver for a specific device address
-pub fn register_i2c_driver(address: u16, driver: I2cDriverBox) {
-    let mut drivers = I2C_DRIVERS.lock().unwrap();
-    if let Some(ref mut map) = *drivers {
-        map.insert(address, Arc::new(Mutex::new(driver)));
-    }
-}
-
-// Get I2C driver for a device address
-fn get_i2c_driver(address: u16) -> Option<Arc<Mutex<I2cDriverBox>>> {
-    let drivers = I2C_DRIVERS.lock().unwrap();
-    if let Some(ref map) = *drivers {
-        map.get(&address).cloned()
-    } else {
-        None
-    }
-}
 
 // Define the device struct exactly as in the C header so that the size/layout match.
 #[repr(C)]
@@ -56,16 +24,8 @@ pub extern "C" fn VL53L1_WriteMulti(
     pdata: *const u8,
     count: u32,
 ) -> i8 {
-    if let Some(driver) = get_i2c_driver(dev) {
-        let data = unsafe { core::slice::from_raw_parts(pdata, count as usize) };
-        let mut i2c = driver.lock().unwrap();
-        match i2c.write(dev as u8, index, data) {
-            Ok(_) => 0,
-            Err(_) => -1,
-        }
-    } else {
-        -1
-    }
+    let data = unsafe { core::slice::from_raw_parts(pdata, count as usize) };
+    unsafe { crate::call_i2c_write(dev as u8, index, data) }
 }
 
 #[no_mangle]
@@ -75,16 +35,11 @@ pub extern "C" fn VL53L1_ReadMulti(
     pdata: *mut u8,
     count: u32,
 ) -> i8 {
-    if let Some(driver) = get_i2c_driver(dev) {
-        let data = unsafe { core::slice::from_raw_parts_mut(pdata, count as usize) };
-        let mut i2c = driver.lock().unwrap();
-        match i2c.read(dev as u8, index, data) {
-            Ok(_) => 0,
-            Err(_) => -1,
-        }
-    } else {
-        -1
+    let data = unsafe { core::slice::from_raw_parts_mut(pdata, count as usize) };
+    if dev == 0x29 || dev == 0x30 || dev == 0x31 {
+        println!("VL53L1_ReadMulti: dev=0x{:02X}, index=0x{:04X}, count={}", dev, index, count);
     }
+    unsafe { crate::call_i2c_read(dev as u8, index, data) }
 }
 
 #[no_mangle]
@@ -135,7 +90,7 @@ pub extern "C" fn VL53L1_RdDWord(dev: u16, index: u16, pdata: *mut u32) -> i8 {
 }
 
 #[no_mangle]
-pub extern "C" fn VL53L1_WaitMs(dev: u16, wait_ms: i32) -> i8 {
+pub extern "C" fn VL53L1_WaitMs(_dev: u16, wait_ms: i32) -> i8 {
     thread::sleep(Duration::from_millis(wait_ms as u64));
     0
 }

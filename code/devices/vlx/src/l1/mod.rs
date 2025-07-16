@@ -2,67 +2,36 @@ pub mod platform;
 
 use crate::Sensor;
 use core::marker::PhantomData;
-
-// Wrapper to convert any I2C implementation to the boxed trait object
-struct I2CWrapper<I2C> {
-    inner: I2C,
-}
-
-impl<I2C> crate::I2c for I2CWrapper<I2C>
-where
-    I2C: crate::I2c,
-    I2C::Error: std::error::Error + Send + Sync + 'static,
-{
-    type Error = Box<dyn std::error::Error + Send + Sync>;
-    
-    fn write(&mut self, addr: u8, reg: u16, data: &[u8]) -> Result<(), Self::Error> {
-        self.inner.write(addr, reg, data).map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
-    }
-    
-    fn read(&mut self, addr: u8, reg: u16, data: &mut [u8]) -> Result<(), Self::Error> {
-        self.inner.read(addr, reg, data).map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
-    }
-}
+use embedded_hal::blocking::i2c::{Write, WriteRead};
 
 pub struct VL53L1X<I2C> {
-    i2c: I2CWrapper<I2C>,
+    i2c: I2C,
     address: u8,
     _phantom: PhantomData<I2C>,
 }
 
 impl<I2C> VL53L1X<I2C> 
 where
-    I2C: crate::I2c + Send + Sync + 'static,
-    I2C::Error: std::error::Error + Send + Sync + 'static,
+    I2C: Write + WriteRead + Send + Sync + 'static,
+    <I2C as WriteRead>::Error: std::error::Error + Send + Sync + 'static,
+    <I2C as Write>::Error: Into<<I2C as WriteRead>::Error>,
 {
-    pub fn new(i2c: I2C, address: u8) -> Self 
-    where
-        I2C: Clone,
-    {
-        // Initialize I2C registry if not already done
-        platform::init_i2c_registry();
-        
-        // Register the I2C driver for default address (0x29) first
-        let boxed_driver_default: Box<dyn crate::I2c<Error = Box<dyn std::error::Error + Send + Sync>> + Send + Sync> = 
-            Box::new(I2CWrapper { inner: i2c.clone() });
-        platform::register_i2c_driver(0x29, boxed_driver_default);
-        
-        // Also register for the final address if different from default
-        if address != 0x29 {
-            let boxed_driver_final: Box<dyn crate::I2c<Error = Box<dyn std::error::Error + Send + Sync>> + Send + Sync> = 
-                Box::new(I2CWrapper { inner: i2c.clone() });
-            platform::register_i2c_driver(address as u16, boxed_driver_final);
-        }
-        
+    pub fn new(i2c: I2C, address: u8) -> Self {
         Self {
-            i2c: I2CWrapper { inner: i2c },
+            i2c,
             address,
             _phantom: PhantomData,
         }
     }
 }
 
-impl<I2C> Sensor for VL53L1X<I2C> {
+
+impl<I2C> Sensor for VL53L1X<I2C> 
+where
+    I2C: Write + WriteRead + Send + Sync + 'static,
+    <I2C as WriteRead>::Error: std::error::Error + Send + Sync + 'static,
+    <I2C as Write>::Error: Into<<I2C as WriteRead>::Error>,
+{
     type Error = VL53L1XError;
     
     fn init(&mut self) -> Result<(), Self::Error> {

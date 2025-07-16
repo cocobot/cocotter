@@ -5,6 +5,9 @@ edition = "2021"
 
 [dependencies] 
 esp-idf-svc = "0.51.0"
+vlx = { path = "../../devices/vlx" }
+shared-bus = { version = "0.3.1", features = ["std"] }
+embedded-hal = "0.2"
 
 [features]
 default = []
