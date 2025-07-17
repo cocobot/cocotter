@@ -1,0 +1,11 @@
+[package]
+name = "esp32_encoder"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+esp-idf-svc = "0.51.0"
+log = "0.4"
+
+[features]
+default = []

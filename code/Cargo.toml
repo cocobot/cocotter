@@ -4,6 +4,8 @@ members = [
     "galipeur",
 
     "devices/vlx",
+    "devices/tca6408", 
+    "devices/esp32_encoder",
 
     "boards/pami",
     "boards/sabotter",

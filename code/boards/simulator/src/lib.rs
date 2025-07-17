@@ -1,7 +1,6 @@
 use simple_logger::SimpleLogger;
-use vlx::{VLX, Config, SensorType, Sensor, DistanceData, MultiZoneData, ZoneAlarm};
+use vlx::{SensorType, Sensor, DistanceData, MultiZoneData, ZoneAlarm};
 use embedded_hal::blocking::i2c::{Write, WriteRead};
-use std::collections::HashMap;
 
 pub struct FakeOutputPin;
 
@@ -223,20 +222,18 @@ impl BoardPami {
     }
 }
 
-pub struct GalipeurBoard {
-    pub fake_i2c: FakeI2c,
+pub struct BoardSabotter {
+        pub led_heartbeat: Option<FakeOutputPin>,
+
 }
 
-impl GalipeurBoard {
+impl BoardSabotter {
     pub fn new() -> Self {
+        init_logging();
+        
         Self {
-            fake_i2c: FakeI2c::new(),
+            led_heartbeat: Some(FakeOutputPin),
         }
-    }
-    
-    pub fn init(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        println!("DEBUG: GalipeurBoard initialized successfully");
-        Ok(())
     }
 }
 
