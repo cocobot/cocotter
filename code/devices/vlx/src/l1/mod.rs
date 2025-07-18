@@ -1,36 +1,24 @@
 pub mod platform;
 
 use crate::Sensor;
-use core::marker::PhantomData;
-use embedded_hal::blocking::i2c::{Write, WriteRead};
+use std::{thread, time::Duration};
 
-pub struct VL53L1X<I2C> {
-    i2c: I2C,
+pub struct VL53L1X {
     address: u8,
-    _phantom: PhantomData<I2C>,
 }
 
-impl<I2C> VL53L1X<I2C> 
-where
-    I2C: Write + WriteRead + Send + Sync + 'static,
-    <I2C as WriteRead>::Error: std::error::Error + Send + Sync + 'static,
-    <I2C as Write>::Error: Into<<I2C as WriteRead>::Error>,
+impl VL53L1X
 {
-    pub fn new(i2c: I2C, address: u8) -> Self {
+    pub fn new(address: u8) -> Self {
         Self {
-            i2c,
             address,
-            _phantom: PhantomData,
         }
     }
 }
 
 
-impl<I2C> Sensor for VL53L1X<I2C> 
+impl Sensor for VL53L1X
 where
-    I2C: Write + WriteRead + Send + Sync + 'static,
-    <I2C as WriteRead>::Error: std::error::Error + Send + Sync + 'static,
-    <I2C as Write>::Error: Into<<I2C as WriteRead>::Error>,
 {
     type Error = VL53L1XError;
     
@@ -38,6 +26,12 @@ where
         unsafe {
             // Start with default I2C address (0x29)
             let default_addr = 0x29u16;
+
+            let mut sensor_id = 0u16;
+            let status = crate::VL53L1X_GetSensorId(default_addr, &mut sensor_id);
+            if status != 0 || sensor_id != 0xEEAC {
+                return Err(VL53L1XError::InitError);
+            }
             
             // Initialize sensor with default settings using default address
             let status = crate::VL53L1X_SensorInit(default_addr);
@@ -55,8 +49,9 @@ where
                 if boot_state == 1 {
                     break;
                 }
-                // Small delay - in real implementation, use proper delay
-                for _ in 0..10000 { core::hint::spin_loop(); }
+
+                // Small delay
+                thread::sleep(Duration::from_millis(10));
             }
             
             // Verify sensor ID

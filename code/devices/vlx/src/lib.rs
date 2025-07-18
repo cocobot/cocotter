@@ -1,24 +1,53 @@
 pub mod l1;
 pub mod l5;
 
-use core::marker::PhantomData;
-use embedded_hal::blocking::i2c::{Write, WriteRead};
 use std::sync::{Arc, Mutex};
+use std::{thread, time::Duration};
+use embedded_hal::i2c::I2c;
 
 mod bindings;
 use bindings::*;
 
 // Stockage global du SharedI2c pour les fonctions platform C
-static GLOBAL_SHARED_I2C: Mutex<Option<Box<dyn I2c<Error = Box<dyn std::error::Error + Send + Sync>> + Send + Sync>>> = Mutex::new(None);
+static GLOBAL_SHARED_I2C: Mutex<Option<Box<dyn I2cWrapper>>> = Mutex::new(None);
+
+// Trait wrapper pour permettre le stockage d'objets I2C hétérogènes
+trait I2cWrapper: Send + Sync {
+    fn write(&mut self, address: u8, register: u16, data: &[u8]) -> Result<(), Box<dyn std::error::Error + Send + Sync>>;
+    fn read(&mut self, address: u8, register: u16, data: &mut [u8]) -> Result<(), Box<dyn std::error::Error + Send + Sync>>;
+}
+
+// Implémentation du wrapper pour SharedI2c
+impl<I2C, E> I2cWrapper for SharedI2c<I2C>
+where
+    I2C: I2c<Error = E> + Send + Sync,
+    E: std::error::Error + Send + Sync + 'static,
+{
+    fn write(&mut self, address: u8, register: u16, data: &[u8]) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let mut i2c = self.0.lock().unwrap();
+        let reg_bytes = register.to_be_bytes();
+        let mut buffer = Vec::with_capacity(reg_bytes.len() + data.len());
+        buffer.extend_from_slice(&reg_bytes);
+        buffer.extend_from_slice(data);
+        i2c.write(address, &buffer).map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
+    }
+    
+    fn read(&mut self, address: u8, register: u16, data: &mut [u8]) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let mut i2c = self.0.lock().unwrap();
+        let reg_bytes = register.to_be_bytes();
+        i2c.write_read(address, &reg_bytes, data).map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
+    }
+}
 
 // Fonction pour enregistrer le SharedI2c global
-pub fn register_global_i2c<I2C, E>(i2c: SharedI2c<I2C>) 
+fn register_global_i2c<I2C, E>(i2c: I2C) 
 where
-    I2C: Write<Error = E> + WriteRead<Error = E> + Send + Sync + 'static,
-    E: Into<Box<dyn std::error::Error + Send + Sync>> + Send + Sync + 'static,
+    I2C: I2c<Error = E> + Send + Sync + 'static,
+    E: std::error::Error + Send + Sync + 'static,
 {
+    let shared_i2c = SharedI2c(Arc::new(Mutex::new(i2c)));
     let mut global = GLOBAL_SHARED_I2C.lock().unwrap();
-    *global = Some(Box::new(i2c));
+    *global = Some(Box::new(shared_i2c));
 }
 
 // Fonctions pour utiliser l'I2C global depuis les platforms
@@ -54,16 +83,10 @@ pub unsafe fn call_i2c_read(address: u8, register: u16, data: &mut [u8]) -> i8 {
     }
 }
 
-// Trait I2C unifié pour usage interne
-trait I2c {
-    type Error;
-    fn write(&mut self, address: u8, register: u16, data: &[u8]) -> Result<(), Self::Error>;
-    fn read(&mut self, address: u8, register: u16, data: &mut [u8]) -> Result<(), Self::Error>;
-}
 
 // Wrapper I2C thread-safe et clonable (usage interne uniquement)
 struct SharedI2c<I2C>(Arc<Mutex<I2C>>);
-
+/*
 impl<I2C> Clone for SharedI2c<I2C> {
     fn clone(&self) -> Self {
         SharedI2c(self.0.clone())
@@ -107,8 +130,14 @@ where
     fn write(&mut self, address: u8, register: u16, data: &[u8]) -> Result<(), Self::Error> {
         let mut i2c = self.0.lock().unwrap();
         let reg_bytes = register.to_be_bytes();
-        i2c.write_read(address, &reg_bytes, &mut []).map_err(|e| e.into())?;
-        i2c.write(address, data).map_err(|e| e.into())
+
+        //gen one buffer with register and data
+        let mut buffer = Vec::with_capacity(reg_bytes.len() + data.len());
+        buffer.extend_from_slice(&reg_bytes);
+        buffer.extend_from_slice(data);
+
+        // Use the I2C write method
+        i2c.write(address, &buffer).map_err(|e| e.into())
     }
     
     fn read(&mut self, address: u8, register: u16, data: &mut [u8]) -> Result<(), Self::Error> {
@@ -117,6 +146,7 @@ where
         i2c.write_read(address, &reg_bytes, data).map_err(|e| e.into())
     }
 }
+*/
 
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -255,90 +285,88 @@ impl DistanceData {
     }
 }
 
-enum SensorInstance<I2C> {
-    L1(l1::VL53L1X<I2C>),
-    L5(l5::VL53L5CX<I2C>),
+enum SensorInstance {
+    L1(l1::VL53L1X),
+    L5(l5::VL53L5CX),
 }
 
-pub struct VLX<I2C, E, const N: usize, EN, RST> 
-where
-    I2C: Write<Error = E> + WriteRead<Error = E>,
+pub struct VLX<I2C, const N: usize>
 {
-    i2c: SharedI2c<I2C>,
-    configs: [Config<EN, RST>; N],
-    sensors: [SensorInstance<SharedI2c<I2C>>; N],
-    _phantom: PhantomData<(E, EN, RST)>,
+    configs: [Config<Box<dyn FnMut(bool)>, Box<dyn FnMut(bool)>>; N],
+    sensors: [SensorInstance; N],
+    _phantom: std::marker::PhantomData<I2C>,
 }
 
-impl<I2C, E, const N: usize, EN, RST> VLX<I2C, E, N, EN, RST> 
+impl<I2C, E, const N: usize> VLX<I2C, N> 
 where
-    I2C: Write<Error = E> + WriteRead<Error = E> + Send + Sync + 'static,
+    I2C: I2c<Error = E> + Send + Sync + 'static,
     E: std::error::Error + Send + Sync + 'static,
-    EN: Fn(bool),
-    RST: Fn(bool),
 {
-    pub fn new(i2c: I2C, configs: [Config<EN, RST>; N]) -> Self {
-        let shared_i2c = SharedI2c(Arc::new(Mutex::new(i2c)));
+    pub fn new(i2c: I2C, configs: [Config<Box<dyn FnMut(bool)>, Box<dyn FnMut(bool)>>; N]) -> Self {
+        register_global_i2c(i2c);
+
         let sensors = core::array::from_fn(|i| {
             match configs[i].sensor_type {
-                SensorType::L1 => SensorInstance::L1(l1::VL53L1X::new(shared_i2c.clone(), configs[i].i2c_address)),
-                SensorType::L5 => SensorInstance::L5(l5::VL53L5CX::new(shared_i2c.clone(), configs[i].i2c_address)),
+                SensorType::L1 => SensorInstance::L1(l1::VL53L1X::new(configs[i].i2c_address)),
+                SensorType::L5 => SensorInstance::L5(l5::VL53L5CX::new(configs[i].i2c_address)),
             }
         });
         
         Self {
-            i2c: shared_i2c,
             configs,
             sensors,
-            _phantom: PhantomData,
+            _phantom: std::marker::PhantomData,
         }
     }
     
     pub fn init(&mut self) -> Result<(), VlxError> {
-        // Phase 0: Register the shared I2C globally for platform functions
-        register_global_i2c(self.i2c.clone());
-        
         // Phase 1: Reset all sensors and clear all enables
         for (i, _) in self.sensors.iter().enumerate() {
             // Clear enable first
-            if let Some(ref enable_fn) = self.configs[i].enable_fn {
-                enable_fn(false);
+            if let Some(ref mut enable_fn) = self.configs[i].enable_fn {
+                (*enable_fn)(false);
             }
             
             // Reset sensor
-            if let Some(ref reset_fn) = self.configs[i].reset_fn {
-                reset_fn(false);  // Assert reset
+            if let Some(ref mut reset_fn) = self.configs[i].reset_fn {
+                (*reset_fn)(false);  // Assert reset
             }
         }
         
         // Small delay to ensure reset is stable
-        for _ in 0..50000 { core::hint::spin_loop(); }
+        thread::sleep(Duration::from_millis(10));
         
         // Phase 2: Release reset for all sensors
         for (i, _) in self.sensors.iter().enumerate() {
-            if let Some(ref reset_fn) = self.configs[i].reset_fn {
-                reset_fn(true);   // Release reset
+            if let Some(ref mut reset_fn) = self.configs[i].reset_fn {
+                (*reset_fn)(true);   // Release reset
             }
         }
         
         // Small delay after reset release
-        for _ in 0..50000 { core::hint::spin_loop(); }
+        thread::sleep(Duration::from_millis(10));
         
+        let mut res = Ok(());
         // Phase 3: Enable and initialize each sensor sequentially
         for (i, sensor) in self.sensors.iter_mut().enumerate() {
-            if let Some(ref enable_fn) = self.configs[i].enable_fn {
-                enable_fn(true);
+            if let Some(ref mut enable_fn) = self.configs[i].enable_fn {
+                (*enable_fn)(true);
             }
             
             // Small delay after enable
-            for _ in 0..10000 { core::hint::spin_loop(); }
+            thread::sleep(Duration::from_millis(100));
             
-            match sensor {
-                SensorInstance::L1(sensor) => sensor.init().map_err(|_| VlxError::InitError)?,
-                SensorInstance::L5(sensor) => sensor.init().map_err(|_| VlxError::InitError)?,
+            let r = match sensor {
+                SensorInstance::L1(sensor) => sensor.init().map_err(|_| VlxError::InitError),
+                SensorInstance::L5(sensor) => sensor.init().map_err(|_| VlxError::InitError),
+            };
+
+            if r.is_err() {
+                log::error!("Failed to initialize sensor {}: {:?}", i + 1, r);
+                res = r;
             }
         }
-        Ok(())
+        res
     }
     
     pub fn get_distance(&mut self, sensor_index: usize) -> Result<DistanceData, VlxError> {

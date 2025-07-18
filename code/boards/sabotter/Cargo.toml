@@ -6,8 +6,8 @@ edition = "2021"
 [dependencies] 
 esp-idf-svc = "0.51.0"
 log = "0.4"
-shared-bus = { version = "0.3", features = ["std"] }
-embedded-hal = "0.2"
+embedded-hal = "1.0.0"
+embedded-hal-bus = { version = "0.3.0", features = ["std"] }
 vlx = { path = "../../devices/vlx" }
 tca6408 = { path = "../../devices/tca6408" }
 esp32_encoder = { path = "../../devices/esp32_encoder" }

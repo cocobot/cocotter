@@ -1,7 +1,7 @@
 #![no_std]
 
-use embedded_hal::blocking::i2c::{Write, WriteRead};
 use bitfield::bitfield;
+use embedded_hal::i2c::I2c;
 
 /// TCA6408 I2C GPIO expander driver
 /// 
@@ -95,7 +95,7 @@ pub enum TCA6408Error<E> {
 
 impl<I2C, E> TCA6408<I2C> 
 where 
-    I2C: Write<Error = E> + WriteRead<Error = E>,
+    I2C: I2c<Error = E>,
 {
     /// Create a new TCA6408 instance
     /// 

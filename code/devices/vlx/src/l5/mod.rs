@@ -1,37 +1,26 @@
 pub mod platform;
 
 use crate::Sensor;
-use core::marker::PhantomData;
-use embedded_hal::blocking::i2c::{Write, WriteRead};
 
-pub struct VL53L5CX<I2C> {
-    i2c: I2C,
+pub struct VL53L5CX {
     address: u8,
-    configuration: crate::VL53L5CX_Configuration,
-    _phantom: PhantomData<I2C>,
+    configuration: Box<crate::VL53L5CX_Configuration>,
 }
 
-impl<I2C> VL53L5CX<I2C> 
-where
-    I2C: Write + WriteRead + Send + Sync + 'static,
-    <I2C as WriteRead>::Error: std::error::Error + Send + Sync + 'static,
-    <I2C as Write>::Error: Into<<I2C as WriteRead>::Error>,
-{
-    pub fn new(i2c: I2C, address: u8) -> Self {
+impl VL53L5CX {
+    pub fn new(address: u8) -> Self {
         // Initialize configuration with zeros - will be properly initialized by vl53l5cx_init
-        let configuration = unsafe { core::mem::zeroed::<crate::VL53L5CX_Configuration>() };
+        let configuration = Box::new(unsafe { core::mem::zeroed::<crate::VL53L5CX_Configuration>() });
         
         Self {
-            i2c,
             address,
             configuration,
-            _phantom: PhantomData,
         }
     }
 }
 
 
-impl<I2C> VL53L5CX<I2C> {
+impl VL53L5CX {
     /// Convertit des coordonnées (x, y) en index de zone
     fn get_zone_index(&self, x: usize, y: usize) -> Option<usize> {
         // Détermine la résolution actuelle basée sur la configuration
@@ -46,61 +35,53 @@ impl<I2C> VL53L5CX<I2C> {
     }
 }
 
-impl<I2C> Sensor for VL53L5CX<I2C> 
-where
-    I2C: Write + WriteRead + Send + Sync + 'static,
-    <I2C as WriteRead>::Error: std::error::Error + Send + Sync + 'static,
-    <I2C as Write>::Error: Into<<I2C as WriteRead>::Error>,
-{
+impl Sensor for VL53L5CX {
     type Error = VL53L5CXError;
     
     fn init(&mut self) -> Result<(), Self::Error> {
         unsafe {
-            // Initialize configuration with default address (0x29)
-            self.configuration.platform.address = 0x29;
-            
-            // Check if sensor is alive
-            let mut is_alive = 0u8;
-            let status = crate::vl53l5cx_is_alive(&mut self.configuration, &mut is_alive);
-            if status != 0 || is_alive == 0 {
-                return Err(VL53L5CXError::InitError);
-            }
-            
-            // Initialize sensor
-            let status = crate::vl53l5cx_init(&mut self.configuration);
-            if status != 0 {
-                return Err(VL53L5CXError::InitError);
-            }
-            
-            // Set I2C address if different from default
-            if self.address != 0x29 {
-                let status = crate::vl53l5cx_set_i2c_address(&mut self.configuration, self.address as u16);
+            assert_ne!(self.address, 0x29, "Address 0x29 is reserved for default configuration");
+
+            self.configuration.platform.address = self.address as u16;
+            let mut is_configured = 0u8;
+            let status = crate::vl53l5cx_is_alive(&mut *self.configuration, &mut is_configured);
+            if status != 0 || is_configured == 0 {            
+                self.configuration.platform.address = 0x29;
+                // Check if sensor is alive
+                let mut is_alive = 0u8;
+                let status = crate::vl53l5cx_is_alive(&mut *self.configuration, &mut is_alive);
+                if status != 0 || is_alive == 0 {
+                    return Err(VL53L5CXError::InitError);
+                }
+                
+                // Initialize sensor
+                let status = crate::vl53l5cx_init(&mut *self.configuration);
                 if status != 0 {
                     return Err(VL53L5CXError::InitError);
                 }
-            }
-            
-            // Configure default settings
-            // Set 4x4 resolution for better performance
-            let status = crate::vl53l5cx_set_resolution(&mut self.configuration, 16); // VL53L5CX_RESOLUTION_4X4
-            if status != 0 {
-                return Err(VL53L5CXError::InitError);
-            }
-            
-            // Set ranging frequency to 15Hz
-            let status = crate::vl53l5cx_set_ranging_frequency_hz(&mut self.configuration, 15);
-            if status != 0 {
-                return Err(VL53L5CXError::InitError);
-            }
-            
-            // Set power mode to wake up
-            let status = crate::vl53l5cx_set_power_mode(&mut self.configuration, 1); // VL53L5CX_POWER_MODE_WAKEUP
-            if status != 0 {
-                return Err(VL53L5CXError::InitError);
-            }
-            
+
+                // Set I2C address if different from default
+                let status = crate::vl53l5cx_set_i2c_address(&mut *self.configuration, (self.address * 2) as u16);
+                if status != 0 {
+                    return Err(VL53L5CXError::InitError);
+                }
+                self.configuration.platform.address = self.address as u16;
+
+                // Set 4x4 resolution for better performance
+                let status = crate::vl53l5cx_set_resolution(&mut *self.configuration, 16); // VL53L5CX_RESOLUTION_4X4
+                if status != 0 {
+                    return Err(VL53L5CXError::InitError);
+                }
+                
+                // Set power mode to wake up
+                let status = crate::vl53l5cx_set_power_mode(&mut *self.configuration, 1); // VL53L5CX_POWER_MODE_WAKEUP
+                if status != 0 {
+                    return Err(VL53L5CXError::InitError);
+                }
+            }        
+           
             // Start ranging automatically
-            let status = crate::vl53l5cx_start_ranging(&mut self.configuration);
+            let status = crate::vl53l5cx_start_ranging(&mut *self.configuration);
             if status != 0 {
                 return Err(VL53L5CXError::InitError);
             }
@@ -114,7 +95,7 @@ where
             let mut results = core::mem::zeroed::<crate::VL53L5CX_ResultsData>();
             
             // Check if data is ready
-            let status = crate::vl53l5cx_check_data_ready(&mut self.configuration, &mut is_data_ready);
+            let status = crate::vl53l5cx_check_data_ready(&mut *self.configuration, &mut is_data_ready);
             if status != 0 {
                 return Err(VL53L5CXError::RangingError);
             }
@@ -124,7 +105,7 @@ where
             }
             
             // Get ranging data
-            let status = crate::vl53l5cx_get_ranging_data(&mut self.configuration, &mut results);
+            let status = crate::vl53l5cx_get_ranging_data(&mut *self.configuration, &mut results);
             if status != 0 {
                 return Err(VL53L5CXError::RangingError);
             }
@@ -136,11 +117,11 @@ where
             // The number of zones depends on resolution setting
             // For 4x4 resolution: 16 zones (4x4 grid)
             // For 8x8 resolution: 64 zones (8x8 grid)
-            let max_zones = if results.distance_mm.len() > 64 { 64 } else { results.distance_mm.len() };
+            let max_zones = 16; //hardcoded for now, should be changed later
             
             for i in 0..max_zones {
                 // Check if target is detected and status is valid (5 = valid measurement)
-                if results.nb_target_detected[i] > 0 && results.target_status[i] == 5 {
+                if results.target_status[i] == 5 {
                     distances.push(results.distance_mm[i] as u16);
                 } else {
                     // Push u16::MAX for invalid measurements to maintain zone indexing
@@ -178,7 +159,7 @@ where
         unsafe {
             // VL53L5CX has detection threshold functionality via plugins
             // Enable detection thresholds plugin for basic alarm functionality
-            let status = crate::vl53l5cx_set_detection_thresholds_enable(&mut self.configuration, 1);
+            let status = crate::vl53l5cx_set_detection_thresholds_enable(&mut *self.configuration, 1);
             if status != 0 {
                 return Err(VL53L5CXError::ConfigError);
             }
@@ -221,7 +202,7 @@ where
             }
             
             // Appliquer la configuration des seuils
-            let status = crate::vl53l5cx_set_detection_thresholds(&mut self.configuration, detection_thresholds.as_mut_ptr());
+            let status = crate::vl53l5cx_set_detection_thresholds(&mut *self.configuration, detection_thresholds.as_mut_ptr());
             if status != 0 {
                 return Err(VL53L5CXError::ConfigError);
             }
@@ -232,7 +213,7 @@ where
     fn set_multiple_alarms(&mut self, alarms: &[crate::ZoneAlarm]) -> Result<(), Self::Error> {
         unsafe {
             // Enable detection thresholds plugin
-            let status = crate::vl53l5cx_set_detection_thresholds_enable(&mut self.configuration, 1);
+            let status = crate::vl53l5cx_set_detection_thresholds_enable(&mut *self.configuration, 1);
             if status != 0 {
                 return Err(VL53L5CXError::ConfigError);
             }
@@ -267,7 +248,7 @@ where
             }
             
             // Appliquer la configuration des seuils
-            let status = crate::vl53l5cx_set_detection_thresholds(&mut self.configuration, detection_thresholds.as_mut_ptr());
+            let status = crate::vl53l5cx_set_detection_thresholds(&mut *self.configuration, detection_thresholds.as_mut_ptr());
             if status != 0 {
                 return Err(VL53L5CXError::ConfigError);
             }
@@ -278,7 +259,7 @@ where
     fn clear_alarm(&mut self) -> Result<(), Self::Error> {
         unsafe {
             // Disable detection thresholds plugin to clear all alarms
-            let status = crate::vl53l5cx_set_detection_thresholds_enable(&mut self.configuration, 0);
+            let status = crate::vl53l5cx_set_detection_thresholds_enable(&mut *self.configuration, 0);
             if status != 0 {
                 return Err(VL53L5CXError::ConfigError);
             }

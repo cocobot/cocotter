@@ -15,11 +15,21 @@ fn main() {
         .display()
         .to_string();
 
+    const VL53L5_CONF :[&str; 7] = [
+        "#define VL53L5CX_DISABLE_AMBIENT_PER_SPAD\n",
+        "#define VL53L5CX_DISABLE_NB_SPADS_ENABLED\n",
+        "#define VL53L5CX_DISABLE_NB_TARGET_DETECTED\n",
+        "#define VL53L5CX_DISABLE_SIGNAL_PER_SPAD\n",
+        "#define VL53L5CX_DISABLE_RANGE_SIGMA_MM\n",
+        "#define VL53L5CX_DISABLE_REFLECTANCE_PERCENT\n",
+        "#define VL53L5CX_DISABLE_MOTION_INDICATOR\n",
+    ];
+
     let config = Config {
         language: cbindgen::Language::C,
         no_includes: true,
         includes: vec!["stdint.h".to_string(), "stdbool.h".to_string()],
-        header: Some("#ifndef VL53L5CX_API_H\n#define VL53L5CX_API_H\n".to_string()),
+        header: Some("#ifndef VL53L5CX_API_H\n#define VL53L5CX_API_H\n".to_string() + &VL53L5_CONF.join("")),
         trailer: Some("#endif\n".to_string()),
         ..Default::default()
     };
@@ -90,6 +100,7 @@ fn main() {
         .include(output_platform_dir.display().to_string())
         .file("c_src/STSW-IMG023/VL53L5CX_ULD_driver_2.0.1/VL53L5CX_ULD_API/src/vl53l5cx_api.c")
         .file("c_src/STSW-IMG023/VL53L5CX_ULD_driver_2.0.1/VL53L5CX_ULD_API/src/vl53l5cx_plugin_detection_thresholds.c")
+        .flag("-Wno-unused-variable")
         .compile("vl53l5cx_api");
 
     build

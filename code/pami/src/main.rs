@@ -28,12 +28,10 @@ fn main() {
     log::info!("Setting led color to {:?}", config.color);
 
     let mut vlx = board.vlx_sensors.take().unwrap();
-    println!("DEBUG: About to initialize VLX sensors...");
+    log::info!("Initializing VLX sensors...");
     if let Err(e) = vlx.init() {
         log::error!("Failed to initialize VLX sensors: {:?}", e);
-    } else {
-        println!("DEBUG: VLX sensors initialized successfully!");
-    }
+    } 
 
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
     loop {

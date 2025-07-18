@@ -1,14 +1,12 @@
 use esp_idf_svc::hal::{gpio::{Gpio4, Output, PinDriver}, prelude::Peripherals, i2c::{I2cConfig, I2cDriver}, units::Hertz};
-use shared_bus::{I2cProxy, BusManagerStd};
 use vlx::{VLX, Config, SensorType};
 use std::sync::Mutex;
+use embedded_hal_bus::i2c::MutexDevice;
+
+pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 
 pub type LedHeartbeat = PinDriver<'static, Gpio4, Output>;
-pub type I2cBusManager = BusManagerStd<I2cDriver<'static>>;
-pub type I2cBusProxy = I2cProxy<'static, Mutex<I2cDriver<'static>>>;
-
-// Configuration pour 2 capteurs VLX (exemple)
-pub type VlxSensors = VLX<I2cBusProxy, <I2cBusProxy as embedded_hal::blocking::i2c::WriteRead>::Error, 2, fn(bool), fn(bool)>;
+pub type VlxSensors = VLX<I2CType, 3>;
 
 pub struct BoardPami {
     pub led_heartbeat: Option<LedHeartbeat>,
@@ -27,13 +25,17 @@ impl BoardPami {
 
         // Initialize the I2C bus
         let config = I2cConfig::new().baudrate(Hertz(400_000));
-        let i2c_driver = I2cDriver::new(peripherals.i2c0, peripherals.pins.gpio18, peripherals.pins.gpio17, &config).unwrap();
-        let i2c_bus_manager = BusManagerStd::new(i2c_driver);
-        let i2c_bus_manager_static = Box::leak(Box::new(i2c_bus_manager));
-        let i2c_proxy = i2c_bus_manager_static.acquire_i2c();
 
+        let i2c_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c0, peripherals.pins.gpio18, peripherals.pins.gpio17, &config).unwrap());
+        let i2c_driver_static = Box::leak(Box::new(i2c_driver));
+        let mut i2c_bus : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_driver_static);
+        let i2c_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_driver_static);
+    
         // Configuration des capteurs VLX
-        let vlx_configs: [Config<fn(bool), fn(bool)>; 2] = [
+        let mut enable_front_tof = PinDriver::output(peripherals.pins.gpio16).unwrap();
+        let mut enable_back_tof = PinDriver::output(peripherals.pins.gpio3).unwrap();
+
+        let vlx_configs: [Config<Box<dyn FnMut(bool)>, Box<dyn FnMut(bool)>>; 3] = [
             Config {
                 i2c_address: 0x30,  // Adresse du premier capteur
                 sensor_type: SensorType::L1,
@@ -43,12 +45,30 @@ impl BoardPami {
             Config {
                 i2c_address: 0x31,  // Adresse du deuxième capteur
                 sensor_type: SensorType::L5,
-                enable_fn: None,
+                enable_fn: Some(Box::new(move |enable| {
+                    if enable {
+                        enable_back_tof.set_high().ok();
+                    } else {
+                        enable_back_tof.set_low().ok();
+                    }                    
+                })),
+                reset_fn: None,
+            },
+            Config {
+                i2c_address: 0x32,  // Adresse du deuxième capteur
+                sensor_type: SensorType::L5,
+                enable_fn: Some(Box::new(move |enable| {
+                    if enable {
+                        enable_front_tof.set_high().ok();
+                    } else {
+                        enable_front_tof.set_low().ok();
+                    }                    
+                })),
                 reset_fn: None,
             },
         ];
 
-        let vlx_sensors = VLX::new(i2c_proxy, vlx_configs);
+        let vlx_sensors = VLX::new(i2c_bus_vlx, vlx_configs);       
 
         Self {
             led_heartbeat: Some(led_heartbeat),

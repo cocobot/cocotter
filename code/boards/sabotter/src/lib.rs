@@ -1,27 +1,24 @@
 use esp_idf_svc::hal::{
     adc::{oneshot::{AdcChannelDriver, AdcDriver}, ADC1}, can::{CanConfig, CanDriver}, gpio::*, i2c::{I2cConfig, I2cDriver}, ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver}, prelude::*, spi::{config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver}, uart::{UartConfig, UartDriver}, units::Hertz
 };
-use shared_bus::{I2cProxy, BusManagerStd};
+use embedded_hal_bus::i2c::MutexDevice;
 use vlx::{VLX, Config, SensorType};
 use tca6408::TCA6408;
 use esp32_encoder::Encoder;
-use std::rc::Rc;
+use std::{rc::Rc, sync::Mutex};
+
+pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 
 // Type aliases
 pub type LedHeartbeat = PinDriver<'static, Gpio45, Output>;
-pub type I2cMainBusManager = BusManagerStd<I2cDriver<'static>>;
-pub type I2cMainBusProxy = I2cProxy<'static, std::sync::Mutex<I2cDriver<'static>>>;
-pub type I2cTofBusManager = BusManagerStd<I2cDriver<'static>>;
-pub type I2cTofBusProxy = I2cProxy<'static, std::sync::Mutex<I2cDriver<'static>>>;
-
 // Motor control types
 pub type MotorPwm = LedcDriver<'static>;
 
 // VLX sensors configuration
-pub type VlxSensors = VLX<I2cTofBusProxy, <I2cTofBusProxy as embedded_hal::blocking::i2c::WriteRead>::Error, 8, fn(bool), fn(bool)>;
+pub type VlxSensors = VLX<I2CType, 1>;
 
 // GPIO expander type
-pub type GpioExpander = TCA6408<I2cMainBusProxy>;
+pub type GpioExpander = TCA6408<I2CType>;
 
 // CAN bus type
 pub type CanBus = CanDriver<'static>;
@@ -69,61 +66,30 @@ impl BoardSabotter {
         let led_heartbeat = PinDriver::output(peripherals.pins.gpio45).ok();
 
         // Initialize main I2C bus (for TCA6408 GPIO expander)
-        let i2c_main_config = I2cConfig::new().baudrate(Hertz(100_000));
-        let i2c_main_driver = I2cDriver::new(
-            peripherals.i2c0,
-            peripherals.pins.gpio40,  // SDA
-            peripherals.pins.gpio41,  // SCL
-            &i2c_main_config,
-        ).ok();
+        let config = I2cConfig::new().baudrate(Hertz(400_000));
+        let i2c_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c0, peripherals.pins.gpio40, peripherals.pins.gpio41, &config).unwrap());
+        let i2c_driver_static = Box::leak(Box::new(i2c_driver));
+        let i2c_gpio_expander = MutexDevice::new(i2c_driver_static);
 
-        let gpio_expander = if let Some(i2c) = i2c_main_driver {
-            let i2c_main_bus_manager = BusManagerStd::new(i2c);
-            let i2c_main_bus_manager_static = Box::leak(Box::new(i2c_main_bus_manager));
-            let i2c_proxy = i2c_main_bus_manager_static.acquire_i2c();
-            
-            // Initialize TCA6408 GPIO expander
-            let mut expander = TCA6408::new(i2c_proxy, 0x20);
-            if expander.init().is_ok() {
-                Some(expander)
-            } else {
-                log::error!("Failed to initialize TCA6408");
-                None
-            }
-        } else {
-            None
-        };
-
+    
+        let gpio_expander = Some(TCA6408::new(i2c_gpio_expander, 0x20));
+    
         // Initialize ToF sensor I2C bus
-        let i2c_tof_config = I2cConfig::new().baudrate(Hertz(400_000));
-        let i2c_tof_driver = I2cDriver::new(
-            peripherals.i2c1,
-            peripherals.pins.gpio21,  // SDA
-            peripherals.pins.gpio47,  // SCL
-            &i2c_tof_config,
-        ).ok();
+        let config = I2cConfig::new().baudrate(Hertz(400_000));
+        let i2c_vlx_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c1, peripherals.pins.gpio21, peripherals.pins.gpio47, &config).unwrap());
+        let i2c_vlx_driver_static = Box::leak(Box::new(i2c_vlx_driver));
+        let i2c_vlx_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_vlx_driver_static);
 
-        let vlx_sensors = if let Some(i2c) = i2c_tof_driver {
-            let i2c_tof_bus_manager = BusManagerStd::new(i2c);
-            let i2c_tof_bus_manager_static = Box::leak(Box::new(i2c_tof_bus_manager));
-            let i2c_proxy = i2c_tof_bus_manager_static.acquire_i2c();
-            
-            // Configure VLX sensors
-            let vlx_configs: [Config<fn(bool), fn(bool)>; 8] = [
-                Config { i2c_address: 0x29, sensor_type: SensorType::L1, enable_fn: None, reset_fn: None },
-                Config { i2c_address: 0x2A, sensor_type: SensorType::L1, enable_fn: None, reset_fn: None },
-                Config { i2c_address: 0x2B, sensor_type: SensorType::L1, enable_fn: None, reset_fn: None },
-                Config { i2c_address: 0x2C, sensor_type: SensorType::L1, enable_fn: None, reset_fn: None },
-                Config { i2c_address: 0x2D, sensor_type: SensorType::L5, enable_fn: None, reset_fn: None },
-                Config { i2c_address: 0x2E, sensor_type: SensorType::L5, enable_fn: None, reset_fn: None },
-                Config { i2c_address: 0x2F, sensor_type: SensorType::L5, enable_fn: None, reset_fn: None },
-                Config { i2c_address: 0x30, sensor_type: SensorType::L5, enable_fn: None, reset_fn: None },
-            ];
-            
-            Some(VLX::new(i2c_proxy, vlx_configs))
-        } else {
-            None
-        };
+        let vlx_configs: [Config<Box<dyn FnMut(bool)>, Box<dyn FnMut(bool)>>; 1] = [
+            Config {
+                i2c_address: 0x30,  // Adresse du premier capteur
+                sensor_type: SensorType::L1,
+                enable_fn: None,
+                reset_fn: None,
+            },           
+        ];
+        let vlx_sensors = Some(VLX::new(i2c_vlx_bus_vlx, vlx_configs)); 
+
 
         // Initialize LEDC timer for motors
         let timer_pwm = LedcTimerDriver::new(
