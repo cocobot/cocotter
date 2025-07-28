@@ -329,7 +329,7 @@ where
             
             // Reset sensor
             if let Some(ref mut reset_fn) = self.configs[i].reset_fn {
-                (*reset_fn)(false);  // Assert reset
+                (*reset_fn)(true);  // Assert reset
             }
         }
         
@@ -339,7 +339,7 @@ where
         // Phase 2: Release reset for all sensors
         for (i, _) in self.sensors.iter().enumerate() {
             if let Some(ref mut reset_fn) = self.configs[i].reset_fn {
-                (*reset_fn)(true);   // Release reset
+                (*reset_fn)(false);   // Release reset
             }
         }
         

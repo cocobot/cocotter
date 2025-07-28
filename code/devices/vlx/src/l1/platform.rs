@@ -36,9 +36,6 @@ pub extern "C" fn VL53L1_ReadMulti(
     count: u32,
 ) -> i8 {
     let data = unsafe { core::slice::from_raw_parts_mut(pdata, count as usize) };
-    if dev == 0x29 || dev == 0x30 || dev == 0x31 {
-        println!("VL53L1_ReadMulti: dev=0x{:02X}, index=0x{:04X}, count={}", dev, index, count);
-    }
     unsafe { crate::call_i2c_read(dev as u8, index, data) }
 }
 

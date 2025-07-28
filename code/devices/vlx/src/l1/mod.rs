@@ -23,76 +23,74 @@ where
     type Error = VL53L1XError;
     
     fn init(&mut self) -> Result<(), Self::Error> {
-        unsafe {
-            // Start with default I2C address (0x29)
-            let default_addr = 0x29u16;
+        let default_addr = 0x29u16;
 
-            let mut sensor_id = 0u16;
-            let status = crate::VL53L1X_GetSensorId(default_addr, &mut sensor_id);
-            if status != 0 || sensor_id != 0xEEAC {
-                return Err(VL53L1XError::InitError);
-            }
-            
-            // Initialize sensor with default settings using default address
-            let status = crate::VL53L1X_SensorInit(default_addr);
-            if status != 0 {
-                return Err(VL53L1XError::InitError);
-            }
-            
-            // Wait for sensor to boot
-            let mut boot_state = 0u8;
-            loop {
-                let status = crate::VL53L1X_BootState(default_addr, &mut boot_state);
-                if status != 0 {
-                    return Err(VL53L1XError::InitError);
-                }
-                if boot_state == 1 {
-                    break;
-                }
+        assert_ne!(self.address as u16, default_addr, "VL53L1X cannot use default address 0x29, please set a different address");
 
-                // Small delay
-                thread::sleep(Duration::from_millis(10));
-            }
-            
-            // Verify sensor ID
-            let mut sensor_id = 0u16;
-            let status = crate::VL53L1X_GetSensorId(default_addr, &mut sensor_id);
-            if status != 0 || sensor_id != 0xEEAC {
-                return Err(VL53L1XError::InitError);
-            }
-            
-            // Set the new I2C address if different from default
-            if self.address != 0x29 {
-                let status = crate::VL53L1X_SetI2CAddress(default_addr, self.address);
-                if status != 0 {
-                    return Err(VL53L1XError::InitError);
-                }
-            }
-            
-            // Continue configuration with the final address
-            let final_addr = self.address as u16;
-            
-            // Configure sensor with default settings
-            let status = crate::VL53L1X_SetDistanceMode(final_addr, 2); // Long range mode
+        //check if alreay initialized
+        let mut sensor_id = 0u16;
+        let status = unsafe { crate::VL53L1X_GetSensorId(self.address as u16, &mut sensor_id) };
+        if status == 0 && sensor_id != 0xEACC {
+            return Ok(());
+        }
+
+        // Start with default I2C address (0x29)
+        let status = unsafe { crate::VL53L1X_GetSensorId(default_addr, &mut sensor_id) };
+        if status != 0 || sensor_id != 0xEACC {
+            return Err(VL53L1XError::InitError);
+        }
+        
+        // Wait for sensor to boot
+        let mut boot_state = 0u8;
+        loop {
+            let status = unsafe { crate::VL53L1X_BootState(default_addr, &mut boot_state) };
             if status != 0 {
                 return Err(VL53L1XError::InitError);
             }
-            
-            let status = crate::VL53L1X_SetTimingBudgetInMs(final_addr, 100); // 100ms timing budget
-            if status != 0 {
-                return Err(VL53L1XError::InitError);
+            if boot_state != 0 {
+                break;
             }
-            
-            let status = crate::VL53L1X_SetInterMeasurementInMs(final_addr, 100); // 100ms interval
-            if status != 0 {
-                return Err(VL53L1XError::InitError);
-            }
-            
-            // Start ranging automatically
-            let status = crate::VL53L1X_StartRanging(final_addr);
-            if status != 0 {
-                return Err(VL53L1XError::InitError);
-            }
+
+            // Small delay
+            thread::sleep(Duration::from_millis(10));
+        }
+
+        // Initialize sensor with default settings using default address
+        let status = unsafe { crate::VL53L1X_SensorInit(default_addr) };
+        if status != 0 {
+            return Err(VL53L1XError::InitError);
+        }
+
+
+        // Set the new I2C address
+        let status = unsafe { crate::VL53L1X_SetI2CAddress(default_addr, self.address * 2) };
+        if status != 0 {
+            return Err(VL53L1XError::InitError);
+        }
+        
+        // Continue configuration with the final address
+        let final_addr = self.address as u16;
+        
+        // Configure sensor with default settings
+        let status = unsafe { crate::VL53L1X_SetDistanceMode(final_addr, 1) }; // Long range mode
+        if status != 0 {
+            return Err(VL53L1XError::InitError);
+        }
+        
+        let status = unsafe { crate::VL53L1X_SetTimingBudgetInMs(final_addr, 100) }; // 100ms timing budget
+        if status != 0 {
+            return Err(VL53L1XError::InitError);
+        }
+        
+        let status = unsafe { crate::VL53L1X_SetInterMeasurementInMs(final_addr, 100) }; // 100ms interval
+        if status != 0 {
+            return Err(VL53L1XError::InitError);
+        }
+        
+        // Start ranging automatically
+        let status = unsafe { crate::VL53L1X_StartRanging(final_addr) };
+        if status != 0 {
+            return Err(VL53L1XError::InitError);
         }
         Ok(())
     }
