@@ -408,7 +408,7 @@
 		(roundrect_rratio 0.05)
 		(uuid "974baf73-5491-45ec-8c7d-f3e714367d7a")
 	)
-	(model "${KICAD8_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-16W_7.5x10.3mm_P1.27mm.wrl"
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/SCH16T.step"
 		(offset
 			(xyz 0 0 0)
 		)
@@ -416,7 +416,7 @@
 			(xyz 1 1 1)
 		)
 		(rotate
-			(xyz 0 0 0)
+			(xyz -90 0 90)
 		)
 	)
 )
