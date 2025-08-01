@@ -2118,6 +2118,16 @@
 		)
 		(uuid "22be1352-80f7-45f0-83c2-604411d57009")
 	)
+	(label "irq1_3v3"
+		(at 149.86 116.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "24d97996-b8e8-475e-a867-adaf63c58d8e")
+	)
 	(label "ENCODER_B_MOT1_3V3"
 		(at 144.78 106.68 0)
 		(effects
@@ -2207,6 +2217,16 @@
 			(justify left bottom)
 		)
 		(uuid "5db1cec1-a884-4af1-8c3b-6ae8d88f3d50")
+	)
+	(label "irq1_3v3"
+		(at 224.79 118.11 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "6166c7b4-907c-4ad9-91ca-970a77309532")
 	)
 	(label "brake_mot_3v3"
 		(at 144.78 91.44 0)
@@ -2398,6 +2418,16 @@
 		)
 		(uuid "dd75ab47-08d5-4094-8432-66bbdbfb5585")
 	)
+	(label "irq0_3v3"
+		(at 224.79 115.57 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ed34bece-459b-4d2d-b5d4-ea57528daa1b")
+	)
 	(label "GND"
 		(at 151.13 104.14 0)
 		(effects
@@ -2437,6 +2467,16 @@
 			(justify left bottom)
 		)
 		(uuid "f890d9d8-0d72-4b52-8f23-83f1b46d1022")
+	)
+	(label "irq0_3v3"
+		(at 149.86 114.3 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ffc1216e-5dd4-4186-802b-1c786f212866")
 	)
 	(hierarchical_label "encoder_mot1_A_3v3"
 		(shape input)
@@ -2537,17 +2577,6 @@
 		)
 		(uuid "5e7ffb96-d7af-46e5-9f0d-fbd5327eaf5a")
 	)
-	(hierarchical_label "irq1_3v3"
-		(shape output)
-		(at 160.02 116.84 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "6078c145-3f99-4039-a51c-30757dd0b7b6")
-	)
 	(hierarchical_label "scl_tof_3v3"
 		(shape input)
 		(at 53.34 121.92 0)
@@ -2558,28 +2587,6 @@
 			(justify left)
 		)
 		(uuid "6ae03660-f842-4e1b-9c75-78ea22822fe2")
-	)
-	(hierarchical_label "irq0_3v3"
-		(shape output)
-		(at 160.02 114.3 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "6bfd1c7c-cb8a-40d0-8778-e80bc514749f")
-	)
-	(hierarchical_label "irq0_3v3"
-		(shape output)
-		(at 237.49 115.57 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "6cc41a60-beef-4f22-aed1-2073557546fe")
 	)
 	(hierarchical_label "tof_irq_3v3"
 		(shape output)
@@ -2690,17 +2697,6 @@
 			(justify left)
 		)
 		(uuid "e125784a-fc90-44a2-8aec-8fc0df3fc570")
-	)
-	(hierarchical_label "irq1_3v3"
-		(shape output)
-		(at 237.49 118.11 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "e8ce8270-e9bc-46af-b8dc-d4ce39bc816f")
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")

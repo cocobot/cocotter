@@ -313,6 +313,405 @@
 				)
 			)
 		)
+		(symbol "cocotter_connectors:SLW-713515-2A-SMT-TR "
+			(pin_names hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW"
+				(at 0 4.572 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "SLW-713515-2A-SMT-TR"
+				(at 2.54 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_others:SLW-713515-2A-SMT-TR"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.sameskydevices.com/product/resource/slw-713515-2a-smt-tr.pdf"
+				(at 0 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "50mA max, 12Vdc, 10000 cycles"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C2858291"
+				(at -1.27 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "switch dpdt"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SLW-713515-2A-SMT-TR _0_1"
+				(text "pos A"
+					(at 0.9192 2.1909 0)
+					(effects
+						(font
+							(size 0.635 0.635)
+							(italic yes)
+						)
+					)
+				)
+			)
+			(symbol "SLW-713515-2A-SMT-TR _1_1"
+				(rectangle
+					(start -2.54 3.81)
+					(end 2.54 -3.81)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(circle
+					(center -1.27 -2.54)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -1.27 2.54)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 -2.54) (xy -1.524 -2.54)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 2.54) (xy -1.524 2.54)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.016 0.254) (xy -1.524 2.286)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.524 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 2.54 0)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "SLW-713515-2A-SMT-TR _2_1"
+				(rectangle
+					(start -2.54 3.81)
+					(end 2.54 -3.81)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(circle
+					(center -1.27 -2.54)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -1.27 2.54)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 -2.54) (xy -1.524 -2.54)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 2.54) (xy -1.524 2.54)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.016 0.254) (xy -1.524 2.286)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.524 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 8.89)
+					(radius 0.0001)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 2.54 0)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 2.54)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_connectors:USB4120-03-C"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3649,7 +4048,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 152.4) (xy 69.85 153.67)
+			(xy 57.15 152.4) (xy 57.15 153.67)
 		)
 		(stroke
 			(width 0)
@@ -4479,6 +4878,16 @@
 	)
 	(wire
 		(pts
+			(xy 73.66 143.51) (xy 80.01 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b8352024-3205-402c-a52a-9dfc55cf2698")
+	)
+	(wire
+		(pts
 			(xy 231.14 149.86) (xy 231.14 151.13)
 		)
 		(stroke
@@ -4579,7 +4988,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 143.51) (xy 69.85 144.78)
+			(xy 57.15 140.97) (xy 57.15 144.78)
 		)
 		(stroke
 			(width 0)
@@ -4626,16 +5035,6 @@
 			(type default)
 		)
 		(uuid "da4b5978-357e-4418-a73f-b63badbfc282")
-	)
-	(wire
-		(pts
-			(xy 78.74 143.51) (xy 80.01 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dcf1227c-a103-435f-8a77-956a4782ad5d")
 	)
 	(wire
 		(pts
@@ -4689,7 +5088,7 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 143.51) (xy 71.12 143.51)
+			(xy 57.15 140.97) (xy 63.5 140.97)
 		)
 		(stroke
 			(width 0)
@@ -7270,101 +7669,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_0R_0603")
-		(at 74.93 143.51 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7cd59e05-7509-4526-a482-b49eb5db0060")
-		(property "Reference" "R65"
-			(at 74.93 137.16 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "0R"
-			(at 74.93 139.7 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 74.93 145.288 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 74.93 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 74.93 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "0R 0603 20mOhms max 100mW"
-			(at 74.93 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" ""
-			(at 74.93 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C431718"
-			(at 74.93 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "360ed89b-0773-49cb-9a1f-e8e47cd52d2d")
-		)
-		(pin "2"
-			(uuid "94cd7b34-8f3f-48c5-b9c5-47c6850fff11")
-		)
-		(instances
-			(project ""
-				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
-					(reference "R65")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 72.39 66.04 0)
 		(unit 1)
@@ -7432,7 +7736,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:PTS525 SK15 SMTR2 LFS")
-		(at 69.85 148.59 90)
+		(at 57.15 148.59 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7440,7 +7744,7 @@
 		(dnp no)
 		(uuid "7f7835f2-0ddc-46e7-8276-a5dcc0a224ef")
 		(property "Reference" "SW1"
-			(at 65.278 148.59 0)
+			(at 52.578 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7448,7 +7752,7 @@
 			)
 		)
 		(property "Value" "PTS525 SK15 SMTR2 LFS"
-			(at 74.93 146.05 0)
+			(at 62.23 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7457,7 +7761,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:PTS525 SK15 SMTR2 LFS"
-			(at 69.85 148.59 0)
+			(at 57.15 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7466,7 +7770,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 74.93 148.59 0)
+			(at 62.23 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7475,7 +7779,7 @@
 			)
 		)
 		(property "Description" "20mA max, 15Vdc, 100mohms max, 500k cycle, 260gf"
-			(at 69.85 148.59 0)
+			(at 57.15 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7484,7 +7788,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2689599"
-			(at 74.93 149.86 0)
+			(at 62.23 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8319,6 +8623,95 @@
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
 					(reference "#PWR24")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_connectors:SLW-713515-2A-SMT-TR ")
+		(at 68.58 143.51 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a14fabee-b400-492b-9a92-ee4b970bda35")
+		(property "Reference" "SW2"
+			(at 68.58 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SLW-713515-2A-SMT-TR"
+			(at 68.58 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_others:SLW-713515-2A-SMT-TR"
+			(at 68.58 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.sameskydevices.com/product/resource/slw-713515-2a-smt-tr.pdf"
+			(at 68.58 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "50mA max, 12Vdc, 10000 cycles"
+			(at 68.58 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C2858291"
+			(at 67.31 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "f6af4de2-ee39-4a5d-b57c-6f7d17c85a19")
+		)
+		(pin "1"
+			(uuid "5232c73f-1136-4c7a-bfad-067823d016ae")
+		)
+		(pin "3"
+			(uuid "fb0e1443-2cad-4917-b00b-19281006ab71")
+		)
+		(pin "6"
+			(uuid "c06d660e-473b-483d-8853-0f435fcb026f")
+		)
+		(pin "4"
+			(uuid "e0c3b49c-fe7c-48df-a7ed-eac23660ca21")
+		)
+		(pin "5"
+			(uuid "54353427-0e57-4537-9624-07578dd20b8a")
+		)
+		(instances
+			(project ""
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
+					(reference "SW2")
 					(unit 1)
 				)
 			)
@@ -9332,7 +9725,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
-		(at 69.85 153.67 0)
+		(at 57.15 153.67 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9340,7 +9733,7 @@
 		(dnp no)
 		(uuid "e3391398-f2b2-407b-b500-5891b41b1391")
 		(property "Reference" "#PWR14"
-			(at 69.85 160.02 0)
+			(at 57.15 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9349,7 +9742,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 69.85 157.48 0)
+			(at 57.15 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9357,7 +9750,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 69.85 153.67 0)
+			(at 57.15 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9366,7 +9759,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 69.85 153.67 0)
+			(at 57.15 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9375,7 +9768,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 69.85 153.67 0)
+			(at 57.15 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)

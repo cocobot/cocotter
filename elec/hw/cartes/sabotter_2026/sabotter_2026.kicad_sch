@@ -57,7 +57,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 96.52) (xy 110.49 96.52)
+			(xy 58.42 93.98) (xy 110.49 93.98)
 		)
 		(stroke
 			(width 0)
@@ -97,7 +97,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 90.17) (xy 110.49 90.17)
+			(xy 58.42 87.63) (xy 110.49 87.63)
 		)
 		(stroke
 			(width 0)
@@ -197,7 +197,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 92.71) (xy 110.49 92.71)
+			(xy 58.42 90.17) (xy 110.49 90.17)
 		)
 		(stroke
 			(width 0)
@@ -217,7 +217,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 86.36) (xy 110.49 86.36)
+			(xy 58.42 83.82) (xy 110.49 83.82)
 		)
 		(stroke
 			(width 0)
@@ -237,7 +237,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 99.06) (xy 110.49 99.06)
+			(xy 58.42 96.52) (xy 110.49 96.52)
 		)
 		(stroke
 			(width 0)
@@ -367,7 +367,7 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 83.82) (xy 110.49 83.82)
+			(xy 58.42 81.28) (xy 110.49 81.28)
 		)
 		(stroke
 			(width 0)
@@ -546,7 +546,7 @@
 			(uuid "39d19e2e-b942-472d-befd-6c528c7a8a6c")
 		)
 		(pin "tx_to_prop_3v3" output
-			(at 110.49 96.52 180)
+			(at 110.49 93.98 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -556,7 +556,7 @@
 			(uuid "70ba148d-d535-4c08-af58-b195c4b756a5")
 		)
 		(pin "rx_from_prop_3v3" input
-			(at 110.49 99.06 180)
+			(at 110.49 96.52 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -586,7 +586,7 @@
 			(uuid "1d918e90-c6b2-4e98-bfe3-39cf41150852")
 		)
 		(pin "color_sensor_3v3" input
-			(at 110.49 86.36 180)
+			(at 110.49 83.82 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -696,7 +696,7 @@
 			(uuid "0a227d69-fa89-40c4-a7bf-bb90eb6b0277")
 		)
 		(pin "can_rx_3v3" input
-			(at 110.49 92.71 180)
+			(at 110.49 90.17 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -726,7 +726,7 @@
 			(uuid "c58263f1-4463-4d3d-9b86-52565316c05e")
 		)
 		(pin "starting_cord_3v3" input
-			(at 110.49 83.82 180)
+			(at 110.49 81.28 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -736,7 +736,7 @@
 			(uuid "753c1296-42f9-4e99-b137-061effa29883")
 		)
 		(pin "can_tx_3v3" output
-			(at 110.49 90.17 180)
+			(at 110.49 87.63 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -953,26 +953,6 @@
 			)
 			(uuid "5ce64380-303a-4032-be19-3e39f7d50770")
 		)
-		(pin "irq1_3v3" output
-			(at 217.17 87.63 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "f76bc5c9-82c6-4007-af47-2d61fd7f08b9")
-		)
-		(pin "irq0_3v3" output
-			(at 217.17 85.09 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "a38701c1-9797-4ff7-b376-6b19ea72c030")
-		)
 		(pin "sda_tof_3v3" bidirectional
 			(at 217.17 92.71 180)
 			(effects
@@ -1002,6 +982,26 @@
 				(justify left)
 			)
 			(uuid "f25aeab3-f795-4cd0-af6e-3839d41c46e1")
+		)
+		(pin "irq0_3v3" output
+			(at 217.17 83.82 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "02454c03-bc53-4b40-ab4f-1123e26d3a8c")
+		)
+		(pin "irq1_3v3" output
+			(at 217.17 86.36 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "828ab02e-1ae4-4f16-b172-c83877e9cb34")
 		)
 		(instances
 			(project "sabotter_2026"
@@ -1042,7 +1042,7 @@
 			)
 		)
 		(pin "starting_cord_3v3" output
-			(at 58.42 83.82 0)
+			(at 58.42 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1052,7 +1052,7 @@
 			(uuid "12aa9fc8-7d1a-4408-a8a6-753a59c5f79c")
 		)
 		(pin "color_select_3v3" output
-			(at 58.42 86.36 0)
+			(at 58.42 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1062,7 +1062,7 @@
 			(uuid "0f0d3468-59d3-43c0-b3db-b928b83f7dd0")
 		)
 		(pin "can_tx_3v3" input
-			(at 58.42 90.17 0)
+			(at 58.42 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1072,7 +1072,7 @@
 			(uuid "3b475c62-68a0-4759-8ab3-d20cb04190ad")
 		)
 		(pin "can_rx_3v3" output
-			(at 58.42 92.71 0)
+			(at 58.42 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1082,7 +1082,7 @@
 			(uuid "1f71599f-9c47-4cba-be64-c71162a78323")
 		)
 		(pin "tx_to_prop_3v3" input
-			(at 58.42 96.52 0)
+			(at 58.42 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1092,7 +1092,7 @@
 			(uuid "f53bb48e-3a18-4826-ae54-88c857b84572")
 		)
 		(pin "rx_from_prop_3v3" output
-			(at 58.42 99.06 0)
+			(at 58.42 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1152,12 +1152,12 @@
 			(uuid "60b99f39-7002-4fcf-b518-3a0eb1d402f3")
 		)
 		(pin "i2C_io_int_3v3" output
-			(at 29.21 106.68 180)
+			(at 58.42 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 			(uuid "56264f91-068f-45fc-8075-d559c0796548")
 		)
