@@ -2743,6 +2743,188 @@
 				)
 			)
 		)
+		(symbol "cocotter_others:DIP_SW_SMD-1P"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "SW"
+				(at 0 4.572 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "DSIC01LSGER"
+				(at 2.54 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Footprint" "cocotter_others:DIP_SW_SMD-1P"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "25mA max, 24Vdc, 100mohms max, 3000 cycles, SPST"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C5370250"
+				(at -1.27 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "switch SMD tactile"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "DIP_SW_SMD-1P_1_1"
+				(rectangle
+					(start -2.54 2.54)
+					(end 2.54 -2.54)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(circle
+					(center -1.27 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 0) (xy -1.524 0)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.016 0.254) (xy -1.27 1.27)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.524 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0.2)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.27 0)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+						(color 0 0 0 1)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 1.27)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 1.27)
+					(name "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_others:PTS525 SK15 SMTR2 LFS"
 			(pin_numbers hide)
 			(pin_names
@@ -2767,7 +2949,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "cocotter_others:PTS525 SK15 SMTR2 LFS"
+			(property "Footprint" "cocotter_others:PTS525"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3847,6 +4029,12 @@
 		(uuid "099170e2-27ae-4693-a6c7-062f2f234fa4")
 	)
 	(junction
+		(at 63.5 143.51)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0bc1609d-96c6-4842-b8b5-cfe83f291750")
+	)
+	(junction
 		(at 39.37 171.45)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3869,6 +4057,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "35ff87ab-1658-4a95-9a92-aaae356d4f86")
+	)
+	(junction
+		(at 71.12 143.51)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4c488c1a-4a49-4da0-9b0d-959442272486")
 	)
 	(junction
 		(at 229.87 119.38)
@@ -4048,13 +4242,23 @@
 	)
 	(wire
 		(pts
-			(xy 57.15 152.4) (xy 57.15 153.67)
+			(xy 62.23 152.4) (xy 62.23 153.67)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "059e3f26-5636-4dc8-807e-23413da2fe93")
+	)
+	(wire
+		(pts
+			(xy 63.5 138.43) (xy 63.5 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "05ae6c64-c278-42ef-9bbb-a970e0a97483")
 	)
 	(wire
 		(pts
@@ -4738,6 +4942,16 @@
 	)
 	(wire
 		(pts
+			(xy 71.12 138.43) (xy 71.12 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "99f71a2e-b64d-4233-9e85-d35e73a07734")
+	)
+	(wire
+		(pts
 			(xy 123.19 111.76) (xy 134.62 111.76)
 		)
 		(stroke
@@ -4758,6 +4972,16 @@
 	)
 	(wire
 		(pts
+			(xy 80.01 143.51) (xy 82.55 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0f1f469-d548-48b2-92e5-95abfb53b33e")
+	)
+	(wire
+		(pts
 			(xy 241.3 104.14) (xy 245.11 104.14)
 		)
 		(stroke
@@ -4775,16 +4999,6 @@
 			(type default)
 		)
 		(uuid "a301353f-f2a8-4ecf-a664-c890ca8f68ed")
-	)
-	(wire
-		(pts
-			(xy 80.01 143.51) (xy 82.55 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a3193a21-391a-493f-ab38-16760b76224a")
 	)
 	(wire
 		(pts
@@ -4988,7 +5202,7 @@
 	)
 	(wire
 		(pts
-			(xy 57.15 140.97) (xy 57.15 144.78)
+			(xy 62.23 143.51) (xy 62.23 144.78)
 		)
 		(stroke
 			(width 0)
@@ -5035,6 +5249,16 @@
 			(type default)
 		)
 		(uuid "da4b5978-357e-4418-a73f-b63badbfc282")
+	)
+	(wire
+		(pts
+			(xy 71.12 143.51) (xy 80.01 143.51)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dcf1227c-a103-435f-8a77-956a4782ad5d")
 	)
 	(wire
 		(pts
@@ -5088,7 +5312,7 @@
 	)
 	(wire
 		(pts
-			(xy 57.15 140.97) (xy 63.5 140.97)
+			(xy 62.23 143.51) (xy 63.5 143.51)
 		)
 		(stroke
 			(width 0)
@@ -5187,6 +5411,26 @@
 			(justify left top)
 		)
 		(uuid "4f439fa3-0504-4df5-8d88-c9b3eb789a2a")
+	)
+	(text_box "SW3 : disable uc reset to avoid accidental reboot during matchs (robot contacts)"
+		(exclude_from_sim no)
+		(at 30.48 134.62 0)
+		(size 20.32 12.7)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type color)
+			(color 0 194 0 1)
+		)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify top)
+		)
+		(uuid "b34b33c0-ba9b-41a3-b88f-46156a41b8e1")
 	)
 	(text "UART debug"
 		(exclude_from_sim no)
@@ -7669,6 +7913,100 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_resistors:R_0R_0603")
+		(at 67.31 143.51 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(uuid "7cd59e05-7509-4526-a482-b49eb5db0060")
+		(property "Reference" "R65"
+			(at 71.882 144.526 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 67.31 143.51 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 67.31 145.288 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 67.31 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 67.31 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 67.31 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 67.31 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 67.31 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "360ed89b-0773-49cb-9a1f-e8e47cd52d2d")
+		)
+		(pin "2"
+			(uuid "94cd7b34-8f3f-48c5-b9c5-47c6850fff11")
+		)
+		(instances
+			(project ""
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
+					(reference "R65")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 72.39 66.04 0)
 		(unit 1)
@@ -7736,7 +8074,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:PTS525 SK15 SMTR2 LFS")
-		(at 57.15 148.59 90)
+		(at 62.23 148.59 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7744,7 +8082,7 @@
 		(dnp no)
 		(uuid "7f7835f2-0ddc-46e7-8276-a5dcc0a224ef")
 		(property "Reference" "SW1"
-			(at 52.578 148.59 0)
+			(at 57.658 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7752,7 +8090,7 @@
 			)
 		)
 		(property "Value" "PTS525 SK15 SMTR2 LFS"
-			(at 62.23 146.05 0)
+			(at 67.31 146.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7760,16 +8098,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "cocotter_others:PTS525 SK15 SMTR2 LFS"
-			(at 57.15 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Footprint" "cocotter_others:PTS525"
 			(at 62.23 148.59 0)
 			(effects
 				(font
@@ -7778,8 +8107,17 @@
 				(hide yes)
 			)
 		)
+		(property "Datasheet" ""
+			(at 67.31 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(property "Description" "20mA max, 15Vdc, 100mohms max, 500k cycle, 260gf"
-			(at 57.15 148.59 0)
+			(at 62.23 148.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7788,7 +8126,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2689599"
-			(at 62.23 149.86 0)
+			(at 67.31 149.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7991,6 +8329,84 @@
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
 					(reference "C10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:DIP_SW_SMD-1P")
+		(at 67.31 138.43 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "81c5f450-d4fd-4d43-957d-c342d8809213")
+		(property "Reference" "SW3"
+			(at 67.31 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "DSIC01LSGER"
+			(at 69.85 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:DIP_SW_SMD-1P"
+			(at 67.31 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 67.31 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "25mA max, 24Vdc, 100mohms max, 3000 cycles, SPST"
+			(at 67.31 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C5370250"
+			(at 66.04 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "fd27eff6-f0ba-4e3c-ad96-a2ac500026e7")
+		)
+		(pin "1"
+			(uuid "aa85455b-0a8a-4fdc-8c8d-935265973bfa")
+		)
+		(instances
+			(project ""
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
+					(reference "SW3")
 					(unit 1)
 				)
 			)
@@ -9725,7 +10141,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
-		(at 57.15 153.67 0)
+		(at 62.23 153.67 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9733,7 +10149,7 @@
 		(dnp no)
 		(uuid "e3391398-f2b2-407b-b500-5891b41b1391")
 		(property "Reference" "#PWR14"
-			(at 57.15 160.02 0)
+			(at 62.23 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9742,7 +10158,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 57.15 157.48 0)
+			(at 62.23 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9750,7 +10166,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 57.15 153.67 0)
+			(at 62.23 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9759,7 +10175,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 57.15 153.67 0)
+			(at 62.23 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9768,7 +10184,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 57.15 153.67 0)
+			(at 62.23 153.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
