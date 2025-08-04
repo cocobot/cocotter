@@ -68,7 +68,7 @@
 	)
 	(attr through_hole)
 	(fp_line
-		(start -6.6 1.5)
+		(start -6.6 1.4)
 		(end -6.6 -1.5)
 		(stroke
 			(width 0.1)
@@ -108,6 +108,16 @@
 		(uuid "5436c418-8cb4-4002-a76c-ed62716ac3ea")
 	)
 	(fp_line
+		(start 5.2 1.5)
+		(end -5.2 1.5)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "8a15ac79-640c-4f49-95cc-60aae721728d")
+	)
+	(fp_line
 		(start 6.6 -1.5)
 		(end -6.6 -1.5)
 		(stroke
@@ -119,23 +129,13 @@
 	)
 	(fp_line
 		(start 6.6 -1.5)
-		(end 6.6 1.5)
+		(end 6.6 1.4)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
 		(layer "F.SilkS")
 		(uuid "9bcef354-b8e0-45c6-b45f-6f9fb60f2d06")
-	)
-	(fp_line
-		(start 6.6 1.5)
-		(end -6.6 1.5)
-		(stroke
-			(width 0.1)
-			(type default)
-		)
-		(layer "F.SilkS")
-		(uuid "8a15ac79-640c-4f49-95cc-60aae721728d")
 	)
 	(fp_rect
 		(start -8 -3)
@@ -178,7 +178,11 @@
 		(at 3 0)
 		(size 1.9 1.9)
 		(drill 1.1)
-		(layers "*.Cu" "*.Mask")
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
 		(remove_unused_layers no)
 		(uuid "407b88a5-ac9f-48b8-b24d-79725bad90c1")
 	)
@@ -186,7 +190,11 @@
 		(at 0 0)
 		(size 1.9 1.9)
 		(drill 1.1)
-		(layers "*.Cu" "*.Mask")
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
 		(remove_unused_layers no)
 		(uuid "7264a2ee-8f0b-4280-95aa-6b1f020fdc9b")
 	)
@@ -194,7 +202,11 @@
 		(at -3 0)
 		(size 1.9 1.9)
 		(drill 1.1)
-		(layers "*.Cu" "*.Mask")
+		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
+			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
+			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
+			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
 		(remove_unused_layers no)
 		(uuid "2ef15719-645c-49c6-a762-a4a4c02db20e")
 	)
