@@ -2079,7 +2079,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_others:MountingHole_Pad_M3"
+		(symbol "cocotter_others:MountingHole_Pad_M2"
 			(pin_numbers hide)
 			(pin_names
 				(offset 1.016) hide)
@@ -2094,7 +2094,7 @@
 					)
 				)
 			)
-			(property "Value" "MountingHole_Pad_M3"
+			(property "Value" "MountingHole_Pad_M2"
 				(at 0 4.445 0)
 				(effects
 					(font
@@ -2102,7 +2102,7 @@
 					)
 				)
 			)
-			(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+			(property "Footprint" "cocotter_others:MountingHole_2.2mm_M2_Pad_Via"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2147,7 +2147,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "MountingHole_Pad_M3_0_1"
+			(symbol "MountingHole_Pad_M2_0_1"
 				(circle
 					(center 0 1.27)
 					(radius 1.27)
@@ -2160,7 +2160,7 @@
 					)
 				)
 			)
-			(symbol "MountingHole_Pad_M3_1_1"
+			(symbol "MountingHole_Pad_M2_1_1"
 				(pin input line
 					(at 0 -2.54 90)
 					(length 2.54)
@@ -5972,72 +5972,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 247.65 128.27 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board no)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "486cca68-ff9b-42dc-a9ef-f9b8daac5ab8")
-		(property "Reference" "#PWR18"
-			(at 247.65 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 247.65 133.35 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 247.65 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 247.65 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 247.65 128.27 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "19c09449-4493-430f-b1cc-ebd00f8f02c8")
-		)
-		(instances
-			(project "foxtrotter"
-				(path "/ca7d4562-2a92-4408-92c0-589acd8aac99"
-					(reference "#PWR18")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 223.52 43.18 0)
 		(unit 1)
@@ -6355,7 +6289,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(lib_id "cocotter_others:MountingHole_Pad_M2")
 		(at 218.44 125.73 0)
 		(unit 1)
 		(exclude_from_sim yes)
@@ -6373,7 +6307,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "MountingHole_Pad_M3"
+		(property "Value" "MountingHole_Pad_M2"
 			(at 220.98 125.7299 0)
 			(effects
 				(font
@@ -6382,7 +6316,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+		(property "Footprint" "cocotter_others:MountingHole_2.2mm_M2_Pad_Via"
 			(at 218.44 125.73 0)
 			(effects
 				(font
@@ -7491,73 +7425,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_others:MountingHole_Pad_M3")
-		(at 247.65 125.73 0)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b79ff804-e2a2-49d7-b462-cd7c619a7199")
-		(property "Reference" "H4"
-			(at 250.19 123.1899 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "MountingHole_Pad_M3"
-			(at 250.19 125.7299 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
-			(at 247.65 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 247.65 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Mounting Hole with connection"
-			(at 247.65 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e7842702-bb02-4eed-a96e-8b1235a07bde")
-		)
-		(instances
-			(project "foxtrotter"
-				(path "/ca7d4562-2a92-4408-92c0-589acd8aac99"
-					(reference "H4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "pmi_2023_specific:+3V3_m")
 		(at 167.64 24.13 0)
 		(unit 1)
@@ -7963,7 +7830,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(lib_id "cocotter_others:MountingHole_Pad_M2")
 		(at 162.56 125.73 0)
 		(unit 1)
 		(exclude_from_sim yes)
@@ -7981,7 +7848,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "MountingHole_Pad_M3"
+		(property "Value" "MountingHole_Pad_M2"
 			(at 165.1 125.7299 0)
 			(effects
 				(font
@@ -7990,7 +7857,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+		(property "Footprint" "cocotter_others:MountingHole_2.2mm_M2_Pad_Via"
 			(at 162.56 125.73 0)
 			(effects
 				(font
@@ -8030,7 +7897,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(lib_id "cocotter_others:MountingHole_Pad_M2")
 		(at 190.5 125.73 0)
 		(unit 1)
 		(exclude_from_sim yes)
@@ -8048,7 +7915,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "MountingHole_Pad_M3"
+		(property "Value" "MountingHole_Pad_M2"
 			(at 193.04 125.7299 0)
 			(effects
 				(font
@@ -8057,7 +7924,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+		(property "Footprint" "cocotter_others:MountingHole_2.2mm_M2_Pad_Via"
 			(at 190.5 125.73 0)
 			(effects
 				(font
