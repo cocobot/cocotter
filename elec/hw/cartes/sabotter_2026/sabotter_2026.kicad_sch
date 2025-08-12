@@ -217,16 +217,6 @@
 	)
 	(wire
 		(pts
-			(xy 58.42 83.82) (xy 110.49 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9c093345-e43e-4ead-a942-5b2928c29e65")
-	)
-	(wire
-		(pts
 			(xy 217.17 48.26) (xy 168.91 48.26)
 		)
 		(stroke
@@ -364,16 +354,6 @@
 			(type default)
 		)
 		(uuid "f2e4697f-029b-4239-adda-0ec7a9043558")
-	)
-	(wire
-		(pts
-			(xy 58.42 81.28) (xy 110.49 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f5992c57-6ed3-48e0-adc1-133ef3fb5aa8")
 	)
 	(wire
 		(pts
@@ -585,16 +565,6 @@
 			)
 			(uuid "1d918e90-c6b2-4e98-bfe3-39cf41150852")
 		)
-		(pin "color_sensor_3v3" input
-			(at 110.49 83.82 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "c7f547c3-ac31-49b5-abd3-a67ecfc66e71")
-		)
 		(pin "encod_mot2_A_3v3" input
 			(at 168.91 133.35 0)
 			(effects
@@ -724,16 +694,6 @@
 				(justify right)
 			)
 			(uuid "c58263f1-4463-4d3d-9b86-52565316c05e")
-		)
-		(pin "starting_cord_3v3" input
-			(at 110.49 81.28 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "753c1296-42f9-4e99-b137-061effa29883")
 		)
 		(pin "can_tx_3v3" output
 			(at 110.49 87.63 180)
@@ -983,26 +943,6 @@
 			)
 			(uuid "f25aeab3-f795-4cd0-af6e-3839d41c46e1")
 		)
-		(pin "irq0_3v3" output
-			(at 217.17 83.82 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "02454c03-bc53-4b40-ab4f-1123e26d3a8c")
-		)
-		(pin "irq1_3v3" output
-			(at 217.17 86.36 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "828ab02e-1ae4-4f16-b172-c83877e9cb34")
-		)
 		(instances
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249"
@@ -1040,26 +980,6 @@
 				)
 				(justify left top)
 			)
-		)
-		(pin "starting_cord_3v3" output
-			(at 58.42 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "12aa9fc8-7d1a-4408-a8a6-753a59c5f79c")
-		)
-		(pin "color_select_3v3" output
-			(at 58.42 83.82 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "0f0d3468-59d3-43c0-b3db-b928b83f7dd0")
 		)
 		(pin "can_tx_3v3" input
 			(at 58.42 87.63 0)
@@ -1151,16 +1071,6 @@
 			)
 			(uuid "60b99f39-7002-4fcf-b518-3a0eb1d402f3")
 		)
-		(pin "i2C_io_int_3v3" output
-			(at 58.42 100.33 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "56264f91-068f-45fc-8075-d559c0796548")
-		)
 		(pin "brake_mot_3v3" output
 			(at 58.42 123.19 0)
 			(effects
@@ -1170,26 +1080,6 @@
 				(justify right)
 			)
 			(uuid "d47d18ee-a1a9-456f-91b8-5b434d9a196b")
-		)
-		(pin "ctc_left_3v3" input
-			(at 58.42 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "282098ab-6b90-48a8-85b6-0e64baa8dd51")
-		)
-		(pin "ctc_right_3v3" input
-			(at 58.42 129.54 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "cfdaa4bd-3c9e-4d4f-add2-f141fe7c26ba")
 		)
 		(instances
 			(project "sabotter_2026"

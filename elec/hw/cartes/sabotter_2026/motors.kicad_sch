@@ -698,7 +698,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_resistors:R_91k_0603_1%"
+		(symbol "cocotter_resistors:R_100k_0603_1%"
 			(pin_numbers hide)
 			(pin_names
 				(offset 0)
@@ -715,8 +715,8 @@
 					(justify left)
 				)
 			)
-			(property "Value" "91k 1%"
-				(at 4.826 -1.27 0)
+			(property "Value" "100k"
+				(at 3.81 -1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -750,7 +750,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "91k 0603 1% 100mW"
+			(property "Specification" "100k 0603 1% 100mW"
 				(at 0 0 0)
 				(effects
 					(font
@@ -759,7 +759,7 @@
 					(hide yes)
 				)
 			)
-			(property "mouser" ""
+			(property "mouser" "603-RC0603FR-10100KL"
 				(at 0 0 0)
 				(effects
 					(font
@@ -768,7 +768,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C23265"
+			(property "JLCPCB Part #" "C25803"
 				(at 0 0 0)
 				(effects
 					(font
@@ -795,7 +795,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "R_91k_0603_1%_0_1"
+			(symbol "R_100k_0603_1%_0_1"
 				(rectangle
 					(start -1.016 -2.54)
 					(end 1.016 2.54)
@@ -808,7 +808,7 @@
 					)
 				)
 			)
-			(symbol "R_91k_0603_1%_1_1"
+			(symbol "R_100k_0603_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -2985,7 +2985,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 68.58 49.53 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3003,7 +3003,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
+		(property "Value" "100k"
 			(at 71.12 50.7999 0)
 			(effects
 				(font
@@ -3039,7 +3039,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 68.58 49.53 0)
 			(effects
 				(font
@@ -3048,7 +3048,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 68.58 49.53 0)
 			(effects
 				(font
@@ -3057,7 +3057,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 68.58 49.53 0)
 			(effects
 				(font
@@ -3089,10 +3089,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "538dfc53-7e57-4e2d-a78d-07c656a1df1f")
 		(property "Reference" "R66"
-			(at 58.42 45.72 90)
+			(at 64.516 52.07 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3100,7 +3099,7 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 58.42 48.26 90)
+			(at 58.42 52.07 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3622,10 +3621,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "aa91b8b6-bc12-4aef-82e3-e8ff4629be60")
 		(property "Reference" "R67"
-			(at 58.42 49.53 90)
+			(at 64.516 55.88 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3633,7 +3631,7 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 58.42 52.07 90)
+			(at 58.42 55.88 90)
 			(effects
 				(font
 					(size 1.27 1.27)

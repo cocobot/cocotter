@@ -582,7 +582,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_diodes:1N5819WS"
+		(symbol "cocotter_diodes:BZT52C3V0S"
 			(pin_numbers hide)
 			(pin_names
 				(offset 1.016) hide)
@@ -597,7 +597,7 @@
 					)
 				)
 			)
-			(property "Value" "1N5819WS"
+			(property "Value" "BZT52C3V0S"
 				(at 0 -2.54 0)
 				(effects
 					(font
@@ -605,7 +605,7 @@
 					)
 				)
 			)
-			(property "Footprint" "cocotter_diodes:D_SOD-323"
+			(property "Footprint" "cocotter_diodes:SOD-323"
 				(at 0 -4.445 0)
 				(effects
 					(font
@@ -614,7 +614,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
+			(property "Datasheet" "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590919236032143360"
 				(at 0 0 0)
 				(effects
 					(font
@@ -632,7 +632,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C191023"
+			(property "JLCPCB Part #" "C22368921"
 				(at 0 0 0)
 				(effects
 					(font
@@ -640,7 +640,7 @@
 					)
 				)
 			)
-			(property "ki_keywords" "diode Schottky"
+			(property "ki_keywords" "diode Schottky, 3V, 200mW"
 				(at 0 0 0)
 				(effects
 					(font
@@ -658,7 +658,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "1N5819WS_0_1"
+			(symbol "BZT52C3V0S_0_1"
 				(polyline
 					(pts
 						(xy 1.27 0) (xy -1.27 0)
@@ -685,7 +685,7 @@
 				)
 				(polyline
 					(pts
-						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+						(xy -1.27 1.27) (xy -0.762 1.778) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -1.778 -1.778)
 					)
 					(stroke
 						(width 0.254)
@@ -696,7 +696,7 @@
 					)
 				)
 			)
-			(symbol "1N5819WS_1_1"
+			(symbol "BZT52C3V0S_1_1"
 				(pin passive line
 					(at -3.81 0 0)
 					(length 2.54)
@@ -1443,7 +1443,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_resistors:R_22k_0603_1%"
+		(symbol "cocotter_resistors:R_100k_0603_1%"
 			(pin_numbers hide)
 			(pin_names
 				(offset 0)
@@ -1460,8 +1460,8 @@
 					(justify left)
 				)
 			)
-			(property "Value" "22k 1%"
-				(at 5.08 -1.778 0)
+			(property "Value" "100k"
+				(at 3.81 -1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1495,7 +1495,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "22k 0603 1% 100mW"
+			(property "Specification" "100k 0603 1% 100mW"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1504,7 +1504,7 @@
 					(hide yes)
 				)
 			)
-			(property "mouser" ""
+			(property "mouser" "603-RC0603FR-10100KL"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1513,7 +1513,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" ""
+			(property "JLCPCB Part #" "C25803"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1540,7 +1540,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "R_22k_0603_1%_0_1"
+			(symbol "R_100k_0603_1%_0_1"
 				(rectangle
 					(start -1.016 -2.54)
 					(end 1.016 2.54)
@@ -1553,7 +1553,7 @@
 					)
 				)
 			)
-			(symbol "R_22k_0603_1%_1_1"
+			(symbol "R_100k_0603_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -1703,155 +1703,6 @@
 				)
 			)
 			(symbol "R_6k8_0603_1%_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "cocotter_resistors:R_91k_0603_1%"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "91k 1%"
-				(at 4.826 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "91k 0603 1% 100mW"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C23265"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_91k_0603_1%_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_91k_0603_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -2360,16 +2211,40 @@
 		(uuid "2017766c-c598-4f66-9313-400ead9c05a7")
 	)
 	(junction
+		(at 91.44 63.5)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "27464733-bd20-4781-a97e-84042f549c45")
+	)
+	(junction
 		(at 144.78 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2c27f2ef-ac2e-4125-9359-8dc67aa88b8a")
 	)
 	(junction
+		(at 95.25 71.12)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "35fdef73-5aee-4296-8ccf-e470653aa02a")
+	)
+	(junction
+		(at 95.25 63.5)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "422c1941-014d-46d9-be22-beb62d3c3aa0")
+	)
+	(junction
 		(at 137.16 88.9)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "448c2be2-f4cc-4bef-adcd-e898dfaaf895")
+	)
+	(junction
+		(at 100.33 63.5)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "49682ed7-1d1e-4ec5-be81-7161681706af")
 	)
 	(junction
 		(at 254 157.48)
@@ -2384,6 +2259,12 @@
 		(uuid "5316bade-6d7a-4f8b-b315-cb6385c71b05")
 	)
 	(junction
+		(at 137.16 96.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "649f5d77-4858-4097-8ddc-0048d66d25c5")
+	)
+	(junction
 		(at 144.78 58.42)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2396,22 +2277,16 @@
 		(uuid "6ae90fcf-2670-4611-b2e0-30f8a64c0639")
 	)
 	(junction
-		(at 138.43 88.9)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "70fa09a6-386a-4958-b2a8-e5897ab7b847")
-	)
-	(junction
 		(at 144.78 35.56)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "717906d1-08ec-42d4-9c8b-7b9e95d1a507")
 	)
 	(junction
-		(at 259.08 157.48)
+		(at 95.25 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "78a809b4-f967-4679-99f1-7be2d8f64d5d")
+		(uuid "7ca96741-31c9-42e8-9107-42aa3bb93738")
 	)
 	(junction
 		(at 123.19 58.42)
@@ -2436,6 +2311,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "99a0ff8d-2bd6-4dba-bb96-618edaacf9ee")
+	)
+	(junction
+		(at 257.81 157.48)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a3565736-1ca7-43e8-b124-5f5d142b77dd")
 	)
 	(junction
 		(at 179.07 58.42)
@@ -2468,22 +2349,34 @@
 		(uuid "bd364c49-7a7b-41f0-a9ca-faf84076419a")
 	)
 	(junction
-		(at 109.22 25.4)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c0bd16c5-c2b9-400a-9347-2599bc457f97")
-	)
-	(junction
 		(at 179.07 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c4b96bd7-6e63-4ca5-98a9-1b84b1b76bd8")
 	)
 	(junction
-		(at 91.44 25.4)
+		(at 151.13 88.9)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c8a57166-fa0b-4d79-abd3-d36f683e3e4a")
+	)
+	(junction
+		(at 91.44 71.12)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "cde2e686-2792-41a5-ab3f-ab4047a8167b")
+	)
+	(junction
+		(at 76.2 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d4c9c037-9d5d-46f7-b0a1-01b35ad194a5")
+	)
+	(junction
+		(at 100.33 71.12)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "de86f73b-06d2-422b-aa1a-adb7bcda43fd")
 	)
 	(wire
 		(pts
@@ -2507,6 +2400,46 @@
 	)
 	(wire
 		(pts
+			(xy 95.25 71.12) (xy 100.33 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "032acdc9-3cb7-411c-adfd-61d1bb582a84")
+	)
+	(wire
+		(pts
+			(xy 73.66 27.94) (xy 76.2 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "097f6e48-3919-4ee5-a4f2-540b1758e60a")
+	)
+	(wire
+		(pts
+			(xy 95.25 71.12) (xy 95.25 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c3ae252-1d11-4a25-9cba-dbd43d2546f8")
+	)
+	(wire
+		(pts
+			(xy 95.25 63.5) (xy 100.33 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0e8ab2bc-b603-41cd-90d7-5e38b5d53398")
+	)
+	(wire
+		(pts
 			(xy 261.62 157.48) (xy 261.62 154.94)
 		)
 		(stroke
@@ -2527,16 +2460,6 @@
 	)
 	(wire
 		(pts
-			(xy 254 157.48) (xy 259.08 157.48)
-		)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(uuid "1679a5c5-c6fb-4b4a-8a39-449e31651804")
-	)
-	(wire
-		(pts
 			(xy 144.78 68.58) (xy 128.27 68.58)
 		)
 		(stroke
@@ -2547,7 +2470,7 @@
 	)
 	(wire
 		(pts
-			(xy 138.43 88.9) (xy 168.91 88.9)
+			(xy 137.16 88.9) (xy 151.13 88.9)
 		)
 		(stroke
 			(width 0)
@@ -2577,7 +2500,7 @@
 	)
 	(wire
 		(pts
-			(xy 109.22 96.52) (xy 109.22 97.79)
+			(xy 95.25 86.36) (xy 95.25 97.79)
 		)
 		(stroke
 			(width 0)
@@ -2587,7 +2510,7 @@
 	)
 	(wire
 		(pts
-			(xy 109.22 25.4) (xy 109.22 78.74)
+			(xy 95.25 25.4) (xy 95.25 63.5)
 		)
 		(stroke
 			(width 0)
@@ -2624,16 +2547,6 @@
 			(type default)
 		)
 		(uuid "45b6bcd5-afba-4df5-b2e4-2b7d99785a8a")
-	)
-	(wire
-		(pts
-			(xy 109.22 25.4) (xy 123.19 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "49074788-dd5e-40eb-872a-a5635bd6ea02")
 	)
 	(wire
 		(pts
@@ -2677,6 +2590,16 @@
 	)
 	(wire
 		(pts
+			(xy 82.55 63.5) (xy 91.44 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5bba3cf2-6621-4e12-9fc7-928931f9d762")
+	)
+	(wire
+		(pts
 			(xy 165.1 68.58) (xy 179.07 68.58)
 		)
 		(stroke
@@ -2707,13 +2630,23 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 27.94) (xy 91.44 38.1)
+			(xy 76.2 27.94) (xy 76.2 38.1)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "70f62b99-9a15-4182-9cfc-9c9f43c891b2")
+		(uuid "6c2fd65f-7776-4aff-9a7b-acd138ec1e09")
+	)
+	(wire
+		(pts
+			(xy 95.25 25.4) (xy 123.19 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "711d1857-3ff0-45ce-a27d-b00d119bff3a")
 	)
 	(wire
 		(pts
@@ -2724,6 +2657,36 @@
 			(type solid)
 		)
 		(uuid "71430210-cb40-4d17-9987-c8e3839a09ce")
+	)
+	(wire
+		(pts
+			(xy 73.66 25.4) (xy 76.2 25.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "75927961-3b79-49c8-80c3-52358f7ab023")
+	)
+	(wire
+		(pts
+			(xy 254 157.48) (xy 257.81 157.48)
+		)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(uuid "79118f45-4f31-41e0-ab21-ce5129527a03")
+	)
+	(wire
+		(pts
+			(xy 137.16 96.52) (xy 151.13 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7aea952a-823c-466d-a94f-555f48474759")
 	)
 	(wire
 		(pts
@@ -2767,17 +2730,27 @@
 	)
 	(wire
 		(pts
-			(xy 138.43 88.9) (xy 137.16 88.9)
+			(xy 151.13 88.9) (xy 168.91 88.9)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8245d6d3-b41e-41fc-ab88-a9340585c3b7")
+		(uuid "82233d88-fcfb-4c68-b2b6-6eaf47c9a1a6")
 	)
 	(wire
 		(pts
-			(xy 97.79 25.4) (xy 91.44 25.4)
+			(xy 100.33 63.5) (xy 109.22 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "855a3577-f87f-43fc-a55e-91aaa5677217")
+	)
+	(wire
+		(pts
+			(xy 82.55 25.4) (xy 76.2 25.4)
 		)
 		(stroke
 			(width 0)
@@ -2857,16 +2830,6 @@
 	)
 	(wire
 		(pts
-			(xy 259.08 157.48) (xy 261.62 157.48)
-		)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(uuid "ae668b7f-99c9-412b-83b3-cbd7c6cfadb7")
-	)
-	(wire
-		(pts
 			(xy 158.75 35.56) (xy 165.1 35.56)
 		)
 		(stroke
@@ -2877,7 +2840,17 @@
 	)
 	(wire
 		(pts
-			(xy 105.41 25.4) (xy 109.22 25.4)
+			(xy 257.81 157.48) (xy 261.62 157.48)
+		)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(uuid "bd6563a7-defb-4617-9818-41e0a79d3586")
+	)
+	(wire
+		(pts
+			(xy 90.17 25.4) (xy 95.25 25.4)
 		)
 		(stroke
 			(width 0)
@@ -2937,6 +2910,16 @@
 	)
 	(wire
 		(pts
+			(xy 100.33 71.12) (xy 109.22 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cc6dc807-07f7-448f-9c60-e2c6d7989570")
+	)
+	(wire
+		(pts
 			(xy 123.19 25.4) (xy 123.19 58.42)
 		)
 		(stroke
@@ -2947,7 +2930,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 25.4) (xy 91.44 21.59)
+			(xy 76.2 25.4) (xy 76.2 21.59)
 		)
 		(stroke
 			(width 0)
@@ -2964,6 +2947,26 @@
 			(type default)
 		)
 		(uuid "da18e2e8-fcd4-40f6-95dd-e1fc6cb16046")
+	)
+	(wire
+		(pts
+			(xy 91.44 63.5) (xy 95.25 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd6a2fcc-2a92-4502-aa30-9cc22a262f12")
+	)
+	(wire
+		(pts
+			(xy 82.55 71.12) (xy 91.44 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e1372d44-2c5d-4089-ba1b-eb3e1e89654c")
 	)
 	(wire
 		(pts
@@ -2997,6 +3000,16 @@
 	)
 	(wire
 		(pts
+			(xy 91.44 71.12) (xy 95.25 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ef4d56b5-8166-4720-af74-695abbbe8913")
+	)
+	(wire
+		(pts
 			(xy 128.27 35.56) (xy 128.27 34.29)
 		)
 		(stroke
@@ -3004,26 +3017,6 @@
 			(type default)
 		)
 		(uuid "f2feb387-a2d7-4ee3-a039-2a179eeecf90")
-	)
-	(wire
-		(pts
-			(xy 259.08 157.48) (xy 257.81 157.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f36020db-94c2-4eb9-9833-95e105ead437")
-	)
-	(wire
-		(pts
-			(xy 109.22 86.36) (xy 109.22 88.9)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fb30c1e8-cf65-4e11-ad10-9b65a6fd39db")
 	)
 	(wire
 		(pts
@@ -3054,7 +3047,7 @@
 		)
 		(uuid "1f74410f-f970-42a9-b502-2b9345e32156")
 	)
-	(text_box "Battery voltage : \n6S : 16.8V charged, 14.83V discharged\n5S : 21V charged,   18.54V discharged\n4S : 25.2V charged, 22.24V discharged\n\nTo handle multiple battery voltage, use esp32 adc \nattenuation to maximize voltage measure precision\n\n"
+	(text_box "Battery voltage : \n4S : 16.8V charged, 14.83V discharged\n5S : 21V charged,   18.54V discharged\n6S : 25.2V charged, 22.24V discharged\n\nTo handle multiple battery voltage, use esp32 adc \nattenuation to maximize voltage measure precision\n\n"
 		(exclude_from_sim no)
 		(at 21.59 78.74 0)
 		(size 53.34 19.05)
@@ -3086,16 +3079,17 @@
 		(uuid "ba9b4f5e-ab03-4dff-9693-82e001e89687")
 	)
 	(symbol
-		(lib_id "cocotter_diodes:1N5819WS")
-		(at 138.43 85.09 270)
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(at 109.22 67.31 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "11346cd3-3e7e-46a5-8116-6c8d61d98462")
-		(property "Reference" "D3"
-			(at 140.97 82.2324 90)
+		(fields_autoplaced yes)
+		(uuid "0c725d25-480f-4c7e-86c9-7a615cb4d3b4")
+		(property "Reference" "R1"
+			(at 111.76 66.0399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3103,8 +3097,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1N5819WS"
-			(at 140.97 84.7724 90)
+		(property "Value" "100k"
+			(at 111.76 68.5799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3112,8 +3106,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_diodes:D_SOD-323"
-			(at 133.985 85.09 0)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 107.442 67.31 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3121,8 +3115,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
-			(at 138.43 85.09 0)
+		(property "Datasheet" "~"
+			(at 109.22 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3130,8 +3124,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
-			(at 138.43 85.09 0)
+		(property "Description" "Resistor"
+			(at 109.22 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3139,25 +3133,43 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C191023"
-			(at 140.97 87.3124 90)
+		(property "Specification" "100k 0603 1% 100mW"
+			(at 109.22 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 109.22 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C25803"
+			(at 109.22 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
 			)
 		)
 		(pin "2"
-			(uuid "b4eb4577-58d8-44e5-a034-1a6a25348327")
+			(uuid "f130be5a-833e-4a9e-ae91-a266c654bb97")
 		)
 		(pin "1"
-			(uuid "5d885a1a-6fb6-491b-8585-c457a917e9dc")
+			(uuid "50ace126-8ef4-468f-bbd8-a5b3c82941ae")
 		)
 		(instances
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
-					(reference "D3")
+					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -3253,7 +3265,7 @@
 	)
 	(symbol
 		(lib_id "power:+BATT")
-		(at 91.44 21.59 0)
+		(at 76.2 21.59 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3262,7 +3274,7 @@
 		(fields_autoplaced yes)
 		(uuid "2bb7da8e-997b-449f-9b7b-b451fbfe4d64")
 		(property "Reference" "#PWR1"
-			(at 91.44 25.4 0)
+			(at 76.2 25.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3271,7 +3283,7 @@
 			)
 		)
 		(property "Value" "+BATT"
-			(at 91.44 16.51 0)
+			(at 76.2 16.51 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3279,7 +3291,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 91.44 21.59 0)
+			(at 76.2 21.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3288,7 +3300,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 91.44 21.59 0)
+			(at 76.2 21.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3297,7 +3309,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+BATT\""
-			(at 91.44 21.59 0)
+			(at 76.2 21.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3698,7 +3710,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 259.08 157.48 0)
+		(at 257.81 157.48 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3706,7 +3718,7 @@
 		(dnp no)
 		(uuid "4dc5d073-5327-44d5-8808-930b4dc6603c")
 		(property "Reference" "#PWR10"
-			(at 259.08 163.83 0)
+			(at 257.81 163.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3715,7 +3727,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 259.08 161.544 0)
+			(at 257.81 161.544 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3723,7 +3735,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 259.08 157.48 0)
+			(at 257.81 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3732,7 +3744,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 259.08 157.48 0)
+			(at 257.81 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3741,7 +3753,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 259.08 157.48 0)
+			(at 257.81 157.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3842,7 +3854,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 109.22 97.79 0)
+		(at 95.25 97.79 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3850,7 +3862,7 @@
 		(dnp no)
 		(uuid "532335ff-0295-4238-9e77-b8b9bd72e0f1")
 		(property "Reference" "#PWR3"
-			(at 109.22 104.14 0)
+			(at 95.25 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3859,7 +3871,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 109.22 101.854 0)
+			(at 95.25 101.854 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3867,7 +3879,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 109.22 97.79 0)
+			(at 95.25 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3876,7 +3888,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 109.22 97.79 0)
+			(at 95.25 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3885,7 +3897,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 109.22 97.79 0)
+			(at 95.25 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3907,7 +3919,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:unioc_pw_in")
-		(at 91.44 25.4 0)
+		(at 73.66 25.4 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3915,7 +3927,7 @@
 		(dnp no)
 		(uuid "701d214b-b257-4e14-9b54-ec7bc196ca70")
 		(property "Reference" "J1"
-			(at 82.296 21.844 0)
+			(at 64.516 21.844 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3923,7 +3935,7 @@
 			)
 		)
 		(property "Value" "22272021"
-			(at 85.852 31.75 0)
+			(at 68.072 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3931,7 +3943,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:22272021"
-			(at 88.138 37.338 0)
+			(at 70.358 37.338 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3940,7 +3952,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.molex.com/en-us/products/part-detail/22272021"
-			(at 91.44 34.29 0)
+			(at 73.66 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3949,7 +3961,7 @@
 			)
 		)
 		(property "Description" "mini kk 2 voies vertical"
-			(at 91.44 34.29 0)
+			(at 73.66 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4098,72 +4110,6 @@
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
 					(reference "#PWR9")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 138.43 81.28 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7a4966f3-e77f-48aa-b4fe-9ad671a1f78e")
-		(property "Reference" "#PWR5"
-			(at 138.43 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 138.43 76.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 138.43 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 138.43 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 138.43 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1f5f2b41-a809-4a2f-a9bd-441bd4b959fb")
-		)
-		(instances
-			(project "sabotter_2026"
-				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
-					(reference "#PWR5")
 					(unit 1)
 				)
 			)
@@ -4325,6 +4271,103 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(at 91.44 67.31 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "80e1e126-20ea-4c1e-80a9-277bb0ba21b4")
+		(property "Reference" "R35"
+			(at 93.98 66.0399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100k"
+			(at 93.98 68.5799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 89.662 67.31 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 91.44 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 91.44 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "100k 0603 1% 100mW"
+			(at 91.44 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 91.44 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C25803"
+			(at 91.44 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "eb63c4db-6daa-4373-bce0-a1d59f46afba")
+		)
+		(pin "1"
+			(uuid "2921f5f1-4144-4bc9-aae6-9a708f51fd43")
+		)
+		(instances
+			(project "sabotter_2026"
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
+					(reference "R35")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_resistors:R_6k8_0603_1%")
 		(at 123.19 92.71 0)
 		(unit 1)
@@ -4422,6 +4465,103 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(at 100.33 67.31 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "899ef992-d8e0-415f-93b4-2da37ea835b2")
+		(property "Reference" "R27"
+			(at 102.87 66.0399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100k"
+			(at 102.87 68.5799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 98.552 67.31 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 100.33 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 100.33 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "100k 0603 1% 100mW"
+			(at 100.33 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 100.33 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C25803"
+			(at 100.33 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "cb73cc24-39d9-4b5d-af50-3546b65698e8")
+		)
+		(pin "1"
+			(uuid "cf3d2943-a550-46d1-9854-df91a406c028")
+		)
+		(instances
+			(project "sabotter_2026"
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
+					(reference "R27")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_others:MountingHole_Pad_M3")
 		(at 246.38 152.4 0)
 		(unit 1)
@@ -4490,7 +4630,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 91.44 38.1 0)
+		(at 76.2 38.1 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4498,7 +4638,7 @@
 		(dnp no)
 		(uuid "a2d609cb-ef6f-408f-8f84-fb912309acf2")
 		(property "Reference" "#PWR2"
-			(at 91.44 44.45 0)
+			(at 76.2 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4507,7 +4647,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 91.44 42.164 0)
+			(at 76.2 42.164 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4515,7 +4655,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 91.44 38.1 0)
+			(at 76.2 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4524,7 +4664,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 91.44 38.1 0)
+			(at 76.2 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4533,7 +4673,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 91.44 38.1 0)
+			(at 76.2 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4555,7 +4695,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_diodes:green_led_0603")
-		(at 109.22 82.55 90)
+		(at 95.25 82.55 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4564,7 +4704,7 @@
 		(fields_autoplaced yes)
 		(uuid "a37554c8-b950-4033-be4e-977516d61537")
 		(property "Reference" "D2"
-			(at 113.03 84.1374 90)
+			(at 99.06 84.1374 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4573,7 +4713,7 @@
 			)
 		)
 		(property "Value" "green, 0603"
-			(at 111.76 82.55 0)
+			(at 97.79 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4582,7 +4722,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-			(at 109.22 82.55 0)
+			(at 95.25 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4591,7 +4731,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 109.22 82.55 0)
+			(at 95.25 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4600,7 +4740,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
-			(at 109.22 82.55 0)
+			(at 95.25 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4609,7 +4749,7 @@
 			)
 		)
 		(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
-			(at 109.22 82.55 0)
+			(at 95.25 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4618,7 +4758,7 @@
 			)
 		)
 		(property "MOUSER_REF" "710-150060VS55040"
-			(at 109.22 82.55 0)
+			(at 95.25 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4627,7 +4767,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C22371299"
-			(at 109.22 82.55 0)
+			(at 95.25 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4645,103 +4785,6 @@
 			(project ""
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
 					(reference "D2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_resistors:R_22k_0603_1%")
-		(at 109.22 92.71 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a7748b83-31a1-4390-a0d3-c4a913eb320f")
-		(property "Reference" "R1"
-			(at 111.76 91.4399 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22k 1%"
-			(at 111.76 93.9799 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 107.442 92.71 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 109.22 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 109.22 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "22k 0603 1% 100mW"
-			(at 109.22 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" ""
-			(at 109.22 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" ""
-			(at 109.22 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "d6b74bf6-a4aa-4a90-b5cd-28fdafa50578")
-		)
-		(pin "1"
-			(uuid "78fd979e-a753-47d7-936e-cc5d3b0cf00e")
-		)
-		(instances
-			(project ""
-				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
-					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -4960,6 +5003,103 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
+		(at 82.55 67.31 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d3af25a3-9cf4-4b39-941b-a6387bc32532")
+		(property "Reference" "R36"
+			(at 85.09 66.0399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100k"
+			(at 85.09 68.5799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 80.772 67.31 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 82.55 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 82.55 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "100k 0603 1% 100mW"
+			(at 82.55 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 82.55 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C25803"
+			(at 82.55 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "f74ab9df-d7bd-4bae-9b57-310593bb36e9")
+		)
+		(pin "1"
+			(uuid "2e10ec9b-0c65-4566-a27f-0810e68ee8bb")
+		)
+		(instances
+			(project "sabotter_2026"
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
+					(reference "R36")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_capacitors:C_10µF_25V_0805_X5R")
 		(at 144.78 30.48 0)
 		(unit 1)
@@ -5114,17 +5254,95 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:DSK34")
-		(at 101.6 25.4 180)
+		(lib_id "cocotter_diodes:BZT52C3V0S")
+		(at 151.13 92.71 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
+		(uuid "dce2ebfb-0429-4771-98cd-e842874256b9")
+		(property "Reference" "D3"
+			(at 153.67 89.9159 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "BZT52C3V0S"
+			(at 153.67 92.4559 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_diodes:SOD-323"
+			(at 146.685 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590919236032143360"
+			(at 151.13 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
+			(at 151.13 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C22368921"
+			(at 153.67 94.9959 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "2"
+			(uuid "4cd7c975-da8b-49d2-81c4-0a44ac93468c")
+		)
+		(pin "1"
+			(uuid "f08d8807-0ed0-484a-bea5-702be70151a0")
+		)
+		(instances
+			(project ""
+				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/a8dc254c-2033-4989-9d4d-b55c4e9961fb"
+					(reference "D3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_diodes:DSK34")
+		(at 86.36 25.4 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
 		(uuid "e7013b28-4a1f-45b5-8d2d-4a51c8598ef0")
 		(property "Reference" "D1"
-			(at 101.9175 19.05 0)
+			(at 86.6775 19.05 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5132,7 +5350,7 @@
 			)
 		)
 		(property "Value" "DSK34"
-			(at 101.9175 21.59 0)
+			(at 86.6775 21.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5140,7 +5358,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_diodes:D_SOD-123"
-			(at 101.6 20.955 0)
+			(at 86.36 20.955 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5149,7 +5367,7 @@
 			)
 		)
 		(property "Datasheet" "https://lcsc.com/datasheet/lcsc_datasheet_2410122011_TWGMC-DSK34_C727076.pdf"
-			(at 101.6 25.4 0)
+			(at 86.36 25.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5158,7 +5376,7 @@
 			)
 		)
 		(property "Description" "40V 500mV@3A 3A SOD-123 Schottky Barrier Diodes"
-			(at 101.6 25.4 0)
+			(at 86.36 25.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5167,7 +5385,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C727076"
-			(at 101.6 25.4 0)
+			(at 86.36 25.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5279,7 +5497,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 123.19 85.09 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5297,7 +5515,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
+		(property "Value" "100k"
 			(at 125.73 86.3599 0)
 			(effects
 				(font
@@ -5333,7 +5551,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 123.19 85.09 0)
 			(effects
 				(font
@@ -5342,7 +5560,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 123.19 85.09 0)
 			(effects
 				(font
@@ -5351,7 +5569,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 123.19 85.09 0)
 			(effects
 				(font

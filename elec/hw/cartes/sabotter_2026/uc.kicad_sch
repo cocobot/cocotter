@@ -313,405 +313,6 @@
 				)
 			)
 		)
-		(symbol "cocotter_connectors:SLW-713515-2A-SMT-TR "
-			(pin_names hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "SW"
-				(at 0 4.572 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "SLW-713515-2A-SMT-TR"
-				(at 2.54 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_others:SLW-713515-2A-SMT-TR"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://www.sameskydevices.com/product/resource/slw-713515-2a-smt-tr.pdf"
-				(at 0 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "50mA max, 12Vdc, 10000 cycles"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C2858291"
-				(at -1.27 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "switch dpdt"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SLW-713515-2A-SMT-TR _0_1"
-				(text "pos A"
-					(at 0.9192 2.1909 0)
-					(effects
-						(font
-							(size 0.635 0.635)
-							(italic yes)
-						)
-					)
-				)
-			)
-			(symbol "SLW-713515-2A-SMT-TR _1_1"
-				(rectangle
-					(start -2.54 3.81)
-					(end 2.54 -3.81)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(circle
-					(center -1.27 -2.54)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 2.54)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 -2.54) (xy -1.524 -2.54)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 2.54) (xy -1.524 2.54)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.016 0.254) (xy -1.524 2.286)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.524 0) (xy 2.54 0)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 1.27 0)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin passive line
-					(at -5.08 2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(symbol "SLW-713515-2A-SMT-TR _2_1"
-				(rectangle
-					(start -2.54 3.81)
-					(end 2.54 -3.81)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(circle
-					(center -1.27 -2.54)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 2.54)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 -2.54) (xy -1.524 -2.54)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 2.54) (xy -1.524 2.54)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.016 0.254) (xy -1.524 2.286)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.524 0) (xy 2.54 0)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 8.89)
-					(radius 0.0001)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 1.27 0)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-						(color 0 0 0 1)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin passive line
-					(at -5.08 2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -2.54 0)
-					(length 2.54)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
 		(symbol "cocotter_connectors:USB4120-03-C"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -3358,6 +2959,155 @@
 				)
 			)
 		)
+		(symbol "cocotter_resistors:R_100k_0603_1%"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "100k"
+				(at 3.81 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0603_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "100k 0603 1% 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" "603-RC0603FR-10100KL"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C25803"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_100k_0603_1%_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_100k_0603_1%_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "cocotter_resistors:R_1k_0603_1%"
 			(pin_numbers hide)
 			(pin_names
@@ -3618,155 +3368,6 @@
 				)
 			)
 			(symbol "R_390R_0603_1%_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "cocotter_resistors:R_91k_0603_1%"
-			(pin_numbers hide)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "91k 1%"
-				(at 4.826 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "91k 0603 1% 100mW"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C23265"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_91k_0603_1%_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_91k_0603_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -4189,6 +3790,30 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ffbda99f-4ed1-41b6-9c6c-e4a7f4c6b753")
+	)
+	(no_connect
+		(at 257.81 99.06)
+		(uuid "5b8fa111-d3f1-4e80-aa27-42e3d809ac46")
+	)
+	(no_connect
+		(at 257.81 124.46)
+		(uuid "8840ce0c-f653-4243-8dd9-5623368e6d67")
+	)
+	(no_connect
+		(at 135.89 166.37)
+		(uuid "9da9ec5e-b3ee-445a-9574-12a0c7bb2a5b")
+	)
+	(no_connect
+		(at 257.81 101.6)
+		(uuid "e8a4b2c6-8d6f-4e62-987d-4f59e180c60a")
+	)
+	(no_connect
+		(at 176.53 165.1)
+		(uuid "f996c38a-9fa4-4d7f-94c5-ec3e7fe4a172")
+	)
+	(no_connect
+		(at 257.81 121.92)
+		(uuid "fa278d9d-3f31-457e-92f6-1c05af184c8c")
 	)
 	(wire
 		(pts
@@ -5089,16 +4714,6 @@
 			(type default)
 		)
 		(uuid "b710a5ce-b4d0-49df-b696-f16d78accd17")
-	)
-	(wire
-		(pts
-			(xy 73.66 143.51) (xy 80.01 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b8352024-3205-402c-a52a-9dfc55cf2698")
 	)
 	(wire
 		(pts
@@ -6532,7 +6147,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 229.87 85.09 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6550,7 +6165,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
+		(property "Value" "100k"
 			(at 232.41 86.3599 0)
 			(effects
 				(font
@@ -6586,7 +6201,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 229.87 85.09 0)
 			(effects
 				(font
@@ -6595,7 +6210,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 229.87 85.09 0)
 			(effects
 				(font
@@ -6604,7 +6219,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 229.87 85.09 0)
 			(effects
 				(font
@@ -7014,7 +6629,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 82.55 130.81 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7032,7 +6647,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
+		(property "Value" "100k"
 			(at 85.09 132.0799 0)
 			(effects
 				(font
@@ -7068,7 +6683,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 82.55 130.81 0)
 			(effects
 				(font
@@ -7077,7 +6692,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 82.55 130.81 0)
 			(effects
 				(font
@@ -7086,7 +6701,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 82.55 130.81 0)
 			(effects
 				(font
@@ -7208,7 +6823,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 241.3 85.09 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7226,7 +6841,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
+		(property "Value" "100k"
 			(at 243.84 86.3599 0)
 			(effects
 				(font
@@ -7262,7 +6877,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 241.3 85.09 0)
 			(effects
 				(font
@@ -7271,7 +6886,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 241.3 85.09 0)
 			(effects
 				(font
@@ -7280,7 +6895,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 241.3 85.09 0)
 			(effects
 				(font
@@ -7752,7 +7367,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 96.52 130.81 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7769,8 +7384,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
-			(at 101.346 132.08 0)
+		(property "Value" "100k"
+			(at 100.33 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7804,7 +7419,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 96.52 130.81 0)
 			(effects
 				(font
@@ -7813,7 +7428,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 96.52 130.81 0)
 			(effects
 				(font
@@ -7822,7 +7437,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 96.52 130.81 0)
 			(effects
 				(font
@@ -8665,7 +8280,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 96.52 148.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8683,7 +8298,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
+		(property "Value" "100k"
 			(at 99.06 149.8599 0)
 			(effects
 				(font
@@ -8719,7 +8334,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 96.52 148.59 0)
 			(effects
 				(font
@@ -8728,7 +8343,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 96.52 148.59 0)
 			(effects
 				(font
@@ -8737,7 +8352,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 96.52 148.59 0)
 			(effects
 				(font
@@ -9039,95 +8654,6 @@
 			(project "sabotter_2026"
 				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
 					(reference "#PWR24")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_connectors:SLW-713515-2A-SMT-TR ")
-		(at 68.58 143.51 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a14fabee-b400-492b-9a92-ee4b970bda35")
-		(property "Reference" "SW2"
-			(at 68.58 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SLW-713515-2A-SMT-TR"
-			(at 68.58 137.16 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_others:SLW-713515-2A-SMT-TR"
-			(at 68.58 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.sameskydevices.com/product/resource/slw-713515-2a-smt-tr.pdf"
-			(at 68.58 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "50mA max, 12Vdc, 10000 cycles"
-			(at 68.58 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C2858291"
-			(at 67.31 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "f6af4de2-ee39-4a5d-b57c-6f7d17c85a19")
-		)
-		(pin "1"
-			(uuid "5232c73f-1136-4c7a-bfad-067823d016ae")
-		)
-		(pin "3"
-			(uuid "fb0e1443-2cad-4917-b00b-19281006ab71")
-		)
-		(pin "6"
-			(uuid "c06d660e-473b-483d-8853-0f435fcb026f")
-		)
-		(pin "4"
-			(uuid "e0c3b49c-fe7c-48df-a7ed-eac23660ca21")
-		)
-		(pin "5"
-			(uuid "54353427-0e57-4537-9624-07578dd20b8a")
-		)
-		(instances
-			(project ""
-				(path "/c1bd5504-d0b2-4cc3-94d1-261f58816249/0627c134-32e1-430c-bbd1-677b8ecf53c1"
-					(reference "SW2")
 					(unit 1)
 				)
 			)
@@ -10367,7 +9893,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_100k_0603_1%")
 		(at 218.44 135.89 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -10385,7 +9911,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "91k 1%"
+		(property "Value" "100k"
 			(at 220.98 137.1599 0)
 			(effects
 				(font
@@ -10421,7 +9947,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "100k 0603 1% 100mW"
 			(at 218.44 135.89 0)
 			(effects
 				(font
@@ -10430,7 +9956,7 @@
 				(hide yes)
 			)
 		)
-		(property "mouser" ""
+		(property "mouser" "603-RC0603FR-10100KL"
 			(at 218.44 135.89 0)
 			(effects
 				(font
@@ -10439,7 +9965,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
+		(property "JLCPCB Part #" "C25803"
 			(at 218.44 135.89 0)
 			(effects
 				(font
