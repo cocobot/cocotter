@@ -3493,7 +3493,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_connectors:798618-4"
+		(property "Footprint" "cocotter_connectors:3-794618-4"
 			(at 0 0 0)
 			(effects
 				(font
