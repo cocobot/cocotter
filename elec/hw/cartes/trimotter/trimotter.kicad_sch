@@ -2957,6 +2957,24 @@
 						)
 					)
 				)
+				(pin passive line
+					(at 7.62 -27.94 90)
+					(length 5.08)
+					(name "EP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "EP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
 		)
 		(symbol "cocotter_ic:PCA9535PW"
@@ -6007,18 +6025,6 @@
 		(uuid "0487509e-8c3a-496f-8873-ce209b991ee2")
 	)
 	(junction
-		(at 229.87 20.32)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "06752f08-0fad-4860-b9de-7443735d81c0")
-	)
-	(junction
-		(at 232.41 20.32)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "06e98794-7cc4-42df-a2a6-0afbf9d0456a")
-	)
-	(junction
 		(at 129.54 19.05)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6029,6 +6035,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1aac140f-8f1e-4b48-bac2-b7d253d8352c")
+	)
+	(junction
+		(at 219.71 19.05)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "2aaad5ab-5606-4aa8-94d4-3bec8cfc28a7")
 	)
 	(junction
 		(at 163.83 82.55)
@@ -6097,12 +6109,6 @@
 		(uuid "42c6c128-305a-4a71-84ca-15fdb9e2ba9f")
 	)
 	(junction
-		(at 106.68 110.49)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "444640a6-2f6d-4f6b-af4e-1fa3c419e6c4")
-	)
-	(junction
 		(at 173.99 82.55)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6143,6 +6149,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4d2fa0c4-37c3-4be7-947a-62b09bea06b4")
+	)
+	(junction
+		(at 229.87 19.05)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "53d4e54e-7a22-412d-b533-f1df3de70f37")
 	)
 	(junction
 		(at 123.19 19.05)
@@ -6229,12 +6241,6 @@
 		(uuid "842298c5-6554-4d88-99c6-f168fd40ae0a")
 	)
 	(junction
-		(at 222.25 20.32)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "8597e7f9-5a77-4f4b-9b9d-832ce39032c3")
-	)
-	(junction
 		(at 175.26 19.05)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6313,6 +6319,18 @@
 		(uuid "a96b4fc5-1a10-4eb8-8ad3-67a05e71a2e1")
 	)
 	(junction
+		(at 222.25 19.05)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "aee371cd-bbff-47c9-8d1d-1edb5ad7e6ce")
+	)
+	(junction
+		(at 124.46 100.33)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "afaa96f6-3831-4050-8678-d4fe81e2b6f9")
+	)
+	(junction
 		(at 257.81 30.48)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6343,10 +6361,10 @@
 		(uuid "befdda52-7f29-419d-82f0-6e1bbf5183db")
 	)
 	(junction
-		(at 219.71 20.32)
+		(at 232.41 19.05)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "c1a5c34f-5c26-45a8-bad2-e3e4190d424e")
+		(uuid "c759f0b1-e458-49a1-9358-687ae0f8c685")
 	)
 	(junction
 		(at 245.11 53.34)
@@ -6439,16 +6457,6 @@
 			(type default)
 		)
 		(uuid "0249dbab-34fb-4e15-a3e8-63e2ca207592")
-	)
-	(wire
-		(pts
-			(xy 91.44 102.87) (xy 107.95 102.87)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "02889a9d-b843-4382-b23f-b0038a274afd")
 	)
 	(wire
 		(pts
@@ -6622,6 +6630,16 @@
 	)
 	(wire
 		(pts
+			(xy 116.84 100.33) (xy 124.46 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0ecf0b7d-c790-4004-9a1b-380d4544f6c4")
+	)
+	(wire
+		(pts
 			(xy 267.97 133.35) (xy 267.97 142.24)
 		)
 		(stroke
@@ -6672,7 +6690,7 @@
 	)
 	(wire
 		(pts
-			(xy 219.71 20.32) (xy 222.25 20.32)
+			(xy 219.71 19.05) (xy 222.25 19.05)
 		)
 		(stroke
 			(width 0)
@@ -6709,16 +6727,6 @@
 			(type default)
 		)
 		(uuid "183b1397-2ecb-4ae2-97e0-1a14ad078c2a")
-	)
-	(wire
-		(pts
-			(xy 106.68 110.49) (xy 109.22 110.49)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "18b03b0c-1cda-4b8a-b98a-7b57cc3ff7ea")
 	)
 	(wire
 		(pts
@@ -6779,16 +6787,6 @@
 			(type default)
 		)
 		(uuid "232521c7-1141-4473-80f9-0c26973c10ed")
-	)
-	(wire
-		(pts
-			(xy 91.44 105.41) (xy 107.95 105.41)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "247950f3-22fd-4cd6-b58e-9f189e61517d")
 	)
 	(wire
 		(pts
@@ -6902,6 +6900,16 @@
 	)
 	(wire
 		(pts
+			(xy 232.41 19.05) (xy 232.41 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2c648489-dad3-498d-8c08-958682682814")
+	)
+	(wire
+		(pts
 			(xy 64.77 177.8) (xy 71.12 177.8)
 		)
 		(stroke
@@ -6919,6 +6927,16 @@
 			(type default)
 		)
 		(uuid "30c3cdc1-6cfe-45a5-bc06-3319f76bf892")
+	)
+	(wire
+		(pts
+			(xy 91.44 107.95) (xy 105.41 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "314ff745-f440-4018-9dd9-65795f83ca55")
 	)
 	(wire
 		(pts
@@ -6982,6 +7000,16 @@
 	)
 	(wire
 		(pts
+			(xy 229.87 19.05) (xy 229.87 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "33fc014b-5c85-41eb-8a66-77673a9cac8b")
+	)
+	(wire
+		(pts
 			(xy 95.25 130.81) (xy 91.44 130.81)
 		)
 		(stroke
@@ -7002,7 +7030,7 @@
 	)
 	(wire
 		(pts
-			(xy 229.87 20.32) (xy 232.41 20.32)
+			(xy 229.87 19.05) (xy 232.41 19.05)
 		)
 		(stroke
 			(width 0)
@@ -7082,16 +7110,6 @@
 	)
 	(wire
 		(pts
-			(xy 229.87 20.32) (xy 229.87 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3d43768f-f5df-4a46-9d2d-7acd73571744")
-	)
-	(wire
-		(pts
 			(xy 242.57 30.48) (xy 257.81 30.48)
 		)
 		(stroke
@@ -7099,6 +7117,26 @@
 			(type default)
 		)
 		(uuid "3ec8b431-1b10-44e9-bdb6-eaf516dfba94")
+	)
+	(wire
+		(pts
+			(xy 91.44 110.49) (xy 95.25 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f14207f-b5ce-4a15-b74a-3ce12be399d6")
+	)
+	(wire
+		(pts
+			(xy 222.25 19.05) (xy 222.25 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3fa9045b-f04f-45b9-aded-a345c1602430")
 	)
 	(wire
 		(pts
@@ -7142,7 +7180,7 @@
 	)
 	(wire
 		(pts
-			(xy 222.25 20.32) (xy 224.79 20.32)
+			(xy 222.25 19.05) (xy 224.79 19.05)
 		)
 		(stroke
 			(width 0)
@@ -7502,13 +7540,23 @@
 	)
 	(wire
 		(pts
-			(xy 116.84 110.49) (xy 116.84 111.76)
+			(xy 140.97 100.33) (xy 140.97 101.6)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "66a2b7eb-8f51-44e1-8c24-80067d4a6a84")
+	)
+	(wire
+		(pts
+			(xy 91.44 102.87) (xy 107.95 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6743488a-6aa3-4a65-bf55-8bff2bc95d7f")
 	)
 	(wire
 		(pts
@@ -7519,16 +7567,6 @@
 			(type default)
 		)
 		(uuid "6a57e31f-2ffb-4e75-a598-6184c8e0cda3")
-	)
-	(wire
-		(pts
-			(xy 232.41 20.32) (xy 232.41 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6cdee7f8-a0e2-4cc0-99a5-9f5aad575f84")
 	)
 	(wire
 		(pts
@@ -7669,16 +7707,6 @@
 			(type solid)
 		)
 		(uuid "7df1ad3f-0ef8-437c-ae45-536218ea0727")
-	)
-	(wire
-		(pts
-			(xy 91.44 110.49) (xy 106.68 110.49)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7e32d0af-a3bc-49b5-89ab-d933d872cd47")
 	)
 	(wire
 		(pts
@@ -7852,7 +7880,7 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 20.32) (xy 227.33 22.86)
+			(xy 227.33 19.05) (xy 227.33 22.86)
 		)
 		(stroke
 			(width 0)
@@ -7982,7 +8010,7 @@
 	)
 	(wire
 		(pts
-			(xy 116.84 119.38) (xy 116.84 120.65)
+			(xy 140.97 109.22) (xy 140.97 110.49)
 		)
 		(stroke
 			(width 0)
@@ -8009,16 +8037,6 @@
 			(type default)
 		)
 		(uuid "99bb55b8-1e08-45ab-b511-0002b6f562c4")
-	)
-	(wire
-		(pts
-			(xy 219.71 19.05) (xy 219.71 20.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9ae66d44-ef28-4a59-9866-2609650b28fa")
 	)
 	(wire
 		(pts
@@ -8049,16 +8067,6 @@
 			(type default)
 		)
 		(uuid "9fcfc877-1e04-4d31-b604-f8c0d0b3abf6")
-	)
-	(wire
-		(pts
-			(xy 232.41 19.05) (xy 232.41 20.32)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9fec3602-3bee-43b0-9c47-1f9abfe40a87")
 	)
 	(wire
 		(pts
@@ -8202,6 +8210,16 @@
 	)
 	(wire
 		(pts
+			(xy 91.44 105.41) (xy 107.95 105.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b0a4ddaa-69c1-4d41-80b2-4c02508564de")
+	)
+	(wire
+		(pts
 			(xy 34.29 127) (xy 34.29 130.81)
 		)
 		(stroke
@@ -8299,16 +8317,6 @@
 			(type solid)
 		)
 		(uuid "ba2a00a5-3a55-4d19-bd16-336e3c5709e1")
-	)
-	(wire
-		(pts
-			(xy 219.71 20.32) (xy 219.71 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ba38a10d-3af9-48a1-97ed-0ecbc1b88f9a")
 	)
 	(wire
 		(pts
@@ -8419,16 +8427,6 @@
 			(type default)
 		)
 		(uuid "cc9c6392-255d-44e6-ac54-8e43109abe36")
-	)
-	(wire
-		(pts
-			(xy 91.44 107.95) (xy 104.14 107.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cccad555-bc5a-4832-b048-3e1aa71c66d3")
 	)
 	(wire
 		(pts
@@ -8562,7 +8560,7 @@
 	)
 	(wire
 		(pts
-			(xy 227.33 20.32) (xy 229.87 20.32)
+			(xy 227.33 19.05) (xy 229.87 19.05)
 		)
 		(stroke
 			(width 0)
@@ -8589,6 +8587,16 @@
 			(type default)
 		)
 		(uuid "e58e100d-863e-4275-b0b7-9eb3fd3a4ab8")
+	)
+	(wire
+		(pts
+			(xy 124.46 100.33) (xy 133.35 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e5cd875a-3f35-4017-9eb4-1e050e45f579")
 	)
 	(wire
 		(pts
@@ -8629,6 +8637,16 @@
 			(type default)
 		)
 		(uuid "ea44b800-f1d7-4b2b-b4c4-1ac543038315")
+	)
+	(wire
+		(pts
+			(xy 232.41 78.74) (xy 234.95 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ea649aa5-0f50-46a7-8195-e18e40be786e")
 	)
 	(wire
 		(pts
@@ -8692,16 +8710,6 @@
 	)
 	(wire
 		(pts
-			(xy 222.25 20.32) (xy 222.25 22.86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f1c842cc-d40b-4671-8645-89b6cf28015d")
-	)
-	(wire
-		(pts
 			(xy 16.51 104.14) (xy 31.75 104.14)
 		)
 		(stroke
@@ -8732,7 +8740,17 @@
 	)
 	(wire
 		(pts
-			(xy 224.79 20.32) (xy 224.79 22.86)
+			(xy 219.71 19.05) (xy 219.71 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f508c8da-f2d0-42a2-b435-b35243031a41")
+	)
+	(wire
+		(pts
+			(xy 224.79 19.05) (xy 224.79 22.86)
 		)
 		(stroke
 			(width 0)
@@ -9040,7 +9058,7 @@
 		(uuid "9e4686de-e5a2-4af0-8047-7efb330c39c9")
 	)
 	(label "led_com_3v3"
-		(at 92.71 110.49 0)
+		(at 92.71 97.79 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9080,7 +9098,7 @@
 		(uuid "b9e0d94b-9e7a-4320-a2f3-25ae4a419498")
 	)
 	(label "brake_mot_3v3"
-		(at 92.71 100.33 0)
+		(at 93.98 102.87 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9100,7 +9118,7 @@
 		(uuid "bbb6d885-9e97-4863-a2d2-978637c5f4d2")
 	)
 	(label "enable_tof_3v3"
-		(at 92.71 105.41 0)
+		(at 93.98 107.95 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9140,7 +9158,7 @@
 		(uuid "c7cf21a2-b376-4ff3-a7b9-ce0856384e51")
 	)
 	(label "reset_tof_3v3"
-		(at 92.71 102.87 0)
+		(at 93.98 105.41 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9150,7 +9168,7 @@
 		(uuid "c9c39f8b-d131-463a-939b-a862df8bd577")
 	)
 	(label "ctc_left_3v3"
-		(at 92.71 95.25 0)
+		(at 92.71 92.71 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9180,7 +9198,7 @@
 		(uuid "d77a9b6c-0c3a-4715-8bec-e28ef188cbc2")
 	)
 	(label "nFAULT_3V3"
-		(at 92.71 97.79 0)
+		(at 92.71 100.33 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9200,7 +9218,7 @@
 		(uuid "edb3bc61-20e4-41ad-b23c-10e474fe7e39")
 	)
 	(label "ctc_right_3v3"
-		(at 92.71 92.71 0)
+		(at 92.71 95.25 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9208,6 +9226,16 @@
 			(justify left bottom)
 		)
 		(uuid "eff2cae9-2646-40aa-a960-eaf306a3b9b7")
+	)
+	(label "led_com_3v3"
+		(at 118.11 100.33 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f50d498b-7c47-4109-b9fc-4317f0a63988")
 	)
 	(label "mot_N"
 		(at 246.38 50.8 0)
@@ -10291,21 +10319,19 @@
 		(dnp no)
 		(uuid "20d3e3c2-4a00-422b-9b33-1a8dbea1c20e")
 		(property "Reference" "U1"
-			(at 234.6041 22.86 0)
+			(at 234.188 26.924 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "DRV8243HQDGQRQ1"
-			(at 233.426 75.184 0)
+			(at 227.33 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "cocotter_ic:HVSSOP-28-1EP_3x7mm_P0.5mm_EP1.65x5mm_ThermalVias"
@@ -10418,6 +10444,9 @@
 		)
 		(pin "23"
 			(uuid "0d962b28-6a36-41b7-afc0-7341c8fffb94")
+		)
+		(pin "EP"
+			(uuid "729e5157-3f16-4531-9b12-9ea0a9c0b16d")
 		)
 		(instances
 			(project ""
@@ -11233,73 +11262,6 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:TestPoint_for_pogo_pin-1mm")
-		(at 106.68 110.49 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "31fbb37b-5f98-4ce0-8b79-3eee2ff56ea2")
-		(property "Reference" "TP1"
-			(at 106.68 115.062 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint"
-			(at 105.4101 115.57 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
-			(at 101.6 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 101.6 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point"
-			(at 106.68 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3850b613-2a33-478b-828d-a33d8c45ce4e")
-		)
-		(instances
-			(project "trimotter"
-				(path "/a60dda8c-8f9a-4dc6-a26e-76becdf78bf7"
-					(reference "TP1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_others:TestPoint_for_pogo_pin-1mm")
 		(at 95.25 123.19 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11367,7 +11329,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_diodes:green_led_1206_reverse_mount")
-		(at 116.84 115.57 90)
+		(at 140.97 105.41 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11376,7 +11338,7 @@
 		(fields_autoplaced yes)
 		(uuid "3a7e4fff-7106-40e5-9543-ce447786b4c6")
 		(property "Reference" "D3"
-			(at 120.65 117.1574 90)
+			(at 144.78 106.9974 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11385,7 +11347,7 @@
 			)
 		)
 		(property "Value" "green, 1206"
-			(at 119.38 115.57 0)
+			(at 143.51 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11394,7 +11356,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_diodes:24-21-1206_reverse_mount"
-			(at 116.84 115.57 0)
+			(at 140.97 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11403,7 +11365,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 116.84 115.57 0)
+			(at 140.97 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11412,7 +11374,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode, Green, Vf=[1.7V; 2.3V]"
-			(at 116.84 115.57 0)
+			(at 140.97 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11421,7 +11383,7 @@
 			)
 		)
 		(property "DIGIKEY_REF" ""
-			(at 116.84 115.57 0)
+			(at 140.97 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11430,7 +11392,7 @@
 			)
 		)
 		(property "MOUSER_REF" ""
-			(at 116.84 115.57 0)
+			(at 140.97 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11439,7 +11401,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2980185"
-			(at 116.84 115.57 0)
+			(at 140.97 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14773,7 +14735,7 @@
 	)
 	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
-		(at 116.84 120.65 0)
+		(at 140.97 110.49 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14782,7 +14744,7 @@
 		(fields_autoplaced yes)
 		(uuid "9a9f4b16-37b2-41b5-a66c-53bbd6fcdf69")
 		(property "Reference" "#PWR28"
-			(at 116.84 127 0)
+			(at 140.97 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14791,7 +14753,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 116.84 125.73 0)
+			(at 140.97 115.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14799,7 +14761,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 116.84 120.65 0)
+			(at 140.97 110.49 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14808,7 +14770,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 116.84 120.65 0)
+			(at 140.97 110.49 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14817,7 +14779,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 116.84 120.65 0)
+			(at 140.97 110.49 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14924,7 +14886,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_1k_0603_1%")
-		(at 113.03 110.49 90)
+		(at 137.16 100.33 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14932,7 +14894,7 @@
 		(dnp no)
 		(uuid "9d634fb0-2e11-4cc7-9ebb-056855d13dee")
 		(property "Reference" "R18"
-			(at 113.03 110.49 90)
+			(at 137.16 100.33 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14940,7 +14902,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 113.284 112.522 90)
+			(at 137.414 102.362 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14948,7 +14910,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 113.03 112.268 90)
+			(at 137.16 102.108 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14957,7 +14919,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 113.03 110.49 0)
+			(at 137.16 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14966,7 +14928,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 113.03 110.49 0)
+			(at 137.16 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14975,7 +14937,7 @@
 			)
 		)
 		(property "Specification" "10k 0603 1% 100mW"
-			(at 113.03 110.49 0)
+			(at 137.16 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14984,7 +14946,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 113.03 110.49 0)
+			(at 137.16 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14993,7 +14955,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2991540"
-			(at 113.03 110.49 0)
+			(at 137.16 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16074,73 +16036,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_others:TestPoint_for_pogo_pin-1mm")
-		(at 104.14 107.95 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "b1e85ce1-714e-47e0-b398-be9361dc2f17")
-		(property "Reference" "TP2"
-			(at 108.712 107.95 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "TestPoint"
-			(at 109.22 109.2199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
-			(at 104.14 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 104.14 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "test point"
-			(at 104.14 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "00f4e265-b51e-4677-b625-f1bbf48b4b88")
-		)
-		(instances
-			(project "trimotter"
-				(path "/a60dda8c-8f9a-4dc6-a26e-76becdf78bf7"
-					(reference "TP2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_capacitors:C_100nF_50V_0603")
 		(at 194.31 105.41 0)
 		(unit 1)
@@ -16223,6 +16118,73 @@
 			(project "trimotter"
 				(path "/a60dda8c-8f9a-4dc6-a26e-76becdf78bf7"
 					(reference "C2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint_for_pogo_pin-1mm")
+		(at 124.46 100.33 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "b3d992f7-ee6e-4f88-b241-c5acc1c3046f")
+		(property "Reference" "TP1"
+			(at 124.46 104.902 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 123.1901 105.41 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 119.38 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 119.38 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 124.46 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4c1dfa2c-7658-407d-8f5b-a95cdb4969c2")
+		)
+		(instances
+			(project "trimotter"
+				(path "/a60dda8c-8f9a-4dc6-a26e-76becdf78bf7"
+					(reference "TP1")
 					(unit 1)
 				)
 			)
@@ -17103,6 +17065,73 @@
 			(project "trimotter"
 				(path "/a60dda8c-8f9a-4dc6-a26e-76becdf78bf7"
 					(reference "#PWR11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint_for_pogo_pin-1mm")
+		(at 95.25 110.49 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "cf515565-6b17-4c7e-8ec5-b3aeb0421fe5")
+		(property "Reference" "TP2"
+			(at 99.822 110.49 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 100.33 111.7599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 95.25 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 95.25 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 95.25 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9b57dd97-85cf-4542-bd98-e34c6d40eaa6")
+		)
+		(instances
+			(project "trimotter"
+				(path "/a60dda8c-8f9a-4dc6-a26e-76becdf78bf7"
+					(reference "TP2")
 					(unit 1)
 				)
 			)
