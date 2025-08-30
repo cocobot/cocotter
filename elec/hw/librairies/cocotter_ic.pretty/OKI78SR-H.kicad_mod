@@ -102,40 +102,28 @@
 		)
 	)
 	(pad "1" thru_hole circle
-		(at -2.54 0)
+		(at 2.54 0)
 		(size 2 2)
 		(drill 1.1)
-		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
-			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
-			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
-			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
-		)
+		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "3edfdbdd-7483-47e4-ba68-b20a4d1a92e8")
+		(uuid "ee0f133b-b677-4dae-90cf-91815af6f15d")
 	)
 	(pad "2" thru_hole circle
 		(at 0 0)
 		(size 2 2)
 		(drill 1.1)
-		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
-			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
-			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
-			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
-		)
+		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
 		(uuid "7af93d0c-9fd4-4da5-afc9-0d82dcf36933")
 	)
 	(pad "3" thru_hole circle
-		(at 2.54 0)
+		(at -2.54 0)
 		(size 2 2)
 		(drill 1.1)
-		(layers "*.Cu" "*.Mask" "In3.Cu" "In4.Cu" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu"
-			"In9.Cu" "In10.Cu" "In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu"
-			"In17.Cu" "In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu"
-			"In24.Cu" "In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
-		)
+		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "ee0f133b-b677-4dae-90cf-91815af6f15d")
+		(uuid "3edfdbdd-7483-47e4-ba68-b20a4d1a92e8")
 	)
 	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_ic.pretty/3d/OKI-78SR-51_5-W36H-C_MUR.step"
 		(offset
