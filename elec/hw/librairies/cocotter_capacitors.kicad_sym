@@ -926,7 +926,7 @@
 			)
 		)
 	)
-	(symbol "C_22µF_16V_1206_X5R"
+	(symbol "C_22µF_25V_1206_X7R"
 		(pin_numbers hide)
 		(pin_names
 			(offset 0.254)
@@ -943,7 +943,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22µF 16V"
+		(property "Value" "22µF 25V"
 			(at 0.635 -2.54 0)
 			(effects
 				(font
@@ -979,7 +979,16 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 25V X7R 1206 "
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C2918511"
 			(at 0 0 0)
 			(effects
 				(font
@@ -1006,7 +1015,7 @@
 				(hide yes)
 			)
 		)
-		(symbol "C_22µF_16V_1206_X5R_0_1"
+		(symbol "C_22µF_25V_1206_X7R_0_1"
 			(polyline
 				(pts
 					(xy -2.032 -0.762) (xy 2.032 -0.762)
@@ -1032,7 +1041,7 @@
 				)
 			)
 		)
-		(symbol "C_22µF_16V_1206_X5R_1_1"
+		(symbol "C_22µF_25V_1206_X7R_1_1"
 			(pin passive line
 				(at 0 3.81 270)
 				(length 2.794)

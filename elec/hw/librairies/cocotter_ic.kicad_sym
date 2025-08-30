@@ -1378,7 +1378,7 @@
 			)
 		)
 		(property "Value" "DRV8243HQDGQRQ1"
-			(at 0 1.27 0)
+			(at 17.78 -24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1405,6 +1405,15 @@
 		)
 		(property "Description" ""
 			(at 0 1.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C5250151"
+			(at 0 0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11981,7 +11990,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" ""
+		(property "JLCPCB Part #" "C15741"
 			(at 0 0 0)
 			(effects
 				(font
@@ -13907,7 +13916,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLC" "C118837"
+		(property "JLCPCB Part #" "C118837"
 			(at 0 0 0)
 			(effects
 				(font

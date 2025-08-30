@@ -1298,6 +1298,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB Part #" "C2843785"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(property "ki_keywords" "RGB LED NeoPixel addressable"
 			(at 0 0 0)
 			(effects

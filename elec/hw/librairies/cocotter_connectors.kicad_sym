@@ -212,6 +212,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB Part #" "C17473329"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(property "ki_keywords" "1x3POS micro Mate'n LOK, through hole, vertical"
 			(at 0 0 0)
 			(effects
@@ -402,6 +411,15 @@
 		)
 		(property "Description" "1x4POS micro Mate'n LOK, through hole, vertical"
 			(at -3.81 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C17631963"
+			(at 0 0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -887,6 +905,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB Part #" "C239446"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(symbol "2-1445055-2_1_0"
 			(circle
 				(center -5.08 -1.27)
@@ -1039,6 +1066,15 @@
 		)
 		(property "Description" "1x3POS micro Mate'n LOK, through hole, right angle"
 			(at -3.81 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C239447"
+			(at 0 0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1466,6 +1502,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB Part #" "C505040"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(symbol "22053031_1_1"
 			(rectangle
 				(start -1.6764 -2.413)
@@ -1631,6 +1676,15 @@
 			)
 		)
 		(property "Description" "mini KK, 2.54mm pitch, 5ways, right angle"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C586992"
 			(at 0 0 0)
 			(effects
 				(font
@@ -1882,6 +1936,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB Part #" "C563736"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(symbol "22053061_1_0"
 			(circle
 				(center -5.08 -6.35)
@@ -2107,6 +2170,148 @@
 			)
 		)
 	)
+	(symbol "22272021"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "J"
+			(at -5.842 3.556 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22272021"
+			(at -5.588 -6.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:22272021"
+			(at -3.302 -11.938 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.molex.com/en-us/products/part-detail/22272021"
+			(at 0 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "mini kk 2 voies vertical"
+			(at 0 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C293316"
+			(at -4.318 -9.144 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "mini kk, vertical , 2 pos, 2.54mm pitch, 2.5A"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "22272021_1_0"
+			(polyline
+				(pts
+					(xy -5.08 -2.54) (xy -3.81 -2.54)
+				)
+				(stroke
+					(width 0.6096)
+					(type solid)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -5.08 0) (xy -3.81 0)
+				)
+				(stroke
+					(width 0.6096)
+					(type solid)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "22272021_1_1"
+			(rectangle
+				(start -6.35 2.54)
+				(end -1.27 -5.08)
+				(stroke
+					(width 0)
+					(type default)
+					(color 149 135 39 1)
+				)
+				(fill
+					(type background)
+				)
+			)
+			(pin unspecified line
+				(at 0 -2.54 180)
+				(length 5.08)
+				(name "1"
+					(effects
+						(font
+							(size 0 0)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin unspecified line
+				(at 0 0 180)
+				(length 5.08)
+				(name "2"
+					(effects
+						(font
+							(size 0 0)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+	)
 	(symbol "22272031"
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2147,6 +2352,15 @@
 		)
 		(property "Description" "mini kk 3 voies vertical"
 			(at 0 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C471416"
+			(at -4.318 -9.144 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2310,6 +2524,15 @@
 		)
 		(property "Description" "mini kk 4 voies vertical"
 			(at 0 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C504991"
+			(at 0 0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2503,6 +2726,15 @@
 		)
 		(property "Description" "mini kk 5 voies vertical"
 			(at 0 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C585785"
+			(at 0 0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2726,6 +2958,15 @@
 		)
 		(property "Description" "mini kk 6 voies vertical"
 			(at 0 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C504992"
+			(at 0 0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3520,6 +3761,14 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB Part #" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property "ki_keywords" "2x2POS micro Mate'n LOK, through hole, right angle"
 			(at 0 0 0)
 			(effects
@@ -3753,6 +4002,15 @@
 			)
 		)
 		(property "Description" "2x3POS MICRO MNL ASSY, R/A HDR  "
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C532085"
 			(at 0 0 0)
 			(effects
 				(font
@@ -4044,7 +4302,7 @@
 			)
 		)
 		(property "Value" "3-794630-4"
-			(at 0 0 0)
+			(at 0.254 -3.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4070,6 +4328,15 @@
 			)
 		)
 		(property "Description" "2x2POS MICRO MNL ASSY, vertical HDR  "
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C5164688"
 			(at 0 0 0)
 			(effects
 				(font
@@ -4311,6 +4578,15 @@
 			)
 		)
 		(property "Description" "2x3POS MICRO MNL ASSY, vertical HDR  "
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C305795"
 			(at 0 0 0)
 			(effects
 				(font
@@ -7445,6 +7721,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C586992"
 			(at 0 0 0)
 			(effects
 				(font
@@ -13084,7 +13369,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLC" "C7450621"
+		(property "JLCPCB Part #" "C7450621"
 			(at 0 1.27 0)
 			(effects
 				(font
@@ -15424,15 +15709,15 @@
 		(in_bom yes)
 		(on_board yes)
 		(property "Reference" "J"
-			(at -2.032 -41.656 0)
+			(at -10.16 22.606 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" ""
-			(at 0 7.62 0)
+		(property "Value" "1-188275-6"
+			(at -8.128 -22.606 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15459,6 +15744,15 @@
 		)
 		(property "Description" "micromatch 16 voies, cms , 1-188275-6"
 			(at 0 7.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C720217"
+			(at -8.128 -24.638 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16010,6 +16304,15 @@
 				(hide yes)
 			)
 		)
+		(property "JLCPCB Part #" "C293316"
+			(at -6.096 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(symbol "unioc_pw_in_1_0"
 			(polyline
 				(pts
@@ -16099,8 +16402,8 @@
 				)
 			)
 		)
-		(property "Value" ""
-			(at 0 -8.89 0)
+		(property "Value" "188275-4"
+			(at -6.604 -6.096 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16125,8 +16428,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "micromatch 4 voies, cms , 188275-4"
 			(at 0 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C720206"
+			(at -7.366 -6.604 0)
 			(effects
 				(font
 					(size 1.27 1.27)
