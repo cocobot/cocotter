@@ -360,6 +360,15 @@
 					(hide yes)
 				)
 			)
+			(property "JLCPCB Part #" "C239446"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
 			(symbol "2-1445055-2_1_0"
 				(circle
 					(center -5.08 -1.27)
@@ -512,6 +521,15 @@
 			)
 			(property "Description" "1x3POS micro Mate'n LOK, through hole, right angle"
 				(at -3.81 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C239447"
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1271,6 +1289,15 @@
 					(hide yes)
 				)
 			)
+			(property "JLCPCB Part #" "C586992"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
 			(property "ki_keywords" "mini KK 254, right angle"
 				(at 0 0 0)
 				(effects
@@ -1481,7 +1508,7 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "J"
-				(at -2.032 -41.656 0)
+				(at -4.318 -22.86 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1516,6 +1543,15 @@
 			)
 			(property "Description" "micromatch 16 voies, cms , 1-188275-6"
 				(at 0 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C720217"
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -2405,7 +2441,7 @@
 				)
 			)
 			(property "Value" "DRV8243HQDGQRQ1"
-				(at 0 1.27 0)
+				(at 17.78 -24.13 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -2432,6 +2468,15 @@
 			)
 			(property "Description" ""
 				(at 0 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C5250151"
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -3550,7 +3595,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" ""
+			(property "JLCPCB Part #" "C15741"
 				(at 0 0 0)
 				(effects
 					(font
@@ -6325,12 +6370,6 @@
 		(uuid "aee371cd-bbff-47c9-8d1d-1edb5ad7e6ce")
 	)
 	(junction
-		(at 124.46 100.33)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "afaa96f6-3831-4050-8678-d4fe81e2b6f9")
-	)
-	(junction
 		(at 257.81 30.48)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6419,6 +6458,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e8f220ea-51ef-47da-bcb3-3b0f9413be6a")
+	)
+	(junction
+		(at 124.46 97.79)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e97fc8dd-7e72-46c0-af66-a8e1ea51f584")
 	)
 	(junction
 		(at 44.45 128.27)
@@ -6627,16 +6672,6 @@
 			(type default)
 		)
 		(uuid "0eab39fc-d25e-4c61-8a33-2f0b60ee396d")
-	)
-	(wire
-		(pts
-			(xy 116.84 100.33) (xy 124.46 100.33)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0ecf0b7d-c790-4004-9a1b-380d4544f6c4")
 	)
 	(wire
 		(pts
@@ -7480,7 +7515,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 97.79) (xy 107.95 97.79)
+			(xy 91.44 97.79) (xy 124.46 97.79)
 		)
 		(stroke
 			(width 0)
@@ -7540,7 +7575,7 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 100.33) (xy 140.97 101.6)
+			(xy 140.97 97.79) (xy 140.97 101.6)
 		)
 		(stroke
 			(width 0)
@@ -7650,7 +7685,7 @@
 	)
 	(wire
 		(pts
-			(xy 219.71 82.55) (xy 255.27 82.55)
+			(xy 219.71 82.55) (xy 256.54 82.55)
 		)
 		(stroke
 			(width 0)
@@ -8060,7 +8095,7 @@
 	)
 	(wire
 		(pts
-			(xy 242.57 66.04) (xy 255.27 66.04)
+			(xy 242.57 66.04) (xy 256.54 66.04)
 		)
 		(stroke
 			(width 0)
@@ -8070,7 +8105,7 @@
 	)
 	(wire
 		(pts
-			(xy 255.27 82.55) (xy 255.27 78.74)
+			(xy 256.54 82.55) (xy 256.54 78.74)
 		)
 		(stroke
 			(width 0)
@@ -8160,7 +8195,7 @@
 	)
 	(wire
 		(pts
-			(xy 255.27 66.04) (xy 255.27 71.12)
+			(xy 256.54 66.04) (xy 256.54 71.12)
 		)
 		(stroke
 			(width 0)
@@ -8590,7 +8625,7 @@
 	)
 	(wire
 		(pts
-			(xy 124.46 100.33) (xy 133.35 100.33)
+			(xy 124.46 97.79) (xy 133.35 97.79)
 		)
 		(stroke
 			(width 0)
@@ -9226,16 +9261,6 @@
 			(justify left bottom)
 		)
 		(uuid "eff2cae9-2646-40aa-a960-eaf306a3b9b7")
-	)
-	(label "led_com_3v3"
-		(at 118.11 100.33 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "f50d498b-7c47-4109-b9fc-4317f0a63988")
 	)
 	(label "mot_N"
 		(at 246.38 50.8 0)
@@ -10327,7 +10352,7 @@
 			)
 		)
 		(property "Value" "DRV8243HQDGQRQ1"
-			(at 227.33 49.53 0)
+			(at 245.11 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10354,6 +10379,15 @@
 		)
 		(property "Description" ""
 			(at 227.33 49.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C5250151"
+			(at 227.33 50.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10841,7 +10875,7 @@
 		(at 233.68 156.21 0)
 		(unit 1)
 		(exclude_from_sim yes)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
@@ -12335,7 +12369,7 @@
 		(dnp no)
 		(uuid "51d42872-b648-45b6-9308-556bf874d392")
 		(property "Reference" "J2"
-			(at 274.066 120.396 0)
+			(at 280.162 120.904 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12343,7 +12377,7 @@
 			)
 		)
 		(property "Value" "22053051"
-			(at 276.86 135.89 0)
+			(at 276.098 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12369,6 +12403,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 269.24 128.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C586992"
 			(at 269.24 128.27 0)
 			(effects
 				(font
@@ -12634,7 +12677,7 @@
 		(at 260.35 156.21 0)
 		(unit 1)
 		(exclude_from_sim yes)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
@@ -13132,7 +13175,7 @@
 		(at 180.34 156.21 0)
 		(unit 1)
 		(exclude_from_sim yes)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
@@ -13847,21 +13890,19 @@
 		(dnp no)
 		(uuid "83ea2aea-0f82-4557-a2a4-48d28cea1bce")
 		(property "Reference" "J3"
-			(at 258.064 41.656 0)
+			(at 254 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
 		(property "Value" "2-1445055-2"
-			(at 255.524 49.784 0)
+			(at 258.572 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
 		(property "Footprint" "cocotter_connectors:2-1445055-2"
@@ -13883,6 +13924,15 @@
 			)
 		)
 		(property "Description" "1x2 POS micro Mate'n LOK, through hole, right angle"
+			(at 254 45.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C239446"
 			(at 254 45.72 0)
 			(effects
 				(font
@@ -14494,16 +14544,15 @@
 		(dnp no)
 		(uuid "97ae2da6-6ab4-4230-b1ad-31cb9e757574")
 		(property "Reference" "U2"
-			(at 190.754 115.57 0)
+			(at 180.34 116.078 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "SN74LVC2T45DCU"
-			(at 187.96 138.43 0)
+			(at 188.214 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14538,7 +14587,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" ""
+		(property "JLCPCB Part #" "C15741"
 			(at 186.69 129.54 0)
 			(effects
 				(font
@@ -14886,7 +14935,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_1k_0603_1%")
-		(at 137.16 100.33 90)
+		(at 137.16 97.79 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14894,7 +14943,7 @@
 		(dnp no)
 		(uuid "9d634fb0-2e11-4cc7-9ebb-056855d13dee")
 		(property "Reference" "R18"
-			(at 137.16 100.33 90)
+			(at 137.16 97.79 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14902,7 +14951,7 @@
 			)
 		)
 		(property "Value" "1k 1%"
-			(at 137.414 102.362 90)
+			(at 137.414 99.822 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14910,7 +14959,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 137.16 102.108 90)
+			(at 137.16 99.568 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14919,7 +14968,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 137.16 100.33 0)
+			(at 137.16 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14928,7 +14977,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 137.16 100.33 0)
+			(at 137.16 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14937,7 +14986,7 @@
 			)
 		)
 		(property "Specification" "10k 0603 1% 100mW"
-			(at 137.16 100.33 0)
+			(at 137.16 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14946,7 +14995,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 137.16 100.33 0)
+			(at 137.16 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14955,7 +15004,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2991540"
-			(at 137.16 100.33 0)
+			(at 137.16 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16125,7 +16174,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:TestPoint_for_pogo_pin-1mm")
-		(at 124.46 100.33 180)
+		(at 124.46 97.79 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16133,7 +16182,7 @@
 		(dnp no)
 		(uuid "b3d992f7-ee6e-4f88-b241-c5acc1c3046f")
 		(property "Reference" "TP1"
-			(at 124.46 104.902 90)
+			(at 124.46 102.362 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16142,7 +16191,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 123.1901 105.41 90)
+			(at 123.1901 102.87 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16152,7 +16201,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
-			(at 119.38 100.33 0)
+			(at 119.38 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16161,7 +16210,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 119.38 100.33 0)
+			(at 119.38 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16170,7 +16219,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 124.46 100.33 0)
+			(at 124.46 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18000,7 +18049,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_1k3_0603_1%")
-		(at 255.27 74.93 0)
+		(at 256.54 74.93 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -18009,7 +18058,7 @@
 		(fields_autoplaced yes)
 		(uuid "eb0decf4-f6de-46d4-a204-19cf07b561b9")
 		(property "Reference" "R5"
-			(at 257.81 73.6599 0)
+			(at 259.08 73.6599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18018,7 +18067,7 @@
 			)
 		)
 		(property "Value" "1k3 1%"
-			(at 257.81 76.1999 0)
+			(at 259.08 76.1999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18027,7 +18076,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 253.492 74.93 90)
+			(at 254.762 74.93 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18036,7 +18085,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 255.27 74.93 0)
+			(at 256.54 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18045,7 +18094,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 255.27 74.93 0)
+			(at 256.54 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18054,7 +18103,7 @@
 			)
 		)
 		(property "Specification" "1k3 0603 1% 100mW"
-			(at 255.27 74.93 0)
+			(at 256.54 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18063,7 +18112,7 @@
 			)
 		)
 		(property "mouser" ""
-			(at 255.27 74.93 0)
+			(at 256.54 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18072,7 +18121,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C22767"
-			(at 255.27 74.93 0)
+			(at 256.54 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18253,7 +18302,7 @@
 		(at 207.01 156.21 0)
 		(unit 1)
 		(exclude_from_sim yes)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
@@ -18361,6 +18410,15 @@
 		)
 		(property "Description" "micromatch 16 voies, cms , 1-188275-6"
 			(at 29.21 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C720217"
+			(at 29.21 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18502,21 +18560,19 @@
 		(dnp no)
 		(uuid "f8989ab1-b491-4f8f-9cc6-85345cf0009b")
 		(property "Reference" "J4"
-			(at 118.364 41.402 0)
+			(at 117.094 51.816 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
 		(property "Value" "2-1445055-3"
-			(at 121.666 52.578 0)
+			(at 117.602 41.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
 		(property "Footprint" "cocotter_connectors:2-1445055-3"
@@ -18539,6 +18595,15 @@
 		)
 		(property "Description" "1x3POS micro Mate'n LOK, through hole, right angle"
 			(at 115.57 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C239447"
+			(at 119.38 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)

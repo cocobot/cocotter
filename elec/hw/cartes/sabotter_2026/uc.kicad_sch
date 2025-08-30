@@ -360,7 +360,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLC" "C7450621"
+			(property "JLCPCB Part #" "C7450621"
 				(at 0 1.27 0)
 				(effects
 					(font
@@ -5620,6 +5620,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 39.37 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "9d2a813d-cac2-4bb9-b55e-2cd9a9e7733b")
 		)
@@ -5691,6 +5700,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C3013944"
+			(at 175.26 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 175.26 96.52 0)
 			(effects
 				(font
@@ -5977,6 +5995,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 220.98 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "d82c980a-a242-49dd-9465-bee75d84da08")
 		)
@@ -6139,6 +6166,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 229.87 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "3cf6c20b-f403-463b-b786-ebf946308a4b")
 		)
@@ -6236,6 +6272,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 52.07 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "5d590fa6-d0c3-48fd-80be-2708196313a6")
 		)
@@ -6298,6 +6343,15 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 30.48 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 30.48 104.14 0)
 			(effects
 				(font
@@ -6391,6 +6445,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 80.01 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "e4416991-cd2c-4a21-821e-dd0065da5b50")
 		)
@@ -6453,6 +6516,15 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 53.34 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 53.34 116.84 0)
 			(effects
 				(font
@@ -6544,6 +6616,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
+			(at 128.27 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 128.27 86.36 0)
 			(effects
 				(font
@@ -6715,6 +6796,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 82.55 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "98f49e55-75d6-4781-ba67-f7eac353addc")
 		)
@@ -6812,6 +6902,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 66.04 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "f5644a00-9858-4a44-ae0c-d3f0a3f83a13")
 		)
@@ -6898,6 +6997,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
+			(at 128.27 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 128.27 81.28 0)
 			(effects
 				(font
@@ -7003,6 +7111,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 241.3 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "c798b5c9-8717-443f-8cc8-880c91b7cdeb")
 		)
@@ -7090,6 +7207,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
+			(at 109.22 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 109.22 184.15 0)
 			(effects
 				(font
@@ -7241,6 +7367,15 @@
 				)
 			)
 		)
+		(property "MOUSER" ""
+			(at 146.05 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "62f3b2c4-91b5-4154-96c0-2fb04927477e")
 		)
@@ -7353,6 +7488,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 66.04 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "f1095f1c-d495-44cb-9d9c-e50a2907006a")
 		)
@@ -7442,6 +7586,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2991540"
+			(at 39.37 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 39.37 177.8 0)
 			(effects
 				(font
@@ -7544,6 +7697,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 128.27 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "22ee6826-48cc-4ca8-8d66-bed6113defaf")
 		)
@@ -7631,6 +7793,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C25803"
+			(at 96.52 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 96.52 130.81 0)
 			(effects
 				(font
@@ -7799,6 +7970,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 128.27 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "5b15d669-c2ba-4ced-8787-734b1b5357f4")
 		)
@@ -7885,6 +8065,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
+			(at 67.31 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 67.31 143.51 0)
 			(effects
 				(font
@@ -8036,6 +8225,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 62.23 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "B"
 			(uuid "246bc1aa-f2e8-4559-8af2-7400af8ba8d1")
 		)
@@ -8133,6 +8331,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 39.37 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "98ccb915-3ab1-43ee-8cb7-3e1f2b74e2e1")
 		)
@@ -8221,6 +8428,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 208.28 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "086b93d5-b8c0-4029-9dab-201c1dc5df44")
 		)
@@ -8292,6 +8508,15 @@
 		)
 		(property "JLCPCB Part #" "C5370250"
 			(at 66.04 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
+			(at 67.31 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8453,6 +8678,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 186.69 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "6a3d9413-b2c2-4fcd-ba88-39049f0977d1")
 		)
@@ -8551,6 +8785,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 39.37 185.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "A"
 			(uuid "c37b49ac-dbaf-479f-a6f9-85d353447357")
 		)
@@ -8640,6 +8883,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C25803"
+			(at 96.52 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 96.52 148.59 0)
 			(effects
 				(font
@@ -8743,6 +8995,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 120.65 168.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "8ca611b8-76f4-454c-8158-2d6bb0327dfc")
 		)
@@ -8811,8 +9072,17 @@
 				(hide yes)
 			)
 		)
-		(property "JLC" "C7450621"
+		(property "JLCPCB Part #" "C7450621"
 			(at 273.05 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
+			(at 273.05 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9026,6 +9296,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 120.65 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "39c619ba-7558-4f35-bfac-cd5174d41898")
 		)
@@ -9123,6 +9402,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 78.74 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "547b58e3-f00b-4e4c-8187-5ce90b435300")
 		)
@@ -9210,6 +9498,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
+			(at 120.65 176.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 120.65 176.53 0)
 			(effects
 				(font
@@ -9578,6 +9875,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 231.14 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "d9d300e6-4bb6-43ec-a93c-f464a637832f")
 		)
@@ -9706,6 +10012,15 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 53.34 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 53.34 119.38 0)
 			(effects
 				(font
@@ -9871,6 +10186,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 128.27 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "578acb12-78ba-48a4-b931-2eb32e3a8e3b")
 		)
@@ -10023,6 +10347,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
+			(at 109.22 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 109.22 181.61 0)
 			(effects
 				(font
@@ -10193,6 +10526,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 78.74 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "be12a259-480b-48e2-881a-d99866f85c68")
 		)
@@ -10279,6 +10621,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C431718"
+			(at 128.27 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 128.27 88.9 0)
 			(effects
 				(font
@@ -10449,6 +10800,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 218.44 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "0d060e00-cf29-41dc-be9b-b652021f88d2")
 		)
@@ -10511,6 +10871,15 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 52.07 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 52.07 101.6 0)
 			(effects
 				(font
@@ -10611,6 +10980,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 220.98 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "0af56648-0db6-4577-9be4-ec8cdcae779d")
 		)
@@ -10699,6 +11077,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2991540"
+			(at 52.07 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 52.07 96.52 0)
 			(effects
 				(font
@@ -10832,6 +11219,15 @@
 			)
 		)
 		(property "Description" "test point"
+			(at 100.33 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 100.33 68.58 0)
 			(effects
 				(font

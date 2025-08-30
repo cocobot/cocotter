@@ -313,7 +313,7 @@
 				)
 			)
 		)
-		(symbol "cocotter_capacitors:C_22µF_16V_1206_X5R"
+		(symbol "cocotter_capacitors:C_22µF_25V_1206_X7R"
 			(pin_numbers hide)
 			(pin_names
 				(offset 0.254)
@@ -330,7 +330,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "22µF 16V"
+			(property "Value" "22µF 25V"
 				(at 0.635 -2.54 0)
 				(effects
 					(font
@@ -366,7 +366,16 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "10µF 16V X7R 0805 "
+			(property "Specification" "22µF 25V X7R 1206 "
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C2918511"
 				(at 0 0 0)
 				(effects
 					(font
@@ -393,7 +402,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "C_22µF_16V_1206_X5R_0_1"
+			(symbol "C_22µF_25V_1206_X7R_0_1"
 				(polyline
 					(pts
 						(xy -2.032 -0.762) (xy 2.032 -0.762)
@@ -419,7 +428,7 @@
 					)
 				)
 			)
-			(symbol "C_22µF_16V_1206_X5R_1_1"
+			(symbol "C_22µF_25V_1206_X7R_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 2.794)
@@ -498,6 +507,15 @@
 			)
 			(property "Description" "mini kk 2 voies vertical"
 				(at 0 -8.89 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C293316"
+				(at -6.096 -8.89 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -3160,6 +3178,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 109.22 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "f130be5a-833e-4a9e-ae91-a266c654bb97")
 		)
@@ -3240,6 +3267,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C15850"
+			(at 128.27 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 128.27 63.5 0)
 			(effects
 				(font
@@ -3467,6 +3503,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 128.27 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "d9031a1f-19a4-41b7-8365-956e2ea80d85")
 		)
@@ -3483,7 +3528,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_22µF_16V_1206_X5R")
+		(lib_id "cocotter_capacitors:C_22µF_25V_1206_X7R")
 		(at 179.07 29.21 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3501,7 +3546,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22µF 16V"
+		(property "Value" "22µF 25V"
 			(at 182.88 30.4799 0)
 			(effects
 				(font
@@ -3537,7 +3582,25 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 25V X7R 1206 "
+			(at 179.07 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C2918511"
+			(at 179.07 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 179.07 29.21 0)
 			(effects
 				(font
@@ -3616,6 +3679,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 269.24 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "22872e6d-2949-4b49-a52c-b5864d8ce071")
 		)
@@ -3682,6 +3754,15 @@
 			)
 		)
 		(property "JLCPCB Part #" ""
+			(at 165.1 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 165.1 25.4 0)
 			(effects
 				(font
@@ -3774,7 +3855,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_22µF_16V_1206_X5R")
+		(lib_id "cocotter_capacitors:C_22µF_25V_1206_X7R")
 		(at 179.07 62.23 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3792,7 +3873,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22µF 16V"
+		(property "Value" "22µF 25V"
 			(at 182.88 63.4999 0)
 			(effects
 				(font
@@ -3828,7 +3909,25 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 25V X7R 1206 "
+			(at 179.07 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C2918511"
+			(at 179.07 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 179.07 62.23 0)
 			(effects
 				(font
@@ -3962,6 +4061,24 @@
 		)
 		(property "Description" "mini kk 2 voies vertical"
 			(at 73.66 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C293316"
+			(at 67.564 34.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
+			(at 73.66 25.4 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4188,6 +4305,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 137.16 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "ea490d5d-9dcf-481c-b2b6-504a2f9a7abb")
 		)
@@ -4250,6 +4376,15 @@
 			)
 		)
 		(property "Description" "Mounting Hole with connection"
+			(at 254 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 254 152.4 0)
 			(effects
 				(font
@@ -4344,6 +4479,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C25803"
+			(at 91.44 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 91.44 67.31 0)
 			(effects
 				(font
@@ -4449,6 +4593,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 123.19 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "d9cd928e-8dc0-49a8-8aaf-a1c5ae359805")
 		)
@@ -4546,6 +4699,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 100.33 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "cb73cc24-39d9-4b5d-af50-3546b65698e8")
 		)
@@ -4608,6 +4770,15 @@
 			)
 		)
 		(property "Description" "Mounting Hole with connection"
+			(at 246.38 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 246.38 152.4 0)
 			(effects
 				(font
@@ -4775,6 +4946,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 95.25 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "C"
 			(uuid "197beb69-12bd-47d5-836d-b2d09841d50c")
 		)
@@ -4844,6 +5024,15 @@
 			)
 		)
 		(property "JLCPCB Part #" ""
+			(at 165.1 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 165.1 58.42 0)
 			(effects
 				(font
@@ -4990,6 +5179,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 261.62 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "fef211e3-fe89-4d4f-a2c2-7e3d67cd9795")
 		)
@@ -5084,6 +5282,15 @@
 				(hide yes)
 			)
 		)
+		(property "MOUSER" ""
+			(at 82.55 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "f74ab9df-d7bd-4bae-9b57-310593bb36e9")
 		)
@@ -5164,6 +5371,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C15850"
+			(at 144.78 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 144.78 30.48 0)
 			(effects
 				(font
@@ -5317,6 +5533,15 @@
 				(justify left)
 			)
 		)
+		(property "MOUSER" ""
+			(at 151.13 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "4cd7c975-da8b-49d2-81c4-0a44ac93468c")
 		)
@@ -5385,6 +5610,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C727076"
+			(at 86.36 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 86.36 25.4 0)
 			(effects
 				(font
@@ -5473,6 +5707,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C15850"
+			(at 144.78 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 144.78 63.5 0)
 			(effects
 				(font
@@ -5570,6 +5813,15 @@
 			)
 		)
 		(property "JLCPCB Part #" "C25803"
+			(at 123.19 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
 			(at 123.19 85.09 0)
 			(effects
 				(font
