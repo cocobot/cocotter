@@ -3409,7 +3409,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "untitled.kicad_sch"
+		(property "Sheetfile" "pw_channel.kicad_sch"
 			(at 134.62 46.3046 0)
 			(effects
 				(font
