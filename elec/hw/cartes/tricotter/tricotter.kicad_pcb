@@ -17686,6 +17686,18 @@
 			)
 		)
 	)
+	(gr_text "TRIC'OTTER 2026"
+		(at 127.5 30 0)
+		(layer "F.SilkS" knockout)
+		(uuid "cbd02e66-8f61-4672-94b5-282ca567f94d")
+		(effects
+			(font
+				(size 3 2.5)
+				(thickness 0.5)
+				(bold yes)
+			)
+		)
+	)
 	(gr_text "BATT"
 		(at 144.25 123.25 0)
 		(layer "F.SilkS" knockout)
