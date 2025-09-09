@@ -473,7 +473,16 @@
     }
   },
   "libraries": {
-    "pinned_footprint_libs": [],
+    "pinned_footprint_libs": [
+      "cocotter_capacitors",
+      "cocotter_connectors",
+      "cocotter_diodes",
+      "cocotter_ic",
+      "cocotter_inductors",
+      "cocotter_others",
+      "cocotter_resistor",
+      "cocotter_transistors"
+    ],
     "pinned_symbol_libs": []
   },
   "meta": {
