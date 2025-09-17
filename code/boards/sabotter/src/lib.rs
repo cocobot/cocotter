@@ -1,6 +1,7 @@
-use esp_idf_svc::hal::{
+use esp_idf_svc::{bt::Ble, hal::{
     adc::{oneshot::{AdcChannelDriver, AdcDriver}, ADC1}, can::{CanConfig, CanDriver}, gpio::*, i2c::{I2cConfig, I2cDriver}, ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver}, prelude::*, spi::{config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver}, uart::{UartConfig, UartDriver}, units::Hertz
-};
+}};
+use esp_idf_svc::{nvs::EspDefaultNvsPartition, bt::BtDriver};
 use embedded_hal_bus::i2c::MutexDevice;
 use vlx::{VLX, Config, SensorType};
 use tca6408::TCA6408;
@@ -41,6 +42,10 @@ pub struct Motor {
     pub encoder: Encoder<'static>,
 }
 
+// Bluetooth driver
+pub type Bt = BtDriver<'static, Ble>;
+
+
 pub struct BoardSabotter {
     pub led_heartbeat: Option<LedHeartbeat>,
     pub motors: [Option<Motor>; 3],
@@ -53,12 +58,14 @@ pub struct BoardSabotter {
     pub imu_spi: Option<ImuSpi>,
     pub tof_irq: Option<PinDriver<'static, Gpio7, Input>>,
     pub lidar_pwm: Option<LedcDriver<'static>>,
+    pub ble: Option<Bt>,
 }
 
 impl BoardSabotter {
     pub fn new() -> Self {
         esp_idf_svc::sys::link_patches();
         esp_idf_svc::log::EspLogger::initialize_default();
+        let nvs = EspDefaultNvsPartition::take().unwrap();
 
         let peripherals = Peripherals::take().unwrap();
 
@@ -190,6 +197,8 @@ impl BoardSabotter {
             None
         };
 
+        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
+
         Self {
             led_heartbeat,
             motors,
@@ -202,6 +211,7 @@ impl BoardSabotter {
             imu_spi,
             tof_irq,
             lidar_pwm,
+            ble,
         }
     }
 }

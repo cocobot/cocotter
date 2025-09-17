@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies] 
-esp-idf-svc = "0.51.0"
+esp-idf-svc = {version = "0.51", features = ["experimental", "alloc"]}
 log = "0.4"
 embedded-hal = "1.0.0"
 embedded-hal-bus = { version = "0.3.0", features = ["std"] }
@@ -12,7 +12,5 @@ vlx = { path = "../../devices/vlx" }
 tca6408 = { path = "../../devices/tca6408" }
 esp32_encoder = { path = "../../devices/esp32_encoder" }
 
-[features]
-default = []
-
-experimental = ["esp-idf-svc/experimental"]
+[build-dependencies]
+embuild = {version = "0.33.1", features = ["espidf"]}

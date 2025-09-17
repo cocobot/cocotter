@@ -1,11 +1,9 @@
 [package]
-name = "esp32_encoder"
+name = "comm"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
+[dependencies] 
 esp-idf-svc = {version = "0.51", features = ["experimental", "alloc"]}
 log = "0.4"
-
-[features]
-default = []
+enumset = "1.1"

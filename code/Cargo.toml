@@ -9,7 +9,7 @@ members = [
 
     "boards/pami",
     "boards/sabotter",
-    "boards/simulator",
+    "boards/simulator", "shared/comm",
 ]
 resolver = "2"
 

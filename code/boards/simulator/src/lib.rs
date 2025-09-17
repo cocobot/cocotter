@@ -2,6 +2,10 @@ use simple_logger::SimpleLogger;
 use vlx::{SensorType, Sensor, DistanceData, MultiZoneData, ZoneAlarm};
 use embedded_hal::blocking::i2c::{Write, WriteRead};
 
+pub mod comm;
+
+// Fake BLE type for drop-in replacement
+pub struct FakeBle;
 pub struct FakeOutputPin;
 
 impl FakeOutputPin {
@@ -223,16 +227,17 @@ impl BoardPami {
 }
 
 pub struct BoardSabotter {
-        pub led_heartbeat: Option<FakeOutputPin>,
-
+    pub led_heartbeat: Option<FakeOutputPin>,
+    pub ble: Option<FakeBle>,
 }
 
 impl BoardSabotter {
     pub fn new() -> Self {
         init_logging();
-        
+
         Self {
             led_heartbeat: Some(FakeOutputPin),
+            ble: Some(FakeBle),
         }
     }
 }

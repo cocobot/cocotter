@@ -3,6 +3,10 @@ use std::{env, fs::File, io::Write, path::PathBuf};
 use cbindgen::Config;
 
 fn main() {
+    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=src");
+    println!("cargo:rerun-if-changed=c_src");
+
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
 
     let output_platform_dir = out_path.join("c_inc");
@@ -65,10 +69,7 @@ fn main() {
         .clang_arg(format!("-I{}", output_platform_dir.display().to_string()))
         .clang_arg(format!("-I{}", crate_dir.join("c_src/STSW-IMG023/VL53L5CX_ULD_driver_2.0.1/VL53L5CX_ULD_API/inc").display()))
         .clang_arg(format!("-I{}", crate_dir.join("c_src/STSW-IMG009/STSW-IMG009_v3.5.4/API/core").display()))
-        .header(combined_header_path.display().to_string())
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()));
-    
-
+        .header(combined_header_path.display().to_string());
     let target = std::env::var("TARGET").unwrap();
     let is_esp32 = target == "xtensa-esp32s3-espidf";
     
@@ -86,7 +87,6 @@ fn main() {
     rust_bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
-
     let mut build = &mut cc::Build::new();
     if is_esp32 {
         build = build

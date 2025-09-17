@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies] 
-esp-idf-svc = "0.51.0"
+esp-idf-svc = {version = "0.51", features = ["experimental", "alloc"]}
 vlx = { path = "../../devices/vlx" }
 embedded-hal = "1.0.0"
 log = "0.4.27"
@@ -13,5 +13,3 @@ pwm-pca9685 = "1.0.0"
 
 [features]
 default = []
-
-experimental = ["esp-idf-svc/experimental"]
