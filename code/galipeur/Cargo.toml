@@ -12,6 +12,7 @@ harness = false # do not use the built in cargo test harness -> resolve rust-ana
 
 [dependencies]
 log = "0.4"
+embedded-hal = "1.0"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 board-simulator = { path = "../boards/simulator" }

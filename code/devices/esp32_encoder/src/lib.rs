@@ -75,7 +75,7 @@ impl<'d> Encoder<'d> {
         )?;
 
         // Set filter to reduce noise
-        unit.set_filter_value(1023)?;
+        unit.set_filter_value(10)?;
         unit.filter_enable()?;
 
         let approx_value = Arc::new(AtomicI32::new(0));

@@ -1,12 +1,15 @@
+pub use pca9535;
+
 use esp_idf_svc::{bt::Ble, hal::{
     adc::{oneshot::{AdcChannelDriver, AdcDriver}, ADC1}, can::{CanConfig, CanDriver}, gpio::*, i2c::{I2cConfig, I2cDriver}, ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver}, prelude::*, spi::{config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver}, uart::{UartConfig, UartDriver}, units::Hertz
 }};
 use esp_idf_svc::{nvs::EspDefaultNvsPartition, bt::BtDriver};
 use embedded_hal_bus::i2c::MutexDevice;
+use pca9535::Pca9535Immediate;
 use vlx::{VLX, Config, SensorType};
-use tca6408::TCA6408;
 use esp32_encoder::Encoder;
 use std::{rc::Rc, sync::Mutex};
+
 
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 
@@ -19,7 +22,7 @@ pub type MotorPwm = LedcDriver<'static>;
 pub type VlxSensors = VLX<I2CType, 1>;
 
 // GPIO expander type
-pub type GpioExpander = TCA6408<I2CType>;
+pub type GpioExpander = Pca9535Immediate<I2CType>;
 
 // CAN bus type
 pub type CanBus = CanDriver<'static>;
@@ -49,6 +52,7 @@ pub type Bt = BtDriver<'static, Ble>;
 pub struct BoardSabotter {
     pub led_heartbeat: Option<LedHeartbeat>,
     pub motors: [Option<Motor>; 3],
+    pub motor_gpio_expander: [Option<GpioExpander>; 3],
     pub vlx_sensors: Option<VlxSensors>,
     pub gpio_expander: Option<GpioExpander>,
     pub can_bus: Option<CanBus>,
@@ -56,7 +60,7 @@ pub struct BoardSabotter {
     pub uart_lidar: Option<UartLidar>,
     pub battery_adc: Option<BatteryAdc>,
     pub imu_spi: Option<ImuSpi>,
-    pub tof_irq: Option<PinDriver<'static, Gpio7, Input>>,
+    pub mot_ena: Option<PinDriver<'static, Gpio7, Output>>,
     pub lidar_pwm: Option<LedcDriver<'static>>,
     pub ble: Option<Bt>,
 }
@@ -72,14 +76,12 @@ impl BoardSabotter {
         // Initialize heartbeat LED
         let led_heartbeat = PinDriver::output(peripherals.pins.gpio45).ok();
 
-        // Initialize main I2C bus (for TCA6408 GPIO expander)
+        // Initialize main I2C bus
         let config = I2cConfig::new().baudrate(Hertz(400_000));
         let i2c_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c0, peripherals.pins.gpio40, peripherals.pins.gpio41, &config).unwrap());
         let i2c_driver_static = Box::leak(Box::new(i2c_driver));
         let i2c_gpio_expander = MutexDevice::new(i2c_driver_static);
-
-    
-        let gpio_expander = Some(TCA6408::new(i2c_gpio_expander, 0x20));
+        let gpio_expander = Some(Pca9535Immediate::new(i2c_gpio_expander, 0b010_0100));
     
         // Initialize ToF sensor I2C bus
         let config = I2cConfig::new().baudrate(Hertz(400_000));
@@ -106,6 +108,7 @@ impl BoardSabotter {
 
         // Initialize motors with encoders
         let mut motors: [Option<Motor>; 3] = [None, None, None];
+        let mut motor_gpio_expander: [Option<GpioExpander>; 3] = [None, None, None];
         
         // Motor 0
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
@@ -115,6 +118,10 @@ impl BoardSabotter {
         ) {
             motors[0] = Some(Motor { pwm, dir, encoder });
         }
+        // Initialize main I2C bus
+        let i2c_gpio_expander_mot_0 = MutexDevice::new(i2c_vlx_driver_static);
+        motor_gpio_expander[0] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_0, 0b010_0000));
+    
 
         // Motor 1  
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
@@ -144,35 +151,39 @@ impl BoardSabotter {
             &UartConfig::default().baudrate(Hertz(115_200)),
         ).ok();
 
-        // Initialize UART for lidar (RX only)
-        let uart_lidar = UartDriver::new(
-            peripherals.uart2,
-            peripherals.pins.gpio0,   // TX (dummy pin)
-            peripherals.pins.gpio2,   // RX
-            Option::<AnyIOPin>::None, // CTS
-            Option::<AnyIOPin>::None, // RTS
-            &UartConfig::default().baudrate(Hertz(1_000_000)),
-        ).ok();
+        //// Initialize UART for lidar (RX only)
+        //let uart_lidar = UartDriver::new(
+        //    peripherals.uart2,
+        //    peripherals.pins.gpio0,   // TX (dummy pin)
+        //    peripherals.pins.gpio2,   // RX
+        //    Option::<AnyIOPin>::None, // CTS
+        //    Option::<AnyIOPin>::None, // RTS
+        //    &UartConfig::default().baudrate(Hertz(1_000_000)),
+        //).ok();
 
-        // Initialize CAN bus with correct pins (GPIO9/10)
-        let can_bus = CanDriver::new(
-            peripherals.can,
-            peripherals.pins.gpio9,  // TX
-            peripherals.pins.gpio10,  // RX
-            &CanConfig::new(),
-        ).ok();
+        //// Initialize CAN bus with correct pins (GPIO9/10)
+        //let can_bus = CanDriver::new(
+        //    peripherals.can,
+        //    peripherals.pins.gpio9,  // TX
+        //    peripherals.pins.gpio10,  // RX
+        //    &CanConfig::new(),
+        //).ok();
 
-        // Initialize SPI for IMU
-        let spi_config = SpiConfig::default().baudrate(Hertz(1_000_000));
+        // Initialize SPI for IMU SCH16T
+        use esp_idf_svc::hal::spi::Dma;
+        let spi_config = SpiConfig::new()
+            .baudrate(Hertz(100_000)); // Start with slower speed for debugging
+
         let spi_driver = SpiDriver::new(
             peripherals.spi2,
             peripherals.pins.gpio39,  // SCK
             peripherals.pins.gpio38,  // MOSI
             Some(peripherals.pins.gpio37),  // MISO
-            &DriverConfig::default(),
+            &DriverConfig::new().dma(Dma::Disabled),
         ).ok();
 
         let imu_spi = if let Some(spi) = spi_driver {
+            // CS on GPIO36, active low (default)
             SpiDeviceDriver::new(spi, Some(peripherals.pins.gpio36), &spi_config).ok()
         } else {
             None
@@ -183,7 +194,7 @@ impl BoardSabotter {
         let battery_adc = None;
 
         // Initialize interrupt pins
-        let tof_irq = PinDriver::input(peripherals.pins.gpio7).ok();
+        let mot_ena = PinDriver::output(peripherals.pins.gpio7).ok();
 
         // Initialize Lidar PWM
         let lidar_timer = LedcTimerDriver::new(
@@ -204,12 +215,13 @@ impl BoardSabotter {
             motors,
             vlx_sensors,
             gpio_expander,
-            can_bus,
+            motor_gpio_expander,
+            can_bus: None,
             uart_asserv,
-            uart_lidar,
+            uart_lidar: None,
             battery_adc,
             imu_spi,
-            tof_irq,
+            mot_ena,
             lidar_pwm,
             ble,
         }
