@@ -3,13 +3,14 @@ members = [
     "pami",
     "galipeur",
 
-    "devices/vlx",
-    "devices/tca6408", 
-    "devices/esp32_encoder",
+    "libs/vlx",
+    "libs/tca6408", 
+    "libs/esp32_encoder",
+    "libs/ble",
 
     "boards/pami",
     "boards/sabotter",
-    "boards/simulator", "shared/comm",
+    "boards/simulator",
 ]
 resolver = "2"
 

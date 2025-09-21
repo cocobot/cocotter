@@ -6,9 +6,9 @@ use std::time::Duration;
 use log::{info, warn, error};
 use crate::FakeBle;
 
-pub struct Comm;
+pub struct BleComm;
 
-impl Comm {
+impl BleComm {
     pub fn run(_ble: FakeBle, name: String) -> (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) {
         let (rome_tx, rome_tx_receiver): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) = mpsc::channel();
         let (rome_rx_sender, rome_rx): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) = mpsc::channel();

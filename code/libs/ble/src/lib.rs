@@ -34,7 +34,7 @@ struct CommState {
     tx_confirmed: Option<BdAddr>,
 }
 
-pub struct Comm {
+pub struct BleComm {
     gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
     gatts: Arc<EspGatts<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
 
@@ -44,7 +44,7 @@ pub struct Comm {
     condvar: Arc<Condvar>,
 }
 
-impl Comm {
+impl BleComm {
     pub fn run(bt: BtDriver<'static, Ble>, name: String) -> (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) {
         let bt = Arc::new(bt);
         let gap = Arc::new(EspBleGap::new(bt.clone()).unwrap());

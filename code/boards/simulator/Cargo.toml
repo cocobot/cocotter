@@ -6,5 +6,5 @@ edition = "2021"
 [dependencies]
 log = "0.4.27"
 simple_logger = "5.0.0"
-vlx = { path = "../../devices/vlx" }
+vlx = { path = "../../libs/vlx" }
 embedded-hal = "0.2"

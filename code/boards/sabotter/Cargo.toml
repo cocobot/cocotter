@@ -8,9 +8,9 @@ esp-idf-svc = {version = "0.51", features = ["experimental", "alloc"]}
 log = "0.4"
 embedded-hal = "1.0.0"
 embedded-hal-bus = { version = "0.3.0", features = ["std"] }
-vlx = { path = "../../devices/vlx" }
-tca6408 = { path = "../../devices/tca6408" }
-esp32_encoder = { path = "../../devices/esp32_encoder" }
+vlx = { path = "../../libs/vlx" }
+tca6408 = { path = "../../libs/tca6408" }
+esp32_encoder = { path = "../../libs/esp32_encoder" }
 pca9535 = { version = "2.0.0", features = ["std"] }
 
 [build-dependencies]

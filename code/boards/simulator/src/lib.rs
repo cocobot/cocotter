@@ -2,7 +2,7 @@ use simple_logger::SimpleLogger;
 use vlx::{SensorType, Sensor, DistanceData, MultiZoneData, ZoneAlarm};
 use embedded_hal::blocking::i2c::{Write, WriteRead};
 
-pub mod comm;
+pub mod ble;
 
 // Fake BLE type for drop-in replacement
 pub struct FakeBle;
