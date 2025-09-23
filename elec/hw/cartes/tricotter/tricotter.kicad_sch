@@ -3285,7 +3285,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "untitled.kicad_sch"
+		(property "Sheetfile" "pw_channel.kicad_sch"
 			(at 134.62 67.8946 0)
 			(effects
 				(font
@@ -3347,7 +3347,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "untitled.kicad_sch"
+		(property "Sheetfile" "pw_channel.kicad_sch"
 			(at 134.62 92.0246 0)
 			(effects
 				(font
@@ -3471,7 +3471,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "untitled.kicad_sch"
+		(property "Sheetfile" "pw_channel.kicad_sch"
 			(at 134.62 113.6146 0)
 			(effects
 				(font
@@ -3533,7 +3533,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "untitled.kicad_sch"
+		(property "Sheetfile" "pw_channel.kicad_sch"
 			(at 134.62 135.2046 0)
 			(effects
 				(font
