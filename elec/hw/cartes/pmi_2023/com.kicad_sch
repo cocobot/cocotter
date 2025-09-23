@@ -1709,7 +1709,8 @@
 		)
 		(symbol "cocotter_diodes:1N5819WS"
 			(pin_numbers hide)
-			(pin_names hide)
+			(pin_names
+				(offset 1.016) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1729,7 +1730,7 @@
 					)
 				)
 			)
-			(property "Footprint" "cocotter_diodes:D_SOD-323F"
+			(property "Footprint" "cocotter_diodes:D_SOD-323"
 				(at 0 -4.445 0)
 				(effects
 					(font
@@ -1738,7 +1739,7 @@
 					(hide yes)
 				)
 			)
-			(property "Datasheet" ""
+			(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1747,7 +1748,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "40V 1A Fast switching Diode, SOD-323"
+			(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1756,43 +1757,15 @@
 					(hide yes)
 				)
 			)
-			(property "Sim.Device" "D"
+			(property "JLCPCB Part #" "C191023"
 				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(hide yes)
 				)
 			)
-			(property "Sim.Pins" "1=K 2=A"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "specification" "Vfmax=.25V@10mA, Ifmax = 1A, VR max = 40V"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB" "C191023"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "diode"
+			(property "ki_keywords" "diode Schottky"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1813,18 +1786,6 @@
 			(symbol "1N5819WS_0_1"
 				(polyline
 					(pts
-						(xy -1.27 1.27) (xy -1.27 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
 						(xy 1.27 0) (xy -1.27 0)
 					)
 					(stroke
@@ -1838,6 +1799,18 @@
 				(polyline
 					(pts
 						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
 					)
 					(stroke
 						(width 0.254)
@@ -9480,7 +9453,7 @@
 		(fields_autoplaced yes)
 		(uuid "8bbb1a8e-bf81-46de-9641-87fa58541214")
 		(property "Reference" "D6"
-			(at 134.62 40.64 90)
+			(at 134.62 39.0524 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9489,7 +9462,7 @@
 			)
 		)
 		(property "Value" "1N5819WS"
-			(at 134.62 43.18 90)
+			(at 134.62 41.5924 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9497,7 +9470,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_diodes:D_SOD-323F"
+		(property "Footprint" "cocotter_diodes:D_SOD-323"
 			(at 127.635 41.91 0)
 			(effects
 				(font
@@ -9506,7 +9479,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
 			(at 132.08 41.91 0)
 			(effects
 				(font
@@ -9515,7 +9488,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
 			(at 132.08 41.91 0)
 			(effects
 				(font
@@ -9524,40 +9497,13 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" "D"
-			(at 132.08 41.91 0)
+		(property "JLCPCB Part #" "C191023"
+			(at 134.62 44.1324 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 132.08 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" "Vfmax=.25V@10mA, Ifmax = 1A, VR max = 40V"
-			(at 132.08 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" "C191023"
-			(at 132.08 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
+				(justify left)
 			)
 		)
 		(pin "1"

@@ -2817,16 +2817,22 @@
 		(uuid "2edf74f6-c5fd-446b-bf3e-bbb6da38ebf2")
 	)
 	(junction
-		(at 24.13 179.07)
+		(at 62.23 179.07)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "3c9adfba-fde4-4837-9da7-fa6481f0ce5b")
+		(uuid "2f4794fa-fd11-4fdd-8558-31d767c0e561")
 	)
 	(junction
 		(at 261.62 25.4)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "40312090-69c8-4717-946b-49c9a36fbb62")
+	)
+	(junction
+		(at 21.59 179.07)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "453dd9e6-7663-49a3-9422-f34b64bae9f3")
 	)
 	(junction
 		(at 34.29 58.42)
@@ -2853,6 +2859,12 @@
 		(uuid "64451dab-9e0b-4683-8660-be3f98f58d86")
 	)
 	(junction
+		(at 107.95 179.07)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "659bef73-af68-4171-9ddf-bd9e7e42cd68")
+	)
+	(junction
 		(at 34.29 179.07)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2871,12 +2883,6 @@
 		(uuid "7b79f765-6fba-4f0c-a96c-62397958ec6d")
 	)
 	(junction
-		(at 97.79 179.07)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "8d12a582-9899-4b66-9969-72e722e04dc1")
-	)
-	(junction
 		(at 93.98 143.51)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2893,12 +2899,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9b89bf07-13c6-4d35-b873-5fba6090ba33")
-	)
-	(junction
-		(at 68.58 179.07)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a423081e-7d29-44fc-8127-91053db2af97")
 	)
 	(junction
 		(at 83.82 179.07)
@@ -3094,7 +3094,7 @@
 	)
 	(wire
 		(pts
-			(xy 87.63 179.07) (xy 83.82 179.07)
+			(xy 97.79 179.07) (xy 83.82 179.07)
 		)
 		(stroke
 			(width 0)
@@ -3131,6 +3131,16 @@
 			(type default)
 		)
 		(uuid "0fa02e68-e20b-4943-9737-61026787b799")
+	)
+	(wire
+		(pts
+			(xy 21.59 179.07) (xy 24.13 179.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1073ca29-f7a3-4e85-adca-1e4c64bf62ad")
 	)
 	(wire
 		(pts
@@ -3214,7 +3224,7 @@
 	)
 	(wire
 		(pts
-			(xy 24.13 179.07) (xy 24.13 190.5)
+			(xy 21.59 179.07) (xy 21.59 190.5)
 		)
 		(stroke
 			(width 0)
@@ -3224,7 +3234,7 @@
 	)
 	(wire
 		(pts
-			(xy 49.53 186.69) (xy 49.53 179.07)
+			(xy 55.88 186.69) (xy 55.88 179.07)
 		)
 		(stroke
 			(width 0)
@@ -3324,7 +3334,7 @@
 	)
 	(wire
 		(pts
-			(xy 71.12 186.69) (xy 49.53 186.69)
+			(xy 64.77 186.69) (xy 55.88 186.69)
 		)
 		(stroke
 			(width 0)
@@ -3514,7 +3524,7 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 179.07) (xy 49.53 179.07)
+			(xy 35.56 179.07) (xy 55.88 179.07)
 		)
 		(stroke
 			(width 0)
@@ -3534,7 +3544,7 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 179.07) (xy 97.79 179.07)
+			(xy 114.3 179.07) (xy 107.95 179.07)
 		)
 		(stroke
 			(width 0)
@@ -3544,7 +3554,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 179.07) (xy 68.58 184.15)
+			(xy 62.23 179.07) (xy 62.23 184.15)
 		)
 		(stroke
 			(width 0)
@@ -3554,7 +3564,7 @@
 	)
 	(wire
 		(pts
-			(xy 67.31 179.07) (xy 68.58 179.07)
+			(xy 60.96 179.07) (xy 62.23 179.07)
 		)
 		(stroke
 			(width 0)
@@ -3764,16 +3774,6 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 179.07) (xy 97.79 189.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9a071e28-b924-4983-97dc-ecd7914ec04d")
-	)
-	(wire
-		(pts
 			(xy 242.57 30.48) (xy 246.38 30.48)
 		)
 		(stroke
@@ -3831,6 +3831,16 @@
 			(type default)
 		)
 		(uuid "a6074ed5-1077-4a35-9a4c-1818fa0bc654")
+	)
+	(wire
+		(pts
+			(xy 62.23 179.07) (xy 80.01 179.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "aa0ee181-cc74-48b2-8fe9-a01122a1f8e5")
 	)
 	(wire
 		(pts
@@ -4124,7 +4134,7 @@
 	)
 	(wire
 		(pts
-			(xy 20.32 179.07) (xy 24.13 179.07)
+			(xy 17.78 179.07) (xy 21.59 179.07)
 		)
 		(stroke
 			(width 0)
@@ -4154,7 +4164,7 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 184.15) (xy 71.12 184.15)
+			(xy 62.23 184.15) (xy 64.77 184.15)
 		)
 		(stroke
 			(width 0)
@@ -4274,6 +4284,16 @@
 	)
 	(wire
 		(pts
+			(xy 107.95 179.07) (xy 107.95 189.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e3860d8e-a536-466a-8534-9c232c9225ed")
+	)
+	(wire
+		(pts
 			(xy 68.58 45.72) (xy 68.58 33.02)
 		)
 		(stroke
@@ -4334,7 +4354,17 @@
 	)
 	(wire
 		(pts
-			(xy 87.63 189.23) (xy 83.82 189.23)
+			(xy 21.59 190.5) (xy 24.13 190.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eaa18503-c408-4989-8734-298bac71f9d4")
+	)
+	(wire
+		(pts
+			(xy 97.79 189.23) (xy 83.82 189.23)
 		)
 		(stroke
 			(width 0)
@@ -4361,16 +4391,6 @@
 			(type default)
 		)
 		(uuid "f321f1f6-2215-4b16-842e-4632a2ff2297")
-	)
-	(wire
-		(pts
-			(xy 68.58 179.07) (xy 80.01 179.07)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f47fd6a8-47de-4eda-90c7-f88fb0d99470")
 	)
 	(wire
 		(pts
@@ -4625,7 +4645,7 @@
 		(uuid "1242193c-fbb5-4dc0-b03d-a92a9f9d41cc")
 	)
 	(label "ctc_right"
-		(at 67.31 179.07 0)
+		(at 60.96 179.07 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4973,7 +4993,7 @@
 	)
 	(hierarchical_label "ctc_left"
 		(shape output)
-		(at 71.12 186.69 0)
+		(at 64.77 186.69 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5006,7 +5026,7 @@
 	)
 	(hierarchical_label "ctc_right"
 		(shape output)
-		(at 71.12 184.15 0)
+		(at 64.77 184.15 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5112,7 +5132,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:ESE58R11B")
-		(at 92.71 189.23 0)
+		(at 102.87 189.23 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5121,7 +5141,7 @@
 		(dnp no)
 		(uuid "074e12ee-cbda-4252-99ac-1eeedbf1a951")
 		(property "Reference" "SW9"
-			(at 89.916 192.532 0)
+			(at 100.076 192.532 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5129,7 +5149,7 @@
 			)
 		)
 		(property "Value" "ESE58R11B"
-			(at 92.71 185.42 0)
+			(at 102.87 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5137,7 +5157,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:ESE58R11B"
-			(at 91.44 186.69 0)
+			(at 101.6 186.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5146,7 +5166,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.lcsc.com/product-detail/Microswitches_Yuandi-TQ-2537A_C669819.html"
-			(at 91.44 189.23 0)
+			(at 101.6 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5155,7 +5175,7 @@
 			)
 		)
 		(property "Description" "microswitch 50mA 12V SMD"
-			(at 92.71 189.23 0)
+			(at 102.87 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5164,7 +5184,7 @@
 			)
 		)
 		(property "Mouser" "667-ESE-22MH22"
-			(at 92.71 184.15 0)
+			(at 102.87 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5173,7 +5193,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C388877"
-			(at 92.71 189.23 0)
+			(at 102.87 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5345,7 +5365,7 @@
 			)
 		)
 		(property "Value" "ESE58R11B"
-			(at 29.21 182.88 0)
+			(at 27.94 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6319,7 +6339,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 102.87 179.07 0)
+		(at 114.3 179.07 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6327,7 +6347,7 @@
 		(dnp no)
 		(uuid "3a7f03cf-7a2d-4d97-ad64-b2960cf7bb6b")
 		(property "Reference" "#PWR0147"
-			(at 102.87 185.42 0)
+			(at 114.3 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6336,7 +6356,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 102.87 182.88 0)
+			(at 114.3 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6344,7 +6364,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 102.87 179.07 0)
+			(at 114.3 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6353,7 +6373,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 102.87 179.07 0)
+			(at 114.3 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6362,7 +6382,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 102.87 179.07 0)
+			(at 114.3 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10589,7 +10609,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:ESE58L11B")
-		(at 92.71 179.07 0)
+		(at 102.87 179.07 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10597,7 +10617,7 @@
 		(dnp no)
 		(uuid "d4a90c0c-19ff-4f25-be14-447008468792")
 		(property "Reference" "SW2"
-			(at 95.25 175.768 0)
+			(at 105.41 175.768 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10605,7 +10625,7 @@
 			)
 		)
 		(property "Value" "ESE58L11B"
-			(at 92.71 182.88 0)
+			(at 102.87 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10613,7 +10633,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:ESE58L11B"
-			(at 91.44 180.34 0)
+			(at 101.6 180.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10622,7 +10642,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.lcsc.com/product-detail/microswitches_yuandi_tq-2537_C669818.html"
-			(at 91.44 179.07 0)
+			(at 101.6 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10631,7 +10651,7 @@
 			)
 		)
 		(property "Description" "microswitch 50mA 12V SMD"
-			(at 92.71 179.07 0)
+			(at 102.87 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10640,7 +10660,7 @@
 			)
 		)
 		(property "Mouser" "667-ESE-22MH24"
-			(at 92.71 184.15 0)
+			(at 102.87 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10649,7 +10669,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2687661"
-			(at 92.71 179.07 0)
+			(at 102.87 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11099,7 +11119,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 20.32 179.07 0)
+		(at 17.78 179.07 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11107,7 +11127,7 @@
 		(dnp no)
 		(uuid "ddcda1cf-fec1-4953-a38b-088e4673561a")
 		(property "Reference" "#PWR0146"
-			(at 20.32 185.42 0)
+			(at 17.78 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11116,7 +11136,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 20.32 182.88 0)
+			(at 17.78 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11124,7 +11144,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 20.32 179.07 0)
+			(at 17.78 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11133,7 +11153,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 20.32 179.07 0)
+			(at 17.78 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11142,7 +11162,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 20.32 179.07 0)
+			(at 17.78 179.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
