@@ -1,4 +1,4 @@
-use esp_idf_svc::hal::{gpio::{Gpio4, Output, PinDriver}, prelude::Peripherals, i2c::{I2cConfig, I2cDriver}, units::Hertz};
+use esp_idf_svc::{bt::{Ble, BtDriver}, hal::{gpio::{Gpio4, Output, PinDriver}, i2c::{I2cConfig, I2cDriver}, ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver}, prelude::Peripherals, units::Hertz}, nvs::EspDefaultNvsPartition};
 use vlx::{VLX, Config, SensorType};
 use std::sync::{Arc, Mutex};
 use embedded_hal_bus::i2c::MutexDevice;
@@ -9,7 +9,7 @@ pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type LedHeartbeat = PinDriver<'static, Gpio4, Output>;
 pub type VlxSensors = VLX<I2CType, 3>;
 pub type PwmController = Arc<Mutex<Pca9685<I2CType>>>;
-
+pub type Bt = BtDriver<'static, Ble>;
 
 pub const PWM_EXTENDED_CHANNEL_SERVO: [Channel; 4] =
     [Channel::C0, Channel::C1, Channel::C2, Channel::C3];
@@ -20,18 +20,23 @@ pub const PWM_EXTENDED_VBAT_RGB: [Channel; 3] = [Channel::C10, Channel::C8, Chan
 pub const PWM_EXTENDED_LINE_LED: Channel = Channel::C11;
 pub const PWM_EXTENDED_LED_RGB: [Channel; 3] = [Channel::C12, Channel::C13, Channel::C14];
 
+pub type MotorPwmType = LedcDriver<'static>;
 
 pub struct BoardPami {
     pub led_heartbeat: Option<LedHeartbeat>,
     pub vlx_sensors: Option<VlxSensors>,
     pub pwm_controller: Option<PwmController>,
+    pub left_pwm: Option<(MotorPwmType, MotorPwmType)>,
+    pub right_pwm: Option<(MotorPwmType, MotorPwmType)>,
+    pub ble: Option<Bt>,
 }
 
 impl BoardPami {
     pub fn new() -> Self {
         esp_idf_svc::sys::link_patches();
         esp_idf_svc::log::EspLogger::initialize_default();
-
+        let nvs = EspDefaultNvsPartition::take().unwrap();
+        
         let peripherals = Peripherals::take().unwrap();
 
         // Initialize digital output pins
@@ -127,10 +132,39 @@ impl BoardPami {
 
         let vlx_sensors = VLX::new(i2c_bus_vlx, vlx_configs);           
 
+        // Initialize the PWM
+        let timer_pwm = LedcTimerDriver::new(
+                peripherals.ledc.timer0,
+                &TimerConfig::new().frequency(Hertz(25_000)).resolution(esp_idf_svc::hal::ledc::Resolution::Bits10),
+            ).unwrap();
+        let left_pwm = (LedcDriver::new(
+            peripherals.ledc.channel0,
+            &timer_pwm,
+            peripherals.pins.gpio21,
+        ).unwrap(), LedcDriver::new(
+            peripherals.ledc.channel1,
+            &timer_pwm,
+            peripherals.pins.gpio14,
+        ).unwrap());
+        let right_pwm = (LedcDriver::new(
+            peripherals.ledc.channel2,
+            &timer_pwm,
+            peripherals.pins.gpio12,
+        ).unwrap(), LedcDriver::new(
+            peripherals.ledc.channel3,
+            &timer_pwm,
+            peripherals.pins.gpio13,
+        ).unwrap());
+        
+        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
+
         Self {
             led_heartbeat: Some(led_heartbeat),
             vlx_sensors: Some(vlx_sensors),
             pwm_controller,
+            left_pwm: Some(left_pwm),
+            right_pwm: Some(right_pwm),
+            ble,
         }
     }
 }

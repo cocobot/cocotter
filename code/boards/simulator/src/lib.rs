@@ -208,20 +208,22 @@ impl FakeVlxWrapper {
 pub struct BoardPami {
     pub led_heartbeat: Option<FakeOutputPin>,
     pub vlx_sensors: Option<FakeVlxWrapper>,
+    pub ble: Option<FakeBle>,
 }
 
 impl BoardPami {
     pub fn new() -> Self {
         init_logging();
-        
+
         let sensors = vec![
             FakeVlx::new(SensorType::L1, 0x30),
             FakeVlx::new(SensorType::L5, 0x31),
         ];
-        
+
         Self {
             led_heartbeat: Some(FakeOutputPin),
             vlx_sensors: Some(FakeVlxWrapper::new(sensors)),
+            ble: Some(FakeBle),
         }
     }
 }
