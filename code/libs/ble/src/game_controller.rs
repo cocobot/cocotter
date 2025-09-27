@@ -1,8 +1,8 @@
 use std::sync::{mpsc::Sender, Arc, Mutex};
 use esp_idf_svc::{
     bt::{
-        ble::gap::{BleGapEvent, EspBleGap},
-        BdAddr, Ble, BtDriver,
+        ble::gap::BleGapEvent,
+        BdAddr,
     },
     sys::{self, EspError},
 };
@@ -95,7 +95,6 @@ pub enum GameControllerEvent {
 }
 
 pub struct GameControllerCentral {
-    gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
     state: Arc<Mutex<CentralState>>,
     event_sender: Sender<GameControllerEvent>,
 }
@@ -120,7 +119,6 @@ struct CentralState {
 
 impl GameControllerCentral {
     pub fn new(
-        gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
         event_sender: Sender<GameControllerEvent>
     ) -> Arc<Self> {
         let state = Arc::new(Mutex::new(CentralState {
@@ -135,7 +133,6 @@ impl GameControllerCentral {
         }));
 
         Arc::new(Self {
-            gap,
             state,
             event_sender,
         })

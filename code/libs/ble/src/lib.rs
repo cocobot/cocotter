@@ -43,7 +43,6 @@ impl BleComm {
 
         // Create Game Controller central (client role)
         let game_controller_central = GameControllerCentral::new(
-            gap.clone(),
             game_ctrl_event_sender
         );
 

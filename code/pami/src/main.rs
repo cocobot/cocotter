@@ -69,19 +69,25 @@ fn main() {
 }
 */
 
-use ble::GameControllerEvent;
-#[cfg(target_os = "espidf")]
-use board_pami::BoardPami;
+mod pwm;
 
-use board_pami::MotorPwmType;
+#[cfg(target_os = "espidf")]
+use ble::GameControllerEvent;
 #[cfg(target_os = "linux")]
-use board_simulator::BoardPami;
+use board_simulator::ble::GameControllerEvent;
+
+#[cfg(target_os = "espidf")]
+use board_pami::{BoardPami, MotorPwmType};
+#[cfg(target_os = "linux")]
+use board_simulator::{BoardPami, MotorPwmType};
 
 #[cfg(target_os = "espidf")]
 use ble::BleComm;
-
 #[cfg(target_os = "linux")]
 use board_simulator::ble::BleComm;
+
+use crate::pwm::{PWMEvent, PWM};
+
 
 fn set_pwm(left_pwm : &mut (MotorPwmType, MotorPwmType), right_pwm: &mut (MotorPwmType, MotorPwmType), d: f32, turn: f32, max_speed: f32) {
 
@@ -120,7 +126,29 @@ fn set_pwm(left_pwm : &mut (MotorPwmType, MotorPwmType), right_pwm: &mut (MotorP
         let min_max = (-right_pwm_filtered).clamp(0, pwm_max as i16) as u32;
         right_pwm.1.set_duty(pwm_max).ok();
         right_pwm.0.set_duty(pwm_max - min_max).ok();
-    }             
+    }
+}
+
+fn hsv_to_rgb(h: f32, s: f32, v: f32) -> [f32; 3] {
+    let c = v * s;
+    let x = c * (1.0 - ((h / 60.0) % 2.0 - 1.0).abs());
+    let m = v - c;
+
+    let (r, g, b) = if h < 60.0 {
+        (c, x, 0.0)
+    } else if h < 120.0 {
+        (x, c, 0.0)
+    } else if h < 180.0 {
+        (0.0, c, x)
+    } else if h < 240.0 {
+        (0.0, x, c)
+    } else if h < 300.0 {
+        (x, 0.0, c)
+    } else {
+        (c, 0.0, x)
+    };
+
+    [r + m, g + m, b + m]
 }
 
 fn main() {   
@@ -130,11 +158,13 @@ fn main() {
     let (_rome_tx, _rome_rx, game_controller_events) = BleComm::run(board.ble.take().unwrap(), "PAMI".to_string(), enable_game_controller);
     let mut left_motor = board.left_pwm.take().unwrap();
     let mut right_motor = board.right_pwm.take().unwrap();
-    
+    let pwm = PWM::init(board.pwm_controller.take().unwrap());
 
     let mut d : f32 = 0.0;
     let mut turn = 0.0;
     let mut max_speed = 0.25;
+    let mut right_x = 0.0f32;
+    let mut right_y = 0.0f32;
 
     loop {
         if let Ok(event) = game_controller_events.recv() {
@@ -168,7 +198,6 @@ fn main() {
                 }
                 GameControllerEvent::ButtonLeftJoyUpDownValue(value) => {                    
                     d = -(value as f32) / 128.0;
-                    //d = -value as isize;
                     set_pwm(&mut left_motor, &mut right_motor, d, turn, max_speed);
                 }
                 GameControllerEvent::ButtonLeftJoyLeftRightValue(value) => {
@@ -197,7 +226,36 @@ fn main() {
                     max_speed = 1.0;
                     set_pwm(&mut left_motor, &mut right_motor, d, turn, max_speed);
                 }
-                _ => {                    
+                GameControllerEvent::ButtonL2Value(value) => {
+                    pwm.send(PWMEvent::Vaccum((value as f32) / 255.0)).ok();
+                }
+                GameControllerEvent::ButtonRightJoyLeftRightValue(x) => {
+                    right_x = (x as f32) / 127.0;
+
+                    // Calculer l'angle en degrés (0-360) à partir de x et y
+                    let angle = (right_y.atan2(right_x) * 180.0 / std::f32::consts::PI + 360.0) % 360.0;
+
+                    // Calculer l'intensité à partir de la distance au centre (min 0.2 pour avoir toujours un peu de lumière)
+                    let intensity = (right_x * right_x + right_y * right_y).sqrt().min(1.0) * 0.8 + 0.2;
+
+                    // Convertir HSV en RGB
+                    let rgb = hsv_to_rgb(angle, 1.0, intensity);
+                    pwm.send(PWMEvent::LedBottom(rgb)).ok();
+                }
+                GameControllerEvent::ButtonRightJoyUpDownValue(y) => {
+                    right_y = -(y as f32) / 127.0;  // Inverser Y pour avoir le haut positif
+
+                    // Calculer l'angle en degrés (0-360) à partir de x et y
+                    let angle = (right_y.atan2(right_x) * 180.0 / std::f32::consts::PI + 360.0) % 360.0;
+
+                    // Calculer l'intensité à partir de la distance au centre (min 0.2 pour avoir toujours un peu de lumière)
+                    let intensity = (right_x * right_x + right_y * right_y).sqrt().min(1.0) * 0.8 + 0.2;
+
+                    // Convertir HSV en RGB
+                    let rgb = hsv_to_rgb(angle, 1.0, intensity);
+                    pwm.send(PWMEvent::LedBottom(rgb)).ok();
+                }
+                _ => {
                 }
             }
         }
