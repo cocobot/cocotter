@@ -108,24 +108,24 @@ fn set_pwm(left_pwm : &mut (MotorPwmType, MotorPwmType), right_pwm: &mut (MotorP
     
     if left_pwm_filtered >= 0 {
         let min_max = left_pwm_filtered.clamp(0, pwm_max as i16) as u32;
-        left_pwm.0.set_duty(pwm_max).ok();
-        left_pwm.1.set_duty(pwm_max - min_max).ok();
+        left_pwm.0.set_duty(min_max).ok();
+        left_pwm.1.set_duty(0).ok();
     }
     else {
         let min_max = (-left_pwm_filtered).clamp(0, pwm_max as i16) as u32;
-        left_pwm.1.set_duty(pwm_max).ok();
-        left_pwm.0.set_duty(pwm_max - min_max).ok();
+        left_pwm.0.set_duty(0).ok();
+        left_pwm.1.set_duty(min_max).ok();
     }
 
     if right_pwm_filtered >= 0 {
-        let min_max = right_pwm_filtered.clamp(0, pwm_max as i16) as u32;
-        right_pwm.0.set_duty(pwm_max).ok();
-        right_pwm.1.set_duty(pwm_max - min_max).ok();
+       let min_max = right_pwm_filtered.clamp(0, pwm_max as i16) as u32;
+        right_pwm.1.set_duty(min_max).ok();
+        right_pwm.0.set_duty(0).ok();
     }
     else {
         let min_max = (-right_pwm_filtered).clamp(0, pwm_max as i16) as u32;
-        right_pwm.1.set_duty(pwm_max).ok();
-        right_pwm.0.set_duty(pwm_max - min_max).ok();
+        right_pwm.1.set_duty(0).ok();
+        right_pwm.0.set_duty(min_max).ok();
     }
 }
 

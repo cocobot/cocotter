@@ -149,11 +149,11 @@ impl BoardPami {
         let right_pwm = (LedcDriver::new(
             peripherals.ledc.channel2,
             &timer_pwm,
-            peripherals.pins.gpio12,
+            peripherals.pins.gpio13,
         ).unwrap(), LedcDriver::new(
             peripherals.ledc.channel3,
             &timer_pwm,
-            peripherals.pins.gpio13,
+            peripherals.pins.gpio12,
         ).unwrap());
         
         let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
