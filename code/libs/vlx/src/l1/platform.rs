@@ -25,7 +25,10 @@ pub extern "C" fn VL53L1_WriteMulti(
     count: u32,
 ) -> i8 {
     let data = unsafe { core::slice::from_raw_parts(pdata, count as usize) };
-    unsafe { crate::call_i2c_write(dev as u8, index, data) }
+    match crate::call_i2c_write(dev as u8, index, data) {
+        true => 0,
+        false => -1,
+    }
 }
 
 #[no_mangle]
@@ -36,7 +39,10 @@ pub extern "C" fn VL53L1_ReadMulti(
     count: u32,
 ) -> i8 {
     let data = unsafe { core::slice::from_raw_parts_mut(pdata, count as usize) };
-    unsafe { crate::call_i2c_read(dev as u8, index, data) }
+    match crate::call_i2c_read(dev as u8, index, data) {
+        true => 0,
+        false => -1,
+    }
 }
 
 #[no_mangle]

@@ -6,7 +6,6 @@ use core::ffi::c_void;
 use std::{thread, time::Duration};
 
 pub const VL53L5CX_NB_TARGET_PER_ZONE: u8 = 1;
-pub const VL53L5CX_NB_TARGET_PER_ZONsE2: u8 = 1;
 
 #[repr(C)]
 pub struct VL53L5CX_Platform {
@@ -18,35 +17,39 @@ pub struct VL53L5CX_Platform {
 
 
 #[no_mangle]
-pub extern fn VL53L5CX_WrByte(platform: &mut VL53L5CX_Platform, register_addr: u16, value: u8) -> u8 {
+pub extern "C" fn VL53L5CX_WrByte(platform: &mut VL53L5CX_Platform, register_addr: u16, value: u8) -> u8 {
     VL53L5CX_WrMulti(platform, register_addr, &value, 1)
 }
 
 #[no_mangle]
-pub extern fn VL53L5CX_WrMulti(platform: &mut VL53L5CX_Platform, register_addr: u16, p_values: *const u8, size: u32) -> u8 {
+pub extern "C" fn VL53L5CX_WrMulti(platform: &mut VL53L5CX_Platform, register_addr: u16, p_values: *const u8, size: u32) -> u8 {
     let buffer = unsafe {
         core::slice::from_raw_parts(p_values, size as usize)
     };
-    let result = unsafe { crate::call_i2c_write(platform.address as u8, register_addr, buffer) };
-    if result == 0 { 0 } else { 1 }
+    match crate::call_i2c_write(platform.address as u8, register_addr, buffer) {
+        true => 0,
+        false => 0xff,
+    }
 }
 
 #[no_mangle]
-pub extern fn VL53L5CX_RdByte(platform: &mut VL53L5CX_Platform, register_addr: u16, p_value: *mut u8) -> u8 {
+pub extern "C" fn VL53L5CX_RdByte(platform: &mut VL53L5CX_Platform, register_addr: u16, p_value: *mut u8) -> u8 {
     VL53L5CX_RdMulti(platform, register_addr, p_value, 1)
 }
 
 #[no_mangle]
-pub extern fn VL53L5CX_RdMulti(platform: &mut VL53L5CX_Platform, register_addr: u16, p_values: *mut u8, size: u32) -> u8 {
+pub extern "C" fn VL53L5CX_RdMulti(platform: &mut VL53L5CX_Platform, register_addr: u16, p_values: *mut u8, size: u32) -> u8 {
     let buffer = unsafe {
         core::slice::from_raw_parts_mut(p_values, size as usize)
     };
-    let result = unsafe { crate::call_i2c_read(platform.address as u8, register_addr, buffer) };
-    if result == 0 { 0 } else { 1 }
+    match crate::call_i2c_read(platform.address as u8, register_addr, buffer) {
+        true => 0,
+        false => 0xff,
+    }
 }
 
 #[no_mangle]
-pub extern fn VL53L5CX_WaitMs(_platform: &mut VL53L5CX_Platform, time_ms: u32) -> u8 {
+pub extern "C" fn VL53L5CX_WaitMs(_platform: &mut VL53L5CX_Platform, time_ms: u32) -> u8 {
     thread::sleep(Duration::from_millis(time_ms as u64));
 
     0

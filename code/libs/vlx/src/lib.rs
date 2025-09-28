@@ -29,13 +29,15 @@ where
         let mut buffer = Vec::with_capacity(reg_bytes.len() + data.len());
         buffer.extend_from_slice(&reg_bytes);
         buffer.extend_from_slice(data);
-        i2c.write(address, &buffer).map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
+        i2c.write(address, &buffer)?;
+        Ok(())
     }
     
     fn read(&mut self, address: u8, register: u16, data: &mut [u8]) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let mut i2c = self.0.lock().unwrap();
         let reg_bytes = register.to_be_bytes();
-        i2c.write_read(address, &reg_bytes, data).map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
+        i2c.write_read(address, &reg_bytes, data)?;
+        Ok(())
     }
 }
 
@@ -51,35 +53,29 @@ where
 }
 
 // Fonctions pour utiliser l'I2C global depuis les platforms
-pub unsafe fn call_i2c_write(address: u8, register: u16, data: &[u8]) -> i8 {
+pub fn call_i2c_write(address: u8, register: u16, data: &[u8]) -> bool {
     let mut global = match GLOBAL_SHARED_I2C.lock() {
         Ok(guard) => guard,
-        Err(_) => return -1, // Erreur de lock
+        Err(_) => return false, // Erreur de lock
     };
     
     if let Some(ref mut i2c) = *global {
-        match i2c.write(address, register, data) {
-            Ok(_) => 0,
-            Err(_) => -1,
-        }
+        i2c.write(address, register, data).is_ok()
     } else {
-        -1 // Pas d'I2C enregistré
+        false // Pas d'I2C enregistré
     }
 }
 
-pub unsafe fn call_i2c_read(address: u8, register: u16, data: &mut [u8]) -> i8 {
+pub fn call_i2c_read(address: u8, register: u16, data: &mut [u8]) -> bool {
     let mut global = match GLOBAL_SHARED_I2C.lock() {
         Ok(guard) => guard,
-        Err(_) => return -1, // Erreur de lock
+        Err(_) => return false, // Erreur de lock
     };
     
     if let Some(ref mut i2c) = *global {
-        match i2c.read(address, register, data) {
-            Ok(_) => 0,
-            Err(_) => -1,
-        }
+        i2c.read(address, register, data).is_ok()
     } else {
-        -1 // Pas d'I2C enregistré
+        false // Pas d'I2C enregistré
     }
 }
 
@@ -171,13 +167,11 @@ pub struct ZoneAlarm {
 }
 
 pub trait Sensor {
-    type Error;
-    
-    fn init(&mut self) -> Result<(), Self::Error>;
-    fn get_distance(&mut self) -> Result<DistanceData, Self::Error>;
-    fn set_alarm(&mut self, low: u16, high: u16, zone: Option<(usize, usize)>) -> Result<(), Self::Error>;
-    fn set_multiple_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), Self::Error>;
-    fn clear_alarm(&mut self) -> Result<(), Self::Error>;
+    fn init(&mut self) -> Result<(), VlxError>;
+    fn get_distance(&mut self) -> Result<DistanceData, VlxError>;
+    fn set_alarm(&mut self, low: u16, high: u16, zone: Option<(usize, usize)>) -> Result<(), VlxError>;
+    fn set_multiple_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), VlxError>;
+    fn clear_alarm(&mut self) -> Result<(), VlxError>;
 }
 
 #[derive(Debug, Clone)]
@@ -357,8 +351,8 @@ where
             thread::sleep(Duration::from_millis(100));
             
             let r = match sensor {
-                SensorInstance::L1(sensor) => sensor.init().map_err(|_| VlxError::InitError),
                 SensorInstance::L5(sensor) => sensor.init().map_err(|_| VlxError::InitError),
+                SensorInstance::L1(sensor) => sensor.init().map_err(|_| VlxError::InitError),
             };
 
             if r.is_err() {
@@ -368,52 +362,31 @@ where
         }
         res
     }
-    
+
+    fn get_sensor_mut(&mut self, sensor_index: usize) -> Result<&mut dyn Sensor, VlxError> {
+        match self.sensors.get_mut(sensor_index).ok_or(VlxError::InvalidSensor)? {
+            SensorInstance::L1(sensor) => Ok(sensor),
+            SensorInstance::L5(sensor) => Ok(sensor),
+        }
+    }
+
     pub fn get_distance(&mut self, sensor_index: usize) -> Result<DistanceData, VlxError> {
-        if sensor_index >= N {
-            return Err(VlxError::InvalidSensor);
-        }
-        
-        match &mut self.sensors[sensor_index] {
-            SensorInstance::L1(sensor) => sensor.get_distance().map_err(|_| VlxError::ReadError),
-            SensorInstance::L5(sensor) => sensor.get_distance().map_err(|_| VlxError::ReadError),
-        }
+        self.get_sensor_mut(sensor_index)?.get_distance()
     }
     
     pub fn set_alarm(&mut self, sensor_index: usize, low: u16, high: u16, zone: Option<(usize, usize)>) -> Result<(), VlxError> {
-        if sensor_index >= N {
-            return Err(VlxError::InvalidSensor);
-        }
-        
-        match &mut self.sensors[sensor_index] {
-            SensorInstance::L1(sensor) => sensor.set_alarm(low, high, zone).map_err(|_| VlxError::ConfigError),
-            SensorInstance::L5(sensor) => sensor.set_alarm(low, high, zone).map_err(|_| VlxError::ConfigError),
-        }
+        self.get_sensor_mut(sensor_index)?.set_alarm(low, high, zone)
     }
     
     pub fn set_multiple_alarms(&mut self, sensor_index: usize, alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
-        if sensor_index >= N {
-            return Err(VlxError::InvalidSensor);
-        }
-        
-        match &mut self.sensors[sensor_index] {
-            SensorInstance::L1(sensor) => sensor.set_multiple_alarms(alarms).map_err(|_| VlxError::ConfigError),
-            SensorInstance::L5(sensor) => sensor.set_multiple_alarms(alarms).map_err(|_| VlxError::ConfigError),
-        }
+        self.get_sensor_mut(sensor_index)?.set_multiple_alarms(alarms)
     }
     
     pub fn clear_alarm(&mut self, sensor_index: usize) -> Result<(), VlxError> {
-        if sensor_index >= N {
-            return Err(VlxError::InvalidSensor);
-        }
-        
-        match &mut self.sensors[sensor_index] {
-            SensorInstance::L1(sensor) => sensor.clear_alarm().map_err(|_| VlxError::ConfigError),
-            SensorInstance::L5(sensor) => sensor.clear_alarm().map_err(|_| VlxError::ConfigError),
-        }
+        self.get_sensor_mut(sensor_index)?.clear_alarm()
     }
     
-    pub fn sensor_count(&self) -> usize {
+    pub const fn sensor_count(&self) -> usize {
         N
     }
     

@@ -61,6 +61,7 @@ fn main() {
     // Generate combined Rust bindings
     bindgen::Builder::default()
         .use_core()
+        .derive_default(true)
         .clang_arg(format!("-I{}", output_platform_dir.display()))
         .clang_arg(format!("-I{}", crate_dir.join("c_src").display()))
         .clang_arg(format!("-I{}", crate_dir.join("c_src/vl53l1x_platform").display()))
