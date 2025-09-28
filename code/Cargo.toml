@@ -3,10 +3,11 @@ members = [
     "pami",
     "galipeur",
 
-    "libs/vlx",
-    "libs/tca6408", 
-    "libs/esp32_encoder",
+    "libs/asserv",
     "libs/ble",
+    "libs/esp32_encoder",
+    "libs/tca6408",
+    "libs/vlx",
 
     "boards/pami",
     "boards/sabotter",
