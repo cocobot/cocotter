@@ -20,7 +20,7 @@ fn main() {
 
     let asserv = Asserv::new();
 
-    let (rome_tx, rome_rx) = BleComm::run(board.ble.take().unwrap(), "Galipeur".to_string());
+    let (rome_tx, rome_rx) = BleComm::run(board.ble.take().unwrap(), "Galipeur");
 
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
 
