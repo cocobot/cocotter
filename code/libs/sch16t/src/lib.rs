@@ -399,7 +399,7 @@ where
             .transaction(&mut [Operation::Read(&mut answer)])
             .map_err(Sch16tError::Spi);
 
-        let parsed_answer = self.parse_spi48bf(answer);
+        let parsed_answer = Self::parse_spi48bf(answer);
 
         Ok(parsed_answer.data)
     }
@@ -416,11 +416,11 @@ where
             .spi
             .transaction(&mut [Operation::Read(&mut answer)])
             .map_err(Sch16tError::Spi);
-        let parsed_answer = self.parse_spi48bf(answer);
+        let parsed_answer = Self::parse_spi48bf(answer);
         matches!(parsed_answer.status, SCH16TFrameStatus::Error)
     }
 
-    fn parse_spi48bf(&self, raw: [u8; 6]) -> SPI48bRdFrame {
+    fn parse_spi48bf(raw: [u8; 6]) -> SPI48bRdFrame {
         let mut raw_u64 = [0x00; 8];
         for (i, &val) in raw.iter().enumerate() {
             raw_u64[i + 2] = val;
