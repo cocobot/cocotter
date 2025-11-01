@@ -344,30 +344,29 @@ where
         let x_stat = self.read_register(Register::StatRateX)?;
         let y_stat = self.read_register(Register::StatRateY)?;
         let z_stat = self.read_register(Register::StatRateZ)?;
-        if self.last_measure_instant.is_none() {
-            self.last_measure_instant = Some(Instant::now());
-        } else {
-            let elapsed_time_s = self.last_measure_instant.unwrap().elapsed().as_secs_f32();
-            self.last_measure_instant = Some(Instant::now());
+        let new_instant = Instant::now();
+        if let Some(last_instant) = self.last_measure_instant {
+            let elapsed = (new_instant - last_instant).as_secs_f32();
             if Sch16tStatRate::from(x_stat as u16).all_flags_ok() {
-                self.angle.x += self.angle_from_register(Register::RateX1)? * elapsed_time_s;
+                self.angle.x += self.angle_from_register(Register::RateX1)? * elapsed;
             } else {
-                self.angle.x += self.angle_from_register(Register::RateX2)? * elapsed_time_s;
+                self.angle.x += self.angle_from_register(Register::RateX2)? * elapsed;
                 println!("x meas ko");
             }
             if Sch16tStatRate::from(y_stat as u16).all_flags_ok() {
-                self.angle.y += self.angle_from_register(Register::RateY1)? * elapsed_time_s;
+                self.angle.y += self.angle_from_register(Register::RateY1)? * elapsed;
             } else {
-                self.angle.x += self.angle_from_register(Register::RateY2)? * elapsed_time_s;
+                self.angle.x += self.angle_from_register(Register::RateY2)? * elapsed;
                 println!("y meas ko");
             }
             if Sch16tStatRate::from(z_stat as u16).all_flags_ok() {
-                self.angle.z += self.angle_from_register(Register::RateZ1)? * elapsed_time_s;
+                self.angle.z += self.angle_from_register(Register::RateZ1)? * elapsed;
             } else {
-                self.angle.x += self.angle_from_register(Register::RateZ2)? * elapsed_time_s;
+                self.angle.x += self.angle_from_register(Register::RateZ2)? * elapsed;
                 println!("z meas ko");
             }
         }
+        self.last_measure_instant = Some(new_instant);
         Ok(())
     }
 
