@@ -164,19 +164,13 @@ struct Sch16tStatRate {
 
 impl From<u16> for Sch16tStatRate {
     fn from(value: u16) -> Self {
-        let decimated_rate_saturation_ok = !matches!(value & 1 << 9, 0);
-        let interpolated_rate_saturation_ok = !matches!(value & 1 << 8, 0);
-        let digital_continuous_self_test_ok = !matches!(value & 1 << 6, 0);
-        let analog_continuous_self_test_ok = !matches!(value & 1 << 5, 0);
-        let signal_status_ok = !matches!(value & 1 << 4, 0);
-        let all_flags_ok = matches!(value & 0b0000_0011_0111_0000, 0b0000_0011_0111_0000);
         Sch16tStatRate {
-            decimated_rate_saturation_ok,
-            interpolated_rate_saturation_ok,
-            digital_continuous_self_test_ok,
-            analog_continuous_self_test_ok,
-            signal_status_ok,
-            all_flags_ok,
+            decimated_rate_saturation_ok: value & 1 << 9 != 0,
+            interpolated_rate_saturation_ok: value & 1 << 8 != 0,
+            digital_continuous_self_test_ok: value & 1 << 6 != 0,
+            analog_continuous_self_test_ok: value & 1 << 5 != 0,
+            signal_status_ok: value & 1 << 4 != 0,
+            all_flags_ok: value & 0b0000_0011_0111_0000 != 0b0000_0011_0111_0000,
         }
     }
 }
