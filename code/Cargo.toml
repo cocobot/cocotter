@@ -7,6 +7,7 @@ members = [
     "libs/tca6408", 
     "libs/esp32_encoder",
     "libs/ble",
+    "libs/sch16t",
 
     "boards/pami",
     "boards/sabotter",
