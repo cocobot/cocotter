@@ -1,6 +1,6 @@
 use std::{thread, time::{Duration, Instant}};
-use core::u32;
-use num_traits::{ToBytes, FromBytes};
+//use core::u32;
+use num_traits::{FromBytes};
 use embedded_hal::spi::{SpiDevice, Operation};
 
 /// SCH16T 
@@ -159,12 +159,12 @@ struct SCH16TAcc12Ctrl{
 
 impl From<u16> for Sch16tStatRate{
     fn from(value: u16) -> Self {
-        let decimated_rate_saturation_ok= match value & 1<<9{ 0=> false, _=> true};
-        let interpolated_rate_saturation_ok = match value & 1<<8{ 0=> false, _=> true};
-        let digital_continuous_self_test_ok = match value & 1<<6{ 0=> false, _=> true};
-        let analog_continuous_self_test_ok = match value & 1<<5{ 0=> false, _=> true};
-        let signal_status_ok = match value & 1<<4{ 0=> false, _=> true};
-        let all_flags_ok = match value & 0b0000_0011_0111_0000{ 0b0000_0011_0111_0000 => true, _=> false};
+        let decimated_rate_saturation_ok= !matches!(value & 1<<9, 0);
+        let interpolated_rate_saturation_ok = !matches!(value & 1<<8, 0);
+        let digital_continuous_self_test_ok = !matches!(value & 1<<6, 0);
+        let analog_continuous_self_test_ok = !matches!(value & 1<<5, 0);
+        let signal_status_ok = !matches!(value & 1<<4, 0);
+        let all_flags_ok = matches!(value & 0b0000_0011_0111_0000, 0b0000_0011_0111_0000);
         Sch16tStatRate { 
             decimated_rate_saturation_ok,
             interpolated_rate_saturation_ok,
@@ -250,6 +250,8 @@ where
     pub fn init(&mut self) -> Result<(), Sch16tError<SPI>> {
         // wait 50ms for NVM read and SPI start up
         thread::sleep(Duration::from_millis(50));
+        self.write_register(Register::CtrlReset, 0x10_u32);
+        thread::sleep(Duration::from_millis(50));
         println!("version {}", self.read_register(Register::AsicId)?);
         println!("comp id {}", self.read_register(Register::CompId)?);
 
@@ -333,16 +335,27 @@ where
         else {
             
             let elapsed_time_s = self.last_measure_instant.unwrap().elapsed().as_secs_f32();
-            //println!("elapsed time {}", elapsed_time_s);
             self.last_measure_instant = Some(Instant::now());
             if Sch16tStatRate::from(x_stat as u16).all_flags_ok{
                 self.angle.x += self.angle_from_register(Register::RateX1)?*elapsed_time_s;
             }
+            else {
+                self.angle.x += self.angle_from_register(Register::RateX2)?*elapsed_time_s;
+                println!("x meas ko");
+            }
             if Sch16tStatRate::from(y_stat as u16).all_flags_ok{
                 self.angle.y += self.angle_from_register(Register::RateY1)?*elapsed_time_s;
             }
+            else {
+                self.angle.x += self.angle_from_register(Register::RateY2)?*elapsed_time_s;
+                println!("y meas ko");
+            }
             if Sch16tStatRate::from(z_stat as u16).all_flags_ok{
                 self.angle.z += self.angle_from_register(Register::RateZ1)?*elapsed_time_s;
+            }
+            else {
+                self.angle.x += self.angle_from_register(Register::RateZ2)?*elapsed_time_s;
+                println!("z meas ko");
             }
         }
         Ok(())
@@ -350,15 +363,21 @@ where
 
     fn angle_from_register(&mut self, register: Register) -> Result<f32, Sch16tError<SPI>>{
         let mut raw_reg=self.read_register(register)?;
-        raw_reg &= 0x000fff_ff;
-        raw_reg = raw_reg <<12;
+        raw_reg &= 0x000f_ffff;
+        raw_reg <<= 12;
         let f32_reg = ((raw_reg as i32)>>12)as f32;
-        //println!("raw angle u32 {:#010x} f32 {:.2}\n", raw_reg, f32_reg);
-        match self.angle_scale{
-            SCH16TAngleScale::Scale300degs => Ok(f32_reg / 1600.0),
-            SCH16TAngleScale::Scale125degs => Ok(f32_reg / 3200.0),
-            SCH16TAngleScale::Scale62_5degs => Ok(f32_reg / 6400.0),
+        // angle is set to default 300deg/s for rate2 and is configured by self.angle_scale for rate1 data
+        match register{
+            Register::RateX1 | Register::RateY1 | Register::RateZ1 => match self.angle_scale{
+                                                                                SCH16TAngleScale::Scale300degs => Ok(f32_reg / 1600.0),
+                                                                                SCH16TAngleScale::Scale125degs => Ok(f32_reg / 3200.0),
+                                                                                SCH16TAngleScale::Scale62_5degs => Ok(f32_reg / 6400.0),
+                                                                            },
+            Register::RateX2 | Register::RateY2 | Register::RateZ2  => Ok(f32_reg / 1600.0),
+            _ => Ok(0.0), // TODO replace it by Err(tbd)
+
         }
+        
     }
 
     pub fn read_angle(&mut self) -> [f32; 3]{
@@ -387,7 +406,6 @@ where
     fn write_register(&mut self, register: Register, data : u32) -> bool{
         
         let frame = self.create_spi48bf(register, false, data);
-        //println!("send buf {:#04x} {:#04x} {:#04x} {:#04x} {:#04x} {:#04x}", frame[0], frame[1], frame[2], frame[3], frame[4], frame[5]);
         let mut answer : [u8;6] = [0x00;6];
         let _ = self.spi.transaction(&mut [
             Operation::Write(&frame),
@@ -396,19 +414,15 @@ where
             Operation::Read(&mut answer),
         ]).map_err(Sch16tError::Spi);
         let parsed_answer = self.parse_spi48bf(answer);
-        match parsed_answer.status{  
-            SCH16TFrameStatus::Error  => true,
-                                    _ => false}
+        matches!(parsed_answer.status, SCH16TFrameStatus::Error)
     }
     
     fn compute_crc8(&self, frame: [u8;5] ) -> u8{
         let mut buf : [u8;6] = [0x00;6];
         for (i, &val) in frame.iter().enumerate() {
         buf[i+1] = val;
-        //println!("{:#04x}",val);
     }
         buf[0] = 0xff;
-        //println!("crc buf {:#04x} {:#04x} {:#04x} {:#04x} {:#04x} {:#04x}", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
         let crc = crc::Crc::<u8>::new(&crc::CRC_8_OPENSAFETY);
         let mut digest = crc.digest();
         digest.update(&buf);
@@ -419,16 +433,11 @@ where
         let mut raw_u64 = [0x00;8];
         for (i, &val) in raw.iter().enumerate() {
         raw_u64[i+2] = val;
-        //println!("{:#04x}",val);
     }
         let full_frame : u64 = FromBytes::from_be_bytes(&raw_u64);
-        //println!("recv {:#014x}",full_frame);
         // received SPI48B frame structure
         // D TA[9:0] IDS CE S[1:0] DCNT* RFU* DATA[19:0] CRC|7:0]
-        let sensor_data : bool = match full_frame & (1<<47){
-            0 => false,
-            _ => true,
-        };
+        let sensor_data : bool = !matches!(full_frame & (1<<47), 0);
 
         let address :u8 = (full_frame >>45) as u8 & 0x03;
         let register :u8 = (full_frame >>38) as u8;
@@ -452,13 +461,13 @@ where
         let frame_crc = self.compute_crc8(crc_data);
 
         SPI48bRdFrame{
-            address : address,
-            register : register, 
-            data: data,
-            dcnt: dcnt,
+            address,
+            register, 
+            data,
+            dcnt,
             crc_ok : crc_received==frame_crc,
-            sensor_data: sensor_data,
-            status: status,
+            sensor_data,
+            status,
         }
     }
 
@@ -466,7 +475,7 @@ where
     fn create_spi48bf(&self, register: Register, read : bool, data: u32)->[u8;6]{
         // the SPI 48b frame definition :
         // TA[9:0] RW_bit 0 1 AE[6:0] data[19:0] CRC8[7:0] 
-        let mut full_frame :u64 = (1 as u64) << 35; // set FT bit that indicates that the frame is 48 bits long 
+        let mut full_frame :u64 = (1_u64) << 35; // set FT bit that indicates that the frame is 48 bits long 
         full_frame |= (self.address as u64 )<< 46;   // address lsb contains the TA[9:8] bits     
         full_frame |= (register as u64) <<38;        // TA[7:0] must contains the register address
         full_frame |= match read {true => 0,false => 1} << 37;
@@ -476,45 +485,9 @@ where
         let crc = self.compute_crc8(to_crc_data);
         full_frame |= crc as u64;
         
-        //println!("register {:#06x} read {} data{:#06x}  full frame{:#014x}", register as u8, read, data, full_frame);
-        //let mut bytes_frame = [0x00;6];
-        //dest_buf[0..6].clone_from_slice(&ToBytes::to_ne_bytes(&full_frame));
         <[u8; 6]>::try_from(&full_frame.to_be_bytes()[2..8]).unwrap()
         }
     }
-
-/*
-pub struct MyDriver<SPI> {
-    spi: SPI,
-}
-
-impl<SPI> MyDriver<SPI>
-where
-    SPI: SpiDevice,
-{
-    pub fn new(spi: SPI) -> Self {
-        Self { spi }
-    }
-
-    pub fn read_foo(&mut self) -> Result<[u8; 2], MyError<SPI::Error>> {
-        let mut buf = [0; 2];
-
-        // `transaction` asserts and deasserts CS for us. No need to do it manually!
-        self.spi.transaction(&mut [
-            Operation::Write(&[0x90]),
-            Operation::Read(&mut buf),
-        ]).map_err(MyError::Spi)?;
-
-        Ok(buf)
-    }
-}
-
-#[derive(Copy, Clone, Debug)]
-enum MyError<SPI> {
-    Spi(SPI),
-    // Add other errors for your driver here.
-}
-*/
 
 
 #[cfg(test)]
