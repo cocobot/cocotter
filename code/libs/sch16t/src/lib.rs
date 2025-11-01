@@ -131,7 +131,6 @@ struct SPI48bRdFrame {
     data: u32,
     dcnt: Option<u8>,
     crc_ok: bool,
-    sensor_data: bool,
     status: SCH16TFrameStatus,
 }
 
@@ -429,7 +428,11 @@ where
         let full_frame: u64 = FromBytes::from_be_bytes(&raw_u64);
         // received SPI48B frame structure
         // D TA[9:0] IDS CE S[1:0] DCNT* RFU* DATA[19:0] CRC|7:0]
-        let sensor_data: bool = !matches!(full_frame & (1 << 47), 0);
+        let dcnt = if full_frame & (1 << 47) != 0 {
+            Some((full_frame >> 29) as u8 & 0b0000_1111)
+        } else {
+            None
+        };
 
         let address: u8 = (full_frame >> 45) as u8 & 0x03;
         let register: u8 = (full_frame >> 38) as u8;
@@ -437,10 +440,6 @@ where
         if full_frame & (1 << 35) != 0 {
             status = SCH16TFrameStatus::Error;
         }
-        let dcnt = match sensor_data {
-            true => Some((full_frame >> 29) as u8 & 0b0000_1111),
-            _ => None,
-        };
         let data = (full_frame >> 8 & 0x000FFFFF) as u32; // 20 bits
 
         let crc_received = raw[5];
@@ -458,7 +457,6 @@ where
             data,
             dcnt,
             crc_ok: crc_received == frame_crc,
-            sensor_data,
             status,
         }
     }
