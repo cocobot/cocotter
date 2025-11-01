@@ -421,18 +421,6 @@ where
         matches!(parsed_answer.status, SCH16TFrameStatus::Error)
     }
 
-    fn compute_crc8(&self, frame: [u8; 5]) -> u8 {
-        let mut buf: [u8; 6] = [0x00; 6];
-        for (i, &val) in frame.iter().enumerate() {
-            buf[i + 1] = val;
-        }
-        buf[0] = 0xff;
-        let crc = crc::Crc::<u8>::new(&crc::CRC_8_OPENSAFETY);
-        let mut digest = crc.digest();
-        digest.update(&buf);
-        digest.finalize()
-    }
-
     fn parse_spi48bf(&self, raw: [u8; 6]) -> SPI48bRdFrame {
         let mut raw_u64 = [0x00; 8];
         for (i, &val) in raw.iter().enumerate() {
@@ -462,7 +450,7 @@ where
                 crc_data[i - 1] = val;
             }
         }
-        let frame_crc = self.compute_crc8(crc_data);
+        let frame_crc = compute_crc8(&crc_data);
 
         SPI48bRdFrame {
             address,
@@ -487,13 +475,20 @@ where
             false => 1,
         } << 37;
         full_frame |= (data as u64 & 0x0000_0000_000f_ffff) << 8;
-        let to_crc_data = <[u8; 5]>::try_from(&full_frame.to_be_bytes()[2..7]).unwrap();
 
-        let crc = self.compute_crc8(to_crc_data);
+        let crc = compute_crc8(&full_frame.to_be_bytes()[2..7]);
         full_frame |= crc as u64;
 
         <[u8; 6]>::try_from(&full_frame.to_be_bytes()[2..8]).unwrap()
     }
+}
+
+fn compute_crc8(frame: &[u8]) -> u8 {
+    let crc = crc::Crc::<u8>::new(&crc::CRC_8_OPENSAFETY);
+    let mut digest = crc.digest();
+    digest.update(&[0xff]);
+    digest.update(&frame);
+    digest.finalize()
 }
 
 #[cfg(test)]
