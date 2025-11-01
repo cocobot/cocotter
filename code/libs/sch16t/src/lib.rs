@@ -436,20 +436,16 @@ where
 
         let address: u8 = (full_frame >> 45) as u8 & 0x03;
         let register: u8 = (full_frame >> 38) as u8;
-        let mut status: SCH16TFrameStatus = SCH16TFrameStatus::from((full_frame >> 33) as u8);
-        if full_frame & (1 << 35) != 0 {
-            status = SCH16TFrameStatus::Error;
-        }
+        let status = if full_frame & (1 << 35) == 0 {
+            SCH16TFrameStatus::from((full_frame >> 33) as u8)
+        } else {
+            SCH16TFrameStatus::Error
+        };
         let data = (full_frame >> 8 & 0x000FFFFF) as u32; // 20 bits
 
         let crc_received = raw[5];
-        let mut crc_data = [0x00; 5];
-        for (i, &val) in raw.iter().enumerate() {
-            if i > 0 {
-                crc_data[i - 1] = val;
-            }
-        }
-        let frame_crc = compute_crc8(&crc_data);
+        //TODO bugged
+        let frame_crc = compute_crc8(&raw[1..]);
 
         SPI48bRdFrame {
             address,
