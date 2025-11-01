@@ -158,7 +158,16 @@ struct Sch16tStatRate {
     digital_continuous_self_test_ok: bool,
     analog_continuous_self_test_ok: bool,
     signal_status_ok: bool,
-    all_flags_ok: bool,
+}
+
+impl Sch16tStatRate {
+    const fn all_flags_ok(&self) -> bool {
+        self.decimated_rate_saturation_ok &&
+            self.interpolated_rate_saturation_ok &&
+            self.digital_continuous_self_test_ok &&
+            self.analog_continuous_self_test_ok &&
+            self.signal_status_ok
+    }
 }
 
 impl From<u16> for Sch16tStatRate {
@@ -169,7 +178,6 @@ impl From<u16> for Sch16tStatRate {
             digital_continuous_self_test_ok: value & 1 << 6 != 0,
             analog_continuous_self_test_ok: value & 1 << 5 != 0,
             signal_status_ok: value & 1 << 4 != 0,
-            all_flags_ok: value & 0b0000_0011_0111_0000 != 0b0000_0011_0111_0000,
         }
     }
 }
@@ -341,19 +349,19 @@ where
         } else {
             let elapsed_time_s = self.last_measure_instant.unwrap().elapsed().as_secs_f32();
             self.last_measure_instant = Some(Instant::now());
-            if Sch16tStatRate::from(x_stat as u16).all_flags_ok {
+            if Sch16tStatRate::from(x_stat as u16).all_flags_ok() {
                 self.angle.x += self.angle_from_register(Register::RateX1)? * elapsed_time_s;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateX2)? * elapsed_time_s;
                 println!("x meas ko");
             }
-            if Sch16tStatRate::from(y_stat as u16).all_flags_ok {
+            if Sch16tStatRate::from(y_stat as u16).all_flags_ok() {
                 self.angle.y += self.angle_from_register(Register::RateY1)? * elapsed_time_s;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateY2)? * elapsed_time_s;
                 println!("y meas ko");
             }
-            if Sch16tStatRate::from(z_stat as u16).all_flags_ok {
+            if Sch16tStatRate::from(z_stat as u16).all_flags_ok() {
                 self.angle.z += self.angle_from_register(Register::RateZ1)? * elapsed_time_s;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateZ2)? * elapsed_time_s;
