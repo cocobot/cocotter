@@ -6,7 +6,7 @@ use embedded_hal::spi::{SpiDevice, Operation};
 /// SCH16T 
 /// 
 /// The SCH16T is a combined gyroscope and accelerometer.
-//#[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 pub struct Sch16t<SPI> {
     spi                 : SPI,
     address             : u8,
@@ -101,7 +101,7 @@ pub enum SCH16TAccScale{
     Scale15ms2  =0b100,
 }
 
-
+#[allow(dead_code)]
 enum SCH16TAngleFilter{
     Filter68Hz  =0b000,
     Filter30Hz  =0b001,
@@ -112,6 +112,7 @@ enum SCH16TAngleFilter{
     Bypass      =0b111,
 }
 
+#[allow(dead_code)]
 #[derive(Clone, Copy)]
 enum SCH16TDecimationRatio{
     DecRatio1  = 0b000,
@@ -121,6 +122,7 @@ enum SCH16TDecimationRatio{
     DecRatio16 = 0b100,
 }
 
+#[allow(dead_code)]
 struct SPI48bRdFrame
 {
     address     : u8,
@@ -148,7 +150,9 @@ struct SCH16TAcc12Ctrl{
     y2_decim_ratio : SCH16TDecimationRatio,
     x2_decim_ratio : SCH16TDecimationRatio,
 }
- struct Sch16tStatRate{
+
+#[allow(dead_code)]
+struct Sch16tStatRate{
     decimated_rate_saturation_ok    : bool,
     interpolated_rate_saturation_ok : bool,
     digital_continuous_self_test_ok : bool,
