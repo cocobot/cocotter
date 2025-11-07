@@ -1,11 +1,15 @@
 (kicad_symbol_lib
-	(version 20231120)
+	(version 20241209)
 	(generator "kicad_symbol_editor")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(symbol "1N5819WS"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -81,10 +85,10 @@
 		(symbol "1N5819WS_0_1"
 			(polyline
 				(pts
-					(xy 1.27 0) (xy -1.27 0)
+					(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
 				)
 				(stroke
-					(width 0)
+					(width 0.254)
 					(type default)
 				)
 				(fill
@@ -105,10 +109,10 @@
 			)
 			(polyline
 				(pts
-					(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+					(xy 1.27 0) (xy -1.27 0)
 				)
 				(stroke
-					(width 0.254)
+					(width 0)
 					(type default)
 				)
 				(fill
@@ -154,10 +158,15 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "1SS367,H3F"
-		(pin_numbers hide)
-		(pin_names hide)
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -264,10 +273,10 @@
 			)
 			(polyline
 				(pts
-					(xy 1.27 0) (xy -1.27 0)
+					(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
 				)
 				(stroke
-					(width 0)
+					(width 0.254)
 					(type default)
 				)
 				(fill
@@ -276,10 +285,10 @@
 			)
 			(polyline
 				(pts
-					(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+					(xy 1.27 0) (xy -1.27 0)
 				)
 				(stroke
-					(width 0.254)
+					(width 0)
 					(type default)
 				)
 				(fill
@@ -325,11 +334,16 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "BZT52C3V0S"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -406,10 +420,10 @@
 		(symbol "BZT52C3V0S_0_1"
 			(polyline
 				(pts
-					(xy 1.27 0) (xy -1.27 0)
+					(xy -1.27 1.27) (xy -0.762 1.778) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -1.778 -1.778)
 				)
 				(stroke
-					(width 0)
+					(width 0.254)
 					(type default)
 				)
 				(fill
@@ -430,10 +444,10 @@
 			)
 			(polyline
 				(pts
-					(xy -1.27 1.27) (xy -0.762 1.778) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -1.778 -1.778)
+					(xy 1.27 0) (xy -1.27 0)
 				)
 				(stroke
-					(width 0.254)
+					(width 0)
 					(type default)
 				)
 				(fill
@@ -479,11 +493,16 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "DSK34"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -560,10 +579,10 @@
 		(symbol "DSK34_0_1"
 			(polyline
 				(pts
-					(xy 1.27 0) (xy -1.27 0)
+					(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
 				)
 				(stroke
-					(width 0)
+					(width 0.254)
 					(type default)
 				)
 				(fill
@@ -584,10 +603,10 @@
 			)
 			(polyline
 				(pts
-					(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+					(xy 1.27 0) (xy -1.27 0)
 				)
 				(stroke
-					(width 0.254)
+					(width 0)
 					(type default)
 				)
 				(fill
@@ -633,9 +652,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "IN-P32TRRRGB"
-		(pin_names hide)
+		(pin_names
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -694,67 +716,7 @@
 		(symbol "IN-P32TRRRGB_0_1"
 			(polyline
 				(pts
-					(xy -2.54 -6.35) (xy -2.54 -3.81)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -2.54 -1.27) (xy -2.54 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -2.54 3.81) (xy -2.54 6.35)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy 0 0) (xy 1.27 0)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy 0 5.08) (xy 1.27 5.08) (xy 1.27 -5.08) (xy 0 -5.08)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -4.318 -5.842) (xy -5.842 -7.366) (xy -5.08 -7.366) (xy -5.842 -7.366) (xy -5.842 -6.604)
+					(xy -4.318 4.318) (xy -5.842 2.794) (xy -5.08 2.794) (xy -5.842 2.794) (xy -5.842 3.556)
 				)
 				(stroke
 					(width 0)
@@ -778,7 +740,7 @@
 			)
 			(polyline
 				(pts
-					(xy -4.318 4.318) (xy -5.842 2.794) (xy -5.08 2.794) (xy -5.842 2.794) (xy -5.842 3.556)
+					(xy -4.318 -5.842) (xy -5.842 -7.366) (xy -5.08 -7.366) (xy -5.842 -7.366) (xy -5.842 -6.604)
 				)
 				(stroke
 					(width 0)
@@ -790,7 +752,7 @@
 			)
 			(polyline
 				(pts
-					(xy -3.048 -5.842) (xy -4.572 -7.366) (xy -3.81 -7.366) (xy -4.572 -7.366) (xy -4.572 -6.604)
+					(xy -3.048 4.318) (xy -4.572 2.794) (xy -3.81 2.794) (xy -4.572 2.794) (xy -4.572 3.556)
 				)
 				(stroke
 					(width 0)
@@ -814,7 +776,67 @@
 			)
 			(polyline
 				(pts
-					(xy -3.048 4.318) (xy -4.572 2.794) (xy -3.81 2.794) (xy -4.572 2.794) (xy -4.572 3.556)
+					(xy -3.048 -5.842) (xy -4.572 -7.366) (xy -3.81 -7.366) (xy -4.572 -7.366) (xy -4.572 -6.604)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 3.81) (xy -2.54 6.35)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 -1.27) (xy -2.54 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 -6.35) (xy -2.54 -3.81)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 5.08) (xy 1.27 5.08) (xy 1.27 -5.08) (xy 0 -5.08)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 0) (xy 1.27 0)
 				)
 				(stroke
 					(width 0)
@@ -828,7 +850,7 @@
 		(symbol "IN-P32TRRRGB_1_1"
 			(polyline
 				(pts
-					(xy 0 -6.35) (xy 0 -3.81) (xy -2.54 -5.08) (xy 0 -6.35)
+					(xy 0 3.81) (xy 0 6.35) (xy -2.54 5.08) (xy 0 3.81)
 				)
 				(stroke
 					(width 0.254)
@@ -836,7 +858,7 @@
 				)
 				(fill
 					(type color)
-					(color 0 0 255 1)
+					(color 255 0 0 1)
 				)
 			)
 			(polyline
@@ -854,7 +876,7 @@
 			)
 			(polyline
 				(pts
-					(xy 0 3.81) (xy 0 6.35) (xy -2.54 5.08) (xy 0 3.81)
+					(xy 0 -6.35) (xy 0 -3.81) (xy -2.54 -5.08) (xy 0 -6.35)
 				)
 				(stroke
 					(width 0.254)
@@ -862,20 +884,20 @@
 				)
 				(fill
 					(type color)
-					(color 255 0 0 1)
+					(color 0 0 255 1)
 				)
 			)
 			(pin passive line
-				(at -5.08 -5.08 0)
+				(at -5.08 5.08 0)
 				(length 2.54)
-				(name "C_BLUE"
+				(name "C_RED"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "1"
+				(number "3"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -902,16 +924,16 @@
 				)
 			)
 			(pin passive line
-				(at -5.08 5.08 0)
+				(at -5.08 -5.08 0)
 				(length 2.54)
-				(name "C_RED"
+				(name "C_BLUE"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "3"
+				(number "1"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -938,9 +960,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "NH-B2020RGBA-HF"
-		(pin_names hide)
+		(pin_names
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -999,67 +1024,7 @@
 		(symbol "NH-B2020RGBA-HF_0_1"
 			(polyline
 				(pts
-					(xy -2.54 -6.35) (xy -2.54 -3.81)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -2.54 -1.27) (xy -2.54 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -2.54 3.81) (xy -2.54 6.35)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy 0 0) (xy 1.27 0)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy 0 5.08) (xy 1.27 5.08) (xy 1.27 -5.08) (xy 0 -5.08)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -4.318 -5.842) (xy -5.842 -7.366) (xy -5.08 -7.366) (xy -5.842 -7.366) (xy -5.842 -6.604)
+					(xy -4.318 4.318) (xy -5.842 2.794) (xy -5.08 2.794) (xy -5.842 2.794) (xy -5.842 3.556)
 				)
 				(stroke
 					(width 0)
@@ -1083,7 +1048,7 @@
 			)
 			(polyline
 				(pts
-					(xy -4.318 4.318) (xy -5.842 2.794) (xy -5.08 2.794) (xy -5.842 2.794) (xy -5.842 3.556)
+					(xy -4.318 -5.842) (xy -5.842 -7.366) (xy -5.08 -7.366) (xy -5.842 -7.366) (xy -5.842 -6.604)
 				)
 				(stroke
 					(width 0)
@@ -1095,7 +1060,7 @@
 			)
 			(polyline
 				(pts
-					(xy -3.048 -5.842) (xy -4.572 -7.366) (xy -3.81 -7.366) (xy -4.572 -7.366) (xy -4.572 -6.604)
+					(xy -3.048 4.318) (xy -4.572 2.794) (xy -3.81 2.794) (xy -4.572 2.794) (xy -4.572 3.556)
 				)
 				(stroke
 					(width 0)
@@ -1119,7 +1084,67 @@
 			)
 			(polyline
 				(pts
-					(xy -3.048 4.318) (xy -4.572 2.794) (xy -3.81 2.794) (xy -4.572 2.794) (xy -4.572 3.556)
+					(xy -3.048 -5.842) (xy -4.572 -7.366) (xy -3.81 -7.366) (xy -4.572 -7.366) (xy -4.572 -6.604)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 3.81) (xy -2.54 6.35)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 -1.27) (xy -2.54 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.54 -6.35) (xy -2.54 -3.81)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 5.08) (xy 1.27 5.08) (xy 1.27 -5.08) (xy 0 -5.08)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 0) (xy 1.27 0)
 				)
 				(stroke
 					(width 0)
@@ -1133,7 +1158,7 @@
 		(symbol "NH-B2020RGBA-HF_1_1"
 			(polyline
 				(pts
-					(xy 0 -6.35) (xy 0 -3.81) (xy -2.54 -5.08) (xy 0 -6.35)
+					(xy 0 3.81) (xy 0 6.35) (xy -2.54 5.08) (xy 0 3.81)
 				)
 				(stroke
 					(width 0.254)
@@ -1141,7 +1166,7 @@
 				)
 				(fill
 					(type color)
-					(color 0 0 255 1)
+					(color 255 0 0 1)
 				)
 			)
 			(polyline
@@ -1159,7 +1184,7 @@
 			)
 			(polyline
 				(pts
-					(xy 0 3.81) (xy 0 6.35) (xy -2.54 5.08) (xy 0 3.81)
+					(xy 0 -6.35) (xy 0 -3.81) (xy -2.54 -5.08) (xy 0 -6.35)
 				)
 				(stroke
 					(width 0.254)
@@ -1167,7 +1192,7 @@
 				)
 				(fill
 					(type color)
-					(color 255 0 0 1)
+					(color 0 0 255 1)
 				)
 			)
 			(pin passive line
@@ -1181,6 +1206,24 @@
 					)
 				)
 				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 2.54)
+				(name "C_GREEN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1224,17 +1267,158 @@
 					)
 				)
 			)
+		)
+		(embedded_fonts no)
+	)
+	(symbol "SDT5A50SA-13"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "D"
+			(at 0 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "SDT5A50SA-13"
+			(at 0 -2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_diodes:D_SMA"
+			(at 0 -4.445 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "50V 520mV@5A 5A SOD-123 Schottky Barrier Diodes"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C6802582"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "diode Schottky"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "D*SOD?323*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "SDT5A50SA-13_0_1"
+			(polyline
+				(pts
+					(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 1.27 0) (xy -1.27 0)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "SDT5A50SA-13_1_1"
 			(pin passive line
-				(at -5.08 0 0)
+				(at -3.81 0 0)
 				(length 2.54)
-				(name "C_GREEN"
+				(name "K"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "4"
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1243,6 +1427,7 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "WS2812B"
 		(pin_names
@@ -1338,18 +1523,6 @@
 		(symbol "WS2812B_0_1"
 			(polyline
 				(pts
-					(xy 1.27 -3.556) (xy 1.778 -3.556)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy 1.27 -2.54) (xy 1.778 -2.54)
 				)
 				(stroke
@@ -1362,19 +1535,7 @@
 			)
 			(polyline
 				(pts
-					(xy 4.699 -3.556) (xy 2.667 -3.556)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy 2.286 -2.54) (xy 1.27 -3.556) (xy 1.27 -3.048)
+					(xy 1.27 -3.556) (xy 1.778 -3.556)
 				)
 				(stroke
 					(width 0)
@@ -1387,6 +1548,18 @@
 			(polyline
 				(pts
 					(xy 2.286 -1.524) (xy 1.27 -2.54) (xy 1.27 -2.032)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.286 -2.54) (xy 1.27 -3.556) (xy 1.27 -3.048)
 				)
 				(stroke
 					(width 0)
@@ -1420,6 +1593,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy 4.699 -3.556) (xy 2.667 -3.556)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 			(rectangle
 				(start 5.08 5.08)
 				(end -5.08 -5.08)
@@ -1433,6 +1618,24 @@
 			)
 		)
 		(symbol "WS2812B_1_1"
+			(pin input line
+				(at -7.62 0 0)
+				(length 2.54)
+				(name "DIN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 			(pin power_in line
 				(at 0 7.62 270)
 				(length 2.54)
@@ -1444,24 +1647,6 @@
 					)
 				)
 				(number "1"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin output line
-				(at 7.62 0 180)
-				(length 2.54)
-				(name "DOUT"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "2"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1487,17 +1672,17 @@
 					)
 				)
 			)
-			(pin input line
-				(at -7.62 0 0)
+			(pin output line
+				(at 7.62 0 180)
 				(length 2.54)
-				(name "DIN"
+				(name "DOUT"
 					(effects
 						(font
 							(size 1.27 1.27)
 						)
 					)
 				)
-				(number "4"
+				(number "2"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -1506,11 +1691,16 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "green_led_0603"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -1606,18 +1796,6 @@
 		(symbol "green_led_0603_0_1"
 			(polyline
 				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 				)
 				(stroke
@@ -1640,6 +1818,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy -1.27 -1.27) (xy -1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 		)
 		(symbol "green_led_0603_1_1"
 			(polyline
@@ -1653,24 +1843,6 @@
 				(fill
 					(type color)
 					(color 0 194 0 1)
-				)
-			)
-			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
 				)
 			)
 			(pin passive line
@@ -1691,12 +1863,35 @@
 					)
 				)
 			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "green_led_1206_reverse_mount"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -1792,18 +1987,6 @@
 		(symbol "green_led_1206_reverse_mount_0_1"
 			(polyline
 				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 				)
 				(stroke
@@ -1826,6 +2009,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy -1.27 -1.27) (xy -1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 		)
 		(symbol "green_led_1206_reverse_mount_1_1"
 			(polyline
@@ -1839,24 +2034,6 @@
 				(fill
 					(type color)
 					(color 0 194 0 1)
-				)
-			)
-			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
 				)
 			)
 			(pin passive line
@@ -1877,12 +2054,35 @@
 					)
 				)
 			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "red_led_0603"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -1969,18 +2169,6 @@
 		(symbol "red_led_0603_0_1"
 			(polyline
 				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 				)
 				(stroke
@@ -2003,6 +2191,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy -1.27 -1.27) (xy -1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 		)
 		(symbol "red_led_0603_1_1"
 			(polyline
@@ -2016,24 +2216,6 @@
 				(fill
 					(type color)
 					(color 255 0 0 1)
-				)
-			)
-			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
 				)
 			)
 			(pin passive line
@@ -2054,12 +2236,35 @@
 					)
 				)
 			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "red_led_1206_reverse_mount"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -2155,18 +2360,6 @@
 		(symbol "red_led_1206_reverse_mount_0_1"
 			(polyline
 				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 				)
 				(stroke
@@ -2189,6 +2382,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy -1.27 -1.27) (xy -1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 		)
 		(symbol "red_led_1206_reverse_mount_1_1"
 			(polyline
@@ -2202,24 +2407,6 @@
 				(fill
 					(type color)
 					(color 255 0 0 1)
-				)
-			)
-			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
 				)
 			)
 			(pin passive line
@@ -2240,12 +2427,35 @@
 					)
 				)
 			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "white_led_0603"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -2341,18 +2551,6 @@
 		(symbol "white_led_0603_0_1"
 			(polyline
 				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 				)
 				(stroke
@@ -2375,6 +2573,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy -1.27 -1.27) (xy -1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 		)
 		(symbol "white_led_0603_1_1"
 			(polyline
@@ -2388,24 +2598,6 @@
 				(fill
 					(type color)
 					(color 0 0 0 0)
-				)
-			)
-			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
 				)
 			)
 			(pin passive line
@@ -2426,12 +2618,35 @@
 					)
 				)
 			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "yellow_led_0603"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -2527,18 +2742,6 @@
 		(symbol "yellow_led_0603_0_1"
 			(polyline
 				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 				)
 				(stroke
@@ -2561,6 +2764,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy -1.27 -1.27) (xy -1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 		)
 		(symbol "yellow_led_0603_1_1"
 			(polyline
@@ -2574,24 +2789,6 @@
 				(fill
 					(type color)
 					(color 255 255 0 1)
-				)
-			)
-			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
 				)
 			)
 			(pin passive line
@@ -2612,12 +2809,35 @@
 					)
 				)
 			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "yellow_led_0805"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
-			(offset 1.016) hide)
+			(offset 1.016)
+			(hide yes)
+		)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -2704,18 +2924,6 @@
 		(symbol "yellow_led_0805_0_1"
 			(polyline
 				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
-				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
 					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
 				)
 				(stroke
@@ -2738,6 +2946,18 @@
 					(type none)
 				)
 			)
+			(polyline
+				(pts
+					(xy -1.27 -1.27) (xy -1.27 1.27)
+				)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
 		)
 		(symbol "yellow_led_0805_1_1"
 			(polyline
@@ -2751,24 +2971,6 @@
 				(fill
 					(type color)
 					(color 255 255 0 1)
-				)
-			)
-			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "A"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
 				)
 			)
 			(pin passive line
@@ -2789,6 +2991,25 @@
 					)
 				)
 			)
+			(pin passive line
+				(at 3.81 0 180)
+				(length 2.54)
+				(name "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "A"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
 		)
+		(embedded_fonts no)
 	)
 )

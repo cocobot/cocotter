@@ -1,9 +1,11 @@
 (kicad_symbol_lib
-	(version 20231120)
+	(version 20241209)
 	(generator "kicad_symbol_editor")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(symbol "NRL2104J3950B1F"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -73,21 +75,9 @@
 		)
 		(symbol "NRL2104J3950B1F_0_1"
 			(arc
-				(start -3.048 2.159)
-				(mid -3.0495 2.3143)
-				(end -3.175 2.413)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(arc
-				(start -3.048 2.159)
-				(mid -2.9736 1.9794)
-				(end -2.794 1.905)
+				(start -3.175 2.413)
+				(mid -3.0506 2.3165)
+				(end -3.048 2.159)
 				(stroke
 					(width 0)
 					(type default)
@@ -98,32 +88,8 @@
 			)
 			(arc
 				(start -3.048 2.794)
-				(mid -2.9736 2.6144)
-				(end -2.794 2.54)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(arc
-				(start -2.794 1.905)
-				(mid -2.6144 1.9794)
-				(end -2.54 2.159)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(arc
-				(start -2.794 2.54)
-				(mid -2.4393 2.5587)
-				(end -2.159 2.794)
+				(mid -2.9736 2.9736)
+				(end -2.794 3.048)
 				(stroke
 					(width 0)
 					(type default)
@@ -134,7 +100,19 @@
 			)
 			(arc
 				(start -2.794 3.048)
-				(mid -2.9736 2.9736)
+				(mid -2.6144 2.9736)
+				(end -2.54 2.794)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start -2.794 2.54)
+				(mid -2.9736 2.6144)
 				(end -3.048 2.794)
 				(stroke
 					(width 0)
@@ -145,9 +123,9 @@
 				)
 			)
 			(arc
-				(start -2.54 2.794)
-				(mid -2.6144 2.9736)
-				(end -2.794 3.048)
+				(start -2.794 1.905)
+				(mid -2.9736 1.9794)
+				(end -3.048 2.159)
 				(stroke
 					(width 0)
 					(type default)
@@ -156,11 +134,24 @@
 					(type none)
 				)
 			)
-			(rectangle
-				(start -1.016 2.54)
-				(end 1.016 -2.54)
+			(arc
+				(start -2.54 2.159)
+				(mid -2.6144 1.9794)
+				(end -2.794 1.905)
 				(stroke
-					(width 0.254)
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start -2.159 2.794)
+				(mid -2.434 2.5608)
+				(end -2.794 2.54)
+				(stroke
+					(width 0)
 					(type default)
 				)
 				(fill
@@ -170,18 +161,6 @@
 			(polyline
 				(pts
 					(xy -2.54 2.159) (xy -2.54 2.794)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -1.778 2.54) (xy -1.778 1.524) (xy 1.778 -1.524) (xy 1.778 -2.54)
 				)
 				(stroke
 					(width 0)
@@ -205,6 +184,18 @@
 			)
 			(polyline
 				(pts
+					(xy -1.778 2.54) (xy -1.778 1.524) (xy 1.778 -1.524) (xy 1.778 -2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
 					(xy -1.778 -1.397) (xy -1.778 -3.683) (xy -2.032 -2.921) (xy -1.524 -2.921) (xy -1.778 -3.683)
 					(xy -1.778 -3.429)
 				)
@@ -214,6 +205,17 @@
 				)
 				(fill
 					(type outline)
+				)
+			)
+			(rectangle
+				(start -1.016 2.54)
+				(end 1.016 -2.54)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
 				)
 			)
 		)
@@ -255,9 +257,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "NRNE104H3435B2H"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -327,21 +332,9 @@
 		)
 		(symbol "NRNE104H3435B2H_0_1"
 			(arc
-				(start -3.048 2.159)
-				(mid -3.0495 2.3143)
-				(end -3.175 2.413)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(arc
-				(start -3.048 2.159)
-				(mid -2.9736 1.9794)
-				(end -2.794 1.905)
+				(start -3.175 2.413)
+				(mid -3.0506 2.3165)
+				(end -3.048 2.159)
 				(stroke
 					(width 0)
 					(type default)
@@ -352,32 +345,8 @@
 			)
 			(arc
 				(start -3.048 2.794)
-				(mid -2.9736 2.6144)
-				(end -2.794 2.54)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(arc
-				(start -2.794 1.905)
-				(mid -2.6144 1.9794)
-				(end -2.54 2.159)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(arc
-				(start -2.794 2.54)
-				(mid -2.4393 2.5587)
-				(end -2.159 2.794)
+				(mid -2.9736 2.9736)
+				(end -2.794 3.048)
 				(stroke
 					(width 0)
 					(type default)
@@ -388,7 +357,19 @@
 			)
 			(arc
 				(start -2.794 3.048)
-				(mid -2.9736 2.9736)
+				(mid -2.6144 2.9736)
+				(end -2.54 2.794)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start -2.794 2.54)
+				(mid -2.9736 2.6144)
 				(end -3.048 2.794)
 				(stroke
 					(width 0)
@@ -399,9 +380,9 @@
 				)
 			)
 			(arc
-				(start -2.54 2.794)
-				(mid -2.6144 2.9736)
-				(end -2.794 3.048)
+				(start -2.794 1.905)
+				(mid -2.9736 1.9794)
+				(end -3.048 2.159)
 				(stroke
 					(width 0)
 					(type default)
@@ -410,11 +391,24 @@
 					(type none)
 				)
 			)
-			(rectangle
-				(start -1.016 2.54)
-				(end 1.016 -2.54)
+			(arc
+				(start -2.54 2.159)
+				(mid -2.6144 1.9794)
+				(end -2.794 1.905)
 				(stroke
-					(width 0.254)
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start -2.159 2.794)
+				(mid -2.434 2.5608)
+				(end -2.794 2.54)
+				(stroke
+					(width 0)
 					(type default)
 				)
 				(fill
@@ -424,18 +418,6 @@
 			(polyline
 				(pts
 					(xy -2.54 2.159) (xy -2.54 2.794)
-				)
-				(stroke
-					(width 0)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy -1.778 2.54) (xy -1.778 1.524) (xy 1.778 -1.524) (xy 1.778 -2.54)
 				)
 				(stroke
 					(width 0)
@@ -459,6 +441,18 @@
 			)
 			(polyline
 				(pts
+					(xy -1.778 2.54) (xy -1.778 1.524) (xy 1.778 -1.524) (xy 1.778 -2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
 					(xy -1.778 -1.397) (xy -1.778 -3.683) (xy -2.032 -2.921) (xy -1.524 -2.921) (xy -1.778 -3.683)
 					(xy -1.778 -3.429)
 				)
@@ -468,6 +462,17 @@
 				)
 				(fill
 					(type outline)
+				)
+			)
+			(rectangle
+				(start -1.016 2.54)
+				(end 1.016 -2.54)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
 				)
 			)
 		)
@@ -509,9 +514,164 @@
 				)
 			)
 		)
+		(embedded_fonts no)
+	)
+	(symbol "R_0.51R_1W_2512_5%"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "R"
+			(at 1.27 1.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "510mR 1W 5%"
+			(at 8.382 -1.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r2512_reflow"
+			(at -1.778 0 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0.510R 2512 5% 1W"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C49656265"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "R res resistor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "R_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "R_0.51R_1W_2512_5%_0_1"
+			(rectangle
+				(start -1.016 -2.54)
+				(end 1.016 2.54)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "R_0.51R_1W_2512_5%_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 1.27)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 1.27)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
 	)
 	(symbol "R_0R_0603"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -658,9 +818,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_0R_2512"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -807,9 +970,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_100R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -956,9 +1122,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_100R_0805_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -1105,9 +1274,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_100k_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -1254,9 +1426,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_10k_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -1403,9 +1578,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_120R_1206_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -1552,9 +1730,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_150R_0805_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -1701,9 +1882,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_1M_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -1850,9 +2034,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_1k3_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -1999,9 +2186,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_1k8_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -2148,9 +2338,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_1k_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -2297,9 +2490,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_22k_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -2446,9 +2642,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_240R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -2595,9 +2794,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_27k_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -2744,9 +2946,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_2k2_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -2893,9 +3098,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_330R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -3042,9 +3250,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_390R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -3191,9 +3402,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_3k3_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -3340,9 +3554,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_470R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -3489,9 +3706,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_51R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -3638,9 +3858,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_68k_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -3787,9 +4010,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_6k8_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -3936,9 +4162,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_768R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -4085,9 +4314,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_82R_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -4234,9 +4466,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_82R_0805_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -4383,9 +4618,12 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 	(symbol "R_91k_0603_1%"
-		(pin_numbers hide)
+		(pin_numbers
+			(hide yes)
+		)
 		(pin_names
 			(offset 0)
 		)
@@ -4532,5 +4770,6 @@
 				)
 			)
 		)
+		(embedded_fonts no)
 	)
 )
