@@ -6,7 +6,7 @@ use config::PAMIConfig;
 #[cfg(target_os = "espidf")]    
 use board_pami::BoardPami;
 
-#[cfg(target_os = "linux")]
+#[cfg(not(target_os = "espidf"))]
 use board_simulator::BoardPami;
 
 fn main() {

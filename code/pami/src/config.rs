@@ -1,6 +1,6 @@
 use phf::phf_map;
 
-#[cfg(target_os = "linux")]
+#[cfg(not(target_os = "espidf"))]
 use std::env;
 
 #[cfg(target_os = "espidf")]
@@ -51,7 +51,7 @@ impl PAMIConfig {
 
             return mac
         }
-        #[cfg(target_os = "linux")]
+        #[cfg(not(target_os = "espidf"))]
         {
             let robot_id = env::args().nth(1).expect("Except first argument to be the id of the robot");
             let robot_id = robot_id.parse::<usize>().unwrap();

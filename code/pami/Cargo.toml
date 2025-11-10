@@ -19,7 +19,7 @@ experimental = ["esp-idf-svc/experimental"]
 log = "0.4"
 phf = { version = "0.12.1", features = ["std", "macros"]}
 
-[target.'cfg(target_os = "linux")'.dependencies]
+[target.'cfg(not(target_os = "espidf"))'.dependencies]
 board-simulator = { path = "../boards/simulator" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]

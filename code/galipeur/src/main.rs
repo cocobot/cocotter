@@ -4,7 +4,7 @@ use std::{thread, time::Duration};
 use board_sabotter::BoardSabotter;
 #[cfg(target_os = "espidf")]
 use ble::BleComm;
-#[cfg(target_os = "linux")]
+#[cfg(not(target_os = "espidf"))]
 use board_simulator::{BoardSabotter, comm::BleComm};
 
 mod asserv;
