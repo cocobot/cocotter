@@ -25,6 +25,7 @@ board-simulator = { path = "../boards/simulator" }
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = "0.51"
 board-pami = { path = "../boards/pami" }
+ble = { path = "../libs/ble" }
 
 [build-dependencies]
 embuild = {version = "0.33", features = ["espidf"]}

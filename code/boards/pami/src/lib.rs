@@ -1,4 +1,13 @@
-use esp_idf_svc::hal::{gpio::{Gpio4, Output, PinDriver}, prelude::Peripherals, i2c::{I2cConfig, I2cDriver}, units::Hertz};
+use esp_idf_svc::{
+    bt::{Ble, BtDriver},
+    hal::{
+        gpio::{Gpio4, Output, PinDriver},
+        i2c::{I2cConfig, I2cDriver},
+        prelude::Peripherals,
+        units::Hertz,
+    },
+    nvs::EspDefaultNvsPartition,
+};
 use vlx::{VLX, Config, SensorType};
 use std::sync::{Arc, Mutex};
 use embedded_hal_bus::i2c::MutexDevice;
@@ -9,6 +18,7 @@ pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type LedHeartbeat = PinDriver<'static, Gpio4, Output>;
 pub type VlxSensors = VLX<I2CType, 3>;
 pub type PwmController = Arc<Mutex<Pca9685<I2CType>>>;
+pub type Bt = BtDriver<'static, Ble>;
 
 
 pub const PWM_EXTENDED_CHANNEL_SERVO: [Channel; 4] =
@@ -25,12 +35,14 @@ pub struct BoardPami {
     pub led_heartbeat: Option<LedHeartbeat>,
     pub vlx_sensors: Option<VlxSensors>,
     pub pwm_controller: Option<PwmController>,
+    pub ble: Option<Bt>,
 }
 
 impl BoardPami {
     pub fn new() -> Self {
         esp_idf_svc::sys::link_patches();
         esp_idf_svc::log::EspLogger::initialize_default();
+        let nvs = EspDefaultNvsPartition::take().unwrap();
 
         let peripherals = Peripherals::take().unwrap();
 
@@ -127,10 +139,13 @@ impl BoardPami {
 
         let vlx_sensors = VLX::new(i2c_bus_vlx, vlx_configs);           
 
+        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
+
         Self {
             led_heartbeat: Some(led_heartbeat),
             vlx_sensors: Some(vlx_sensors),
             pwm_controller,
+            ble,
         }
     }
 }

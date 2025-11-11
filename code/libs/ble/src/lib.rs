@@ -1,407 +1,159 @@
-use std::sync::{Arc, Condvar, Mutex};
-use std::sync::mpsc::{self, Receiver, Sender};
-use std::time::Duration;
-use esp_idf_svc::sys::{EspError, ESP_FAIL, ESP_BLE_ADV_FLAG_GEN_DISC};
+pub mod rome;
+pub mod scan;
+
+use std::sync::Arc;
 use esp_idf_svc::bt::{
     ble::{
         gap::{AdvConfiguration, BleGapEvent, EspBleGap},
-        gatt::{
-            server::{ConnectionId, EspGatts, GattsEvent},
-            AutoResponse, GattCharacteristic, GattDescriptor, GattId, GattInterface, GattResponse, GattServiceId, GattStatus, Handle, Permission, Property
-        },
+        gatt:: server::EspGatts,
     },
     BdAddr, Ble, BtDriver, BtStatus, BtUuid,
 };
-use log::{debug, error, info, warn};
-use enumset::enum_set;
+use esp_idf_svc::hal::sys::esp;
+use esp_idf_svc::sys::{self, EspError, ESP_BLE_ADV_FLAG_GEN_DISC};
+use log::{error, info, warn};
 
-const SERVER_APP_ID: u16 = 0;
-const MAX_CONNECTIONS: usize = 2;
+pub use rome::RomePeripheral;
+pub use scan::BleScanResult;
 
-const SERVICE_ROME_UUID: BtUuid = BtUuid::uuid128(0x8187_0000_ffa549699ab4e777ca411f95);
-const CHAR_ROME_TX_UUID: BtUuid = BtUuid::uuid128(0x8187_0001_ffa549699ab4e777ca411f95);
-const CHAR_ROME_RX_UUID: BtUuid = BtUuid::uuid128(0x8187_0002_ffa549699ab4e777ca411f95);
 
-const CCCD_UUID: BtUuid = BtUuid::uuid16(0x2902);
-
-#[derive(Debug, Clone)]
-struct Connection {
-    peer: BdAddr,
-    conn_id: Handle,
+/// Wrapper structure for peripheral implementation
+///
+/// Provide limited access to GAP.
+pub struct BleServer {
+    gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
+    pub gatts: EspGatts<'static, Ble, Arc<BtDriver<'static, Ble>>>,
 }
 
-struct CommState {
-    name: &'static str,
-    gatt_if: Option<GattInterface>,
-    service_handle: Option<Handle>,
-    rx_handle: Option<u16>,
-    tx_handle: Option<u16>,
-    tx_cccd_handle: Option<u16>,
-    connections: Vec<Connection>,
-    tx_confirmed: Option<BdAddr>,
-}
-
-pub struct BleComm {
-    gap: EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>,
-    gatts: EspGatts<'static, Ble, Arc<BtDriver<'static, Ble>>>,
-    state: Arc<Mutex<CommState>>,
-    rome_rx: Sender<Box<[u8]>>,
-    condvar: Arc<Condvar>,
-}
-
-impl BleComm {
-    pub fn run(bt: BtDriver<'static, Ble>, name: &'static str) -> (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) {
-        let bt = Arc::new(bt);
-        let gap = EspBleGap::new(bt.clone()).unwrap();
-        let gatts = EspGatts::new(bt.clone()).unwrap();
-        
-        let (rome_rx, rome_receiver) = mpsc::channel();
-        let (rome_sender, rome_tx) = mpsc::channel::<Box<[u8]>>();
-
-        let state = Arc::new(Mutex::new(CommState {
-            name,
-            gatt_if: None,
-            service_handle: None,
-            rx_handle: None,
-            tx_handle: None,
-            tx_cccd_handle: None,
-            connections: Vec::new(),
-            tx_confirmed: None,
-        }));
-
-
-        let instance = Arc::new(Self {
-            gap,
-            gatts,
-            state,
-            rome_rx,
-            condvar: Arc::new(Condvar::new()),
-        });
-
-        let cloned_instance = instance.clone();
-        instance.gap.subscribe(move |event| {
-            cloned_instance.on_gap_event(event);
-        }).unwrap();
-
-        let cloned_instance = instance.clone();
-        instance.gatts.subscribe(move |(gatt_if, event)| {
-            if let Err(e) = cloned_instance.on_gatts_event(gatt_if, event) {
-                warn!("GATTS event error: {e:?}");
-            }
-        }).unwrap();
-
-        instance.gatts.register_app(SERVER_APP_ID).unwrap();
-
-        let cloned_instance = instance.clone();
-        std::thread::spawn(move || {
-            loop {
-                if let Ok(data) = rome_tx.recv() {
-                    //TODO Use notifications for telemetry and indications for order ACKs
-                    for peer_index in 0..MAX_CONNECTIONS {
-                        let mut state = cloned_instance.state.lock().unwrap();
-
-                        // Wait confirmation of previous indication
-                        state = cloned_instance.condvar.wait_while(state, |state| {
-                            state.tx_confirmed.is_some()
-                        }).unwrap();
-
-                        let Some(conn) = state.connections.get(peer_index) else { continue; };
-                        let Some(gatt_if) = state.gatt_if else { continue; };
-                        let Some(tx_handle) = state.tx_handle else { continue; };
-
-                        if let Err(e) = cloned_instance.gatts.indicate(gatt_if, conn.conn_id, tx_handle, &data) {
-                            warn!("GATT server indicate error: {e:?}");
-                        }                                                                   
-                        state.tx_confirmed = Some(conn.peer);
-                    }
-                } else {
-                    warn!("No data recv on rome TX");
-                    std::thread::sleep(Duration::from_millis(100));
-                }
-            }
-        });
-
-        (rome_sender, rome_receiver)
+impl BleServer {
+    pub fn start_advertising(&self) -> Result<(), EspError> {
+        self.gap.start_advertising()
     }
 
-    /// Callback for GAP events
-    fn on_gap_event(&self, event: BleGapEvent) {
-        debug!("Gap event: {:?}", event);
-
-        if let BleGapEvent::AdvertisingConfigured(status) = event {
-            if status != BtStatus::Success {
-                warn!("Unexpected AdvertisingConfigured status {:?}", status);
-            } else {
-                if let Err(e) = self.gap.start_advertising() {
-                    error!("Unable to start advertising: {:?}", e);
-                } else {
-                    info!("GAP advertising started");
-                }
-            }
-        }
+    pub fn stop_advertising(&self) -> Result<(), EspError> {
+        self.gap.stop_advertising()
     }
 
-    /// Callback for GATT server events
-    fn on_gatts_event(&self, gatt_if: GattInterface, event: GattsEvent) -> Result<(), EspError> {
-        debug!("Gatts event: {event:?}");
-
-        fn check_gatt_status(status: GattStatus) -> Result<(), EspError> {
-            if status != GattStatus::Ok {
-                // Bad status is logged right away, but another error will be logged above
-                warn!("GATTS unexpected status: {status:?}");
-                Err(EspError::from_infallible::<ESP_FAIL>())
-            } else {
-                Ok(())
-            }
-        }
-
-
-        match event {
-            GattsEvent::ServiceRegistered { status, app_id } => {
-                check_gatt_status(status)?;
-                if app_id == SERVER_APP_ID {
-                    self.create_service(gatt_if)?;
-                }
-            }
-            GattsEvent::ServiceCreated { status, service_handle, .. } => {
-                check_gatt_status(status)?;
-                self.configure_and_start_service(service_handle)?;
-            }
-            GattsEvent::CharacteristicAdded { status, attr_handle, service_handle, char_uuid, } => {
-                check_gatt_status(status)?;
-                self.register_characteristic(service_handle, attr_handle, char_uuid)?;
-            }
-            GattsEvent::DescriptorAdded { status, attr_handle, service_handle, descr_uuid } => {
-                check_gatt_status(status)?;
-                self.register_descriptor(service_handle, attr_handle, descr_uuid)?;
-            }
-            GattsEvent::Mtu { conn_id, mtu } => {
-                info!("Connection {conn_id} requested MTU {mtu}");
-            }
-            GattsEvent::PeerConnected { conn_id, addr, .. } => {
-                self.create_conn(conn_id, addr)?;
-            }
-            GattsEvent::PeerDisconnected { addr, .. } => {
-                self.delete_conn(addr)?;
-            }
-            GattsEvent::Read { conn_id, trans_id, addr, handle, offset, need_rsp, .. } => {
-                debug!("Read data from conn {conn_id:?}, addr {addr:?}, need_rsp: {need_rsp:?}");
-                if need_rsp {
-                    let mut response = GattResponse::new();
-                    response
-                        .attr_handle(handle)
-                        .auth_req(0)
-                        .offset(offset);
-
-                    self.gatts.send_response(
-                        gatt_if,
-                        conn_id,
-                        trans_id,
-                        GattStatus::Ok,
-                        Some(&response)
-                    )?;
-                }
-            }
-            GattsEvent::Write { conn_id, trans_id, handle, offset, need_rsp, is_prep, value, .. } => {
-                if self.write_data(handle, value) {
-                    if need_rsp {
-                        let response = if is_prep {
-                            let mut response = GattResponse::new();
-                            response
-                                .attr_handle(handle)
-                                .auth_req(0)
-                                .offset(offset)
-                                .value(value)
-                                .map_err(|_| EspError::from_infallible::<ESP_FAIL>())?;
-                            Some(response)
-                        } else {
-                            None
-                        };
-                        self.gatts.send_response(gatt_if, conn_id, trans_id, GattStatus::Ok, (&response).into())?;
-                    }
-                }
-            }
-            GattsEvent::Confirm { status, .. } => {
-                check_gatt_status(status)?;
-                self.confirm_indication();
-            }
-            _ => (),
-        }
-
-        Ok(())
+    pub fn set_conn_params_conf(
+        &self,
+        addr: BdAddr,
+        min_int_ms: u32,
+        max_int_ms: u32,
+        latency_ms: u32,
+        timeout_ms: u32,
+    ) -> Result<(), EspError> {
+        self.gap.set_conn_params_conf(addr, min_int_ms, max_int_ms, latency_ms, timeout_ms)
     }
 
-    /// Called after server app creation, create the GATT server service
-    fn create_service(&self, gatt_if: GattInterface) -> Result<(), EspError> {
-        self.state.lock().unwrap().gatt_if = Some(gatt_if);
-        let name = self.state.lock().unwrap().name;
-
-        self.gap.set_device_name(name)?;
+    pub fn setup_advertising(&self, device_name: &str, uuid: BtUuid) -> Result<(), EspError> {
+        self.gap.set_device_name(device_name)?;
         self.gap.set_adv_conf(&AdvConfiguration {
             include_name: true,
             include_txpower: true,
             flag: ESP_BLE_ADV_FLAG_GEN_DISC as _,
-            service_uuid: Some(SERVICE_ROME_UUID),
+            service_uuid: Some(uuid),
             ..Default::default()
-        })?;
-        self.gatts.create_service(
-            gatt_if,
-            &GattServiceId {
-                id: GattId {
-                    uuid: SERVICE_ROME_UUID,
-                    inst_id: 0,
-                },
-                is_primary: true,
-            },
-            8,
-        )?;
-
-        Ok(())
+        })
     }
+}
 
-    /// Called after GATT server service creation, start service and setup characteristics
-    fn configure_and_start_service(&self, service_handle: Handle) -> Result<(), EspError> {
-        self.state.lock().unwrap().service_handle = Some(service_handle);
 
-        self.gatts.start_service(service_handle)?;
+/// Wrapper structure for central implementation
+///
+/// Provide limited access to GAP.
+pub struct BleClient {
+    #[allow(dead_code)]
+    gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
+}
 
-        // Characteristics added here must be matched in `register_characteristic()`
-
-        self.gatts.add_characteristic(
-            service_handle,
-            &GattCharacteristic {
-                uuid: CHAR_ROME_RX_UUID,
-                permissions: enum_set!(Permission::Write),
-                properties: enum_set!(Property::Write),
-                max_len: 200,
-                auto_rsp: AutoResponse::ByApp,
-            },
-            &[],
-        )?;
-
-        self.gatts.add_characteristic(
-            service_handle,
-            &GattCharacteristic {
-                uuid: CHAR_ROME_TX_UUID,
-                permissions: enum_set!(),
-                properties: enum_set!(Property::Indicate),
-                max_len: 200,
-                auto_rsp: AutoResponse::ByApp,
-            },
-            &[],
-        )?;
-
-        Ok(())
-    }
-
-    /// Called during GATT server service setup, when a characteristic is added
-    fn register_characteristic(&self, service_handle: Handle, attr_handle: Handle, char_uuid: BtUuid) -> Result<(), EspError> {
-        let mut state = self.state.lock().unwrap();
-        if state.service_handle != Some(service_handle) {
-            return Ok(());
-        }
-
-        // Descriptors added here must be matched in `register_descriptor()`
-
-        if char_uuid == CHAR_ROME_RX_UUID {
-            state.rx_handle = Some(attr_handle);
-        } else if char_uuid == CHAR_ROME_TX_UUID {
-            state.tx_handle = Some(attr_handle);
-            self.gatts.add_descriptor(
-                service_handle,
-                &GattDescriptor {
-                    uuid: CCCD_UUID,
-                    permissions: enum_set!(Permission::Read | Permission::Write),
-                },
-            )?;
-        } else {
-            // Should never happen
-        }
-        Ok(())
-    }
-
-    /// Called during GATT server service setup, when a descriptor is added
-    fn register_descriptor(&self, service_handle: Handle, attr_handle: Handle, descr_uuid: BtUuid) -> Result<(), EspError> {
-        let mut state = self.state.lock().unwrap();
-        if state.service_handle != Some(service_handle) {
-            return Ok(());
-        }
-
-        if Some(attr_handle) == state.tx_handle && descr_uuid == CCCD_UUID {
-            state.tx_cccd_handle = Some(attr_handle);
-        } else {
-            // Should never happen
-        }
-
-        Ok(())
-    }
-
-    /// Called on an incoming connection
-    fn create_conn(&self, conn_id: ConnectionId, addr: BdAddr) -> Result<(), EspError> {
-        let added = {
-            let mut state = self.state.lock().unwrap();
-            if state.connections.len() < MAX_CONNECTIONS {
-                state.connections.push(Connection { peer: addr, conn_id, });
-                true
-            } else {
-                false
-            }
+impl BleClient {
+    pub fn start_scanning(&self, duration: u32) -> Result<(), EspError> {
+        let scan_params = sys::esp_ble_scan_params_t {
+            scan_type: sys::esp_ble_scan_type_t_BLE_SCAN_TYPE_ACTIVE,
+            own_addr_type: sys::esp_ble_addr_type_t_BLE_ADDR_TYPE_PUBLIC,
+            scan_filter_policy: sys::esp_ble_scan_filter_t_BLE_SCAN_FILTER_ALLOW_ALL,
+            scan_interval: 50,
+            scan_window: 48,
+            scan_duplicate: sys::esp_ble_scan_duplicate_t_BLE_SCAN_DUPLICATE_ENABLE,
         };
 
-        if added {
-            self.gap.set_conn_params_conf(addr, 10, 20, 0, 400)?;
-        }
-
-        Ok(())
+        esp!(unsafe {
+            sys::esp_ble_gap_set_scan_params(&scan_params as *const _ as *mut _)
+        })?;
+        esp!(unsafe { sys::esp_ble_gap_start_scanning(duration) })
     }
 
-    /// Called when a peer disconnects
-    fn delete_conn(&self, addr: BdAddr) -> Result<(), EspError> {
-        let mut state = self.state.lock().unwrap();
+    pub fn stop_scanning(&self) -> Result<(), EspError> {
+        esp!(unsafe { sys::esp_ble_gap_stop_scanning() })
+    }
+}
 
-        if let Some(index) = state
-            .connections
-            .iter()
-            .position(|Connection { peer, .. }| *peer == addr)
-        {
-            state.connections.swap_remove(index);
-        }
 
-        if state.connections.is_empty() {
-            // Restart advertising, just in case (currently, should not be needed)
-            if let Err(e) = self.gap.start_advertising() {
-                error!("Unable to restart advertising: {e:?}");
+/// Start BLE for peripheral implementation
+pub fn run_ble(bt: BtDriver<'static, Ble>) -> BleServer {
+    fn noop(_: BleScanResult) {}
+    run_ble_with_central(bt, noop).0
+}
+
+/// Start BLE for peripheral and central implementations
+pub fn run_ble_with_central<F: Fn(BleScanResult) + Send + Sync + 'static>(bt: BtDriver<'static, Ble>, scan_handler: F) -> (BleServer, BleClient) {
+    let bt = Arc::new(bt);
+    let gap = Arc::new(EspBleGap::new(bt.clone()).unwrap());
+
+    let instance = Arc::new(BleInstance {
+        gap: gap.clone(),
+        scan_handler,
+    });
+
+    gap.subscribe(move |event| { instance.on_gap_event(event); }).unwrap();
+
+    let server = BleServer {
+        gap: gap.clone(),
+        gatts: EspGatts::new(bt).unwrap(),
+    };
+    let client = BleClient {
+        gap,
+    };
+
+    (server, client)
+}
+
+
+/// Internal structure to implement GAP event handler
+struct BleInstance<F: Fn(BleScanResult) + Send + Sync + 'static> {
+    gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
+    scan_handler: F,
+}
+
+impl<F: Fn(BleScanResult) + Send + Sync + 'static> BleInstance<F> {
+    fn on_gap_event(&self, event: BleGapEvent) {
+        match event {
+            BleGapEvent::AdvertisingConfigured(status) => {
+                if status != BtStatus::Success {
+                    warn!("Unexpected AdvertisingConfigured status {:?}", status);
+                } else {
+                    if let Err(e) = self.gap.start_advertising() {
+                        error!("Unable to start advertising: {:?}", e);
+                    } else {
+                        info!("GAP advertising started");
+                    }
+                }
             }
-        }
-
-        Ok(())
-    }
-
-    /// Called after a peer confirmed an indication
-    fn confirm_indication(&self) {
-        let mut state = self.state.lock().unwrap();
-        if state.tx_confirmed.is_none() {
-            error!("Indication confirmation received but none was expected")
-        } else {
-            state.tx_confirmed = None;
-            self.condvar.notify_all();
-        }
-    }
-
-    /// Called on incoming "write", return true if message has been processed
-    fn write_data(&self, handle: Handle, value: &[u8]) -> bool {
-        let state = self.state.lock().unwrap();
-
-        if Some(handle) == state.tx_cccd_handle {
-            // Nothing to do, could be used to keep track of subscribers
-        } else if Some(handle) == state.rx_handle {
-            if let Err(e) = self.rome_rx.send(Box::from(value)) {
-                error!("Failed to push RX data: {e:?}");
+            BleGapEvent::ScanResult(scan_result) => {
+                let result = scan_result.into();
+                (self.scan_handler)(result);
             }
-        } else {
-            return false;
+            BleGapEvent::ScanStarted(status) => {
+                if status == esp_idf_svc::bt::BtStatus::Success {
+                    info!("BLE scanning started");
+                } else {
+                    error!("Failed to start BLE scanning: {:?}", status);
+                }
+            }
+            BleGapEvent::ScanStopped(_status) => {
+                info!("BLE scanning stopped");
+            }
+            _ => {}
         }
-
-        true
     }
 }
