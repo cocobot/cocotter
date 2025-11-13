@@ -898,7 +898,150 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_connectors:feetech_servo"
+		(symbol "cocotter_connectors:B2B-XH-A"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -5.842 3.556 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "B2B-XH-A"
+				(at -5.588 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_connectors:B2B-XH-A"
+				(at -3.302 -11.938 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.jst.fr/core/file.get?path=doc/jst/family/pdf/exh0125.pdf"
+				(at 0 -8.89 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "JST XH 2 voies vertical"
+				(at 0 -8.89 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C293316"
+				(at -4.318 -9.144 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "JST, XH, 2 pos, 3A, 2.5mm pitch"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "B2B-XH-A_1_0"
+				(polyline
+					(pts
+						(xy -5.08 0) (xy -3.81 0)
+					)
+					(stroke
+						(width 0.6096)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -5.08 -2.54) (xy -3.81 -2.54)
+					)
+					(stroke
+						(width 0.6096)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "B2B-XH-A_1_1"
+				(rectangle
+					(start -6.35 2.54)
+					(end -1.27 -5.08)
+					(stroke
+						(width 0)
+						(type default)
+						(color 149 135 39 1)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(pin unspecified line
+					(at 0 0 180)
+					(length 5.08)
+					(name "2"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin unspecified line
+					(at 0 -2.54 180)
+					(length 5.08)
+					(name "1"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "cocotter_connectors:feetech_servo-V"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -911,7 +1054,7 @@
 					(hide yes)
 				)
 			)
-			(property "Value" "5264-3P"
+			(property "Value" "5267-3P"
 				(at 0 0 0)
 				(effects
 					(font
@@ -920,7 +1063,7 @@
 					(hide yes)
 				)
 			)
-			(property "Footprint" "cocotter_connectors:5264-3P"
+			(property "Footprint" "cocotter_connectors:5267-3P"
 				(at 0 0 0)
 				(effects
 					(font
@@ -956,7 +1099,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "feetech_servo_1_1"
+			(symbol "feetech_servo-V_1_1"
 				(rectangle
 					(start -8.89 5.08)
 					(end -1.27 -5.08)
@@ -4678,6 +4821,97 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_connectors:B2B-XH-A")
+		(at 96.52 33.02 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "164d8daf-0fd5-4ad9-ab0c-2ec2bfc78623")
+		(property "Reference" "J2"
+			(at 104.14 30.4799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "B2B-XH-A"
+			(at 104.14 33.0199 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:B2B-XH-A"
+			(at 99.822 21.082 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.jst.fr/core/file.get?path=doc/jst/family/pdf/exh0125.pdf"
+			(at 96.52 24.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "JST XH 2 voies vertical"
+			(at 96.52 24.13 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C293316"
+			(at 100.838 23.876 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "c6d90531-e8ce-47d3-bae9-bce21f5bd5a5")
+		)
+		(pin "1"
+			(uuid "0ad0e9b5-b77d-46de-b302-7dd437641979")
+		)
+		(instances
+			(project ""
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/067947e6-d018-482f-a78c-eeb83d8dcdcb"
+					(reference "J8")
+					(unit 1)
+				)
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/2caf5ca5-b8be-49ab-9f25-cabd53014211"
+					(reference "J5")
+					(unit 1)
+				)
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/a1cde7f5-363d-4f36-b502-090ba61d1d03"
+					(reference "J11")
+					(unit 1)
+				)
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/cd773c3d-c05b-4eb4-90a6-abf942da4e0b"
+					(reference "J2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 130.81 72.39 0)
 		(unit 1)
@@ -5018,97 +5252,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_connectors:22272021")
-		(at 96.52 33.02 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "294661e4-024a-4a7e-be21-28390c6c6d45")
-		(property "Reference" "J2"
-			(at 104.14 30.4799 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "22272021"
-			(at 104.14 33.0199 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "cocotter_connectors:22272021"
-			(at 99.822 21.082 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.molex.com/en-us/products/part-detail/22272021"
-			(at 96.52 24.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "mini kk 2 voies vertical"
-			(at 96.52 24.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C293316"
-			(at 100.838 23.876 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "b548db49-555a-4785-bdb8-f0f1f4577d8a")
-		)
-		(pin "1"
-			(uuid "1497caf2-2613-4aaf-9507-833cf01364e2")
-		)
-		(instances
-			(project "meca_extension_2026"
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/067947e6-d018-482f-a78c-eeb83d8dcdcb"
-					(reference "J8")
-					(unit 1)
-				)
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/2caf5ca5-b8be-49ab-9f25-cabd53014211"
-					(reference "J5")
-					(unit 1)
-				)
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/a1cde7f5-363d-4f36-b502-090ba61d1d03"
-					(reference "J11")
-					(unit 1)
-				)
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/cd773c3d-c05b-4eb4-90a6-abf942da4e0b"
-					(reference "J2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_resistors:R_10k_0603_1%")
 		(at 66.04 46.99 0)
 		(unit 1)
@@ -5212,100 +5355,6 @@
 				)
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/cd773c3d-c05b-4eb4-90a6-abf942da4e0b"
 					(reference "R23")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_connectors:feetech_servo")
-		(at 246.38 35.56 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2feff68c-fea7-485a-9619-4d31dd2c01ed")
-		(property "Reference" "J20"
-			(at 251.206 42.164 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "5264-3P"
-			(at 246.38 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "cocotter_connectors:5264-3P"
-			(at 246.38 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 246.38 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 246.38 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLC" "C49023819"
-			(at 246.38 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "3"
-			(uuid "3bd979d3-0643-48e5-9b15-3c74b61fd464")
-		)
-		(pin "2"
-			(uuid "7bfc07e0-182c-4f58-a51f-92966b87e85c")
-		)
-		(pin "1"
-			(uuid "43f53266-82c6-4174-aca2-0c28d7ca552b")
-		)
-		(instances
-			(project "meca_extension_2026"
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/067947e6-d018-482f-a78c-eeb83d8dcdcb"
-					(reference "J22")
-					(unit 1)
-				)
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/2caf5ca5-b8be-49ab-9f25-cabd53014211"
-					(reference "J21")
-					(unit 1)
-				)
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/a1cde7f5-363d-4f36-b502-090ba61d1d03"
-					(reference "J23")
-					(unit 1)
-				)
-				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/cd773c3d-c05b-4eb4-90a6-abf942da4e0b"
-					(reference "J20")
 					(unit 1)
 				)
 			)
@@ -7396,6 +7445,100 @@
 				)
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/cd773c3d-c05b-4eb4-90a6-abf942da4e0b"
 					(reference "#PWR034")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_connectors:feetech_servo-V")
+		(at 246.38 35.56 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e337ff08-2bcd-4dba-985a-a8a7b4e96643")
+		(property "Reference" "J17"
+			(at 251.206 42.164 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "5267-3P"
+			(at 246.38 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:5267-3P"
+			(at 246.38 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 246.38 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 246.38 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLC" "C49023819"
+			(at 246.38 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "9df34837-686b-41cb-9bd8-b2b205485a96")
+		)
+		(pin "1"
+			(uuid "c0c79e53-460c-462d-8002-075a06b2025c")
+		)
+		(pin "2"
+			(uuid "04194d30-d230-45bb-9cf4-2893e42dfc8b")
+		)
+		(instances
+			(project ""
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/067947e6-d018-482f-a78c-eeb83d8dcdcb"
+					(reference "J19")
+					(unit 1)
+				)
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/2caf5ca5-b8be-49ab-9f25-cabd53014211"
+					(reference "J18")
+					(unit 1)
+				)
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/a1cde7f5-363d-4f36-b502-090ba61d1d03"
+					(reference "J20")
+					(unit 1)
+				)
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277/cd773c3d-c05b-4eb4-90a6-abf942da4e0b"
+					(reference "J17")
 					(unit 1)
 				)
 			)

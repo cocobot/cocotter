@@ -1952,6 +1952,203 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "cocotter_connectors:feetech_servo"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -4.826 6.604 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "5264-3P"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Footprint" "cocotter_connectors:5264-3P"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLC" "C49023819"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "feetech_servo_1_1"
+				(rectangle
+					(start -8.89 5.08)
+					(end -1.27 -5.08)
+					(stroke
+						(width 0)
+						(type default)
+						(color 149 135 39 1)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(rectangle
+					(start -2.9464 2.667)
+					(end -3.81 2.413)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -2.9464 0.127)
+					(end -3.81 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -2.9464 -2.413)
+					(end -3.81 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 2.54) (xy -2.9464 2.54)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 0) (xy -2.9464 0)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 -2.54) (xy -2.9464 -2.54)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at 0 2.54 180)
+					(length 3.81)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 0 180)
+					(length 3.81)
+					(name "VCC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -2.54 180)
+					(length 3.81)
+					(name "SIG"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "cocotter_diodes:DSK34"
 			(pin_numbers
 				(hide yes)
@@ -4429,6 +4626,113 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "cocotter_others:MountingHole_Pad_M3"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim yes)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "H"
+				(at 0 6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MountingHole_Pad_M3"
+				(at 0 4.445 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Mounting Hole with connection"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "mounting hole"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "MountingHole*Pad*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "MountingHole_Pad_M3_0_1"
+				(circle
+					(center 0 1.27)
+					(radius 1.27)
+					(stroke
+						(width 1.27)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "MountingHole_Pad_M3_1_1"
+				(pin input line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "cocotter_others:TestPoint_0.8mm"
 			(pin_numbers
 				(hide yes)
@@ -6361,6 +6665,18 @@
 		)
 		(uuid "834d7f12-528a-4064-8715-a2b518ab01f7")
 	)
+	(text "Top level servo connector"
+		(exclude_from_sim no)
+		(at 340.868 324.612 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.254)
+				(bold yes)
+			)
+		)
+		(uuid "b44f070f-bd46-4625-b060-f7925fbcdedc")
+	)
 	(text "essayer de conserver masse sur pin 1"
 		(exclude_from_sim no)
 		(at 33.02 101.6 0)
@@ -6400,6 +6716,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "13345dd8-2acc-41a6-a8db-04998a24eef5")
+	)
+	(junction
+		(at 326.39 370.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "149492ca-1d0a-46cf-942a-09430dc8bd2f")
 	)
 	(junction
 		(at 218.44 355.6)
@@ -6648,10 +6970,22 @@
 		(uuid "87506e68-7415-4a5b-9fe2-cb22cc44ff1c")
 	)
 	(junction
+		(at 354.33 370.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "87846d8e-e260-4065-a0c8-77ce8fb37fcb")
+	)
+	(junction
 		(at 232.41 355.6)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8c280535-be5c-4629-ab97-f3f5b9d30e42")
+	)
+	(junction
+		(at 331.47 345.44)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8fbbd5e5-d30e-4615-bb6c-d992292801b1")
 	)
 	(junction
 		(at 101.6 140.97)
@@ -6762,6 +7096,12 @@
 		(uuid "d4297357-3be2-4191-8660-8a56f93ae9ec")
 	)
 	(junction
+		(at 331.47 337.82)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d94bd9b4-a435-4e77-927f-e1149a9387fc")
+	)
+	(junction
 		(at 77.47 96.52)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6790,6 +7130,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e655bf05-808d-4123-86b2-93e1df610801")
+	)
+	(junction
+		(at 382.27 370.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e8e217f0-96ae-42a5-9cfe-3866dd50f7a4")
 	)
 	(junction
 		(at 62.23 332.74)
@@ -6870,6 +7216,16 @@
 			(type default)
 		)
 		(uuid "018aef27-68b8-4f36-80c8-54cb09b6568a")
+	)
+	(wire
+		(pts
+			(xy 364.49 335.28) (xy 386.08 335.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "02e1bba4-b8d4-40e1-8eba-ac4804af48d7")
 	)
 	(wire
 		(pts
@@ -7183,6 +7539,16 @@
 	)
 	(wire
 		(pts
+			(xy 382.27 370.84) (xy 410.21 370.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1ce83ee9-14f2-4d43-877e-b48f842de42d")
+	)
+	(wire
+		(pts
 			(xy 232.41 340.36) (xy 232.41 355.6)
 		)
 		(stroke
@@ -7260,6 +7626,16 @@
 			(type default)
 		)
 		(uuid "213ba5d3-dd63-47da-b1b0-7b1189e224da")
+	)
+	(wire
+		(pts
+			(xy 331.47 345.44) (xy 386.08 345.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2149ad71-4eac-4a48-900d-ae86a90dfc3e")
 	)
 	(wire
 		(pts
@@ -7450,6 +7826,16 @@
 			(type default)
 		)
 		(uuid "30261721-578c-4681-8a4e-8a46c60e90c8")
+	)
+	(wire
+		(pts
+			(xy 386.08 345.44) (xy 386.08 340.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "303fba66-649b-4085-8c0b-92117d5f939e")
 	)
 	(wire
 		(pts
@@ -8163,6 +8549,16 @@
 	)
 	(wire
 		(pts
+			(xy 298.45 370.84) (xy 326.39 370.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6a144d1c-c8dd-4396-8c89-c98e2c91dc18")
+	)
+	(wire
+		(pts
 			(xy 322.58 27.94) (xy 345.44 27.94)
 		)
 		(stroke
@@ -8170,6 +8566,16 @@
 			(type default)
 		)
 		(uuid "6ae78382-cb98-48a7-bd44-44a24198a831")
+	)
+	(wire
+		(pts
+			(xy 331.47 337.82) (xy 386.08 337.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6b77f637-f895-464a-b955-a44ac67a6104")
 	)
 	(wire
 		(pts
@@ -8203,6 +8609,16 @@
 	)
 	(wire
 		(pts
+			(xy 354.33 370.84) (xy 354.33 372.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f3b1a46-b28e-4a72-9511-04b18babe4bb")
+	)
+	(wire
+		(pts
 			(xy 73.66 176.53) (xy 110.49 176.53)
 		)
 		(stroke
@@ -8220,6 +8636,16 @@
 			(type default)
 		)
 		(uuid "71691823-5a21-4a3f-b068-32aa51ab9c2c")
+	)
+	(wire
+		(pts
+			(xy 326.39 370.84) (xy 354.33 370.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "71b26c42-c264-47c3-acd1-00995dc8164c")
 	)
 	(wire
 		(pts
@@ -8660,6 +9086,16 @@
 			(type default)
 		)
 		(uuid "9938ecca-357b-4f7a-9926-82c652bf8ba8")
+	)
+	(wire
+		(pts
+			(xy 354.33 370.84) (xy 382.27 370.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9965dd9c-cb6e-475b-b1b0-d8a330eeedde")
 	)
 	(wire
 		(pts
@@ -10731,6 +11167,16 @@
 		)
 		(uuid "eb8f5f93-95a0-4d35-b5c7-109931080be3")
 	)
+	(label "digital_servo_cmd_3v3"
+		(at 364.49 335.28 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "f67be716-f5af-4041-bd5b-62a6a6d1b159")
+	)
 	(label "neopixel_ret_3v3"
 		(at 347.98 231.14 0)
 		(effects
@@ -10762,6 +11208,17 @@
 			(justify right)
 		)
 		(uuid "61da441a-b02f-4749-a314-4fab0e6c55cc")
+	)
+	(hierarchical_label "digital_servo_cmd_3v3"
+		(shape input)
+		(at 364.49 335.28 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "72ed6da5-8989-44cb-b870-ddd8104d8d89")
 	)
 	(symbol
 		(lib_id "power:+3.3V")
@@ -11093,6 +11550,72 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "D14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+6V")
+		(at 331.47 337.82 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "09fe9ebf-5e42-4f6d-96ad-42439beed467")
+		(property "Reference" "#PWR0116"
+			(at 331.47 341.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+6V"
+			(at 331.47 332.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 331.47 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 331.47 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+6V\""
+			(at 331.47 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "afe72765-7ed0-4c2e-b3dd-ee78734e076d")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "#PWR0116")
 					(unit 1)
 				)
 			)
@@ -14213,6 +14736,73 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(at 354.33 368.3 0)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5c8b3d21-2105-495f-8a59-83d00548e822")
+		(property "Reference" "H3"
+			(at 356.87 365.7599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MountingHole_Pad_M3"
+			(at 356.87 368.2999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+			(at 354.33 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 354.33 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 354.33 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a61ad59a-8cf5-4867-b32f-d5446f5e125e")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "H3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 114.3 355.6 0)
 		(unit 1)
@@ -14436,6 +15026,73 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "#PWR097")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(at 382.27 368.3 0)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "63c28517-0c15-443c-8190-6b1c82ed5e90")
+		(property "Reference" "H4"
+			(at 384.81 365.7599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MountingHole_Pad_M3"
+			(at 384.81 368.2999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+			(at 382.27 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 382.27 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 382.27 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e2b3aabe-7147-4ba4-a114-1299d2f67956")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "H4")
 					(unit 1)
 				)
 			)
@@ -15534,6 +16191,139 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(at 410.21 368.3 0)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "78625b94-c955-4d08-bfd1-3f625723a28f")
+		(property "Reference" "H5"
+			(at 412.75 365.7599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MountingHole_Pad_M3"
+			(at 412.75 368.2999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+			(at 410.21 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 410.21 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 410.21 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "be39b163-5b1e-46ad-8e2a-78b893359774")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "H5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 331.47 345.44 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7959c1c6-5a6e-41f2-9b9e-5465c029e2b8")
+		(property "Reference" "#PWR0117"
+			(at 331.47 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 331.47 350.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 331.47 345.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 331.47 345.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 331.47 345.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8f53ffe2-fa54-42ec-b2aa-c0be776c7e46")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "#PWR0117")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 160.02 22.86 0)
 		(unit 1)
@@ -16006,6 +16796,139 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "#PWR024")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(at 326.39 368.3 0)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "812955cf-fecf-4660-b7ce-b9ce329770ec")
+		(property "Reference" "H2"
+			(at 328.93 365.7599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MountingHole_Pad_M3"
+			(at 328.93 368.2999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+			(at 326.39 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 326.39 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 326.39 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3b782df0-344e-41e4-86f5-47032ee43de0")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "H2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 354.33 372.11 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "81318c79-8948-4d63-9160-5c4a11676b40")
+		(property "Reference" "#PWR0118"
+			(at 354.33 378.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 354.33 377.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 354.33 372.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 354.33 372.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 354.33 372.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9c6b0e3c-3c52-4fe5-986f-26c650f64b30")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "#PWR0118")
 					(unit 1)
 				)
 			)
@@ -18600,6 +19523,73 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:MountingHole_Pad_M3")
+		(at 298.45 368.3 0)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "abb3892f-7a98-4979-a19f-e1588d564793")
+		(property "Reference" "H1"
+			(at 300.99 365.7599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MountingHole_Pad_M3"
+			(at 300.99 368.2999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
+			(at 298.45 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 298.45 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 298.45 368.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e661a5c9-c39b-4749-9c27-7fba20977b32")
+		)
+		(instances
+			(project ""
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "H1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_capacitors:C_1µF_50V_0805")
 		(at 138.43 144.78 0)
 		(unit 1)
@@ -19949,6 +20939,94 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_capacitors:C_1µF_50V_0805")
+		(at 331.47 341.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d1abc0c8-1fc4-44ad-bdc4-20329ad52ca2")
+		(property "Reference" "C32"
+			(at 335.28 340.3599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1µF 50V"
+			(at 335.28 342.8999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_capacitors:C_0805_2012Metric"
+			(at 332.4352 345.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 331.47 341.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor X7R"
+			(at 331.47 341.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "1µF 50V X7R 0805 "
+			(at 331.47 341.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C28323"
+			(at 331.47 341.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "7095ac65-6273-4bae-8f0c-a5bdd450664d")
+		)
+		(pin "1"
+			(uuid "7eabd026-c5a6-41c3-9d05-59b4fda6fdeb")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "C32")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+BATT")
 		(at 49.53 31.75 0)
 		(unit 1)
@@ -20559,6 +21637,88 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "#PWR71")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_connectors:feetech_servo")
+		(at 386.08 337.82 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e26cb1c0-4327-4e4f-aff8-b122ba00fad9")
+		(property "Reference" "J16"
+			(at 390.906 344.424 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "5264-3P"
+			(at 386.08 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:5264-3P"
+			(at 386.08 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 386.08 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 386.08 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLC" "C49023819"
+			(at 386.08 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "5814c410-51d0-4a6c-a77e-bf56d7237945")
+		)
+		(pin "2"
+			(uuid "9f2d508a-9067-49da-a54f-a522e90f5e9c")
+		)
+		(pin "1"
+			(uuid "c7af5328-cc86-46a7-bc5c-6c444653bd93")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "J16")
 					(unit 1)
 				)
 			)
