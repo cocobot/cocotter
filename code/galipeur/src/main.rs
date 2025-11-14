@@ -3,9 +3,9 @@ use std::{thread, time::Duration};
 #[cfg(target_os = "espidf")]
 use board_sabotter::BoardSabotter;
 #[cfg(target_os = "espidf")]
-use ble::BleComm;
+use ble::{run_ble, RomePeripheral};
 #[cfg(not(target_os = "espidf"))]
-use board_simulator::{BoardSabotter, comm::BleComm};
+use board_simulator::{BoardSabotter, comm::{run_ble, RomePeripheral}};
 
 mod asserv;
 
@@ -20,7 +20,8 @@ fn main() {
 
     let asserv = Asserv::new();
 
-    let (rome_tx, rome_rx) = BleComm::run(board.ble.take().unwrap(), "Galipeur");
+    let ble_server = run_ble(board.ble.take().unwrap());
+    let (rome_tx, rome_rx) = RomePeripheral::run(ble_server, "Galipeur".into());
 
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
 
