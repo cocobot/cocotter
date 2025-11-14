@@ -1,8 +1,8 @@
 use simple_logger::SimpleLogger;
-use vlx::{SensorType, Sensor, DistanceData, MultiZoneData, ZoneAlarm};
+use vlx::{SensorType, Sensor, DistanceData, MultiZoneData, VlxError, ZoneAlarm};
 use embedded_hal::blocking::i2c::{Write, WriteRead};
 
-pub mod ble;
+pub mod comm;
 
 // Fake BLE type for drop-in replacement
 pub struct FakeBle;
@@ -66,34 +66,22 @@ impl FakeVlx {
     }
 }
 
-#[derive(Debug)]
-pub struct FakeVlxError;
-
-impl std::fmt::Display for FakeVlxError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Fake VLX error")
-    }
-}
-
-impl std::error::Error for FakeVlxError {}
 
 impl Sensor for FakeVlx {
-    type Error = FakeVlxError;
-    
-    fn init(&mut self) -> Result<(), Self::Error> {
+    fn init(&mut self) -> Result<(), VlxError> {
         println!("DEBUG: FakeVlx init - sensor_type: {:?}, address: 0x{:02X}", self.sensor_type, self.address);
         self.initialized = true;
         self.ranging = true; // Automatically start ranging after init
         Ok(())
     }
     
-    fn get_distance(&mut self) -> Result<DistanceData, Self::Error> {
+    fn get_distance(&mut self) -> Result<DistanceData, VlxError> {
         if !self.initialized {
-            return Err(FakeVlxError);
+            return Err(VlxError::InitError);
         }
         
         if !self.ranging {
-            return Err(FakeVlxError);
+            return Err(VlxError::RangingError);
         }
         
         match self.sensor_type {
@@ -105,9 +93,9 @@ impl Sensor for FakeVlx {
         }
     }
     
-    fn set_alarm(&mut self, low: u16, high: u16, zone: Option<(usize, usize)>) -> Result<(), Self::Error> {
+    fn set_alarm(&mut self, low: u16, high: u16, zone: Option<(usize, usize)>) -> Result<(), VlxError> {
         if !self.initialized {
-            return Err(FakeVlxError);
+            return Err(VlxError::InitError);
         }
         
         let alarm = ZoneAlarm {
@@ -119,18 +107,18 @@ impl Sensor for FakeVlx {
         Ok(())
     }
     
-    fn set_multiple_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), Self::Error> {
+    fn set_multiple_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
         if !self.initialized {
-            return Err(FakeVlxError);
+            return Err(VlxError::InitError);
         }
         
         self.alarms.extend_from_slice(alarms);
         Ok(())
     }
     
-    fn clear_alarm(&mut self) -> Result<(), Self::Error> {
+    fn clear_alarm(&mut self) -> Result<(), VlxError> {
         if !self.initialized {
-            return Err(FakeVlxError);
+            return Err(VlxError::InitError);
         }
         
         self.alarms.clear();
@@ -184,7 +172,7 @@ impl FakeVlxWrapper {
         Self { sensors }
     }
     
-    pub fn init(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn init(&mut self) -> Result<(), VlxError> {
         for sensor in &mut self.sensors {
             sensor.init()?;
         }
@@ -195,11 +183,11 @@ impl FakeVlxWrapper {
         self.sensors.len()
     }
     
-    pub fn get_distance(&mut self, index: usize) -> Result<DistanceData, Box<dyn std::error::Error>> {
+    pub fn get_distance(&mut self, index: usize) -> Result<DistanceData, VlxError> {
         if index < self.sensors.len() {
             Ok(self.sensors[index].get_distance()?)
         } else {
-            Err("Sensor index out of bounds".into())
+            Err(VlxError::InvalidSensor)
         }
     }
 }

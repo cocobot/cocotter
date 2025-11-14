@@ -3,6 +3,7 @@
 #![allow(non_snake_case)]
 
 use std::{thread, time::Duration};
+use crate::esp;
 
 // Define the device struct exactly as in the C header so that the size/layout match.
 #[repr(C)]
@@ -25,7 +26,7 @@ pub extern "C" fn VL53L1_WriteMulti(
     count: u32,
 ) -> i8 {
     let data = unsafe { core::slice::from_raw_parts(pdata, count as usize) };
-    match crate::call_i2c_write(dev as u8, index, data) {
+    match esp::call_i2c_write(dev as u8, index, data) {
         true => 0,
         false => -1,
     }
@@ -39,7 +40,7 @@ pub extern "C" fn VL53L1_ReadMulti(
     count: u32,
 ) -> i8 {
     let data = unsafe { core::slice::from_raw_parts_mut(pdata, count as usize) };
-    match crate::call_i2c_read(dev as u8, index, data) {
+    match esp::call_i2c_read(dev as u8, index, data) {
         true => 0,
         false => -1,
     }

@@ -4,6 +4,7 @@
 
 use core::ffi::c_void;
 use std::{thread, time::Duration};
+use crate::esp;
 
 pub const VL53L5CX_NB_TARGET_PER_ZONE: u8 = 1;
 
@@ -26,7 +27,7 @@ pub extern "C" fn VL53L5CX_WrMulti(platform: &mut VL53L5CX_Platform, register_ad
     let buffer = unsafe {
         core::slice::from_raw_parts(p_values, size as usize)
     };
-    match crate::call_i2c_write(platform.address as u8, register_addr, buffer) {
+    match esp::call_i2c_write(platform.address as u8, register_addr, buffer) {
         true => 0,
         false => 0xff,
     }
@@ -42,7 +43,7 @@ pub extern "C" fn VL53L5CX_RdMulti(platform: &mut VL53L5CX_Platform, register_ad
     let buffer = unsafe {
         core::slice::from_raw_parts_mut(p_values, size as usize)
     };
-    match crate::call_i2c_read(platform.address as u8, register_addr, buffer) {
+    match esp::call_i2c_read(platform.address as u8, register_addr, buffer) {
         true => 0,
         false => 0xff,
     }

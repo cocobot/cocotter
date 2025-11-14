@@ -3,14 +3,17 @@ use std::{env, path::PathBuf};
 use cbindgen::Config;
 
 fn main() {
+    let target = std::env::var("TARGET").unwrap();
+    if target != "xtensa-esp32s3-espidf" {
+        return;  // Nothing to do
+    }
+
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=src");
     println!("cargo:rerun-if-changed=c_src");
 
     let crate_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let target = std::env::var("TARGET").unwrap();
-    let is_esp32 = target == "xtensa-esp32s3-espidf";
 
     // Generate C platform bindings, for all VL53 variants
     // Only generate "raw" bindings. This file will be included to add configuration, system headers, etc.
@@ -27,13 +30,11 @@ fn main() {
         .unwrap()
         .write_to_file(&output_platform_header);
 
-    let mut build = &mut cc::Build::new();
-    if is_esp32 {
-        build = build
-            .compiler("xtensa-esp32s3-elf-gcc")
-            .flag("-mlongcalls")
-            ;
-    }
+    let build = &mut cc::Build::new();
+    build
+        .compiler("xtensa-esp32s3-elf-gcc")
+        .flag("-mlongcalls")
+        ;
 
     // Build VL53L1X C library
     {
