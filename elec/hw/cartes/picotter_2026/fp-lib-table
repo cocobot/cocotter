@@ -1,0 +1,11 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "cocotter_capacitors")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_capacitors.pretty")(options "")(descr ""))
+  (lib (name "cocotter_connectors")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_connectors.pretty")(options "")(descr ""))
+  (lib (name "cocotter_diodes")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_diodes.pretty")(options "")(descr ""))
+  (lib (name "cocotter_ic")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_ic.pretty")(options "")(descr ""))
+  (lib (name "cocotter_inductors")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_inductors.pretty")(options "")(descr ""))
+  (lib (name "cocotter_others")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_others.pretty")(options "")(descr ""))
+  (lib (name "cocotter_resistor")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_resistor.pretty")(options "")(descr ""))
+  (lib (name "cocotter_transistors")(type "KiCad")(uri "/home/damien/perso/clean_cocotter/elec/hw/librairies/cocotter_transistors.pretty")(options "")(descr ""))
+)
