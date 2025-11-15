@@ -24,12 +24,6 @@
 		(uuid "3b67d296-e914-442a-9002-f95652c23d3f")
 	)
 	(junction
-		(at 224.79 59.69)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "53aecba8-35de-40b5-aa9d-391cf7bb3bde")
-	)
-	(junction
 		(at 219.71 96.52)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -59,18 +53,6 @@
 		(color 0 0 0 0)
 		(uuid "d1548c58-136a-4801-8bfe-083e3adb351a")
 	)
-	(junction
-		(at 222.25 62.23)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "d4eb4cbb-05cc-464d-932a-07a1267ea7e6")
-	)
-	(junction
-		(at 219.71 93.98)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "dbbb19ed-b583-4ea3-a2a5-f5bb6b5120fe")
-	)
 	(wire
 		(pts
 			(xy 201.93 44.45) (xy 232.41 44.45)
@@ -84,7 +66,17 @@
 	)
 	(wire
 		(pts
-			(xy 201.93 93.98) (xy 219.71 93.98)
+			(xy 92.71 49.53) (xy 123.19 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "028b008d-475c-4f4c-aff6-cf76bf6a1fc4")
+	)
+	(wire
+		(pts
+			(xy 201.93 93.98) (xy 232.41 93.98)
 		)
 		(stroke
 			(width 0)
@@ -227,7 +219,7 @@
 	)
 	(wire
 		(pts
-			(xy 201.93 62.23) (xy 222.25 62.23)
+			(xy 201.93 62.23) (xy 232.41 62.23)
 		)
 		(stroke
 			(width 0)
@@ -245,17 +237,6 @@
 			(type default)
 		)
 		(uuid "50aca916-b68e-41f9-a5af-7f5b4ad63eee")
-	)
-	(wire
-		(pts
-			(xy 219.71 54.61) (xy 219.71 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-			(color 255 0 255 1)
-		)
-		(uuid "518e9a7b-2136-4b4d-947b-7f32aeab09e5")
 	)
 	(wire
 		(pts
@@ -303,17 +284,6 @@
 	)
 	(wire
 		(pts
-			(xy 222.25 101.6) (xy 222.25 62.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-			(color 255 0 255 1)
-		)
-		(uuid "60ee78b6-5120-475a-ae80-e1707bfee509")
-	)
-	(wire
-		(pts
 			(xy 201.93 64.77) (xy 232.41 64.77)
 		)
 		(stroke
@@ -325,7 +295,7 @@
 	)
 	(wire
 		(pts
-			(xy 224.79 59.69) (xy 232.41 59.69)
+			(xy 222.25 59.69) (xy 232.41 59.69)
 		)
 		(stroke
 			(width 0)
@@ -355,39 +325,6 @@
 			(color 255 0 255 1)
 		)
 		(uuid "673279fb-88ad-444e-904e-7bc47b1e0860")
-	)
-	(wire
-		(pts
-			(xy 222.25 59.69) (xy 224.79 59.69)
-		)
-		(stroke
-			(width 0)
-			(type default)
-			(color 0 0 255 1)
-		)
-		(uuid "6948cc55-7e3a-43e8-9d5d-c4894d4dec92")
-	)
-	(wire
-		(pts
-			(xy 219.71 93.98) (xy 219.71 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-			(color 255 153 0 1)
-		)
-		(uuid "6a2f45a2-7dd8-43eb-9dbc-a2d3a1c1a04b")
-	)
-	(wire
-		(pts
-			(xy 219.71 93.98) (xy 232.41 93.98)
-		)
-		(stroke
-			(width 0)
-			(type default)
-			(color 255 0 255 1)
-		)
-		(uuid "6b4ab480-82fa-4ab2-adcf-7708d76aa2eb")
 	)
 	(wire
 		(pts
@@ -446,17 +383,6 @@
 	)
 	(wire
 		(pts
-			(xy 224.79 59.69) (xy 224.79 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-			(color 255 0 255 1)
-		)
-		(uuid "8a329f93-6438-494d-aaff-41fed4ebf0ac")
-	)
-	(wire
-		(pts
 			(xy 232.41 114.3) (xy 227.33 114.3)
 		)
 		(stroke
@@ -479,7 +405,17 @@
 	)
 	(wire
 		(pts
-			(xy 222.25 62.23) (xy 222.25 59.69)
+			(xy 92.71 46.99) (xy 123.19 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "91d4b664-e433-4b42-a7e0-63b9bebf4019")
+	)
+	(wire
+		(pts
+			(xy 222.25 59.69) (xy 222.25 101.6)
 		)
 		(stroke
 			(width 0)
@@ -534,7 +470,7 @@
 	)
 	(wire
 		(pts
-			(xy 219.71 96.52) (xy 219.71 93.98)
+			(xy 219.71 54.61) (xy 219.71 96.52)
 		)
 		(stroke
 			(width 0)
@@ -621,7 +557,7 @@
 	)
 	(wire
 		(pts
-			(xy 224.79 59.69) (xy 224.79 57.15)
+			(xy 224.79 57.15) (xy 224.79 99.06)
 		)
 		(stroke
 			(width 0)
@@ -694,17 +630,6 @@
 			(color 255 153 0 1)
 		)
 		(uuid "da5a30e7-4c69-4c5e-8013-4a0e43fdb145")
-	)
-	(wire
-		(pts
-			(xy 222.25 62.23) (xy 232.41 62.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-			(color 0 0 255 1)
-		)
-		(uuid "e3b74a30-d5c8-4b31-a6be-973cb5933a92")
 	)
 	(wire
 		(pts
@@ -1402,6 +1327,26 @@
 				(justify right)
 			)
 		)
+		(pin "ena_vbatt_meas_3v3" input
+			(at 92.71 46.99 0)
+			(uuid "9ea77b65-954e-4f11-8b6e-bcdc64e2218b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "vbatt_meas_3v3" output
+			(at 92.71 49.53 0)
+			(uuid "536d82b4-0343-4272-8976-3cd89db7c1dd")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
 		(instances
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789"
@@ -1772,6 +1717,26 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+		(pin "ena_vbatt_meas_3v3" output
+			(at 123.19 46.99 180)
+			(uuid "95c8df2d-1b0e-4aa0-ab6d-82eff6a165dc")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "vbatt_meas_3v3" input
+			(at 123.19 49.53 180)
+			(uuid "3bec37cd-3e1d-4a09-a04f-795cfae3d5ea")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 		(instances

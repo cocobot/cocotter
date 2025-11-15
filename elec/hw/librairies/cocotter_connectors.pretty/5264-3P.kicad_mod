@@ -224,7 +224,7 @@
 		(uuid "4824dedb-a273-440e-9c89-153d8959a45b")
 	)
 	(embedded_fonts no)
-	(model "/home/paul/Documents/robot/cocotter/elec/hw/librairies/cocotter_connectors.pretty/3d/0022057035.stp"
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/0022057035.stp"
 		(offset
 			(xyz -9.8 2.5 1.8)
 		)
