@@ -1095,7 +1095,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_connectors:2-1445055-3"
+		(symbol "cocotter_connectors:2-1445051-3"
 			(pin_names
 				(offset 0.002)
 			)
@@ -1103,22 +1103,22 @@
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "J"
-				(at -2.286 3.556 0)
+				(at -2.286 4.826 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" "2-1445055-3"
-				(at -1.778 -6.35 0)
+			(property "Value" "2-1445051-3"
+				(at -1.778 -5.08 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" "cocotter_connectors:2-1445055-3"
+			(property "Footprint" "cocotter_connectors:2-1445051-3"
 				(at -3.81 2.54 0)
 				(effects
 					(font
@@ -1128,6 +1128,15 @@
 				)
 			)
 			(property "Datasheet" ""
+				(at -3.81 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "1x3POS micro Mate'n LOK, through hole, vertical"
 				(at -3.81 2.54 0)
 				(effects
 					(font
@@ -1136,16 +1145,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "1x3POS micro Mate'n LOK, through hole, right angle"
-				(at -3.81 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C239447"
+			(property "JLCPCB Part #" "C17473329"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1154,7 +1154,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "1x3POS micro Mate'n LOK, through hole, right angle"
+			(property "ki_keywords" "1x3POS micro Mate'n LOK, through hole, vertical"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1163,10 +1163,10 @@
 					(hide yes)
 				)
 			)
-			(symbol "2-1445055-3_1_0"
+			(symbol "2-1445051-3_1_0"
 				(polyline
 					(pts
-						(xy -3.81 2.54) (xy -3.81 -5.08)
+						(xy -3.81 3.81) (xy -3.81 -3.81)
 					)
 					(stroke
 						(width 0.254)
@@ -1178,7 +1178,7 @@
 				)
 				(polyline
 					(pts
-						(xy -3.81 2.54) (xy 0 2.54)
+						(xy -3.81 3.81) (xy 0 3.81)
 					)
 					(stroke
 						(width 0.254)
@@ -1189,7 +1189,7 @@
 					)
 				)
 				(circle
-					(center -1.27 1.27)
+					(center -1.27 2.54)
 					(radius 0.635)
 					(stroke
 						(width 0.254)
@@ -1200,7 +1200,7 @@
 					)
 				)
 				(circle
-					(center -1.27 -1.27)
+					(center -1.27 0)
 					(radius 0.635)
 					(stroke
 						(width 0.254)
@@ -1211,7 +1211,7 @@
 					)
 				)
 				(circle
-					(center -1.27 -3.81)
+					(center -1.27 -2.54)
 					(radius 0.635)
 					(stroke
 						(width 0.254)
@@ -1223,7 +1223,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 -5.08) (xy -3.81 -5.08)
+						(xy 0 -3.81) (xy -3.81 -3.81)
 					)
 					(stroke
 						(width 0.254)
@@ -1235,7 +1235,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 -5.08) (xy 0 2.54)
+						(xy 0 -3.81) (xy 0 3.81)
 					)
 					(stroke
 						(width 0.254)
@@ -1246,7 +1246,7 @@
 					)
 				)
 				(pin passive line
-					(at 3.81 1.27 180)
+					(at 3.81 2.54 180)
 					(length 5.08)
 					(name "3"
 						(effects
@@ -1264,7 +1264,7 @@
 					)
 				)
 				(pin passive line
-					(at 3.81 -1.27 180)
+					(at 3.81 0 180)
 					(length 5.08)
 					(name "2"
 						(effects
@@ -1282,7 +1282,7 @@
 					)
 				)
 				(pin passive line
-					(at 3.81 -3.81 180)
+					(at 3.81 -2.54 180)
 					(length 5.08)
 					(name "1"
 						(effects
@@ -13119,8 +13119,8 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_connectors:2-1445055-3")
-		(at 21.59 36.83 0)
+		(lib_id "cocotter_connectors:2-1445051-3")
+		(at 21.59 35.56 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
@@ -13129,25 +13129,23 @@
 		(dnp no)
 		(uuid "2cb6f72e-8b43-4b8f-a81b-ef44ce8c39e6")
 		(property "Reference" "J1"
-			(at 20.9551 30.48 90)
+			(at 19.304 40.386 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Value" "2-1445055-3"
-			(at 18.4151 30.48 90)
+		(property "Value" "2-1445051-3"
+			(at 16.256 32.258 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Footprint" "cocotter_connectors:2-1445055-3"
-			(at 17.78 39.37 0)
+		(property "Footprint" "cocotter_connectors:2-1445051-3"
+			(at 17.78 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13164,8 +13162,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "1x3POS micro Mate'n LOK, through hole, right angle"
-			(at 17.78 39.37 0)
+		(property "Description" "1x3POS micro Mate'n LOK, through hole, vertical"
+			(at 17.78 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13173,8 +13171,8 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C239447"
-			(at 21.59 36.83 0)
+		(property "JLCPCB Part #" "C17473329"
+			(at 21.59 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
