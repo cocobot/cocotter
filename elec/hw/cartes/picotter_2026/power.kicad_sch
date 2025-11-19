@@ -624,57 +624,27 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_connectors:2-1445051-4"
-			(pin_names
-				(offset 0.002)
-			)
+		(symbol "cocotter_connectors:3-794630-4"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "J"
-				(at -2.286 6.35 0)
+				(at -0.254 3.556 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" "2-1445051-4"
-				(at -1.778 -6.35 0)
+			(property "Value" "3-794630-4"
+				(at 0.254 -3.81 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" "cocotter_connectors:2-1445051-4"
-				(at -3.81 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at -3.81 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "1x4POS micro Mate'n LOK, through hole, vertical"
-				(at -3.81 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C17631963"
+			(property "Footprint" "cocotter_connectors:3-794630-4"
 				(at 0 0 0)
 				(effects
 					(font
@@ -683,7 +653,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "1x4POS micro Mate'n LOK, through hole, vertical"
+			(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=82181_SOFTSHELL_HIGH_DENSITY&DocType=Catalog%20Section&DocLang=English&DocFormat=pdf&PartCntxt=794618-4"
 				(at 0 0 0)
 				(effects
 					(font
@@ -692,78 +662,37 @@
 					(hide yes)
 				)
 			)
-			(symbol "2-1445051-4_1_0"
+			(property "Description" "2x2POS MICRO MNL ASSY, vertical HDR"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C5164688"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "2x2POS micro Mate'n LOK, through hole, vertical"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "3-794630-4_1_0"
 				(polyline
 					(pts
-						(xy -3.81 5.08) (xy -3.81 -5.08)
-					)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.81 5.08) (xy 0 5.08)
-					)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 3.81)
-					(radius 0.635)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 1.27)
-					(radius 0.635)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 -1.27)
-					(radius 0.635)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -1.27 -3.81)
-					(radius 0.635)
-					(stroke
-						(width 0.254)
-						(type solid)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -5.08) (xy -3.81 -5.08)
+						(xy -4.445 2.54) (xy -4.445 -2.54)
 					)
 					(stroke
 						(width 0.254)
@@ -775,7 +704,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 -5.08) (xy 0 5.08)
+						(xy -4.445 2.54) (xy 3.81 2.54)
 					)
 					(stroke
 						(width 0.254)
@@ -783,29 +712,97 @@
 					)
 					(fill
 						(type none)
+					)
+				)
+				(circle
+					(center -2.54 1.27)
+					(radius 0.635)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -2.54 -1.27)
+					(radius 0.635)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.54 1.27)
+					(radius 0.635)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.54 -1.27)
+					(radius 0.635)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.81 -2.54) (xy -4.445 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.81 -2.54) (xy 3.81 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(text "1"
+					(at -1.524 -1.778 0)
+					(effects
+						(font
+							(size 1.27 1.0795)
+						)
+						(justify left bottom)
+					)
+				)
+				(text "2"
+					(at 1.524 -0.508 0)
+					(effects
+						(font
+							(size 1.27 1.0795)
+						)
+						(justify right top)
 					)
 				)
 				(pin passive line
-					(at 3.81 3.81 180)
-					(length 5.08)
-					(name "4"
-						(effects
-							(font
-								(size 0 0)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 1.27 180)
-					(length 5.08)
+					(at -5.08 1.27 0)
+					(length 2.54)
 					(name "3"
 						(effects
 							(font
@@ -816,32 +813,14 @@
 					(number "3"
 						(effects
 							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 -1.27 180)
-					(length 5.08)
-					(name "2"
-						(effects
-							(font
 								(size 0 0)
 							)
 						)
 					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
 				)
 				(pin passive line
-					(at 3.81 -3.81 180)
-					(length 5.08)
+					(at -5.08 -1.27 0)
+					(length 2.54)
 					(name "1"
 						(effects
 							(font
@@ -852,7 +831,43 @@
 					(number "1"
 						(effects
 							(font
-								(size 1.27 1.27)
+								(size 0 0)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 1.27 180)
+					(length 2.54)
+					(name "4"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -1.27 180)
+					(length 2.54)
+					(name "2"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 0 0)
 							)
 						)
 					)
@@ -2931,7 +2946,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_transistors:DMP2008UFG-7"
+		(symbol "cocotter_transistors:PJQ4465AP-AU_R2_000A1"
 			(pin_names
 				(offset 0)
 				(hide yes)
@@ -2947,7 +2962,7 @@
 					)
 				)
 			)
-			(property "Value" ""
+			(property "Value" "PJQ4465AP-AU_R2_000A1"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2955,16 +2970,7 @@
 					)
 				)
 			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "cocotter_transistors:Diodes_PowerDI3333-8"
+			(property "Footprint" "cocotter_transistors:Diodes_PowerDI3333-8"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2973,7 +2979,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "PMOS, ID MAX -10A @ Vgs=2.5V, 9.8mOhms@Vgs=2.5V, Vgs max 8V, VDS max 20V"
+			(property "Datasheet" ""
 				(at 0 0 0)
 				(effects
 					(font
@@ -2982,7 +2988,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C461052"
+			(property "Description" "-55℃~+150℃ 1 P-Channel 1.256nF 1.7V@250uA 15A 20W 22nC@10V 55mΩ@4.5V 59pF 60V 87pF P-Channel DFN3333-8 MOSFETs ROHS"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2991,7 +2997,16 @@
 					(hide yes)
 				)
 			)
-			(symbol "DMP2008UFG-7_0_1"
+			(property "JLCPCB Part #" "C6147631"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "PJQ4465AP-AU_R2_000A1_0_1"
 				(polyline
 					(pts
 						(xy -2.286 1.905) (xy -2.286 -1.905)
@@ -3170,7 +3185,7 @@
 					)
 				)
 			)
-			(symbol "DMP2008UFG-7_1_1"
+			(symbol "PJQ4465AP-AU_R2_000A1_1_1"
 				(pin passive line
 					(at -7.62 0 0)
 					(length 2.54)
@@ -4972,16 +4987,6 @@
 	)
 	(wire
 		(pts
-			(xy 24.13 48.26) (xy 22.86 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "33315577-300d-47a4-9a42-b5d653d7e5bf")
-	)
-	(wire
-		(pts
 			(xy 57.15 105.41) (xy 64.77 105.41)
 		)
 		(stroke
@@ -5382,6 +5387,16 @@
 	)
 	(wire
 		(pts
+			(xy 12.7 48.26) (xy 12.7 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5a7b26b0-ee7a-4d46-b243-830c16f6e0f2")
+	)
+	(wire
+		(pts
 			(xy 242.57 134.62) (xy 256.54 134.62)
 		)
 		(stroke
@@ -5779,6 +5794,16 @@
 			(type default)
 		)
 		(uuid "7968f7da-7633-44a8-acfb-044a128aa634")
+	)
+	(wire
+		(pts
+			(xy 12.7 48.26) (xy 24.13 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7bc5e868-7f3f-42c7-a99f-005cd55c1ca6")
 	)
 	(wire
 		(pts
@@ -6572,6 +6597,16 @@
 	)
 	(wire
 		(pts
+			(xy 12.7 43.18) (xy 12.7 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c336386f-d9fc-4327-b2a7-82662b3090b4")
+	)
+	(wire
+		(pts
 			(xy 104.14 95.25) (xy 114.3 95.25)
 		)
 		(stroke
@@ -6822,6 +6857,16 @@
 	)
 	(wire
 		(pts
+			(xy 12.7 40.64) (xy 24.13 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e050242d-e8c2-4d64-a604-a02d45bc25b9")
+	)
+	(wire
+		(pts
 			(xy 256.54 142.24) (xy 256.54 157.48)
 		)
 		(stroke
@@ -6929,16 +6974,6 @@
 			(type default)
 		)
 		(uuid "ea113ce4-cea7-4862-914b-3b74129e2ccc")
-	)
-	(wire
-		(pts
-			(xy 22.86 40.64) (xy 24.13 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ea8900bd-3333-4d59-b5ae-b6c435f41a2c")
 	)
 	(wire
 		(pts
@@ -7209,36 +7244,6 @@
 			(type default)
 		)
 		(uuid "ff53427c-e487-41ea-b0e2-d7b8ed77e210")
-	)
-	(label "en_5v"
-		(at 121.92 90.17 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "354bc8c9-a989-4384-9044-070acb76455c")
-	)
-	(label "en_5v"
-		(at 123.19 36.83 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "6b510bed-944d-4929-8db0-e3f8a9cd0026")
-	)
-	(label "en_5v"
-		(at 123.19 142.24 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "aee29e79-edae-4d59-8082-9be1c10dc869")
 	)
 	(hierarchical_label "vbatt_meas_3v3"
 		(shape output)
@@ -11847,88 +11852,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_connectors:2-1445051-4")
-		(at 19.05 44.45 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "7bbc67dd-5806-45ae-80d2-9c09ba5e5d5d")
-		(property "Reference" "J19"
-			(at 16.764 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "2-1445051-4"
-			(at 19.812 51.308 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_connectors:2-1445051-4"
-			(at 15.24 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 15.24 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "1x4POS micro Mate'n LOK, through hole, vertical"
-			(at 15.24 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C17631963"
-			(at 19.05 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "cd7e42eb-8fd2-4c10-bf3c-3301d89f8378")
-		)
-		(pin "2"
-			(uuid "7a3c2f95-e9b4-44d3-9e4b-462725c91dce")
-		)
-		(pin "4"
-			(uuid "29ac0e83-a192-49e6-bf72-c3c285790d98")
-		)
-		(pin "3"
-			(uuid "ae80f333-f7a9-45f9-a91d-e82099327cd8")
-		)
-		(instances
-			(project ""
-				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
-					(reference "J19")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_capacitors:C_22µF_16V_1206_X5R")
 		(at 227.33 86.36 0)
 		(unit 1)
@@ -12002,6 +11925,89 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
 					(reference "C58")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_connectors:3-794630-4")
+		(at 17.78 44.45 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "83679b8e-73a4-4bb8-8909-5fc36171ed8f")
+		(property "Reference" "J20"
+			(at 17.4625 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "3-794630-4"
+			(at 17.4625 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:3-794630-4"
+			(at 17.78 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=82181_SOFTSHELL_HIGH_DENSITY&DocType=Catalog%20Section&DocLang=English&DocFormat=pdf&PartCntxt=794618-4"
+			(at 17.78 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "2x2POS MICRO MNL ASSY, vertical HDR"
+			(at 17.78 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C5164688"
+			(at 17.78 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "49814da2-b6a5-420a-a755-e32fa800b856")
+		)
+		(pin "4"
+			(uuid "c4c3d8a4-6604-44e3-a6f7-3b1371f61b20")
+		)
+		(pin "1"
+			(uuid "cec669e9-0f18-42a0-999e-7db90740db90")
+		)
+		(pin "2"
+			(uuid "82d0e221-e216-4d88-b863-16d27b1b377a")
+		)
+		(instances
+			(project ""
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
+					(reference "J20")
 					(unit 1)
 				)
 			)
@@ -14446,6 +14452,92 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_transistors:PJQ4465AP-AU_R2_000A1")
+		(at 92.71 180.34 270)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "af7c62da-218b-4282-bd9e-af3f0d989835")
+		(property "Reference" "Q1"
+			(at 92.456 176.784 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PJQ4465AP-AU_R2_000A1"
+			(at 106.426 185.42 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_transistors:Diodes_PowerDI3333-8"
+			(at 92.71 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 92.71 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "-55℃~+150℃ 1 P-Channel 1.256nF 1.7V@250uA 15A 20W 22nC@10V 55mΩ@4.5V 59pF 60V 87pF P-Channel DFN3333-8 MOSFETs ROHS"
+			(at 92.71 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C6147631"
+			(at 92.71 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f00c0d38-2113-498c-af0b-bdc086475b52")
+		)
+		(pin "2"
+			(uuid "212cb2ca-4e6f-4593-8996-81c713a6aaa5")
+		)
+		(pin "5"
+			(uuid "a7f13a8a-b96b-4c46-9704-4bc8c2c8a134")
+		)
+		(pin "4"
+			(uuid "1fc4fc05-1ff3-4070-afc6-03a9b2db8af5")
+		)
+		(pin "3"
+			(uuid "83c48c65-3b30-4944-94bf-17f0e75bbc71")
+		)
+		(instances
+			(project ""
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
+					(reference "Q1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 66.04 157.48 0)
 		(unit 1)
@@ -15802,92 +15894,6 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
 					(reference "C65")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_transistors:DMP2008UFG-7")
-		(at 92.71 180.34 270)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d6ad23c7-9e55-4467-8e58-92299860532f")
-		(property "Reference" "Q1"
-			(at 92.71 170.434 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "DMP2065UFDB"
-			(at 92.71 172.72 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 92.71 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "cocotter_transistors:Diodes_PowerDI3333-8"
-			(at 92.71 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "PMOS, ID MAX -10A @ Vgs=2.5V, 9.8mOhms@Vgs=2.5V, Vgs max 8V, VDS max 20V"
-			(at 92.71 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C461052"
-			(at 92.71 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "d33a355c-7a66-4c2e-8c0a-12075f4ec053")
-		)
-		(pin "2"
-			(uuid "5299c703-236b-4495-976c-7ea852209937")
-		)
-		(pin "1"
-			(uuid "6a1a786e-29a4-4513-97d6-331e809fd143")
-		)
-		(pin "5"
-			(uuid "b7ffd4a1-5384-4487-b3c3-58a56059752d")
-		)
-		(pin "3"
-			(uuid "eaadbe98-7058-49f1-9212-2e77cda87b1a")
-		)
-		(instances
-			(project ""
-				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
-					(reference "Q1")
 					(unit 1)
 				)
 			)

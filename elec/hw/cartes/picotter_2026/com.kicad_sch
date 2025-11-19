@@ -1027,7 +1027,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:+3V3"
+		(symbol "power:+3.3V"
 			(power)
 			(pin_numbers
 				(hide yes)
@@ -1048,7 +1048,7 @@
 					(hide yes)
 				)
 			)
-			(property "Value" "+3V3"
+			(property "Value" "+3.3V"
 				(at 0 3.556 0)
 				(effects
 					(font
@@ -1074,7 +1074,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(property "Description" "Power symbol creates a global label with name \"+3.3V\""
 				(at 0 0 0)
 				(effects
 					(font
@@ -1092,7 +1092,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "+3V3_0_1"
+			(symbol "+3.3V_0_1"
 				(polyline
 					(pts
 						(xy -0.762 1.27) (xy 0 2.54)
@@ -1130,7 +1130,7 @@
 					)
 				)
 			)
-			(symbol "+3V3_1_1"
+			(symbol "+3.3V_1_1"
 				(pin power_in line
 					(at 0 0 90)
 					(length 0)
@@ -1279,12 +1279,6 @@
 		(uuid "39be3b83-3e70-49ac-8ba9-c9d67bcb1681")
 	)
 	(junction
-		(at 29.21 25.4)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6cfd257a-d77d-48be-b7bd-6dcedc8acc81")
-	)
-	(junction
 		(at 77.47 43.18)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1295,6 +1289,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "7f0ed6a2-b072-4b35-9ed0-da5250d87b48")
+	)
+	(junction
+		(at 29.21 25.4)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8099683b-13b0-4a5a-8616-ad3ef0806170")
 	)
 	(junction
 		(at 60.96 62.23)
@@ -1633,6 +1633,72 @@
 			(justify right)
 		)
 		(uuid "e222afa9-bd38-4edd-af46-fa453798c910")
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 29.21 25.4 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0be5f1ff-ad4c-47d3-9881-b059f9397ff7")
+		(property "Reference" "#PWR061"
+			(at 29.21 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 29.21 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 29.21 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 29.21 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 29.21 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8ba0bb43-4056-4508-ace4-8b0f2cc2380e")
+		)
+		(instances
+			(project ""
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/d36b0a97-acf3-4f06-b6ad-f8f96f789f77"
+					(reference "#PWR061")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -2022,72 +2088,6 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/d36b0a97-acf3-4f06-b6ad-f8f96f789f77"
 					(reference "J18")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 29.21 25.4 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c46b83d4-094a-4b8e-8281-c512989f9db8")
-		(property "Reference" "#PWR061"
-			(at 29.21 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 29.21 20.32 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 29.21 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 29.21 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 29.21 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ad9b1203-acfd-47c1-9034-2ae04c01282d")
-		)
-		(instances
-			(project "picotter_2026"
-				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/d36b0a97-acf3-4f06-b6ad-f8f96f789f77"
-					(reference "#PWR061")
 					(unit 1)
 				)
 			)
