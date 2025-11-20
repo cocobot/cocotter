@@ -435,7 +435,7 @@
 		(descr "Capacitor SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "D9"
-			(at 66.5 7.07 180)
+			(at 0 1.75 180)
 			(layer "F.SilkS")
 			(uuid "5cf1f81c-8f7a-4c35-87bf-60994b183381")
 			(effects
@@ -12628,9 +12628,9 @@
 	(footprint "cocotter_connectors:22272041"
 		(layer "B.Cu")
 		(uuid "2cc84785-1f6b-4672-a5c5-ba596863d89b")
-		(at 130.400148 56.635 -60)
+		(at 129.900148 52.365 60)
 		(property "Reference" "J27"
-			(at 0 6.35 120)
+			(at 0 6.35 240)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(uuid "d2a03064-14fb-47aa-8694-6cdfe347ca59")
@@ -12643,7 +12643,7 @@
 			)
 		)
 		(property "Value" "22053041"
-			(at 0 -1.06 120)
+			(at 0 -1.06 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "c8421177-9641-4819-bbc5-9671113d876a")
@@ -12656,7 +12656,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.molex.com/en-us/products/part-detail/22272041"
-			(at -0.000001 2.540001 120)
+			(at -0.000001 2.540001 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -12670,7 +12670,7 @@
 			)
 		)
 		(property "Description" "mini kk 4 voies vertical"
-			(at -0.000001 2.540001 120)
+			(at -0.000001 2.540001 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -12684,7 +12684,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C504991"
-			(at 0 0 300)
+			(at 0 0 60)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -12702,14 +12702,24 @@
 		(sheetfile "meca_extension_2026.kicad_sch")
 		(attr smd)
 		(fp_line
-			(start -2.899999 5.079999)
+			(start 2.899999 -5.079999)
+			(end -2.9 -5.08)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "B.SilkS")
+			(uuid "b7f00271-c5f2-4a5d-ba54-de8c162948de")
+		)
+		(fp_line
+			(start 2.899999 -5.079999)
 			(end 2.9 5.08)
 			(stroke
 				(width 0.12)
 				(type solid)
 			)
 			(layer "B.SilkS")
-			(uuid "42ef946e-6c05-4023-9a89-97a5c49e5222")
+			(uuid "32e9720b-a2e6-4303-a9c2-b0a232022d60")
 		)
 		(fp_line
 			(start -2.9 3.81)
@@ -12732,24 +12742,14 @@
 			(uuid "34eaebb6-c021-42a4-a6d7-06084b442316")
 		)
 		(fp_line
-			(start 2.899999 -5.079999)
+			(start -2.899999 5.079999)
 			(end 2.9 5.08)
 			(stroke
 				(width 0.12)
 				(type solid)
 			)
 			(layer "B.SilkS")
-			(uuid "32e9720b-a2e6-4303-a9c2-b0a232022d60")
-		)
-		(fp_line
-			(start 2.899999 -5.079999)
-			(end -2.9 -5.08)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "B.SilkS")
-			(uuid "b7f00271-c5f2-4a5d-ba54-de8c162948de")
+			(uuid "42ef946e-6c05-4023-9a89-97a5c49e5222")
 		)
 		(fp_poly
 			(pts
@@ -12776,6 +12776,26 @@
 			(uuid "ecca3c35-4ba0-44d2-ae0e-24c7af30f29e")
 		)
 		(fp_line
+			(start 2.899999 -5.079999)
+			(end -2.9 -5.08)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "B.Fab")
+			(uuid "90083671-4cf1-49e4-87b3-3838ed975d1c")
+		)
+		(fp_line
+			(start -2.9 0)
+			(end -2.899999 5.079999)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "B.Fab")
+			(uuid "f791a107-fc64-4c0b-a203-4d16199cd0fe")
+		)
+		(fp_line
 			(start -2.899999 5.079999)
 			(end 2.9 5.08)
 			(stroke
@@ -12795,26 +12815,6 @@
 			(layer "B.Fab")
 			(uuid "4dadc919-58ba-41c0-8600-13152550a616")
 		)
-		(fp_line
-			(start -2.9 0)
-			(end -2.899999 5.079999)
-			(stroke
-				(width 0.1)
-				(type solid)
-			)
-			(layer "B.Fab")
-			(uuid "f791a107-fc64-4c0b-a203-4d16199cd0fe")
-		)
-		(fp_line
-			(start 2.899999 -5.079999)
-			(end -2.9 -5.08)
-			(stroke
-				(width 0.1)
-				(type solid)
-			)
-			(layer "B.Fab")
-			(uuid "90083671-4cf1-49e4-87b3-3838ed975d1c")
-		)
 		(fp_poly
 			(pts
 				(xy -2.899999 5.079999) (xy -1.9 5.08) (xy -1.9 -5.08) (xy -2.9 -5.08)
@@ -12828,7 +12828,7 @@
 			(uuid "568ba733-0192-46a1-b930-cf4cf08d8d9f")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 -1.23 120)
+			(at 0 -1.23 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "b2f899fb-4aef-4d95-8dd2-8d597d163598")
@@ -12841,7 +12841,7 @@
 			)
 		)
 		(pad "1" thru_hole rect
-			(at 0.000001 3.81 300)
+			(at 0.000001 3.81 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -12852,7 +12852,7 @@
 			(uuid "e24c5f62-5346-463c-97a0-938e44fa4114")
 		)
 		(pad "2" thru_hole oval
-			(at 0 1.27 300)
+			(at 0 1.27 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -12863,7 +12863,7 @@
 			(uuid "b32d11e9-b9d4-41ff-a674-40f8942e1c64")
 		)
 		(pad "3" thru_hole oval
-			(at 0 -1.27 300)
+			(at 0 -1.27 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -12874,7 +12874,7 @@
 			(uuid "e607da91-2b80-42a7-980a-1ddcc4756f90")
 		)
 		(pad "4" thru_hole oval
-			(at -0.000001 -3.81 300)
+			(at -0.000001 -3.81 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -29511,9 +29511,9 @@
 	(footprint "cocotter_connectors:22272051"
 		(layer "B.Cu")
 		(uuid "9daedc9f-6386-4a36-9661-54e57baced38")
-		(at 120.800295 53.770001 120)
+		(at 121.5 56.5 60)
 		(property "Reference" "J26"
-			(at 0 7.62 300)
+			(at 0 7.62 240)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(uuid "3e2d23bf-6aa2-40a7-8c76-babb98d6e6e0")
@@ -29526,7 +29526,7 @@
 			)
 		)
 		(property "Value" "22053051"
-			(at 0 -7.62 300)
+			(at 0 -7.62 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "99786eb0-ef3d-4acb-bd91-a81c6f44d77d")
@@ -29539,7 +29539,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.molex.com/en-us/products/part-detail/22272051"
-			(at -0.000001 3.81 300)
+			(at -0.000001 3.81 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -29553,7 +29553,7 @@
 			)
 		)
 		(property "Description" "mini kk 5 voies vertical"
-			(at -0.000001 3.81 300)
+			(at -0.000001 3.81 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -29567,7 +29567,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C585785"
-			(at 0 0 120)
+			(at 0 0 60)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -29605,16 +29605,6 @@
 			(uuid "bea16576-20db-4e39-b417-56e1661c6414")
 		)
 		(fp_line
-			(start -1.900001 3.81)
-			(end -1.9 -1.27)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "B.SilkS")
-			(uuid "b14675f9-cba1-449b-ad26-0409e37c8ed0")
-		)
-		(fp_line
 			(start -2.899999 3.81)
 			(end -2.9 -1.27)
 			(stroke
@@ -29623,6 +29613,16 @@
 			)
 			(layer "B.SilkS")
 			(uuid "2fcea86d-c017-4e25-bade-1efcdbd57297")
+		)
+		(fp_line
+			(start -1.900001 3.81)
+			(end -1.9 -1.27)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "B.SilkS")
+			(uuid "b14675f9-cba1-449b-ad26-0409e37c8ed0")
 		)
 		(fp_line
 			(start -2.900001 6.35)
@@ -29648,7 +29648,7 @@
 		)
 		(fp_poly
 			(pts
-				(xy -3.400001 6.81) (xy 3.400001 6.809999) (xy 3.400001 -6.81) (xy -3.400001 -6.809999)
+				(xy -3.400001 6.809999) (xy 3.400001 6.809999) (xy 3.400001 -6.809999) (xy -3.400001 -6.809999)
 			)
 			(stroke
 				(width 0.05)
@@ -29679,16 +29679,6 @@
 			(uuid "8a0dcbf4-5e6a-4c85-9230-aee9ecc1e780")
 		)
 		(fp_line
-			(start 2.9 6.35)
-			(end 2.900001 -6.35)
-			(stroke
-				(width 0.1)
-				(type solid)
-			)
-			(layer "B.Fab")
-			(uuid "12521940-2cf8-4b70-832f-f2b99294a574")
-		)
-		(fp_line
 			(start -2.900001 6.35)
 			(end 2.9 6.35)
 			(stroke
@@ -29697,6 +29687,16 @@
 			)
 			(layer "B.Fab")
 			(uuid "d5cf36c8-ce14-472b-b109-d49ff6782fa6")
+		)
+		(fp_line
+			(start 2.9 6.35)
+			(end 2.900001 -6.35)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "B.Fab")
+			(uuid "12521940-2cf8-4b70-832f-f2b99294a574")
 		)
 		(fp_poly
 			(pts
@@ -29711,7 +29711,7 @@
 			(uuid "39dba0bd-537e-459b-a04f-9612952c4bd8")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 7.62 300)
+			(at 0 7.62 240)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "9f0ed439-20d1-48b6-88e6-e595c9eff1ce")
@@ -29724,7 +29724,7 @@
 			)
 		)
 		(pad "1" thru_hole rect
-			(at 0 5.08 120)
+			(at 0 5.08 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -29735,7 +29735,7 @@
 			(uuid "02fd2c27-b137-4507-b586-25ccffa72e4d")
 		)
 		(pad "2" thru_hole oval
-			(at 0.000001 2.540001 120)
+			(at 0.000001 2.540001 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -29746,7 +29746,7 @@
 			(uuid "cb3a8878-996c-4a4f-9a54-e383b583d633")
 		)
 		(pad "3" thru_hole oval
-			(at 0 0 120)
+			(at 0 0 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -29757,7 +29757,7 @@
 			(uuid "ac79977b-9117-47f1-b2fd-14d48b6529ca")
 		)
 		(pad "4" thru_hole oval
-			(at -0.000001 -2.540001 120)
+			(at -0.000001 -2.540001 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
@@ -29768,7 +29768,7 @@
 			(uuid "30fa07d1-1c1c-4ca0-8626-9024fc7055ea")
 		)
 		(pad "5" thru_hole oval
-			(at 0 -5.08 120)
+			(at 0 -5.08 60)
 			(size 2 2)
 			(drill 1.2)
 			(layers "*.Cu" "*.Mask")
