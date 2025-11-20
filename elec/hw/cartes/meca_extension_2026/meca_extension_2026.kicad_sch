@@ -7581,16 +7581,6 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 77.47) (xy 49.53 77.47)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0540fd55-96f1-464d-a507-41182e26abee")
-	)
-	(wire
-		(pts
 			(xy 130.81 60.96) (xy 168.91 60.96)
 		)
 		(stroke
@@ -7601,7 +7591,7 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 74.93) (xy 35.56 74.93)
+			(xy 24.13 74.93) (xy 35.56 74.93)
 		)
 		(stroke
 			(width 0)
@@ -8481,7 +8471,7 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 72.39) (xy 35.56 72.39)
+			(xy 24.13 72.39) (xy 35.56 72.39)
 		)
 		(stroke
 			(width 0)
@@ -9271,6 +9261,16 @@
 	)
 	(wire
 		(pts
+			(xy 24.13 77.47) (xy 49.53 77.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8db3463c-6442-4a66-9ca0-af7f80ce8c49")
+	)
+	(wire
+		(pts
 			(xy 232.41 355.6) (xy 246.38 355.6)
 		)
 		(stroke
@@ -9661,7 +9661,7 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 69.85) (xy 49.53 69.85)
+			(xy 24.13 69.85) (xy 49.53 69.85)
 		)
 		(stroke
 			(width 0)
@@ -14046,7 +14046,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:22272041")
-		(at 25.4 72.39 0)
+		(at 24.13 74.93 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14055,7 +14055,7 @@
 		(fields_autoplaced yes)
 		(uuid "3deedd60-b956-4620-8d58-685578474f49")
 		(property "Reference" "J27"
-			(at 21.59 59.69 0)
+			(at 20.32 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14063,7 +14063,7 @@
 			)
 		)
 		(property "Value" "22053041"
-			(at 21.59 62.23 0)
+			(at 20.32 64.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14071,7 +14071,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:22272041"
-			(at 22.098 84.328 0)
+			(at 20.828 86.868 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14080,7 +14080,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.molex.com/en-us/products/part-detail/22272041"
-			(at 25.4 81.28 0)
+			(at 24.13 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14089,7 +14089,7 @@
 			)
 		)
 		(property "Description" "mini kk 4 voies vertical"
-			(at 25.4 81.28 0)
+			(at 24.13 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14098,7 +14098,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C504991"
-			(at 25.4 72.39 0)
+			(at 24.13 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14119,7 +14119,7 @@
 			(uuid "1e3a8c6f-3a0a-48a4-8453-710f21f149d6")
 		)
 		(instances
-			(project ""
+			(project "meca_extension_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "J27")
 					(unit 1)
