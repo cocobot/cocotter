@@ -1,12 +1,14 @@
 (kicad_sch
-	(version 20231120)
+	(version 20250114)
 	(generator "eeschema")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(uuid "bf883873-56f0-441a-b1e4-987f6ba0de2f")
 	(paper "A4")
 	(lib_symbols
 		(symbol "cocotter_capacitors:C_100nF_50V_0603"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0.254)
 			)
@@ -97,7 +99,7 @@
 			(symbol "C_100nF_50V_0603_0_1"
 				(polyline
 					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
+						(xy -2.032 0.762) (xy 2.032 0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -109,7 +111,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -158,12 +160,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "pmi_2023_specific:+3V3_m"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -235,7 +242,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -247,7 +254,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -278,12 +285,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "pmi_2023_specific:GND_m"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -374,6 +386,7 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "pmi_2023_specific:interconnect_V2"
 			(exclude_from_sim no)
@@ -435,178 +448,16 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -25.4 0)
+					(at -6.35 22.86 0)
 					(length 2.54)
-					(name "ctc_right_3v3"
+					(name "ctc_left_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 -2.54 0)
-					(length 2.54)
-					(name "pwm_right_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "10"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 0 0)
-					(length 2.54)
-					(name "dir_right_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "11"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 2.54 0)
-					(length 2.54)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "12"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 5.08 0)
-					(length 2.54)
-					(name "scl_tof_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "13"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 7.62 0)
-					(length 2.54)
-					(name "sda_tof_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "14"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 10.16 0)
-					(length 2.54)
-					(name "scl_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "15"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 12.7 0)
-					(length 2.54)
-					(name "sda_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "16"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 15.24 0)
-					(length 2.54)
-					(name "i2c_to_int_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "17"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -6.35 17.78 0)
-					(length 2.54)
-					(name "right_encod_B_3v3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "18"
+					(number "20"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -633,16 +484,16 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -22.86 0)
+					(at -6.35 17.78 0)
 					(length 2.54)
-					(name "vbat_mon_4.35V"
+					(name "right_encod_B_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
+					(number "18"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -651,16 +502,16 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 22.86 0)
+					(at -6.35 15.24 0)
 					(length 2.54)
-					(name "ctc_left_3v3"
+					(name "i2c_to_int_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "20"
+					(number "17"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -669,16 +520,16 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -20.32 0)
+					(at -6.35 12.7 0)
 					(length 2.54)
-					(name "tof_irq_3v3"
+					(name "sda_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "3"
+					(number "16"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -687,16 +538,16 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -17.78 0)
+					(at -6.35 10.16 0)
 					(length 2.54)
-					(name "PWM_left_3v3"
+					(name "scl_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "4"
+					(number "15"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -705,16 +556,16 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -15.24 0)
+					(at -6.35 7.62 0)
 					(length 2.54)
-					(name "DIR_left_3v3"
+					(name "sda_tof_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "5"
+					(number "14"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -723,7 +574,25 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -12.7 0)
+					(at -6.35 5.08 0)
+					(length 2.54)
+					(name "scl_tof_3v3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "13"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 2.54 0)
 					(length 2.54)
 					(name "GND"
 						(effects
@@ -732,7 +601,7 @@
 							)
 						)
 					)
-					(number "6"
+					(number "12"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -741,16 +610,52 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -10.16 0)
+					(at -6.35 0 0)
 					(length 2.54)
-					(name "left_encod_A_3v3"
+					(name "dir_right_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "7"
+					(number "11"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -2.54 0)
+					(length 2.54)
+					(name "pwm_right_3v3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "10"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -5.08 0)
+					(length 2.54)
+					(name "P3V3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -777,16 +682,124 @@
 					)
 				)
 				(pin passive line
-					(at -6.35 -5.08 0)
+					(at -6.35 -10.16 0)
 					(length 2.54)
-					(name "P3V3"
+					(name "left_encod_A_3v3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "9"
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -12.7 0)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -15.24 0)
+					(length 2.54)
+					(name "DIR_left_3v3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -17.78 0)
+					(length 2.54)
+					(name "PWM_left_3v3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -20.32 0)
+					(length 2.54)
+					(name "tof_irq_3v3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -22.86 0)
+					(length 2.54)
+					(name "vbat_mon_4.35V"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -6.35 -25.4 0)
+					(length 2.54)
+					(name "ctc_right_3v3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -795,12 +808,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:+3V3"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -872,7 +890,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -884,7 +902,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -915,12 +933,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:GND"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1011,6 +1034,7 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 	)
 	(junction
@@ -1345,16 +1369,6 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 59.69) (xy 111.76 59.69)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "62933d6e-2c91-45a8-b744-e0387dcfc7a1")
-	)
-	(wire
-		(pts
 			(xy 86.36 113.03) (xy 111.76 113.03)
 		)
 		(stroke
@@ -1422,6 +1436,16 @@
 			(type default)
 		)
 		(uuid "88d485b2-2d7e-42f4-8500-c29aadd2deec")
+	)
+	(wire
+		(pts
+			(xy 72.39 67.31) (xy 111.76 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "88feba28-68a7-4537-93b3-ac81c406f3df")
 	)
 	(wire
 		(pts
@@ -3018,6 +3042,10 @@
 	(sheet
 		(at 111.76 38.1)
 		(size 44.45 109.22)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -3047,283 +3075,283 @@
 		)
 		(pin "EN_ESP32_3v3" input
 			(at 156.21 129.54 0)
+			(uuid "25acb477-3041-4a2b-8721-d692c33cf10a")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "25acb477-3041-4a2b-8721-d692c33cf10a")
 		)
 		(pin "vbatt_mon_3.45V" input
 			(at 156.21 107.95 0)
+			(uuid "f3d51390-51fd-4fbc-b67d-ce3c01e90e3b")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "f3d51390-51fd-4fbc-b67d-ce3c01e90e3b")
 		)
 		(pin "pwm_left" output
 			(at 156.21 102.87 0)
+			(uuid "0f7bfdf0-3834-4438-9995-cbd004e3e0b7")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "0f7bfdf0-3834-4438-9995-cbd004e3e0b7")
 		)
 		(pin "pwm_right" output
 			(at 156.21 87.63 0)
+			(uuid "662fbeed-7c3d-4e6d-8418-b7cb7d137b0c")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "662fbeed-7c3d-4e6d-8418-b7cb7d137b0c")
 		)
 		(pin "dir_right" output
 			(at 156.21 85.09 0)
+			(uuid "ba3ad0e3-a0e9-4884-81fe-a9b793540bf8")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "ba3ad0e3-a0e9-4884-81fe-a9b793540bf8")
 		)
 		(pin "dir_left" output
 			(at 156.21 100.33 0)
+			(uuid "5e278325-ef78-4f92-9381-8ac7d33f81a6")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "5e278325-ef78-4f92-9381-8ac7d33f81a6")
 		)
 		(pin "right_encod_B_3v3" input
 			(at 111.76 144.78 180)
+			(uuid "17a336bd-0580-483a-a272-e20e0569e51c")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "17a336bd-0580-483a-a272-e20e0569e51c")
 		)
 		(pin "left_encod_B_3v3" input
 			(at 111.76 137.16 180)
+			(uuid "2dbd28d4-17a4-4cc9-9d89-b041a9de76ba")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "2dbd28d4-17a4-4cc9-9d89-b041a9de76ba")
 		)
 		(pin "left_encod_A_3v3" input
 			(at 111.76 134.62 180)
+			(uuid "e7c77c74-116c-422f-a777-4e1050c9ca14")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "e7c77c74-116c-422f-a777-4e1050c9ca14")
 		)
 		(pin "sda_3v3" bidirectional
 			(at 111.76 113.03 180)
+			(uuid "39772296-a70a-4b80-9342-1c021eb235f1")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "39772296-a70a-4b80-9342-1c021eb235f1")
 		)
 		(pin "scl_3v3" output
 			(at 111.76 115.57 180)
+			(uuid "d7c08389-ae5c-4959-ad9e-2adaf5a5e3b1")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "d7c08389-ae5c-4959-ad9e-2adaf5a5e3b1")
 		)
 		(pin "ctc_left" input
 			(at 156.21 62.23 0)
+			(uuid "c9443b7e-6f85-4c46-b3fd-1137cd44ff03")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "c9443b7e-6f85-4c46-b3fd-1137cd44ff03")
 		)
 		(pin "ctc_right" input
 			(at 156.21 110.49 0)
+			(uuid "a9b823e9-d4a9-41cc-aeb9-09823b76f442")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "a9b823e9-d4a9-41cc-aeb9-09823b76f442")
 		)
 		(pin "tof_irq" input
 			(at 156.21 105.41 0)
+			(uuid "41c25a7e-09ae-42d0-8f26-f030eeb2095f")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "41c25a7e-09ae-42d0-8f26-f030eeb2095f")
 		)
 		(pin "i2C_io_int_3v3" input
 			(at 111.76 93.98 180)
+			(uuid "d9244f17-18ac-476a-bad1-845b5d8fda63")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "d9244f17-18ac-476a-bad1-845b5d8fda63")
 		)
 		(pin "gyro_miso_3v3" input
 			(at 111.76 57.15 180)
+			(uuid "a1d2aed0-7776-4248-97e5-6bd94acb1a65")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "a1d2aed0-7776-4248-97e5-6bd94acb1a65")
 		)
 		(pin "gyro_sck_3v3" output
 			(at 111.76 62.23 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
 			(uuid "ea9582cf-d9ee-4c59-a9c2-f0df772b75b9")
-		)
-		(pin "gyro_ncs_3v3" output
-			(at 111.76 59.69 180)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
+		)
+		(pin "gyro_ncs_gyro_3v3" output
+			(at 111.76 67.31 180)
 			(uuid "e508cf9f-4a08-4b6b-9c4a-441af345a2a4")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
 		)
 		(pin "gyro_mosi_3v3" output
 			(at 111.76 54.61 180)
+			(uuid "de8c50bd-ff9a-4047-a3d8-7ce1193fc3a2")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "de8c50bd-ff9a-4047-a3d8-7ce1193fc3a2")
 		)
 		(pin "start_robot_3v3" input
 			(at 111.76 127 180)
+			(uuid "5f1818c5-0c3f-4694-842f-3d7d88849e60")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "5f1818c5-0c3f-4694-842f-3d7d88849e60")
 		)
 		(pin "emergency_stop_3v3" input
 			(at 111.76 129.54 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
 			(uuid "a1463dd7-adc2-4bb1-abbf-2d5fa97a49a8")
-		)
-		(pin "gyro_irq_3v3" input
-			(at 111.76 64.77 180)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
+		)
+		(pin "gyro_ncs_accel_3v3" output
+			(at 111.76 64.77 180)
 			(uuid "27444737-8fe2-46b9-b0ae-8a741ff60e44")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
 		)
 		(pin "right_encod_A_3v3" input
 			(at 111.76 142.24 180)
+			(uuid "098535ba-20e6-48c3-990d-048389709c9b")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "098535ba-20e6-48c3-990d-048389709c9b")
 		)
 		(pin "conf3_3v3" input
 			(at 111.76 109.22 180)
+			(uuid "52a10f0d-e3d5-4345-bf5f-26f0aa0cb8fa")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "52a10f0d-e3d5-4345-bf5f-26f0aa0cb8fa")
 		)
 		(pin "enable_back_tof_3v3" output
 			(at 111.76 90.17 180)
+			(uuid "220f6d8f-6afd-4f13-be33-321b747a918e")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "220f6d8f-6afd-4f13-be33-321b747a918e")
 		)
 		(pin "enable_front_tof_3v3" output
 			(at 111.76 87.63 180)
+			(uuid "86043f8c-f95b-44b0-8ae5-4d06654b6cdb")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "86043f8c-f95b-44b0-8ae5-4d06654b6cdb")
 		)
 		(pin "scl_tof_3v3" output
 			(at 156.21 80.01 0)
+			(uuid "e4708173-7a9a-4434-849b-1d726d8124e1")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "e4708173-7a9a-4434-849b-1d726d8124e1")
 		)
 		(pin "sda_tof_3v3" tri_state
 			(at 156.21 77.47 0)
+			(uuid "d38d1005-6748-4701-a447-86a549c56226")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "d38d1005-6748-4701-a447-86a549c56226")
 		)
 		(instances
 			(project "pmi_2023"
@@ -3336,6 +3364,10 @@
 	(sheet
 		(at 41.91 106.68)
 		(size 44.45 40.64)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -3365,143 +3397,143 @@
 		)
 		(pin "i2C_io_int_3v3" output
 			(at 86.36 120.65 0)
+			(uuid "468d1db0-28e3-40b5-9e30-cbbe6664db7b")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "468d1db0-28e3-40b5-9e30-cbbe6664db7b")
 		)
 		(pin "sda_3v3" bidirectional
 			(at 86.36 113.03 0)
+			(uuid "74a216b2-d1c2-47d4-8f88-b33e13badfc0")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "74a216b2-d1c2-47d4-8f88-b33e13badfc0")
 		)
 		(pin "scl_3v3" input
 			(at 86.36 115.57 0)
+			(uuid "c6d3d257-78a3-40ad-9a53-d47a5c7a0b60")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "c6d3d257-78a3-40ad-9a53-d47a5c7a0b60")
 		)
 		(pin "start_robot_3v3" output
 			(at 86.36 127 0)
+			(uuid "3eb87bfa-bb38-4f26-99f9-91699600b754")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "3eb87bfa-bb38-4f26-99f9-91699600b754")
 		)
 		(pin "emergency_stop_3v3" output
 			(at 86.36 129.54 0)
+			(uuid "3256cb17-578f-4cee-93df-28b3c0488332")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "3256cb17-578f-4cee-93df-28b3c0488332")
 		)
 		(pin "conf3" output
 			(at 86.36 109.22 0)
+			(uuid "b35dd4fd-33fa-44e0-b5e9-d00ca1538945")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "b35dd4fd-33fa-44e0-b5e9-d00ca1538945")
 		)
 		(pin "left_encod_A_3v3" output
 			(at 86.36 134.62 0)
+			(uuid "80c3c6ab-cb5d-4e43-91de-04bc03a7044b")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "80c3c6ab-cb5d-4e43-91de-04bc03a7044b")
 		)
 		(pin "left_encod_B_3v3" output
 			(at 86.36 137.16 0)
+			(uuid "9bb7cdf7-4a1b-4cf9-a377-77926b7e14e9")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "9bb7cdf7-4a1b-4cf9-a377-77926b7e14e9")
 		)
 		(pin "right_encod_raw_A_3v3" input
 			(at 41.91 142.24 180)
+			(uuid "6eb9c2c7-54cd-40a3-b5d0-686b996747d5")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "6eb9c2c7-54cd-40a3-b5d0-686b996747d5")
 		)
 		(pin "right_encod_raw_B_3v3" input
 			(at 41.91 144.78 180)
+			(uuid "c60f8269-8ba2-42e1-942a-60030517ca09")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "c60f8269-8ba2-42e1-942a-60030517ca09")
 		)
 		(pin "right_encod_B_3v3" output
 			(at 86.36 144.78 0)
+			(uuid "039ae8c2-7f2b-4406-a7d3-db73eb2843bc")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "039ae8c2-7f2b-4406-a7d3-db73eb2843bc")
 		)
 		(pin "right_encod_A_3v3" output
 			(at 86.36 142.24 0)
+			(uuid "71a4af77-c1be-4c1c-9621-b1ab24f223d9")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "71a4af77-c1be-4c1c-9621-b1ab24f223d9")
 		)
 		(pin "left_encod_raw_B_3v3" input
 			(at 41.91 137.16 180)
+			(uuid "1cb33569-5c70-42ce-9a6c-7d237ab0d366")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "1cb33569-5c70-42ce-9a6c-7d237ab0d366")
 		)
 		(pin "left_encod_raw_A_3v3" input
 			(at 41.91 134.62 180)
+			(uuid "3b5e59dd-67a0-49c1-9a98-f25efd32e4bd")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "3b5e59dd-67a0-49c1-9a98-f25efd32e4bd")
 		)
 		(instances
 			(project "pmi_2023"
@@ -3514,6 +3546,10 @@
 	(sheet
 		(at 41.91 49.53)
 		(size 30.48 41.91)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -3543,103 +3579,103 @@
 		)
 		(pin "gyro_mosi_3v3" input
 			(at 72.39 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
 			(uuid "fef96303-8a98-4d0e-8efe-aa932182d733")
-		)
-		(pin "gyro_ncs_3v3" input
-			(at 72.39 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "3d727a3d-9c91-4ccf-a604-f33e38b9a789")
 		)
 		(pin "gyro_sck_3v3" input
 			(at 72.39 62.23 0)
+			(uuid "0d211c74-d82a-4503-81c9-f9958aa565a3")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "0d211c74-d82a-4503-81c9-f9958aa565a3")
 		)
 		(pin "gyro_miso_3v3" output
 			(at 72.39 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
 			(uuid "da42f6e3-402b-4baf-9012-aab762e03672")
-		)
-		(pin "gyro_irq_3v3" output
-			(at 72.39 64.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "c29a5d7c-080b-4c14-addb-b55124f3539e")
 		)
 		(pin "tof_irq" output
 			(at 72.39 72.39 0)
+			(uuid "fb268e78-3f3c-4e14-9b7b-a15558efd773")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "fb268e78-3f3c-4e14-9b7b-a15558efd773")
 		)
 		(pin "enable_back_tof_3v3" input
 			(at 72.39 90.17 0)
+			(uuid "79de49f6-6aab-48a7-bf71-a798203bf7f5")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "79de49f6-6aab-48a7-bf71-a798203bf7f5")
 		)
 		(pin "enable_front_tof_3v3" input
 			(at 72.39 87.63 0)
+			(uuid "1a50e510-373d-489e-9658-2e741a7b6a24")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "1a50e510-373d-489e-9658-2e741a7b6a24")
 		)
 		(pin "scl_tof_3v3" input
 			(at 72.39 77.47 0)
+			(uuid "ecbb9fbc-52d5-4812-b558-8fbb5e9d5acc")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "ecbb9fbc-52d5-4812-b558-8fbb5e9d5acc")
 		)
 		(pin "sda_tof_3v3" bidirectional
 			(at 72.39 80.01 0)
+			(uuid "c17703cf-e1c3-4256-b03b-f74182026afc")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "c17703cf-e1c3-4256-b03b-f74182026afc")
+		)
+		(pin "gyro_ncs_gyro_3v3" input
+			(at 72.39 67.31 0)
+			(uuid "d8088986-e84d-4e7d-8c22-51c000766f60")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "gyro_ncs_accel_3v3" input
+			(at 72.39 64.77 0)
+			(uuid "a5636a08-b0fe-4aef-99fb-fb36fd30849f")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
 		)
 		(instances
 			(project "pmi_2023"

@@ -1,12 +1,14 @@
 (kicad_sch
-	(version 20231120)
+	(version 20250114)
 	(generator "eeschema")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(uuid "38325360-a64d-4d1b-8601-a24e639d1a3c")
 	(paper "A4")
 	(lib_symbols
 		(symbol "cocotter_capacitors:C_100nF_50V_0603"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0.254)
 			)
@@ -97,7 +99,7 @@
 			(symbol "C_100nF_50V_0603_0_1"
 				(polyline
 					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
+						(xy -2.032 0.762) (xy 2.032 0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -109,7 +111,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -158,9 +160,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_capacitors:C_47µF_10V_1206_X5R"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0.254)
 			)
@@ -251,7 +256,7 @@
 			(symbol "C_47µF_10V_1206_X5R_0_1"
 				(polyline
 					(pts
-						(xy -2.032 -0.762) (xy 2.032 -0.762)
+						(xy -2.032 0.762) (xy 2.032 0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -263,7 +268,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.032 0.762) (xy 2.032 0.762)
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
 					)
 					(stroke
 						(width 0.508)
@@ -312,11 +317,16 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_diodes:1N5819WS"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 1.016) hide)
+				(offset 1.016)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -392,10 +402,10 @@
 			(symbol "1N5819WS_0_1"
 				(polyline
 					(pts
-						(xy 1.27 0) (xy -1.27 0)
+						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
 					)
 					(stroke
-						(width 0)
+						(width 0.254)
 						(type default)
 					)
 					(fill
@@ -416,10 +426,10 @@
 				)
 				(polyline
 					(pts
-						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+						(xy 1.27 0) (xy -1.27 0)
 					)
 					(stroke
-						(width 0.254)
+						(width 0)
 						(type default)
 					)
 					(fill
@@ -465,6 +475,7 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_ic:DRV8231ADDAR"
 			(exclude_from_sim no)
@@ -534,17 +545,17 @@
 						(type background)
 					)
 				)
-				(pin output line
-					(at -8.89 -5.08 0)
+				(pin input line
+					(at -8.89 5.08 0)
 					(length 2.54)
-					(name "IPROPI"
+					(name "IN1"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "1"
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -571,24 +582,6 @@
 					)
 				)
 				(pin input line
-					(at -8.89 5.08 0)
-					(length 2.54)
-					(name "IN1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin input line
 					(at -8.89 -2.54 0)
 					(length 2.54)
 					(name "Vref"
@@ -599,6 +592,24 @@
 						)
 					)
 					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at -8.89 -5.08 0)
+					(length 2.54)
+					(name "IPROPI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -624,24 +635,6 @@
 						)
 					)
 				)
-				(pin output line
-					(at 8.89 5.08 180)
-					(length 2.54)
-					(name "OUT1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 				(pin passive line
 					(at 2.54 -8.89 90)
 					(length 2.54)
@@ -653,24 +646,6 @@
 						)
 					)
 					(number "7"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin output line
-					(at 8.89 2.54 180)
-					(length 2.54)
-					(name "OUT2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "8"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -696,10 +671,49 @@
 						)
 					)
 				)
+				(pin output line
+					(at 8.89 5.08 180)
+					(length 2.54)
+					(name "OUT1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at 8.89 2.54 180)
+					(length 2.54)
+					(name "OUT2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_ic:EESX1321"
-			(pin_names hide)
+			(pin_names
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -749,10 +763,10 @@
 			(symbol "EESX1321_0_1"
 				(polyline
 					(pts
-						(xy 2.7096 -3.9531) (xy 3.8526 -5.0961)
+						(xy 2.7096 0.9999) (xy 2.7096 -1.0321) (xy 2.7096 -1.0321)
 					)
 					(stroke
-						(width 0)
+						(width 0.3556)
 						(type default)
 					)
 					(fill
@@ -761,7 +775,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 -3.6991) (xy 3.8526 -2.5561)
+						(xy 2.7096 0.1109) (xy 3.8526 1.2539)
 					)
 					(stroke
 						(width 0)
@@ -785,18 +799,6 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 0.1109) (xy 3.8526 1.2539)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
 						(xy 2.7096 -2.8101) (xy 2.7096 -4.8421) (xy 2.7096 -4.8421)
 					)
 					(stroke
@@ -809,19 +811,7 @@
 				)
 				(polyline
 					(pts
-						(xy 2.7096 0.9999) (xy 2.7096 -1.0321) (xy 2.7096 -1.0321)
-					)
-					(stroke
-						(width 0.3556)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 3.8526 -5.0961) (xy 3.8526 -5.0961) (xy 5.1226 -5.0961)
+						(xy 2.7096 -3.6991) (xy 3.8526 -2.5561)
 					)
 					(stroke
 						(width 0)
@@ -833,7 +823,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.8526 -1.2861) (xy 3.8526 -1.2861) (xy 5.1226 -1.2861)
+						(xy 2.7096 -3.9531) (xy 3.8526 -5.0961)
 					)
 					(stroke
 						(width 0)
@@ -845,7 +835,7 @@
 				)
 				(polyline
 					(pts
-						(xy 3.8526 1.2539) (xy 3.8542 3.1553) (xy 3.8526 2.5239)
+						(xy 3.7256 -1.1591) (xy 3.4716 -0.6511) (xy 3.2176 -0.9051) (xy 3.7256 -1.1591)
 					)
 					(stroke
 						(width 0)
@@ -869,7 +859,31 @@
 				)
 				(polyline
 					(pts
-						(xy 3.7256 -1.1591) (xy 3.4716 -0.6511) (xy 3.2176 -0.9051) (xy 3.7256 -1.1591)
+						(xy 3.8526 1.2539) (xy 3.8542 3.1553) (xy 3.8526 2.5239)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.8526 -1.2861) (xy 3.8526 -1.2861) (xy 5.1226 -1.2861)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.8526 -5.0961) (xy 3.8526 -5.0961) (xy 5.1226 -5.0961)
 					)
 					(stroke
 						(width 0)
@@ -883,79 +897,32 @@
 			(symbol "EESX1321_1_1"
 				(polyline
 					(pts
+						(xy -5.08 3.175) (xy -1.27 3.175) (xy -1.27 -4.445) (xy 1.27 -4.445) (xy 1.27 3.175) (xy 5.08 3.175)
+						(xy 5.08 -6.985) (xy -5.08 -6.985) (xy -5.08 3.175) (xy -5.08 3.175)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy -4.445 0) (xy -3.175 -1.27) (xy -1.905 0) (xy -4.445 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
 						(xy -4.445 -1.27) (xy -1.905 -1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 0) (xy 0.254 -0.254)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.635 0.889) (xy 0.254 0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.762 -3.683) (xy 0.381 -3.937)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.762 -2.794) (xy 0.381 -3.048)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.175 -2.54) (xy -3.175 -5.08) (xy -5.08 -5.08)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.175 -1.27) (xy -3.1736 -2.5399) (xy -5.08 -2.54)
 					)
 					(stroke
 						(width 0)
@@ -979,7 +946,7 @@
 				)
 				(polyline
 					(pts
-						(xy -4.445 0) (xy -3.175 -1.27) (xy -1.905 0) (xy -4.445 0)
+						(xy -3.175 -1.27) (xy -3.1736 -2.5399) (xy -5.08 -2.54)
 					)
 					(stroke
 						(width 0)
@@ -991,7 +958,7 @@
 				)
 				(polyline
 					(pts
-						(xy -0.635 0) (xy 0.635 0) (xy 0.254 0.254) (xy 0.635 0)
+						(xy -3.175 -2.54) (xy -3.175 -5.08) (xy -5.08 -5.08)
 					)
 					(stroke
 						(width 0)
@@ -1015,7 +982,7 @@
 				)
 				(polyline
 					(pts
-						(xy -0.508 -3.683) (xy 0.762 -3.683) (xy 0.381 -3.429) (xy 0.762 -3.683)
+						(xy -0.635 0) (xy 0.635 0) (xy 0.254 0.254) (xy 0.635 0)
 					)
 					(stroke
 						(width 0)
@@ -1039,6 +1006,66 @@
 				)
 				(polyline
 					(pts
+						(xy -0.508 -3.683) (xy 0.762 -3.683) (xy 0.381 -3.429) (xy 0.762 -3.683)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 0.889) (xy 0.254 0.635)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.635 0) (xy 0.254 -0.254)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -2.794) (xy 0.381 -3.048)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -3.683) (xy 0.381 -3.937)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
 						(xy 3.8526 -2.5561) (xy 4.4876 -2.5561) (xy 4.4876 1.8889) (xy 3.8526 1.8889)
 					)
 					(stroke
@@ -1047,19 +1074,6 @@
 					)
 					(fill
 						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -5.08 3.175) (xy -1.27 3.175) (xy -1.27 -4.445) (xy 1.27 -4.445) (xy 1.27 3.175) (xy 5.08 3.175)
-						(xy 5.08 -6.985) (xy -5.08 -6.985) (xy -5.08 3.175) (xy -5.08 3.175)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type background)
 					)
 				)
 				(pin input line
@@ -1116,6 +1130,24 @@
 						)
 					)
 				)
+				(pin power_in line
+					(at 3.81 5.715 270)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 				(pin open_emitter line
 					(at 7.62 -1.27 180)
 					(length 2.54)
@@ -1152,30 +1184,17 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 3.81 5.715 270)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "6"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_others:TestPoint_0.8mm"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0.762) hide)
+				(offset 0.762)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom no)
 			(on_board yes)
@@ -1273,9 +1292,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_0R_0603"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 			)
@@ -1422,9 +1444,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_1k3_0603_1%"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 			)
@@ -1571,9 +1596,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_1k_0603_1%"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 			)
@@ -1720,9 +1748,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_240R_0603_1%"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 			)
@@ -1869,9 +1900,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_768R_0603_1%"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 			)
@@ -2018,9 +2052,12 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_resistors:R_91k_0603_1%"
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
 			)
@@ -2167,10 +2204,13 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "cocotter_transistors:SI2310"
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -2236,26 +2276,16 @@
 				)
 			)
 			(symbol "SI2310_0_1"
-				(circle
-					(center -0.889 0)
-					(radius 2.794)
+				(polyline
+					(pts
+						(xy -2.286 1.905) (xy -2.286 -1.905)
+					)
 					(stroke
 						(width 0.254)
 						(type default)
 					)
 					(fill
 						(type none)
-					)
-				)
-				(circle
-					(center 0 -1.778)
-					(radius 0.254)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type outline)
 					)
 				)
 				(polyline
@@ -2272,19 +2302,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.286 1.905) (xy -2.286 -1.905)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.778 -1.27) (xy -1.778 -2.286)
+						(xy -1.778 2.286) (xy -1.778 1.27)
 					)
 					(stroke
 						(width 0.254)
@@ -2308,46 +2326,10 @@
 				)
 				(polyline
 					(pts
-						(xy -1.778 2.286) (xy -1.778 1.27)
+						(xy -1.778 -1.27) (xy -1.778 -2.286)
 					)
 					(stroke
 						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy 0 1.778)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.381 0.381) (xy 1.143 0.381)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -2.54) (xy 0 0) (xy -1.778 0)
-					)
-					(stroke
-						(width 0)
 						(type default)
 					)
 					(fill
@@ -2378,9 +2360,20 @@
 						(type outline)
 					)
 				)
+				(circle
+					(center -0.889 0)
+					(radius 2.794)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 				(polyline
 					(pts
-						(xy 0.762 0.381) (xy 0.381 -0.254) (xy 1.143 -0.254) (xy 0.762 0.381)
+						(xy 0 2.54) (xy 0 1.778)
 					)
 					(stroke
 						(width 0)
@@ -2401,6 +2394,53 @@
 						(type outline)
 					)
 				)
+				(circle
+					(center 0 -1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.54) (xy 0 0) (xy -1.778 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.381 0.381) (xy 1.143 0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 0.381) (xy 0.381 -0.254) (xy 1.143 -0.254) (xy 0.762 0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 			)
 			(symbol "SI2310_1_1"
 				(pin input line
@@ -2414,24 +2454,6 @@
 						)
 					)
 					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "S"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2457,13 +2479,36 @@
 						)
 					)
 				)
+				(pin passive line
+					(at 0 -5.08 90)
+					(length 2.54)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:+3V3"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -2535,7 +2580,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -2547,7 +2592,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -2578,12 +2623,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:+5V"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -2655,7 +2705,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -2667,7 +2717,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -2698,12 +2748,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:+BATT"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -2775,7 +2830,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 0) (xy 0 2.54)
+						(xy 0 2.54) (xy 0.762 1.27)
 					)
 					(stroke
 						(width 0)
@@ -2787,7 +2842,7 @@
 				)
 				(polyline
 					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
+						(xy 0 0) (xy 0 2.54)
 					)
 					(stroke
 						(width 0)
@@ -2818,12 +2873,17 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
 		(symbol "power:GND"
 			(power)
-			(pin_numbers hide)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 0) hide)
+				(offset 0)
+				(hide yes)
+			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -2914,7 +2974,63 @@
 					)
 				)
 			)
+			(embedded_fonts no)
 		)
+	)
+	(text "utiliser res 3k3"
+		(exclude_from_sim no)
+		(at 63.5 73.66 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3e64b993-ee98-4e44-b571-3699cdb8d934")
+	)
+	(text "utiliser res 3k3"
+		(exclude_from_sim no)
+		(at 64.77 149.86 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "9303593e-a333-40d7-b3b7-49225521be50")
+	)
+	(text "Motor stall current : 0.55A\nAipropi = 1.5mA/A\nRipropi = 3.33k => Vipropi@stall current = 2.75V\nImotor max = 0.66A"
+		(exclude_from_sim no)
+		(at 90.17 66.04 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a4af47ef-493c-4f00-b5d5-dec365b312a2")
+	)
+	(text "pilotage du moteur par pwm et mos ref jlcpcb C2938374\nremplacement translateurs niveau par eesx1321"
+		(exclude_from_sim no)
+		(at 41.91 215.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "cb6f415c-8c0f-4ed6-b54e-2bce78fb774d")
+	)
+	(text "Motor stall current : 0.55A\nAipropi = 1.5mA/A\nRipropi = 3.33k => Vipropi@stall current = 2.75V\nImotor max = 0.66A"
+		(exclude_from_sim no)
+		(at 90.17 142.24 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ed6c183d-ef18-4a25-842f-e2e1f0463cd5")
 	)
 	(junction
 		(at 175.26 48.26)
@@ -4215,61 +4331,6 @@
 			(type default)
 		)
 		(uuid "ff81fc14-f43e-4878-9e34-a720686d3bea")
-	)
-	(text "utiliser res 3k3"
-		(exclude_from_sim no)
-		(at 63.5 73.66 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "3e64b993-ee98-4e44-b571-3699cdb8d934")
-	)
-	(text "utiliser res 3k3"
-		(exclude_from_sim no)
-		(at 64.77 149.86 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "9303593e-a333-40d7-b3b7-49225521be50")
-	)
-	(text "Motor stall current : 0.55A\nAipropi = 1.5mA/A\nRipropi = 3.33k => Vipropi@stall current = 2.75V\nImotor max = 0.66A"
-		(exclude_from_sim no)
-		(at 90.17 66.04 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "a4af47ef-493c-4f00-b5d5-dec365b312a2")
-	)
-	(text "pilotage du moteur par pwm et mos ref jlcpcb C2938374\nremplacement translateurs niveau par eesx1321"
-		(exclude_from_sim no)
-		(at 41.91 215.9 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "cb6f415c-8c0f-4ed6-b54e-2bce78fb774d")
-	)
-	(text "Motor stall current : 0.55A\nAipropi = 1.5mA/A\nRipropi = 3.33k => Vipropi@stall current = 2.75V\nImotor max = 0.66A"
-		(exclude_from_sim no)
-		(at 90.17 142.24 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "ed6c183d-ef18-4a25-842f-e2e1f0463cd5")
 	)
 	(label "pwm_right"
 		(at 26.67 118.11 0)
