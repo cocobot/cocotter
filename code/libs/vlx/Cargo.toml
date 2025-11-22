@@ -1,10 +1,10 @@
 [package]
 name = "vlx"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-embedded-hal = "1.0.0"
+embedded-hal = "1.0"
 log = "0.4.27"
 
 [features]

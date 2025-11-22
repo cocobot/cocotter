@@ -1,15 +1,13 @@
 [package]
 name = "board-pami"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies] 
-esp-idf-svc = {version = "0.51", features = ["experimental", "alloc"]}
+embedded-hal = "1.0"
+embedded-hal-bus = { version = "0.3", features = ["std"] }
+esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
+log = "0.4"
+pwm-pca9685 = "1.0"
+tca6408 = { path = "../../libs/tca6408" }
 vlx = { path = "../../libs/vlx" }
-embedded-hal = "1.0.0"
-log = "0.4.27"
-embedded-hal-bus = { version = "0.3.0", features = ["std"] }
-pwm-pca9685 = "1.0.0"
-
-[features]
-default = []

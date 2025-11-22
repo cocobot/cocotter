@@ -26,6 +26,7 @@ board-simulator = { path = "../boards/simulator" }
 esp-idf-svc = "0.51"
 board-pami = { path = "../boards/pami" }
 ble = { path = "../libs/ble" }
+vlx = { path = "../libs/vlx" }
 
 [build-dependencies]
 embuild = {version = "0.33", features = ["espidf"]}

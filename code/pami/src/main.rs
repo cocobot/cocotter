@@ -1,5 +1,6 @@
 mod config;
 use ble::{run_ble_with_central, BleScanResult, RomePeripheral};
+use vlx::common::VlxSensor;
 
 use std::{thread, time::Duration};
 use config::PAMIConfig;
@@ -9,6 +10,7 @@ use board_pami::BoardPami;
 
 #[cfg(not(target_os = "espidf"))]
 use board_simulator::BoardPami;
+
 
 fn main() {
     let mut board = BoardPami::new();
@@ -38,13 +40,10 @@ fn main() {
     let (rome_tx, rome_rx) = RomePeripheral::run(ble_server, device_name);
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
 
-    ble_client.start_scanning(10).unwrap();
+    // ble_client.start_scanning(10).unwrap();
 
-    let mut vlx = board.vlx_sensors.take().unwrap();
     log::info!("Initializing VLX sensors...");
-    if let Err(e) = vlx.init() {
-        log::error!("Failed to initialize VLX sensors: {:?}", e);
-    }
+    let mut vlx = board.init_vlx_sensors().unwrap();
 
     std::thread::spawn(move || {
         log::info!("Start BLE RX thread");
@@ -54,6 +53,8 @@ fn main() {
             }
         }
     });
+
+    let mut buttons = board.buttons.take().unwrap();
 
     log::info!("Start BLE TX dummy main loop");
     let mut tick = 0u32;
@@ -66,16 +67,17 @@ fn main() {
             log::error!("BLE send error: {:?}", err);
         }
 
-        // Print VLX sensor (only sensor 1 is working)
-        for i in [1] {
-            if let Ok(distance) = vlx.get_distance(i) {
-                log::info!("VLX sensor {} distance: {:?}", i, distance);
-            } else {
-                log::error!("Failed to get distance from VLX sensor {}", i);
-            }
+        // Print VLX sensor distance (only back sensor is working)
+        if let Ok(distance) = vlx.back.get_distance() {
+            log::info!("VLX sensor distance: {:?}", distance);
+        } else {
+            log::error!("Failed to get VLX sensor distance");
         }
 
+        let buttons_state = buttons.read_inputs();
+        log::info!("Buttons: {buttons_state:?}");
+
         tick += 1;
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(2000));
     }
 }

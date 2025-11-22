@@ -10,6 +10,5 @@ mod esp;
 
 pub use common::*;
 #[cfg(target_os = "espidf")]
-pub use esp::VLX;
-
+pub use esp::{VlxI2c, VlxI2cDriver};
 
