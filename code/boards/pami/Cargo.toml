@@ -9,5 +9,6 @@ embedded-hal-bus = { version = "0.3", features = ["std"] }
 esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
 log = "0.4"
 pwm-pca9685 = "1.0"
+ssd1306 = "0.10"
 tca6408 = { path = "../../libs/tca6408" }
 vlx = { path = "../../libs/vlx" }

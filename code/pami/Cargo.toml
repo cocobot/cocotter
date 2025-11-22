@@ -24,6 +24,7 @@ board-simulator = { path = "../boards/simulator" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = "0.51"
+embedded-graphics = "0.8"
 board-pami = { path = "../boards/pami" }
 ble = { path = "../libs/ble" }
 vlx = { path = "../libs/vlx" }
