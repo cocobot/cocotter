@@ -4,14 +4,22 @@ pub mod scan;
 use std::sync::Arc;
 use esp_idf_svc::bt::{
     ble::{
-        gap::{AdvConfiguration, BleGapEvent, EspBleGap},
+        gap::{
+            AdvConfiguration,
+            AuthenticationRequest,
+            BleGapEvent,
+            BleEncryption,
+            EspBleGap,
+            IOCapabilities,
+            KeyMask,
+            SecurityConfiguration,
+        },
         gatt:: server::EspGatts,
     },
     BdAddr, Ble, BtDriver, BtStatus, BtUuid,
 };
 use esp_idf_svc::hal::sys::esp;
 use esp_idf_svc::sys::{self, EspError, ESP_BLE_ADV_FLAG_GEN_DISC};
-use log::{error, info, warn};
 
 pub use rome::RomePeripheral;
 pub use scan::BleScanResult;
@@ -27,10 +35,12 @@ pub struct BleServer {
 
 impl BleServer {
     pub fn start_advertising(&self) -> Result<(), EspError> {
+        log::info!("Start advertising");
         self.gap.start_advertising()
     }
 
     pub fn stop_advertising(&self) -> Result<(), EspError> {
+        log::info!("Stop advertising");
         self.gap.stop_advertising()
     }
 
@@ -45,6 +55,7 @@ impl BleServer {
         self.gap.set_conn_params_conf(addr, min_int_ms, max_int_ms, latency_ms, timeout_ms)
     }
 
+    /// Setup and start advertising
     pub fn setup_advertising(&self, device_name: &str, uuid: BtUuid) -> Result<(), EspError> {
         self.gap.set_device_name(device_name)?;
         self.gap.set_adv_conf(&AdvConfiguration {
@@ -54,6 +65,28 @@ impl BleServer {
             service_uuid: Some(uuid),
             ..Default::default()
         })
+    }
+
+    /// Enable server security
+    ///
+    /// If enabled, call `set_peer_encryption()` on `PeerConnected` event.
+    /// TODO: Don't hardcode security parameters.
+    pub fn enable_security(&self) -> Result<(), EspError> {
+        self.gap.set_security_conf(&SecurityConfiguration {
+            //XXX Is MITM protection needed? Is there a performance cost?
+            //XXX After auth has been tested, enable bonding
+            auth_req_mode: AuthenticationRequest::SecureOnly,
+            // We could use `Display::YesNo` since we have buttons
+            // But they are a bit difficult to use, so don't bother
+            io_capabilities: IOCapabilities::DisplayOnly,
+            initiator_key: Some(KeyMask::EncryptionKey | KeyMask::IdentityResolvingKey),
+            responder_key: Some(KeyMask::EncryptionKey | KeyMask::IdentityResolvingKey),
+            ..Default::default()
+        })
+    }
+
+    pub fn set_peer_encryption(&self, addr: BdAddr) -> Result<(), EspError> {
+        self.gap.set_encryption(addr, BleEncryption::Encryption)
     }
 }
 
@@ -89,69 +122,119 @@ impl BleClient {
 }
 
 
-/// Start BLE for peripheral implementation
-pub fn run_ble(bt: BtDriver<'static, Ble>) -> BleServer {
-    fn noop(_: BleScanResult) {}
-    run_ble_with_central(bt, noop).0
+/// Builder to setup BLE
+pub struct BleBuilder {
+    bt: BtDriver<'static, Ble>,
+    handlers: BleGapHandlers,
 }
 
-/// Start BLE for peripheral and central implementations
-pub fn run_ble_with_central<F: Fn(BleScanResult) + Send + Sync + 'static>(bt: BtDriver<'static, Ble>, scan_handler: F) -> (BleServer, BleClient) {
-    let bt = Arc::new(bt);
-    let gap = Arc::new(EspBleGap::new(bt.clone()).unwrap());
+/// Configurable GAP handlers
+#[derive(Default)]
+struct BleGapHandlers {
+    on_scan_result: Option<Box<dyn Fn(BleScanResult) + Send + Sync + 'static>>,
+    on_passkey_notification: Option<Box<dyn Fn(BdAddr, u32) + Send + Sync + 'static>>,
+}
 
-    let instance = Arc::new(BleInstance {
-        gap: gap.clone(),
-        scan_handler,
-    });
+impl BleBuilder {
+    pub fn new(bt: BtDriver<'static, Ble>) -> Self {
+        Self {
+            bt,
+            handlers: Default::default(),
+        }
+    }
 
-    gap.subscribe(move |event| { instance.on_gap_event(event); }).unwrap();
+    /// Register a scan result handler
+    pub fn with_scanner<F: Fn(BleScanResult) + Send + Sync + 'static>(mut self, f: F) -> Self {
+        self.handlers.on_scan_result = Some(Box::new(f));
+        self
+    }
 
-    let server = BleServer {
-        gap: gap.clone(),
-        gatts: EspGatts::new(bt).unwrap(),
-    };
-    let client = BleClient {
-        gap,
-    };
+    /// Register passkey notification handler
+    pub fn with_passkey_notifier<F: Fn(BdAddr, u32) + Send + Sync + 'static>(mut self, f: F) -> Self {
+        self.handlers.on_passkey_notification = Some(Box::new(f));
+        self
+    }
 
-    (server, client)
+    /// Start BLE for peripheral implementation, return a `(server, client)` pair
+    ///
+    /// The server/client separation is somehow artifical, to keep things separated.
+    /// Server is used for peripheral role, client is used for central role.
+    pub fn run(self) -> (BleServer, BleClient) {
+        let Self { bt, handlers } = self;
+        let bt = Arc::new(bt);
+        let gap = Arc::new(EspBleGap::new(bt.clone()).unwrap());
+
+        let instance = Arc::new(BleInstance {
+            gap: gap.clone(),
+            handlers,
+        });
+
+        gap.subscribe(move |event| { instance.on_gap_event(event); }).unwrap();
+
+        let server = BleServer {
+            gap: gap.clone(),
+            gatts: EspGatts::new(bt).unwrap(),
+        };
+        let client = BleClient {
+            gap,
+        };
+
+        (server, client)
+    }
 }
 
 
 /// Internal structure to implement GAP event handler
-struct BleInstance<F: Fn(BleScanResult) + Send + Sync + 'static> {
+struct BleInstance {
     gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
-    scan_handler: F,
+    handlers: BleGapHandlers,
 }
 
-impl<F: Fn(BleScanResult) + Send + Sync + 'static> BleInstance<F> {
+impl BleInstance {
     fn on_gap_event(&self, event: BleGapEvent) {
         match event {
             BleGapEvent::AdvertisingConfigured(status) => {
                 if status != BtStatus::Success {
-                    warn!("Unexpected AdvertisingConfigured status {:?}", status);
+                    log::warn!("Unexpected AdvertisingConfigured status {:?}", status);
                 } else {
                     if let Err(e) = self.gap.start_advertising() {
-                        error!("Unable to start advertising: {:?}", e);
+                        log::error!("Unable to start advertising: {:?}", e);
                     } else {
-                        info!("GAP advertising started");
+                        log::info!("GAP advertising configured and started");
                     }
                 }
             }
             BleGapEvent::ScanResult(scan_result) => {
-                let result = scan_result.into();
-                (self.scan_handler)(result);
+                if let Some(handler) = &self.handlers.on_scan_result {
+                    handler(scan_result.into());
+                } else {
+                    log::warn!("ScanResult received but no handler set, use with_scanner()");
+                }
             }
             BleGapEvent::ScanStarted(status) => {
                 if status == esp_idf_svc::bt::BtStatus::Success {
-                    info!("BLE scanning started");
+                    log::info!("BLE scanning started");
                 } else {
-                    error!("Failed to start BLE scanning: {:?}", status);
+                    log::error!("Failed to start BLE scanning: {:?}", status);
                 }
             }
             BleGapEvent::ScanStopped(_status) => {
-                info!("BLE scanning stopped");
+                log::info!("BLE scanning stopped");
+            }
+            BleGapEvent::PasskeyNotification { addr, passkey } => {
+                log::info!("Passkey notification for {addr}: key is {passkey:06}");
+                if let Some(handler) = &self.handlers.on_passkey_notification {
+                    handler(addr, passkey);
+                } else {
+                    log::warn!("PasskeyNotification received but no handler set, use with_passkey_notifier()");
+                }
+            }
+            BleGapEvent::AuthenticationComplete { bd_addr, status } => {
+                if status == esp_idf_svc::bt::BtStatus::Success {
+                    log::info!("Client authenticated: {bd_addr}");
+                } else {
+                    log::error!("Client authentication failed: {:?}", status);
+                }
             }
             _ => {}
         }

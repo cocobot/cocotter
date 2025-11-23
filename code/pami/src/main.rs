@@ -1,7 +1,7 @@
 mod config;
 mod ui;
 
-use ble::{run_ble_with_central, BleScanResult, RomePeripheral};
+use ble::{BleBuilder, BleScanResult, RomePeripheral};
 use vlx::common::VlxSensor;
 
 use std::{thread, time::Duration};
@@ -31,6 +31,9 @@ fn main() {
         }
     };
 
+    log::info!("Start UI thread");
+    let ui_queue = ui::Ui::run(board.display.take().unwrap());
+
     fn scan_dump(scan_result: BleScanResult) {
         if let Some(name) = scan_result.local_name() {
             log::info!("SCAN: addr: {}, name: {}", scan_result.addr, name);
@@ -39,8 +42,16 @@ fn main() {
         }
     }
 
+    let passkey_notifier = {
+        let ui_queue = ui_queue.clone();
+        move |_addr, key| { ui_queue.send(UiEvent::KeypassNotif(key)).unwrap(); }
+    };
+
     let device_name = format!("PAMI {}", config.id);
-    let (ble_server, ble_client) = run_ble_with_central(board.ble.take().unwrap(), scan_dump);
+    let (ble_server, ble_client) = BleBuilder::new(board.ble.take().unwrap())
+        .with_scanner(scan_dump)
+        .with_passkey_notifier(passkey_notifier)
+        .run();
     let (rome_tx, rome_rx) = RomePeripheral::run(ble_server, device_name);
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
 
@@ -61,9 +72,6 @@ fn main() {
     let mut buttons = board.buttons.take().unwrap();
     let mut vbatt = board.vbatt.take().unwrap();
 
-    log::info!("Start UI thread");
-    let ui_queue = ui::Ui::run(board.display.take().unwrap());
-
     log::info!("Start BLE TX dummy main loop");
     let mut tick = 0u32;
     const PERIOD: Duration = Duration::from_millis(100);
@@ -73,7 +81,7 @@ fn main() {
     loop {
         // Heartbeat + test BLE message
         if tick % 10 == 0 {
-            led_heartbeat.toggle().ok();
+            //led_heartbeat.toggle().ok();
             let data = format!("tx-{tick}");
             log::debug!("BLE send data: {:?}", data);
             if let Err(err) = rome_tx.send(data.as_bytes().into()) {

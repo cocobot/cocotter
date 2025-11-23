@@ -84,6 +84,10 @@ impl RomePeripheral {
 
         instance.server.gatts.register_app(APP_ID).unwrap();
 
+        // Enable secure connections
+        instance.server.enable_security().unwrap();
+
+        log::info!("Spawning ROME peripheral thread");
         std::thread::spawn(move || {
             loop {
                 if let Ok(data) = rome_tx.recv() {
@@ -152,13 +156,15 @@ impl RomePeripheral {
                 info!("Connection {conn_id} requested MTU {mtu}");
             }
             GattsEvent::PeerConnected { conn_id, addr, .. } => {
+                info!("Peer connected ({conn_id}): {addr}");
                 self.create_conn(conn_id, addr)?;
             }
-            GattsEvent::PeerDisconnected { addr, .. } => {
-                self.delete_conn(addr)?;
+            GattsEvent::PeerDisconnected { conn_id, addr, .. } => {
+                info!("Peer disconnected ({conn_id}): {addr}");
+                self.delete_conn(conn_id)?;
             }
             GattsEvent::Read { conn_id, trans_id, addr, handle, offset, need_rsp, .. } => {
-                debug!("Read data from conn {conn_id:?}, addr {addr:?}, need_rsp: {need_rsp:?}");
+                debug!("Read data from conn {conn_id}, addr {addr}, need_rsp: {need_rsp:?}");
                 if need_rsp {
                     let mut response = GattResponse::new();
                     response
@@ -304,6 +310,8 @@ impl RomePeripheral {
 
     /// Called on an incoming connection
     fn create_conn(&self, conn_id: ConnectionId, addr: BdAddr) -> Result<(), EspError> {
+        // Note: clients will "use" a slot even if they fail to authenticate
+        // Therefore, DOS attacks are very easy to perform.
         let added = {
             let mut state = self.state.lock().unwrap();
             if state.connections.len() < MAX_CONNECTIONS {
@@ -315,6 +323,7 @@ impl RomePeripheral {
         };
 
         if added {
+            self.server.set_peer_encryption(addr)?;
             self.server.set_conn_params_conf(addr, 10, 20, 0, 400)?;
         }
 
@@ -322,13 +331,13 @@ impl RomePeripheral {
     }
 
     /// Called when a peer disconnects
-    fn delete_conn(&self, addr: BdAddr) -> Result<(), EspError> {
+    fn delete_conn(&self, conn_id: ConnectionId) -> Result<(), EspError> {
         let mut state = self.state.lock().unwrap();
 
         if let Some(index) = state
             .connections
             .iter()
-            .position(|Connection { peer, .. }| *peer == addr)
+            .position(|c| c.conn_id == conn_id)
         {
             state.connections.swap_remove(index);
         }
