@@ -3880,6 +3880,107 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:PWR_FLAG"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(text "Lidar switch"
 		(exclude_from_sim no)
@@ -4118,6 +4219,12 @@
 		(uuid "4b70e822-c5f7-409a-b935-79364dedf31a")
 	)
 	(junction
+		(at 274.32 134.62)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4d9c905c-3ee5-47ca-a9e2-568b284a648f")
+	)
+	(junction
 		(at 228.6 52.07)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4176,6 +4283,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "66476636-be94-464f-a441-f3010c30d078")
+	)
+	(junction
+		(at 34.29 50.8)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "66bed749-17a5-4c27-8190-4935ba0a3dce")
 	)
 	(junction
 		(at 143.51 105.41)
@@ -4292,6 +4405,12 @@
 		(uuid "9f1fe9e5-d317-47b2-8577-2a739afa67b0")
 	)
 	(junction
+		(at 17.78 40.64)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9faf7532-9abd-4807-a2f7-e999b576dede")
+	)
+	(junction
 		(at 228.6 29.21)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4356,6 +4475,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b1a1d572-739e-4011-9d08-ac36bd29df91")
+	)
+	(junction
+		(at 34.29 30.48)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b36a404f-60b4-4ef9-88f5-b31723526e07")
 	)
 	(junction
 		(at 58.42 134.62)
@@ -4957,6 +5082,16 @@
 	)
 	(wire
 		(pts
+			(xy 271.78 29.21) (xy 275.59 29.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "30527c48-371e-4440-89ac-66773ea3d84d")
+	)
+	(wire
+		(pts
 			(xy 256.54 36.83) (xy 256.54 52.07)
 		)
 		(stroke
@@ -5077,7 +5212,7 @@
 	)
 	(wire
 		(pts
-			(xy 271.78 134.62) (xy 275.59 134.62)
+			(xy 271.78 134.62) (xy 274.32 134.62)
 		)
 		(stroke
 			(width 0)
@@ -5567,6 +5702,16 @@
 	)
 	(wire
 		(pts
+			(xy 274.32 134.62) (xy 275.59 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "64fad9b0-5441-4838-8b0c-e3a562de0fea")
+	)
+	(wire
+		(pts
 			(xy 17.78 114.3) (xy 13.97 114.3)
 		)
 		(stroke
@@ -5754,6 +5899,16 @@
 			(type default)
 		)
 		(uuid "74db7fc8-1c0b-4290-9a45-5518ee5174ca")
+	)
+	(wire
+		(pts
+			(xy 34.29 30.48) (xy 39.37 30.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "75e221ec-ec0f-4026-8561-82ec2ecb47fd")
 	)
 	(wire
 		(pts
@@ -6347,16 +6502,6 @@
 	)
 	(wire
 		(pts
-			(xy 34.29 30.48) (xy 39.37 30.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a95d8315-aab5-4223-91ce-f5baafb957f1")
-	)
-	(wire
-		(pts
 			(xy 177.8 101.6) (xy 173.99 101.6)
 		)
 		(stroke
@@ -6594,6 +6739,16 @@
 			(type default)
 		)
 		(uuid "c159e138-53de-4228-b023-b701ba96c64a")
+	)
+	(wire
+		(pts
+			(xy 17.78 40.64) (xy 24.13 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c31ecc0b-f6c1-4a53-ab8d-45f6fb4e7486")
 	)
 	(wire
 		(pts
@@ -6857,7 +7012,7 @@
 	)
 	(wire
 		(pts
-			(xy 12.7 40.64) (xy 24.13 40.64)
+			(xy 12.7 40.64) (xy 17.78 40.64)
 		)
 		(stroke
 			(width 0)
@@ -7074,16 +7229,6 @@
 			(type default)
 		)
 		(uuid "f07b856b-0682-4e3d-a647-10a159b74848")
-	)
-	(wire
-		(pts
-			(xy 271.78 29.21) (xy 275.59 29.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f0880813-8c02-43e7-802f-8d2c40a52e89")
 	)
 	(wire
 		(pts
@@ -8136,7 +8281,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 241.3 95.25 0)
 			(effects
 				(font
@@ -8155,6 +8300,73 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
 					(reference "C61")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 274.32 134.62 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1283463a-260a-4dbc-ae37-64fe97365434")
+		(property "Reference" "#FLG06"
+			(at 274.32 136.525 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 274.32 139.7 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 274.32 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 274.32 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 274.32 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "28ba4fdc-02fc-45b2-bc7e-af37948f7e76")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
+					(reference "#FLG06")
 					(unit 1)
 				)
 			)
@@ -8409,7 +8621,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 214.63 147.32 0)
 			(effects
 				(font
@@ -8617,6 +8829,73 @@
 		)
 	)
 	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 34.29 30.48 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "22f0d916-31b9-4ed4-a248-afc4007d69ac")
+		(property "Reference" "#FLG01"
+			(at 34.29 28.575 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 34.29 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 34.29 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 34.29 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 34.29 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8ba44030-0dfa-47c7-a18a-a51f2d1505b8")
+		)
+		(instances
+			(project ""
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
+					(reference "#FLG01")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_capacitors:C_22µF_16V_1206_X5R")
 		(at 200.66 138.43 0)
 		(unit 1)
@@ -8671,7 +8950,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 200.66 138.43 0)
 			(effects
 				(font
@@ -8845,7 +9124,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 255.27 86.36 0)
 			(effects
 				(font
@@ -9488,7 +9767,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 228.6 33.02 0)
 			(effects
 				(font
@@ -9890,7 +10169,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 199.39 86.36 0)
 			(effects
 				(font
@@ -10123,7 +10402,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 213.36 95.25 0)
 			(effects
 				(font
@@ -10424,6 +10703,73 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
 					(reference "C45")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 17.78 40.64 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "56c2d49b-341e-42b2-b169-a44d4bcd0b01")
+		(property "Reference" "#FLG02"
+			(at 17.78 38.735 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 17.78 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 17.78 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 17.78 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 17.78 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d6f701e5-0e7f-4061-951b-e25b8b0620fa")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
+					(reference "#FLG02")
 					(unit 1)
 				)
 			)
@@ -11271,7 +11617,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 256.54 138.43 0)
 			(effects
 				(font
@@ -11416,7 +11762,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 242.57 41.91 0)
 			(effects
 				(font
@@ -11906,7 +12252,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 227.33 86.36 0)
 			(effects
 				(font
@@ -11938,10 +12284,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "83679b8e-73a4-4bb8-8909-5fc36171ed8f")
 		(property "Reference" "J20"
-			(at 17.4625 36.83 0)
+			(at 19.812 49.276 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11949,7 +12294,7 @@
 			)
 		)
 		(property "Value" "3-794630-4"
-			(at 17.4625 39.37 0)
+			(at 19.812 51.816 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13559,7 +13904,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 228.6 138.43 0)
 			(effects
 				(font
@@ -15442,7 +15787,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 200.66 33.02 0)
 			(effects
 				(font
@@ -15875,7 +16220,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 256.54 33.02 0)
 			(effects
 				(font
@@ -16046,6 +16391,73 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
 					(reference "L1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 34.29 50.8 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "db9bde92-6552-45b3-82b5-e070b160629d")
+		(property "Reference" "#FLG03"
+			(at 34.29 52.705 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 34.29 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" ""
+			(at 34.29 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 34.29 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 34.29 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a7e1f670-70c8-4008-b45e-14ca5122c6b1")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/e08b085d-2769-4f05-b184-06b5277552eb"
+					(reference "#FLG03")
 					(unit 1)
 				)
 			)
@@ -16619,7 +17031,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 214.63 41.91 0)
 			(effects
 				(font
@@ -17088,7 +17500,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "10µF 16V X7R 0805 "
+		(property "Specification" "22µF 16V X7R 0805 "
 			(at 242.57 147.32 0)
 			(effects
 				(font

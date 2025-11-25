@@ -666,7 +666,7 @@
 						)
 					)
 				)
-				(pin power_in line
+				(pin bidirectional line
 					(at 8.89 2.54 180)
 					(length 2.54)
 					(name "CANH"
@@ -684,7 +684,7 @@
 						)
 					)
 				)
-				(pin power_out line
+				(pin bidirectional line
 					(at 8.89 -2.54 180)
 					(length 2.54)
 					(name "CANL"

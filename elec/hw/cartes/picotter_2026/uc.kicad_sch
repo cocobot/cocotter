@@ -4821,6 +4821,10 @@
 		(uuid "75147725-3d0a-45f5-89c3-29a06c2ca15a")
 	)
 	(no_connect
+		(at 31.75 133.35)
+		(uuid "7ab872cb-4847-4f14-934d-9d708f656463")
+	)
+	(no_connect
 		(at 199.39 156.21)
 		(uuid "8629d2fa-0a5e-4e2a-8652-44e66910cbd4")
 	)
@@ -4867,6 +4871,10 @@
 	(no_connect
 		(at 138.43 118.11)
 		(uuid "c323b0cc-4264-4e11-bc84-ea9548ddfe11")
+	)
+	(no_connect
+		(at 199.39 120.65)
+		(uuid "da4d864c-fcc1-4611-855f-8eaa4b6beb43")
 	)
 	(no_connect
 		(at 138.43 130.81)
@@ -6624,7 +6632,7 @@
 		(uuid "3e573b13-6142-4e08-b7ba-f33064a917cd")
 	)
 	(label "UART_TX_PRG"
-		(at 48.1846 85.09 180)
+		(at 48.26 85.09 180)
 		(effects
 			(font
 				(size 1.27 1.27)

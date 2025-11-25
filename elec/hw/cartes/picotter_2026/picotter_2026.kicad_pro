@@ -48,7 +48,7 @@
         "silk_text_thickness": 0.1,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 0.5
+          "min_clearance": 0.25
         }
       },
       "diff_pair_dimensions": [
@@ -58,7 +58,12 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "silk_over_copper|146432109|111744160|d87c369d-6436-43c2-8d7d-93e7f963527f|00000000-0000-0000-0000-000000000000",
+          ""
+        ]
+      ],
       "meta": {
         "version": 2
       },
@@ -100,7 +105,7 @@
         "padstack": "warning",
         "pth_inside_courtyard": "ignore",
         "shorting_items": "error",
-        "silk_edge_clearance": "warning",
+        "silk_edge_clearance": "ignore",
         "silk_over_copper": "warning",
         "silk_overlap": "warning",
         "skew_out_of_range": "error",
@@ -125,7 +130,7 @@
         "max_error": 0.005,
         "min_clearance": 0.0,
         "min_connection": 0.0,
-        "min_copper_edge_clearance": 0.5,
+        "min_copper_edge_clearance": 0.25,
         "min_groove_width": 0.0,
         "min_hole_clearance": 0.25,
         "min_hole_to_hole": 0.25,
@@ -133,7 +138,7 @@
         "min_microvia_drill": 0.1,
         "min_resolved_spokes": 2,
         "min_silk_clearance": 0.0,
-        "min_text_height": 0.8,
+        "min_text_height": 0.75,
         "min_text_thickness": 0.08,
         "min_through_hole_diameter": 0.3,
         "min_track_width": 0.0,
@@ -241,7 +246,112 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [],
+    "erc_exclusions": [
+      [
+        "footprint_link_issues|787400|952500|6268ed49-04f9-4d96-8148-64436792ddbf|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|1803400|825500|d89c6cd9-091f-47c8-aa56-6f185af0daef|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|1816100|1346200|5f3870fe-6287-4f0b-819f-37c530e11edd|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|1816100|292100|1bdf3100-24c4-4e34-b03b-481265955179|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|1993900|863600|4a7c2862-cda5-4b31-9498-d16efc8fcc84|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2006600|1384300|2375a20a-6bc4-47e2-92cd-e9365c4899bc|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2006600|330200|cb1bf90c-14d0-4324-b66a-d4a93047d987|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2133600|952500|4f46bf49-4d51-40ae-b23a-c369f44ce66a|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2146300|1473200|17a8ab26-3035-492b-8bb3-e308f1b0b7e9|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2146300|419100|f76accdb-17e1-4210-82af-17fea4707263|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2273300|863600|82bb3fe8-37fc-4d25-aaa0-40c7f87eddde|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2286000|1384300|98b7ab70-3cf6-466c-b7f9-f684904a1d43|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2286000|330200|423bb3e7-7849-4946-881f-75ddc56276b1|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2413000|952500|11261f52-add0-444b-bffc-53f5adf21156|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2425700|1473200|ff99ed7f-e766-415d-a507-794939a5846a|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2425700|419100|6dfccf85-2023-4648-be7b-ac6357825274|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2552700|863600|28150063-f50d-4da8-9fad-a36942aa1d5b|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2565400|1384300|6c9bccab-b4ee-45ea-bd55-e2a2f4ac3444|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|2565400|330200|d57be5fa-666e-4a17-b2a9-657ff1c313a6|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "lib_symbol_issues|558800|1651000|2feff68c-fea7-485a-9619-4d31dd2c01ed|00000000-0000-0000-0000-000000000000|||",
+        ""
+      ],
+      [
+        "multiple_net_names|2108200|1104900|30a0073a-9f89-4f4c-9996-f88dfdaecd32|90ca9b7f-4674-4156-8abd-054a20a26d8c|/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54|/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54|/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54",
+        ""
+      ],
+      [
+        "multiple_net_names|2108200|1104900|96c9e040-6730-4bdf-96fc-3379d5ee1761|90ca9b7f-4674-4156-8abd-054a20a26d8c|/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54|/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54|/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54",
+        ""
+      ],
+      [
+        "pin_to_pin|2400300|444500|e3c50a4a-efdc-4e04-a912-fc9fe9ae36fb|94b885b7-d4c4-4b7c-afb4-9fab7b182b99|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d",
+        ""
+      ],
+      [
+        "pin_to_pin|2400300|469900|3451294d-fd4a-4745-9276-4fb93c205bd6|a2b23fda-f988-42f1-b9a3-5272a594704f|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d",
+        ""
+      ],
+      [
+        "pin_to_pin|2400300|495300|8b4ed70e-642e-4d40-9844-7fda68a6f034|10ac2bfb-4b0f-42e1-8a90-591157a851c2|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d",
+        ""
+      ],
+      [
+        "pin_to_pin|2400300|520700|141474b3-2b77-44d1-b6f4-29f4ee519a39|3b6a45da-44cf-47af-9282-7934b1cd64f5|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d|/a7992a71-8976-4fb0-bae5-4423ba97b789/c723ae89-944f-486c-b5ab-f52577eee63d",
+        ""
+      ]
+    ],
     "meta": {
       "version": 0
     },
@@ -253,7 +363,7 @@
         0,
         0,
         0,
-        1,
+        0,
         0,
         0,
         0,
@@ -267,7 +377,7 @@
         1,
         0,
         0,
-        1,
+        0,
         0,
         2,
         2,
@@ -281,7 +391,7 @@
         0,
         0,
         0,
-        1,
+        0,
         0,
         1,
         0,
@@ -295,25 +405,11 @@
         0,
         0,
         0,
-        1,
+        0,
         1,
         2,
         1,
         1,
-        2
-      ],
-      [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
         2
       ],
       [
@@ -331,17 +427,31 @@
         2
       ],
       [
-        1,
-        1,
-        1,
-        1,
-        1,
         0,
-        1,
-        1,
-        1,
-        1,
-        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
         2
       ],
       [
@@ -351,37 +461,9 @@
         1,
         0,
         0,
-        1,
         0,
         0,
         0,
-        0,
-        2
-      ],
-      [
-        0,
-        2,
-        1,
-        2,
-        0,
-        0,
-        1,
-        0,
-        2,
-        2,
-        2,
-        2
-      ],
-      [
-        0,
-        2,
-        0,
-        1,
-        0,
-        0,
-        1,
-        0,
-        2,
         0,
         0,
         2
@@ -390,10 +472,38 @@
         0,
         2,
         1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        2,
+        2
+      ],
+      [
+        0,
+        2,
+        0,
         1,
         0,
         0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        2,
         1,
+        1,
+        0,
+        0,
+        0,
         0,
         2,
         0,
@@ -445,7 +555,7 @@
       "no_connect_dangling": "warning",
       "pin_not_connected": "error",
       "pin_not_driven": "error",
-      "pin_to_pin": "warning",
+      "pin_to_pin": "error",
       "power_pin_not_driven": "error",
       "same_local_global_label": "warning",
       "similar_label_and_power": "warning",
@@ -568,19 +678,19 @@
           "group_by": true,
           "label": "Footprint",
           "name": "Footprint",
-          "show": true
+          "show": false
         },
         {
           "group_by": false,
           "label": "Datasheet",
           "name": "Datasheet",
-          "show": true
+          "show": false
         },
         {
           "group_by": false,
           "label": "Description_1",
           "name": "Description_1",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
@@ -640,43 +750,43 @@
           "group_by": false,
           "label": "SnapEDA_Link",
           "name": "SnapEDA_Link",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
           "label": "Specification",
           "name": "Specification",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
           "label": "TAPE_REEL",
           "name": "TAPE_REEL",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
           "label": "VOLUME",
           "name": "VOLUME",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
           "label": "jlcpcb",
           "name": "jlcpcb",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
           "label": "mouser",
           "name": "mouser",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,
           "label": "specification",
           "name": "specification",
-          "show": false
+          "show": true
         },
         {
           "group_by": false,

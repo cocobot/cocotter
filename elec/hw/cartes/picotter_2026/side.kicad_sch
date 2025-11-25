@@ -1474,7 +1474,7 @@
 						)
 					)
 				)
-				(pin power_in line
+				(pin power_out line
 					(at 13.97 -2.54 180)
 					(length 2.54)
 					(name "Cat_L"
@@ -2538,16 +2538,6 @@
 	)
 	(wire
 		(pts
-			(xy 41.8506 21.59) (xy 68.5206 21.59)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "149bcffb-b7f3-442d-8406-c096c0781e91")
-	)
-	(wire
-		(pts
 			(xy 50.8 162.56) (xy 55.88 162.56)
 		)
 		(stroke
@@ -2625,16 +2615,6 @@
 			(type default)
 		)
 		(uuid "242b45ab-91c1-4d6b-8480-b0f6ca92b4e4")
-	)
-	(wire
-		(pts
-			(xy 41.8506 24.13) (xy 68.5206 24.13)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "245f6eea-0128-42ba-899f-7669ce3b9323")
 	)
 	(wire
 		(pts
@@ -2825,16 +2805,6 @@
 			(type default)
 		)
 		(uuid "586bd9b5-1795-4b91-8c60-db765ce16b17")
-	)
-	(wire
-		(pts
-			(xy 41.8506 26.67) (xy 68.5206 26.67)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5d68d353-4832-4996-809a-25103500c04f")
 	)
 	(wire
 		(pts
@@ -3138,6 +3108,16 @@
 	)
 	(wire
 		(pts
+			(xy 41.91 24.13) (xy 68.58 24.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b3fc4bd7-e73d-4d84-b9ed-439e77093e94")
+	)
+	(wire
+		(pts
 			(xy 237.49 101.6) (xy 240.03 101.6)
 		)
 		(stroke
@@ -3165,6 +3145,16 @@
 			(type default)
 		)
 		(uuid "b7baee8f-74b0-4110-a17f-04be9f05bf93")
+	)
+	(wire
+		(pts
+			(xy 41.91 21.59) (xy 68.58 21.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b923fed3-bd96-4184-b243-fbad0e7ac3ff")
 	)
 	(wire
 		(pts
@@ -3245,6 +3235,16 @@
 			(type default)
 		)
 		(uuid "c6143b4b-6c50-4821-9e1f-57078399ef95")
+	)
+	(wire
+		(pts
+			(xy 41.91 26.67) (xy 68.58 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c8955ff5-5ef5-42e2-a6fd-2fb23e5e8836")
 	)
 	(wire
 		(pts
@@ -3597,7 +3597,7 @@
 		(uuid "929bfea7-3276-4d3a-af5b-a347d4e0a271")
 	)
 	(label "irq_floor_3v3"
-		(at 68.5206 24.13 180)
+		(at 68.58 24.13 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3617,7 +3617,7 @@
 		(uuid "988d1058-a3c6-4383-a25d-90b102ebafcc")
 	)
 	(label "neopixel_cmd_3v3"
-		(at 68.5206 26.67 180)
+		(at 68.58 26.67 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3697,7 +3697,7 @@
 		(uuid "dd6f9237-bd29-45c8-938e-69b93941e55d")
 	)
 	(label "sda_3v3"
-		(at 68.5206 21.59 180)
+		(at 68.58 21.59 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3751,7 +3751,7 @@
 	)
 	(hierarchical_label "irq_floor_3v3"
 		(shape output)
-		(at 41.8506 24.13 180)
+		(at 41.91 24.13 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3762,7 +3762,7 @@
 	)
 	(hierarchical_label "neopixel_cmd_3v3"
 		(shape input)
-		(at 41.8506 26.67 180)
+		(at 41.91 26.67 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -3784,7 +3784,7 @@
 	)
 	(hierarchical_label "sda_3v3"
 		(shape bidirectional)
-		(at 41.8506 21.59 180)
+		(at 41.91 21.59 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4653,7 +4653,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_ic:VISHAY_VCNL4040_4X2X1.1"
+		(property "Footprint" "VCNL4040M3OE:VISHAY_VCNL4040_4X2X1.1"
 			(at 78.74 95.25 0)
 			(effects
 				(font
