@@ -178,6 +178,14 @@ impl BoardPami {
         sensors.front.init().unwrap();
         Some(sensors)
     }
+
+    pub fn init_vlx_sensors(&mut self) -> Option<FakeVlxSensors> {
+        let mut sensors = self.vlx_sensors.take()?;
+        sensors.first.init().unwrap();
+        sensors.back.init().unwrap();
+        sensors.front.init().unwrap();
+        Some(sensors)
+    }
 }
 
 pub struct BoardSabotter {

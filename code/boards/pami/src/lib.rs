@@ -53,6 +53,7 @@ pub const PWM_EXTENDED_VBAT_RGB: [Channel; 3] = [Channel::C10, Channel::C8, Chan
 pub const PWM_EXTENDED_LINE_LED: Channel = Channel::C11;
 pub const PWM_EXTENDED_LED_RGB: [Channel; 3] = [Channel::C12, Channel::C13, Channel::C14];
 
+pub type MotorPwmType = LedcDriver<'static>;
 
 pub struct BoardPami {
     pub led_heartbeat: Option<LedHeartbeat>,

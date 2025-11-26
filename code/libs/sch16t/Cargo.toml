@@ -1,0 +1,11 @@
+[package]
+name = "sch16t"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+crc = "3.3.0"
+embedded-hal = "1.0.0"
+num-traits = "0.2.19"
+
+[dev-dependencies]

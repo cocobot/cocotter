@@ -6,6 +6,7 @@ use vlx::common::VlxSensor;
 
 use std::{thread, time::Duration};
 use config::PAMIConfig;
+use robot::Robot;
 
 #[cfg(target_os = "espidf")]    
 use board_pami::{BoardPami, PamiButtonsState};
@@ -17,10 +18,13 @@ use crate::ui::UiEvent;
 
 
 fn main() {
-    let mut board = BoardPami::new();
+    // Initialize logging
+    esp_idf_svc::log::EspLogger::initialize_default();
+    
+    // Initialize board
+    let board = BoardPami::new();
 
-    //if we panic here, it means the board is not configured. 
-    //should be fixed, robot will not work.
+    // Get robot configuration based on MAC address
     let config = match PAMIConfig::get_config() {
         Some(config) => {
             log::info!("Board id {} is configured with color {:?}", config.id, config.color);
