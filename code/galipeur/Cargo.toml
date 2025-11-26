@@ -10,18 +10,23 @@ rust-version = "1.77"
 name = "galipeur"
 harness = false # do not use the built in cargo test harness -> resolve rust-analyzer errors
 
+[features]
+default = []
+
+experimental = ["esp-idf-svc/experimental"]
+
 [dependencies]
 log = "0.4"
-embedded-hal = "1.0"
 
 [target.'cfg(not(target_os = "espidf"))'.dependencies]
 board-simulator = { path = "../boards/simulator" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
-esp-idf-svc = {version = "0.51", features = ["experimental", "alloc"]}
+esp-idf-svc = "0.51"
 board-sabotter = { path = "../boards/sabotter" }
 ble = { path = "../libs/ble" }
+asserv = { path = "../libs/asserv" }
 
 [build-dependencies]
-embuild = {version = "0.33.1", features = ["espidf"]}
+embuild = {version = "0.33", features = ["espidf"]}
 

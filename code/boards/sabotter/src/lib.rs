@@ -6,7 +6,6 @@ use esp_idf_svc::{bt::Ble, hal::{
 use esp_idf_svc::{nvs::EspDefaultNvsPartition, bt::BtDriver};
 use embedded_hal_bus::i2c::MutexDevice;
 use pca9535::Pca9535Immediate;
-use vlx::{VLX, Config, SensorType};
 use esp32_encoder::Encoder;
 use std::{rc::Rc, sync::Mutex};
 
@@ -17,9 +16,6 @@ pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type LedHeartbeat = PinDriver<'static, Gpio45, Output>;
 // Motor control types
 pub type MotorPwm = LedcDriver<'static>;
-
-// VLX sensors configuration
-pub type VlxSensors = VLX<I2CType, 1>;
 
 // GPIO expander type
 pub type GpioExpander = Pca9535Immediate<I2CType>;
@@ -53,7 +49,6 @@ pub struct BoardSabotter {
     pub led_heartbeat: Option<LedHeartbeat>,
     pub motors: [Option<Motor>; 3],
     pub motor_gpio_expander: [Option<GpioExpander>; 3],
-    pub vlx_sensors: Option<VlxSensors>,
     pub gpio_expander: Option<GpioExpander>,
     pub can_bus: Option<CanBus>,
     pub uart_asserv: Option<UartAsserv>,
@@ -88,16 +83,6 @@ impl BoardSabotter {
         let i2c_vlx_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c1, peripherals.pins.gpio21, peripherals.pins.gpio47, &config).unwrap());
         let i2c_vlx_driver_static = Box::leak(Box::new(i2c_vlx_driver));
         let i2c_vlx_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_vlx_driver_static);
-
-        let vlx_configs: [Config<Box<dyn FnMut(bool)>, Box<dyn FnMut(bool)>>; 1] = [
-            Config {
-                i2c_address: 0x30,  // Adresse du premier capteur
-                sensor_type: SensorType::L1,
-                enable_fn: None,
-                reset_fn: None,
-            },           
-        ];
-        let vlx_sensors = Some(VLX::new(i2c_vlx_bus_vlx, vlx_configs)); 
 
 
         // Initialize LEDC timer for motors
@@ -213,7 +198,6 @@ impl BoardSabotter {
         Self {
             led_heartbeat,
             motors,
-            vlx_sensors,
             gpio_expander,
             motor_gpio_expander,
             can_bus: None,
