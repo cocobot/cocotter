@@ -7116,6 +7116,12 @@
 		(uuid "35e78609-11e4-4931-a026-06477e68bfcf")
 	)
 	(junction
+		(at 167.64 83.82)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "35f10be3-f4da-4dd0-9cfc-1f9a24020414")
+	)
+	(junction
 		(at 96.52 340.36)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7198,6 +7204,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5cac0f50-7f14-4cb9-b0a0-41fca3d197fe")
+	)
+	(junction
+		(at 167.64 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5d82a4e8-c61e-48d8-87f4-abca0806c5b9")
 	)
 	(junction
 		(at 273.05 180.34)
@@ -7284,6 +7296,12 @@
 		(uuid "8c280535-be5c-4629-ab97-f3f5b9d30e42")
 	)
 	(junction
+		(at 182.88 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "8f722519-80b5-43fd-9c2f-af8f22de82b0")
+	)
+	(junction
 		(at 331.47 345.44)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7294,6 +7312,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8fe21902-6bb0-4d5d-84c3-6ec190f86047")
+	)
+	(junction
+		(at 175.26 86.36)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "931ebe37-2dc6-4e30-9c79-526199f783d5")
 	)
 	(junction
 		(at 232.41 233.68)
@@ -7362,6 +7386,12 @@
 		(uuid "aec2d441-752a-425b-b4ec-138c4477ad68")
 	)
 	(junction
+		(at 182.88 76.2)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b3d9e499-3050-4b76-a578-bc7a9167d7b2")
+	)
+	(junction
 		(at 261.62 332.74)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7428,6 +7458,12 @@
 		(uuid "e112d436-d866-419b-be7b-05702d276bbb")
 	)
 	(junction
+		(at 175.26 22.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e2e3e94a-8627-4f50-9c12-21115eba767e")
+	)
+	(junction
 		(at 251.46 190.5)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7438,6 +7474,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e8e217f0-96ae-42a5-9cfe-3866dd50f7a4")
+	)
+	(junction
+		(at 190.5 78.74)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ed795269-1ba6-48e9-b682-0b9f7816c8cd")
 	)
 	(junction
 		(at 62.23 332.74)
@@ -7581,7 +7623,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 60.96) (xy 168.91 60.96)
+			(xy 130.81 60.96) (xy 201.93 60.96)
 		)
 		(stroke
 			(width 0)
@@ -7618,6 +7660,16 @@
 			(type default)
 		)
 		(uuid "07b5193b-2c04-4353-a452-000b4e169bfe")
+	)
+	(wire
+		(pts
+			(xy 182.88 76.2) (xy 198.12 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0825b760-ad7a-42bd-a858-d0ff59293c36")
 	)
 	(wire
 		(pts
@@ -7661,7 +7713,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 86.36) (xy 168.91 86.36)
+			(xy 130.81 86.36) (xy 175.26 86.36)
 		)
 		(stroke
 			(width 0)
@@ -7691,6 +7743,16 @@
 	)
 	(wire
 		(pts
+			(xy 175.26 25.4) (xy 175.26 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d2005ee-ca2e-48db-80aa-63a6a6cd8da9")
+	)
+	(wire
+		(pts
 			(xy 91.44 157.48) (xy 105.41 157.48)
 		)
 		(stroke
@@ -7708,6 +7770,16 @@
 			(type default)
 		)
 		(uuid "1022a773-26f8-4f8a-922c-01e30e3266df")
+	)
+	(wire
+		(pts
+			(xy 167.64 83.82) (xy 198.12 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "12c3b15f-3cf5-47f3-855f-44f1b20a1d8e")
 	)
 	(wire
 		(pts
@@ -7941,6 +8013,16 @@
 	)
 	(wire
 		(pts
+			(xy 190.5 78.74) (xy 198.12 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "23ee609a-b78f-48e0-b7ab-9ba55cbe2841")
+	)
+	(wire
+		(pts
 			(xy 313.69 247.65) (xy 313.69 231.14)
 		)
 		(stroke
@@ -7991,7 +8073,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 63.5) (xy 168.91 63.5)
+			(xy 130.81 63.5) (xy 201.93 63.5)
 		)
 		(stroke
 			(width 0)
@@ -8061,7 +8143,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 78.74) (xy 168.91 78.74)
+			(xy 130.81 78.74) (xy 190.5 78.74)
 		)
 		(stroke
 			(width 0)
@@ -8151,6 +8233,16 @@
 	)
 	(wire
 		(pts
+			(xy 190.5 25.4) (xy 190.5 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3198ce52-0678-4215-8d1f-ea949fb54cf0")
+	)
+	(wire
+		(pts
 			(xy 182.88 349.25) (xy 179.07 349.25)
 		)
 		(stroke
@@ -8191,7 +8283,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 53.34) (xy 168.91 53.34)
+			(xy 130.81 53.34) (xy 201.93 53.34)
 		)
 		(stroke
 			(width 0)
@@ -8268,6 +8360,16 @@
 			(type default)
 		)
 		(uuid "39d4568f-4645-4529-9f3c-f48b0bbae25b")
+	)
+	(wire
+		(pts
+			(xy 175.26 22.86) (xy 182.88 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3a67d527-df5b-4f1a-853e-13915eec3c65")
 	)
 	(wire
 		(pts
@@ -8351,7 +8453,27 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 45.72) (xy 168.91 45.72)
+			(xy 167.64 22.86) (xy 160.02 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3ff9f416-3329-4d01-8927-221a36517992")
+	)
+	(wire
+		(pts
+			(xy 182.88 40.64) (xy 182.88 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "401638b0-a8ae-400d-90ba-1c2743036761")
+	)
+	(wire
+		(pts
+			(xy 130.81 45.72) (xy 201.93 45.72)
 		)
 		(stroke
 			(width 0)
@@ -8561,7 +8683,7 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 91.44) (xy 162.56 91.44)
+			(xy 137.16 91.44) (xy 198.12 91.44)
 		)
 		(stroke
 			(width 0)
@@ -8941,7 +9063,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 71.12) (xy 168.91 71.12)
+			(xy 130.81 71.12) (xy 201.93 71.12)
 		)
 		(stroke
 			(width 0)
@@ -8971,7 +9093,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 101.6) (xy 162.56 101.6)
+			(xy 160.02 101.6) (xy 198.12 101.6)
 		)
 		(stroke
 			(width 0)
@@ -8991,7 +9113,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 76.2) (xy 168.91 76.2)
+			(xy 130.81 76.2) (xy 182.88 76.2)
 		)
 		(stroke
 			(width 0)
@@ -9041,7 +9163,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 48.26) (xy 168.91 48.26)
+			(xy 130.81 48.26) (xy 201.93 48.26)
 		)
 		(stroke
 			(width 0)
@@ -9141,7 +9263,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 55.88) (xy 168.91 55.88)
+			(xy 130.81 55.88) (xy 201.93 55.88)
 		)
 		(stroke
 			(width 0)
@@ -9198,6 +9320,16 @@
 			(type default)
 		)
 		(uuid "89975a59-476c-4dce-98e0-69e5325dda6f")
+	)
+	(wire
+		(pts
+			(xy 167.64 22.86) (xy 175.26 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "89ccf481-46dd-42d1-899e-8cccb2767737")
 	)
 	(wire
 		(pts
@@ -9461,6 +9593,16 @@
 	)
 	(wire
 		(pts
+			(xy 175.26 86.36) (xy 198.12 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0621882-22c7-42d9-86ea-e93b6ec00910")
+	)
+	(wire
+		(pts
 			(xy 27.94 33.02) (xy 34.29 33.02)
 		)
 		(stroke
@@ -9481,13 +9623,23 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 83.82) (xy 168.91 83.82)
+			(xy 130.81 83.82) (xy 167.64 83.82)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "a37059fa-156b-4c37-9e95-adb40213adec")
+	)
+	(wire
+		(pts
+			(xy 167.64 33.02) (xy 167.64 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a3d6931c-7ccc-4bbf-b6f4-06d828bd6054")
 	)
 	(wire
 		(pts
@@ -9581,7 +9733,7 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 93.98) (xy 162.56 93.98)
+			(xy 144.78 93.98) (xy 198.12 93.98)
 		)
 		(stroke
 			(width 0)
@@ -9641,7 +9793,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 68.58) (xy 168.91 68.58)
+			(xy 130.81 68.58) (xy 201.93 68.58)
 		)
 		(stroke
 			(width 0)
@@ -9711,6 +9863,16 @@
 	)
 	(wire
 		(pts
+			(xy 175.26 33.02) (xy 175.26 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b20af69a-78a0-48e5-887d-a02a519fe4af")
+	)
+	(wire
+		(pts
 			(xy 138.43 236.22) (xy 165.1 236.22)
 		)
 		(stroke
@@ -9728,6 +9890,16 @@
 			(type default)
 		)
 		(uuid "b3de5e51-3937-4460-bf09-a890e443fc50")
+	)
+	(wire
+		(pts
+			(xy 182.88 33.02) (xy 182.88 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b6637500-8950-4406-ade9-199d76671105")
 	)
 	(wire
 		(pts
@@ -9871,6 +10043,16 @@
 	)
 	(wire
 		(pts
+			(xy 182.88 22.86) (xy 190.5 22.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1863206-1ca0-46db-aadc-4f150804a0a1")
+	)
+	(wire
+		(pts
 			(xy 119.38 140.97) (xy 119.38 157.48)
 		)
 		(stroke
@@ -9941,7 +10123,7 @@
 	)
 	(wire
 		(pts
-			(xy 152.4 99.06) (xy 162.56 99.06)
+			(xy 152.4 99.06) (xy 198.12 99.06)
 		)
 		(stroke
 			(width 0)
@@ -10261,6 +10443,16 @@
 	)
 	(wire
 		(pts
+			(xy 167.64 40.64) (xy 167.64 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e66685f1-20c4-4318-99d8-7d10717b817c")
+	)
+	(wire
+		(pts
 			(xy 69.85 355.6) (xy 78.74 355.6)
 		)
 		(stroke
@@ -10338,6 +10530,16 @@
 			(type default)
 		)
 		(uuid "ecbae342-af2e-4424-af4f-d7e842f30867")
+	)
+	(wire
+		(pts
+			(xy 190.5 33.02) (xy 190.5 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee93e8b2-a18d-4ccd-ae84-039cf316051b")
 	)
 	(wire
 		(pts
@@ -10629,18 +10831,8 @@
 		)
 		(uuid "15184650-3313-4a91-b115-af46199f0fdf")
 	)
-	(label "scl_5_3v3"
-		(at 162.56 86.36 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "154f1767-d847-4051-9a8c-5b765ca8b08b")
-	)
 	(label "sda_2_3v3"
-		(at 162.56 60.96 0)
+		(at 196.85 60.96 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10690,7 +10882,7 @@
 		(uuid "2b7dff80-97cf-4ba4-be35-5bed09b016e6")
 	)
 	(label "scl_0_3v3"
-		(at 162.56 48.26 0)
+		(at 196.85 48.26 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10939,16 +11131,6 @@
 		)
 		(uuid "6a998008-0a01-48cc-b0d5-8bb3b0fb512c")
 	)
-	(label "sda_5_3v3"
-		(at 162.56 83.82 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "6bffe68e-5f60-45dd-8303-d8fce0d5ec0d")
-	)
 	(label "pump_current_4_3v3"
 		(at 137.16 179.07 0)
 		(effects
@@ -10990,7 +11172,7 @@
 		(uuid "758e9d0b-864d-432c-bc81-3f0fc38e3f53")
 	)
 	(label "scl_2_3v3"
-		(at 162.56 63.5 0)
+		(at 196.85 63.5 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11068,16 +11250,6 @@
 			(justify left bottom)
 		)
 		(uuid "89e09ab9-9c45-46cf-9b50-d877024eeef1")
-	)
-	(label "sda_4_3v3"
-		(at 162.56 76.2 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "8a23f648-87c7-434a-8caa-e0c5e4f24d95")
 	)
 	(label "scl_1_3v3"
 		(at 254 71.12 0)
@@ -11220,7 +11392,7 @@
 		(uuid "a67e1d0d-531d-4637-ac00-ec08cd11e665")
 	)
 	(label "sda_0_3v3"
-		(at 162.56 45.72 0)
+		(at 196.85 45.72 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11330,7 +11502,7 @@
 		(uuid "c107b842-ff8d-4100-a611-cf233f4cee04")
 	)
 	(label "sda_1_3v3"
-		(at 162.56 53.34 0)
+		(at 196.85 53.34 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11370,7 +11542,7 @@
 		(uuid "cbb4f55d-f45f-42fb-9161-2f7ebbb69179")
 	)
 	(label "sda_3_3v3"
-		(at 162.56 68.58 0)
+		(at 196.85 68.58 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11398,16 +11570,6 @@
 			(justify left bottom)
 		)
 		(uuid "d075aa41-093a-4037-8178-ee24dd6158e7")
-	)
-	(label "scl_4_3v3"
-		(at 162.56 78.74 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "d395c23f-8ff7-417f-bf7e-4ab1c082135f")
 	)
 	(label "scl_3v3"
 		(at 26.67 74.93 0)
@@ -11440,7 +11602,7 @@
 		(uuid "dda9ae5e-33e2-4448-8b1e-5fed61163c62")
 	)
 	(label "scl_3_3v3"
-		(at 162.56 71.12 0)
+		(at 196.85 71.12 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11470,7 +11632,7 @@
 		(uuid "e92a684b-ab5d-436d-b001-6e1d74901a47")
 	)
 	(label "scl_1_3v3"
-		(at 162.56 55.88 0)
+		(at 196.85 55.88 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -11531,6 +11693,161 @@
 			(justify right)
 		)
 		(uuid "72ed6da5-8989-44cb-b870-ddd8104d8d89")
+	)
+	(netclass_flag ""
+		(length 2.54)
+		(shape round)
+		(at 72.39 332.74 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0896e4cf-5156-43ed-a356-d1757ca4b767")
+		(property "Netclass" "Power"
+			(at 73.0885 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Component Class" ""
+			(at -96.52 288.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+	)
+	(netclass_flag ""
+		(length 2.54)
+		(shape round)
+		(at 27.94 123.19 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "0c977677-e37e-4b9e-b76d-d873b3b7579f")
+		(property "Netclass" "Power"
+			(at 28.6385 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Component Class" ""
+			(at -140.97 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+	)
+	(netclass_flag ""
+		(length 2.54)
+		(shape round)
+		(at 274.32 327.66 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "62a61052-3ced-4cb5-a9fb-431f19726cda")
+		(property "Netclass" "Power"
+			(at 275.0185 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Component Class" ""
+			(at 105.41 283.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+	)
+	(netclass_flag ""
+		(length 2.54)
+		(shape round)
+		(at 224.79 332.74 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "944711de-dcaf-4103-8ac2-08832f658293")
+		(property "Netclass" "Power"
+			(at 225.4885 330.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Component Class" ""
+			(at 55.88 288.29 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+	)
+	(netclass_flag ""
+		(length 2.54)
+		(shape round)
+		(at 26.67 33.02 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a0ce112c-c9c3-44bf-b130-dee04d7eecc6")
+		(property "Netclass" "Power"
+			(at 27.3685 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Component Class" ""
+			(at -142.24 -11.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:+3.3V")
@@ -11756,6 +12073,102 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "R73")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_2k2_0603_1%")
+		(at 167.64 36.83 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "0662b86f-4a0e-4c0c-b19d-1695f3396655")
+		(property "Reference" "R58"
+			(at 170.18 35.5599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "2k2 1%"
+			(at 165.354 40.386 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 165.862 36.83 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 167.64 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 167.64 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "2k2 0603 1% 100mW"
+			(at 167.64 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 167.64 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C4190"
+			(at 167.64 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "b82e64d2-e493-4aaf-b062-45834766d682")
+		)
+		(pin "1"
+			(uuid "82bff887-dfe0-4dd1-ac8c-c60a98ee0481")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "R58")
 					(unit 1)
 				)
 			)
@@ -13053,6 +13466,74 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:TestPoint_0.8mm")
+		(at 198.12 78.74 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "26266591-2f25-4595-b184-979d53b05717")
+		(property "Reference" "TP8"
+			(at 203.2 77.4699 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 203.2 80.0099 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
+			(at 198.12 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 198.12 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 198.12 78.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "16070c21-c33a-40f8-9069-a53c24067639")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "TP8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_ic:74HCT238PW")
 		(at 252.73 260.35 0)
 		(unit 1)
@@ -13648,7 +14129,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:TestPoint_0.8mm")
-		(at 162.56 91.44 270)
+		(at 198.12 91.44 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -13657,7 +14138,7 @@
 		(fields_autoplaced yes)
 		(uuid "3474400f-892b-4008-935d-d697a9e50b22")
 		(property "Reference" "TP1"
-			(at 167.64 90.1699 90)
+			(at 203.2 90.1699 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13666,7 +14147,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 167.64 92.7099 90)
+			(at 203.2 92.7099 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13676,7 +14157,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
-			(at 162.56 96.52 0)
+			(at 198.12 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13685,7 +14166,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 96.52 0)
+			(at 198.12 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13694,7 +14175,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 162.56 91.44 0)
+			(at 198.12 91.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15075,6 +15556,102 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_resistors:R_2k2_0603_1%")
+		(at 190.5 29.21 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "52e59036-f940-44fa-88e8-fe211d0319ce")
+		(property "Reference" "R61"
+			(at 193.04 27.9399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "2k2 1%"
+			(at 188.214 33.274 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 188.722 29.21 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 190.5 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 190.5 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "2k2 0603 1% 100mW"
+			(at 190.5 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 190.5 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C4190"
+			(at 190.5 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "1e8121f4-ea9e-4645-b0db-2e2f5f060bba")
+		)
+		(pin "1"
+			(uuid "f87cadc0-96df-484a-acfb-006e7986eced")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "R61")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 179.07 248.92 0)
 		(unit 1)
@@ -15892,6 +16469,102 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "R22")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_2k2_0603_1%")
+		(at 182.88 36.83 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "6a7ca855-0ea6-456a-9a9a-43a5e7546e24")
+		(property "Reference" "R60"
+			(at 185.42 35.5599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "2k2 1%"
+			(at 180.594 40.386 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 181.102 36.83 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 182.88 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 182.88 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "2k2 0603 1% 100mW"
+			(at 182.88 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 182.88 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C4190"
+			(at 182.88 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "c2031fa4-f1e2-4414-9379-5e0e6c9508a1")
+		)
+		(pin "1"
+			(uuid "be9094d5-b8b5-48df-b677-44fafa4508c9")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "R60")
 					(unit 1)
 				)
 			)
@@ -19522,7 +20195,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:TestPoint_0.8mm")
-		(at 162.56 93.98 270)
+		(at 198.12 93.98 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -19531,7 +20204,7 @@
 		(fields_autoplaced yes)
 		(uuid "a2f23668-5f7d-4ebe-a05d-fb679d490a92")
 		(property "Reference" "TP2"
-			(at 167.64 92.7099 90)
+			(at 203.2 92.7099 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19540,7 +20213,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 167.64 95.2499 90)
+			(at 203.2 95.2499 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19550,7 +20223,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
-			(at 162.56 99.06 0)
+			(at 198.12 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19559,7 +20232,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 99.06 0)
+			(at 198.12 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19568,7 +20241,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 162.56 93.98 0)
+			(at 198.12 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19583,6 +20256,102 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "TP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_2k2_0603_1%")
+		(at 175.26 29.21 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a51f6c25-e4ee-4551-85f9-980442f22af0")
+		(property "Reference" "R59"
+			(at 177.8 27.9399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "2k2 1%"
+			(at 172.974 33.274 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 173.482 29.21 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 175.26 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 175.26 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "2k2 0603 1% 100mW"
+			(at 175.26 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 175.26 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C4190"
+			(at 175.26 29.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "acb48d16-7e67-4f23-a37e-259ecfa79642")
+		)
+		(pin "1"
+			(uuid "687ab999-b358-4638-8537-4d3bcf55aea3")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "R59")
 					(unit 1)
 				)
 			)
@@ -20085,6 +20854,74 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "#PWR04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint_0.8mm")
+		(at 198.12 83.82 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "aa4d6d3e-272f-4616-adef-2c0e4a992b17")
+		(property "Reference" "TP5"
+			(at 203.2 82.5499 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 203.2 85.0899 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
+			(at 198.12 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 198.12 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 198.12 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5ecbb06a-08b8-44e0-a73e-fdc74837b232")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "TP5")
 					(unit 1)
 				)
 			)
@@ -20684,6 +21521,74 @@
 			(project "meca_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "R6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint_0.8mm")
+		(at 198.12 76.2 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b5eebd2b-0f27-410a-9331-e3d7f77b9a0f")
+		(property "Reference" "TP7"
+			(at 203.2 74.9299 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 203.2 77.4699 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
+			(at 198.12 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 198.12 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 198.12 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "22e91782-26b5-4e76-9389-2f173c98f0cf")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "TP7")
 					(unit 1)
 				)
 			)
@@ -21981,7 +22886,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:TestPoint_0.8mm")
-		(at 162.56 101.6 270)
+		(at 198.12 101.6 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -21990,7 +22895,7 @@
 		(fields_autoplaced yes)
 		(uuid "de5dc51c-103c-4dc7-987f-8dccc6f51208")
 		(property "Reference" "TP4"
-			(at 167.64 100.3299 90)
+			(at 203.2 100.3299 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21999,7 +22904,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 167.64 102.8699 90)
+			(at 203.2 102.8699 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22009,7 +22914,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
-			(at 162.56 106.68 0)
+			(at 198.12 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22018,7 +22923,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 106.68 0)
+			(at 198.12 106.68 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22027,7 +22932,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 162.56 101.6 0)
+			(at 198.12 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22360,7 +23265,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_others:TestPoint_0.8mm")
-		(at 162.56 99.06 270)
+		(at 198.12 99.06 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -22369,7 +23274,7 @@
 		(fields_autoplaced yes)
 		(uuid "e9f51b59-1c11-48c1-93e7-deecda4c942e")
 		(property "Reference" "TP3"
-			(at 167.64 97.7899 90)
+			(at 203.2 97.7899 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22378,7 +23283,7 @@
 			)
 		)
 		(property "Value" "TestPoint"
-			(at 167.64 100.3299 90)
+			(at 203.2 100.3299 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22388,7 +23293,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
-			(at 162.56 104.14 0)
+			(at 198.12 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22397,7 +23302,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 104.14 0)
+			(at 198.12 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22406,7 +23311,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 162.56 99.06 0)
+			(at 198.12 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22848,6 +23753,74 @@
 			(project ""
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "C3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint_0.8mm")
+		(at 198.12 86.36 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f3845001-c891-4535-a2e1-6a4709c60a33")
+		(property "Reference" "TP6"
+			(at 203.2 85.0899 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 203.2 87.6299 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.8mm"
+			(at 198.12 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 198.12 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 198.12 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5989b3da-2f58-4934-82bd-aa9269e073fc")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "TP6")
 					(unit 1)
 				)
 			)
