@@ -1,3 +1,5 @@
+mod movement;
+
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 
 #[cfg(target_os = "espidf")]
@@ -5,59 +7,22 @@ use board_sabotter::BoardSabotter;
 
 #[cfg(not(target_os = "espidf"))]
 use board_simulator::BoardSabotter;
-
+pub use board_sabotter::ImuSpi;
 use board_sabotter::pca9535::{expander::standard::StandardExpanderInterface, GPIOBank};
 use esp_idf_svc::sys::ets_delay_us;
-use asserv::{conf::{AsservHardware}, Asserv};
-
-struct GalipeurAsservHardware {
-    
-}
-
-impl GalipeurAsservHardware {
-    pub fn new() -> Self {
-        GalipeurAsservHardware {
-            
-        }
-    }   
-}
-
-impl AsservHardware for GalipeurAsservHardware {
-    fn set_motors_break(&mut self, enable: bool) {
-        log::info!("Set motors break: {}", enable);
-    }
-
-    fn set_motor_consigns(&mut self, values: [f32; 3]) {
-      //  log::info!("Set motor consigns: {:?}", values);
-    }
-
-    fn get_motor_offsets(&mut self) -> [f32; 3] {
-     //   log::info!("Get motor offsets");
-        [0.0, 0.0, 0.0]
-    }
-
-    fn get_gyro_offset(&mut self) -> f32 {
-    //    log::info!("Get gyro offset");
-        0.0
-    }
-}
+use movement::{Movement, MovementLowLevelHardware};
+use sch16t::Sch16t;
 
 fn main() {
     let mut board = BoardSabotter::new();
 
-    //configure asserv
-    let asserv_hardware = GalipeurAsservHardware::new();
-    let asserv = Arc::new(Mutex::new(Asserv::new(asserv_hardware)));
-    let asserv_thread = asserv.clone();
-    thread::spawn(move || {
-        loop {
-            {
-                let mut asserv = asserv_thread.lock().unwrap();
-                asserv.update();
-            }
-            thread::sleep(Duration::from_millis(10));
-        }
-    });
+    //configure gyro
+    let mut gyro = Sch16t::new(board.imu_spi.take().unwrap(), 0);
+    gyro.init().unwrap();
+
+    //configure low level hardware for asserv
+    let asserv_hardware = MovementLowLevelHardware::new(gyro);
+    let movement = Arc::new(Mutex::new(Movement::new(asserv_hardware)));
     
 
     let mut led_heartbeat = board.led_heartbeat.take().unwrap();
@@ -102,7 +67,7 @@ fn main() {
 
 
     loop {
-       //led_heartbeat.toggle().ok();
+       //
        //motor_gpio_expander_0.pin_set_high(GPIOBank::Bank0, 2).unwrap();
 
        //
@@ -110,9 +75,14 @@ fn main() {
        //motor_gpio_expander_0.pin_set_low(GPIOBank::Bank0, 2).unwrap();
         thread::sleep(Duration::from_millis(500));
         {
+            led_heartbeat.toggle().ok();
+            
+            let movement = movement.lock().unwrap();
+            let asserv = movement.get_asserv();
             let asserv = asserv.lock().unwrap();
             let position = asserv.position().clone();
             drop(asserv);
+            drop(movement);
                         
             log::info!("Position: x: {:.2} y: {:.2} theta: {:.2}", position.x, position.y, position.a); 
         }

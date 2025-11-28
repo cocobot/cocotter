@@ -26,6 +26,8 @@ esp-idf-svc = "0.51"
 board-sabotter = { path = "../boards/sabotter" }
 ble = { path = "../libs/ble" }
 asserv = { path = "../libs/asserv" }
+sch16t = { path = "../libs/sch16t" }
+embedded-hal = "1.0.0"
 
 [build-dependencies]
 embuild = {version = "0.33", features = ["espidf"]}

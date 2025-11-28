@@ -3,6 +3,7 @@ use num_traits::FromBytes;
 use std::{
     thread,
     time::{Duration, Instant},
+    fmt::Debug,
 };
 
 /// SCH16T
@@ -225,6 +226,17 @@ impl From<SCH16TAcc12Ctrl> for u32 {
 pub enum Sch16tError<SPI> {
     Spi(SPI),
     // Add other errors for your driver here.
+}
+
+impl<SPI> Debug for Sch16tError<SPI>
+where
+    SPI: SpiDevice,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Sch16tError::Spi(_) => write!(f, "SPI communication error"),
+        }
+    }
 }
 
 impl<SPI> Sch16t<SPI>
