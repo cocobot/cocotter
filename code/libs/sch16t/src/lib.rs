@@ -153,6 +153,7 @@ struct SCH16TAcc12Ctrl {
 }
 
 #[allow(dead_code)]
+#[derive(Debug, Clone, Copy)]
 struct Sch16tStatRate {
     decimated_rate_saturation_ok: bool,
     interpolated_rate_saturation_ok: bool,
@@ -225,7 +226,9 @@ impl From<SCH16TAcc12Ctrl> for u32 {
 
 pub enum Sch16tError<SPI> {
     Spi(SPI),
-    // Add other errors for your driver here.
+    XReading(Sch16tStatRate),
+    YReading(Sch16tStatRate),
+    ZReading(Sch16tStatRate),
 }
 
 impl<SPI> Debug for Sch16tError<SPI>
@@ -235,6 +238,9 @@ where
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Sch16tError::Spi(_) => write!(f, "SPI communication error"),
+            Sch16tError::XReading(stat) => write!(f, "X error: {:?}", stat),
+            Sch16tError::YReading(stat) => write!(f, "Y error: {:?}", stat),
+            Sch16tError::ZReading(stat) => write!(f, "Z error: {:?}", stat),
         }
     }
 }
@@ -353,33 +359,43 @@ where
     }
 
     pub fn update_angle(&mut self) -> Result<(), Sch16tError<SPI>> {
+        let mut response = Ok(());
+
         let x_stat = self.read_register(Register::StatRateX)?;
         let y_stat = self.read_register(Register::StatRateY)?;
         let z_stat = self.read_register(Register::StatRateZ)?;
         let new_instant = Instant::now();
         if let Some(last_instant) = self.last_measure_instant {
             let elapsed = (new_instant - last_instant).as_secs_f32();
-            if Sch16tStatRate::from(x_stat as u16).all_flags_ok() {
+
+            let stat = Sch16tStatRate::from(x_stat as u16);
+            if stat.all_flags_ok() {
                 self.angle.x += self.angle_from_register(Register::RateX1)? * elapsed;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateX2)? * elapsed;
-                println!("x meas ko");
+                response = Err(Sch16tError::XReading(stat));
             }
-            if Sch16tStatRate::from(y_stat as u16).all_flags_ok() {
+
+
+            let stat = Sch16tStatRate::from(y_stat as u16);
+            if stat.all_flags_ok() {
                 self.angle.y += self.angle_from_register(Register::RateY1)? * elapsed;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateY2)? * elapsed;
-                println!("y meas ko");
+                response = Err(Sch16tError::YReading(stat));
             }
-            if Sch16tStatRate::from(z_stat as u16).all_flags_ok() {
+
+            let stat = Sch16tStatRate::from(z_stat as u16);
+            if stat.all_flags_ok() {
                 self.angle.z += self.angle_from_register(Register::RateZ1)? * elapsed;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateZ2)? * elapsed;
-                println!("z meas ko");
+                response = Err(Sch16tError::ZReading(stat));
             }
         }
         self.last_measure_instant = Some(new_instant);
-        Ok(())
+       
+       response
     }
 
     fn angle_from_register(&mut self, register: Register) -> Result<f32, Sch16tError<SPI>> {
