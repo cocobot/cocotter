@@ -3735,6 +3735,303 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "cocotter_diodes:green_led_0603"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "green, 0603"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "MOUSER_REF" "710-150060VS55040"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C22371299"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "Green LED diode"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "green_led_0603_0_1"
+				(polyline
+					(pts
+						(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.27 -1.27) (xy -1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "green_led_0603_1_1"
+				(polyline
+					(pts
+						(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type color)
+						(color 0 194 0 1)
+					)
+				)
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "C"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "cocotter_others:TestPoint"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.762)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "cocotter_others:XTAL 16MHz 9pF"
 			(pin_names
 				(offset 1.016)
@@ -4113,6 +4410,158 @@
 				)
 			)
 			(symbol "R_10k_0603_1%_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "cocotter_resistors:R_1k_0603_1%"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 1.27 1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "1k 1%"
+				(at 3.81 -1.27 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_resistor:r0603_reflow"
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "10k 0603 1% 100mW"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "mouser" "603-RC0603FR-10100KL"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C2991540"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_1k_0603_1%_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_1k_0603_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -4761,20 +5210,12 @@
 		(uuid "099b94c1-f8fa-4934-bbf0-76f252d7fecb")
 	)
 	(no_connect
-		(at 138.43 87.63)
-		(uuid "0f409d52-4a33-40cc-9e1a-e1411ce2525b")
-	)
-	(no_connect
 		(at 199.39 100.33)
 		(uuid "1cd98211-ef73-4551-a448-fada2b1c5557")
 	)
 	(no_connect
 		(at 199.39 133.35)
 		(uuid "1fe73f62-4c52-4557-8111-1598340942d3")
-	)
-	(no_connect
-		(at 138.43 113.03)
-		(uuid "26bc5613-1e9f-4650-a087-c02f8b7f9101")
 	)
 	(no_connect
 		(at 138.43 95.25)
@@ -4801,20 +5242,12 @@
 		(uuid "4ad92e74-2755-467a-8653-0ae4423d734e")
 	)
 	(no_connect
-		(at 138.43 92.71)
-		(uuid "5aff0e80-54a3-40aa-a077-e22071f9e693")
-	)
-	(no_connect
 		(at 199.39 102.87)
 		(uuid "5be87501-920e-4867-bfc6-59758bf73e4e")
 	)
 	(no_connect
 		(at 199.39 146.05)
 		(uuid "60c0f3f4-c41f-49dc-902d-281e3f5379c8")
-	)
-	(no_connect
-		(at 138.43 120.65)
-		(uuid "721376e1-2520-4de9-942c-f61ef1d9c65a")
 	)
 	(no_connect
 		(at 199.39 90.17)
@@ -4831,10 +5264,6 @@
 	(no_connect
 		(at 138.43 97.79)
 		(uuid "9039d9b8-1ce3-4552-87d3-311560e0ba95")
-	)
-	(no_connect
-		(at 138.43 115.57)
-		(uuid "98429189-40aa-4cce-a322-30e92403836c")
 	)
 	(no_connect
 		(at 199.39 92.71)
@@ -4861,24 +5290,12 @@
 		(uuid "ade80add-a8c5-4025-bbd5-85be49992091")
 	)
 	(no_connect
-		(at 138.43 85.09)
-		(uuid "b1a13877-699f-4ba8-9b48-7d4ae0f42779")
-	)
-	(no_connect
 		(at 138.43 105.41)
 		(uuid "b8998833-cbc0-405b-b5ad-e1da01954d57")
 	)
 	(no_connect
-		(at 138.43 118.11)
-		(uuid "c323b0cc-4264-4e11-bc84-ea9548ddfe11")
-	)
-	(no_connect
 		(at 199.39 120.65)
 		(uuid "da4d864c-fcc1-4611-855f-8eaa4b6beb43")
-	)
-	(no_connect
-		(at 138.43 130.81)
-		(uuid "dd042ee8-0fb7-4aea-9be0-bf07d0168d32")
 	)
 	(no_connect
 		(at 138.43 102.87)
@@ -4891,10 +5308,6 @@
 	(no_connect
 		(at 199.39 85.09)
 		(uuid "e5940774-0558-4840-b2ae-6c4ee118e6b4")
-	)
-	(no_connect
-		(at 138.43 90.17)
-		(uuid "eff17abd-3186-49bd-bab9-6633fc6cdc20")
 	)
 	(no_connect
 		(at 138.43 128.27)
@@ -5288,6 +5701,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 120.65) (xy 138.43 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2514b6f9-dd56-4931-bccb-72a9b980b91d")
+	)
+	(wire
+		(pts
 			(xy 52.07 72.39) (xy 52.07 74.93)
 		)
 		(stroke
@@ -5350,6 +5773,16 @@
 	)
 	(wire
 		(pts
+			(xy 127 130.81) (xy 138.43 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "321accc6-5dc9-4988-8640-827dbb62a7e9")
+	)
+	(wire
+		(pts
 			(xy 41.91 166.37) (xy 41.91 173.99)
 		)
 		(stroke
@@ -5367,6 +5800,16 @@
 			(type default)
 		)
 		(uuid "346f9fda-9c1d-4a47-998f-6841ffdfbd9b")
+	)
+	(wire
+		(pts
+			(xy 138.43 90.17) (xy 116.84 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "38f3e325-5e40-4b6b-8c3f-d6e9a23b4187")
 	)
 	(wire
 		(pts
@@ -5433,6 +5876,26 @@
 	)
 	(wire
 		(pts
+			(xy 119.38 111.76) (xy 119.38 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3fc2df96-d794-424a-9a87-68a29c09a944")
+	)
+	(wire
+		(pts
+			(xy 111.76 111.76) (xy 111.76 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "431f3144-d043-4597-8d5f-2167fc2475cc")
+	)
+	(wire
+		(pts
 			(xy 33.02 90.17) (xy 54.61 90.17)
 		)
 		(stroke
@@ -5440,6 +5903,16 @@
 			(type default)
 		)
 		(uuid "444a0fce-0975-4acd-85b8-8e0427320203")
+	)
+	(wire
+		(pts
+			(xy 119.38 92.71) (xy 119.38 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "45752eff-12a8-4ae8-9f77-27390c496865")
 	)
 	(wire
 		(pts
@@ -5512,6 +5985,16 @@
 			(type default)
 		)
 		(uuid "4e3d41a4-7b2a-42a7-bab8-a475634e36e2")
+	)
+	(wire
+		(pts
+			(xy 114.3 118.11) (xy 138.43 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4edcf011-c6c1-42de-9106-dbc9864f5036")
 	)
 	(wire
 		(pts
@@ -5688,6 +6171,16 @@
 		)
 		(uuid "68dda939-6bb4-4de9-9091-6a8a57c680d0")
 	)
+	(wire
+		(pts
+			(xy 114.3 87.63) (xy 114.3 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "692f11aa-1cd0-4075-bf28-00ee57442c84")
+	)
 	(polyline
 		(pts
 			(xy 115.57 12.7) (xy 115.57 54.61)
@@ -5792,6 +6285,16 @@
 	)
 	(wire
 		(pts
+			(xy 265.43 99.06) (xy 265.43 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7617c902-1ff8-4db1-aa3c-6a573cce0687")
+	)
+	(wire
+		(pts
 			(xy 138.43 74.93) (xy 127 74.93)
 		)
 		(stroke
@@ -5809,6 +6312,16 @@
 			(type default)
 		)
 		(uuid "794c1eaf-a062-45c9-943b-4d0cfb163183")
+	)
+	(wire
+		(pts
+			(xy 138.43 115.57) (xy 116.84 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7a3d8b68-a039-4534-910b-2fd5e0d7230f")
 	)
 	(wire
 		(pts
@@ -5872,6 +6385,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 95.25) (xy 111.76 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "855ea002-bbad-46b8-a1e1-384949da164b")
+	)
+	(wire
+		(pts
 			(xy 33.02 77.47) (xy 39.37 77.47)
 		)
 		(stroke
@@ -5932,6 +6455,16 @@
 	)
 	(wire
 		(pts
+			(xy 138.43 87.63) (xy 114.3 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8e1b567b-0090-49e5-84db-badaa903a946")
+	)
+	(wire
+		(pts
 			(xy 74.93 22.86) (xy 74.93 26.67)
 		)
 		(stroke
@@ -5979,6 +6512,16 @@
 			(type default)
 		)
 		(uuid "92c90dd1-9e64-4d3b-adf9-ff4f7541202c")
+	)
+	(wire
+		(pts
+			(xy 114.3 111.76) (xy 114.3 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "93230a24-94b3-41b0-83fd-55600dd3f66c")
 	)
 	(wire
 		(pts
@@ -6143,6 +6686,16 @@
 	)
 	(wire
 		(pts
+			(xy 138.43 92.71) (xy 119.38 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b0507d8b-7c01-4509-b3f6-96ac61fcfbe0")
+	)
+	(wire
+		(pts
 			(xy 54.61 90.17) (xy 68.58 90.17)
 		)
 		(stroke
@@ -6160,6 +6713,16 @@
 			(type default)
 		)
 		(uuid "b2409e94-9736-4cda-8beb-9724de508d52")
+	)
+	(wire
+		(pts
+			(xy 116.84 111.76) (xy 116.84 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b2ae71ee-1e5a-4a95-aca3-c9c00d93cca9")
 	)
 	(wire
 		(pts
@@ -6182,6 +6745,16 @@
 			(color 255 0 255 1)
 		)
 		(uuid "b3191197-0730-4eee-af9c-d83b1353a7f7")
+	)
+	(wire
+		(pts
+			(xy 254 78.74) (xy 265.43 78.74)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b34b996e-e936-4245-8ed7-f4303309e914")
 	)
 	(wire
 		(pts
@@ -6332,6 +6905,16 @@
 	)
 	(wire
 		(pts
+			(xy 116.84 90.17) (xy 116.84 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d5e872a9-94e6-410a-a86a-723d9f157c4c")
+	)
+	(wire
+		(pts
 			(xy 199.39 41.91) (xy 210.82 41.91)
 		)
 		(stroke
@@ -6350,6 +6933,16 @@
 			(type default)
 		)
 		(uuid "d73fc2b4-4f6e-4db0-b350-fedbc8496510")
+	)
+	(wire
+		(pts
+			(xy 265.43 78.74) (xy 265.43 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d8490f38-332b-413f-ab43-fd14b52ddd1f")
 	)
 	(wire
 		(pts
@@ -6382,6 +6975,16 @@
 			(color 255 153 0 1)
 		)
 		(uuid "dd127cd4-24ad-4b49-bdca-d7b7a40eb510")
+	)
+	(wire
+		(pts
+			(xy 119.38 113.03) (xy 138.43 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "de51588d-e4c7-415a-9bc1-c0779b57211a")
 	)
 	(wire
 		(pts
@@ -6517,6 +7120,16 @@
 			(type default)
 		)
 		(uuid "f7db3e2d-f692-4c31-ac61-e9990545c06b")
+	)
+	(wire
+		(pts
+			(xy 111.76 85.09) (xy 138.43 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f87bba85-c9d3-4a40-8f0b-17fb5e090e21")
 	)
 	(wire
 		(pts
@@ -6741,6 +7354,16 @@
 		)
 		(uuid "bf865397-4954-4e21-bebb-605e766f544b")
 	)
+	(label "led"
+		(at 127 130.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "bf9c7277-4050-4deb-ab69-ee8acc5b351c")
+	)
 	(label "OSCOUT"
 		(at 20.32 158.75 0)
 		(effects
@@ -6760,6 +7383,16 @@
 			(justify right bottom)
 		)
 		(uuid "c32839f2-74bf-410a-861f-111a5f102d44")
+	)
+	(label "led"
+		(at 254 78.74 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e7196a98-3897-4bd5-a749-cb03b637c59b")
 	)
 	(hierarchical_label "lidar_ctrl_3v3"
 		(shape output)
@@ -7436,6 +8069,206 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 265.43 100.33 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "176f9b6d-718c-4e13-85be-5f9bc083fa45")
+		(property "Reference" "#PWR0102"
+			(at 265.43 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 265.43 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 265.43 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 265.43 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 265.43 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "eb5d6af1-f350-4a6f-93bf-674fc74beda4")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "#PWR0102")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 116.84 111.76 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "1e67b8d7-ceb7-4c00-8ce7-712cbe96a3ec")
+		(property "Reference" "TP2"
+			(at 116.84 107.442 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 119.38 109.7279 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 121.92 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 121.92 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 116.84 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "80ce7ac5-0814-4084-a58d-17c09905c4cb")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 111.76 111.76 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "2b251fbe-dce8-4835-9e1b-0926727c797a")
+		(property "Reference" "TP4"
+			(at 111.76 107.442 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 109.7279 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 116.84 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 116.84 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 111.76 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "14c53ede-aa40-4d6c-90cf-fab0ede0bf04")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 39.37 72.39 0)
 		(unit 1)
@@ -7723,6 +8556,113 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_diodes:green_led_0603")
+		(at 265.43 95.25 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "34a62332-0127-4661-82e7-2caa40cfe4f5")
+		(property "Reference" "D5"
+			(at 269.24 95.5674 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "green, 0603"
+			(at 267.97 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
+			(at 265.43 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 265.43 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
+			(at 265.43 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
+			(at 265.43 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER_REF" "710-150060VS55040"
+			(at 265.43 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C22371299"
+			(at 269.24 98.1074 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
+			(at 265.43 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "A"
+			(uuid "13b2fad9-332c-4855-8cf1-419cc09f4e67")
+		)
+		(pin "C"
+			(uuid "ff030e1f-e3c8-4970-82d1-ef610f23a20e")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "D5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_capacitors:C_2.2uF_16V_0603")
 		(at 125.73 162.56 0)
 		(mirror y)
@@ -7811,6 +8751,112 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_resistors:R_1k_0603_1%")
+		(at 265.43 87.63 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "42e4796d-428d-4296-9159-e53ae31f72bc")
+		(property "Reference" "R54"
+			(at 267.97 86.3599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1k 1%"
+			(at 267.97 88.8999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 263.652 87.63 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 265.43 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 265.43 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "10k 0603 1% 100mW"
+			(at 265.43 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 265.43 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C2991540"
+			(at 265.43 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER" ""
+			(at 265.43 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e8f42501-13db-44f8-a1ca-00645fc634c6")
+		)
+		(pin "2"
+			(uuid "bf671856-c6da-4059-856a-6add971bf153")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "R54")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 121.92 57.15 0)
 		(unit 1)
@@ -7870,6 +8916,73 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
 					(reference "#PWR015")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 111.76 95.25 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "55a49e3f-ab95-41b4-bfa5-5586bf819083")
+		(property "Reference" "TP5"
+			(at 111.76 99.568 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 109.22 97.2821 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 106.68 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 106.68 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 111.76 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "c06c1dff-160d-48e3-a1e3-999ae14752bb")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP5")
 					(unit 1)
 				)
 			)
@@ -8181,6 +9294,73 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
 					(reference "#PWR017")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 114.3 111.76 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "674d14ea-5d4d-4f9e-a8ea-34f30d04591e")
+		(property "Reference" "TP3"
+			(at 114.3 107.442 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 116.84 109.7279 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 119.38 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 119.38 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 114.3 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a8390d1a-7f7b-4f11-b8f8-f0cf805e355e")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP3")
 					(unit 1)
 				)
 			)
@@ -8681,6 +9861,73 @@
 			(project ""
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
 					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 119.38 111.76 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "818e9d61-3fff-4e94-bd38-ebc9a91315a4")
+		(property "Reference" "TP1"
+			(at 119.38 107.442 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 121.92 109.7279 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 124.46 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 124.46 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 119.38 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9adbec4f-5597-486a-910f-18c18405071d")
+		)
+		(instances
+			(project ""
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP1")
 					(unit 1)
 				)
 			)
@@ -9211,6 +10458,73 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 119.38 95.25 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "aaab9a59-787f-45aa-8c88-6bed71adbc2d")
+		(property "Reference" "TP8"
+			(at 119.38 99.568 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 116.84 97.2821 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 114.3 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 114.3 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 119.38 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "763b0414-9562-434b-998e-889c21431594")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+3.3V")
 		(at 17.78 20.32 0)
 		(unit 1)
@@ -9359,6 +10673,73 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
 					(reference "C1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 116.84 95.25 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "bd576f40-53c2-49de-8b2a-b163b767d4d9")
+		(property "Reference" "TP7"
+			(at 116.84 99.568 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 114.3 97.2821 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 111.76 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 111.76 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 116.84 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5434faab-0552-4cd0-8a6e-1bed460c8b22")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP7")
 					(unit 1)
 				)
 			)
@@ -9820,6 +11201,73 @@
 			(project "picotter_2026"
 				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
 					(reference "#PWR016")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 114.3 95.25 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "eb731d7b-1ca0-4814-8b1b-6434a23954c6")
+		(property "Reference" "TP6"
+			(at 114.3 99.568 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 111.76 97.2821 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 109.22 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 109.22 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 114.3 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d87afa7e-4cb1-4c2f-9f8d-701e9a68edd2")
+		)
+		(instances
+			(project "picotter_2026"
+				(path "/a7992a71-8976-4fb0-bae5-4423ba97b789/ead2b5b8-7adf-4097-b0be-f6e2812dda54"
+					(reference "TP6")
 					(unit 1)
 				)
 			)
