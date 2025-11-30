@@ -1,0 +1,15 @@
+# Dummy messages, for tests
+90:
+  Empty: null
+  SensorValues:
+    - u32
+    - "[u16; 3]"
+  Position:
+    x: f32
+    y: f32
+    z: f32
+# Common messages
+20:
+  BatteryLevel:
+    mv: u16
+    percent: u8

@@ -64,7 +64,10 @@ fn main() {
         log::info!("Start BLE RX thread");
         loop {
             if let Ok(data) = rome_rx.recv_timeout(std::time::Duration::from_millis(500)) {
-                log::info!("BLE received data: {:?}", data);
+                match rome::Message::decode(&data) {
+                    Ok(msg) => log::info!("ROME RX: {msg:?}"),
+                    Err(err) => log::error!("ROME RX error: {err:?}"),
+                }
             }
         }
     });
@@ -79,6 +82,7 @@ fn main() {
     let mut button_state = PamiButtonsState(0);
 
     loop {
+        /*
         // Heartbeat + test BLE message
         if tick % 10 == 0 {
             //led_heartbeat.toggle().ok();
@@ -88,6 +92,7 @@ fn main() {
                 log::error!("BLE send error: {:?}", err);
             }
         }
+        */
 
         // VLX capture
         // Print VLX sensor distance (only back sensor is working)
@@ -115,6 +120,9 @@ fn main() {
             let (vbatt_mv, vbatt_pct) = vbatt.read();
             log::info!("Battery: {vbatt_mv} mV, {vbatt_pct}%");
             ui_queue.send(UiEvent::Battery { percent: vbatt_pct }).unwrap();
+            if let Err(err) = rome_tx.send(rome::Message::BatteryLevel { mv: vbatt_mv, percent: vbatt_pct }.encode()) {
+                log::error!("BLE send error: {:?}", err);
+            }
         }
 
         tick += 1;

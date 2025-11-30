@@ -1,0 +1,9 @@
+[package]
+name = "rome"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[build-dependencies]
+yaml-rust = "0.4"

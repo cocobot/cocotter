@@ -28,6 +28,7 @@ embedded-graphics = "0.8"
 board-pami = { path = "../boards/pami" }
 ble = { path = "../libs/ble" }
 vlx = { path = "../libs/vlx" }
+rome = { path = "../libs/rome" }
 
 [build-dependencies]
 embuild = {version = "0.33", features = ["espidf"]}
