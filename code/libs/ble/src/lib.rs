@@ -69,7 +69,7 @@ impl BleServer {
 
     /// Enable server security
     ///
-    /// If enabled, call `set_peer_encryption()` on `PeerConnected` event.
+    /// If enabled, `set_peer_encryption()` must be called on `PeerConnected` event.
     /// TODO: Don't hardcode security parameters.
     pub fn enable_security(&self) -> Result<(), EspError> {
         self.gap.set_security_conf(&SecurityConfiguration {

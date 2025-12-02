@@ -243,7 +243,7 @@ impl RomePeripheral {
             service_handle,
             &GattCharacteristic {
                 uuid: CHAR_ROME_RX_UUID,
-                permissions: enum_set!(Permission::Write),
+                permissions: enum_set!(Permission::WriteEncrypted),
                 properties: enum_set!(Property::Write),
                 max_len: 200,
                 auto_rsp: AutoResponse::ByApp,
@@ -251,6 +251,7 @@ impl RomePeripheral {
             &[],
         )?;
 
+        //TODO Use a separate charateristic for telemetry, Notify instead of Indicate
         self.server.gatts.add_characteristic(
             service_handle,
             &GattCharacteristic {
@@ -283,7 +284,7 @@ impl RomePeripheral {
                 service_handle,
                 &GattDescriptor {
                     uuid: CCCD_UUID,
-                    permissions: enum_set!(Permission::Read | Permission::Write),
+                    permissions: enum_set!(Permission::ReadEncrypted | Permission::WriteEncrypted),
                 },
             )?;
         } else {
