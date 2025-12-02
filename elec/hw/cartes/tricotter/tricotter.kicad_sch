@@ -1139,22 +1139,10 @@
 		(uuid "0c746e2b-5008-42df-8c60-8a9f0b91f492")
 	)
 	(junction
-		(at 128.27 107.95)
+		(at 121.92 83.82)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "111f8242-0972-49a3-bffa-ae36129a8c54")
-	)
-	(junction
-		(at 121.92 104.14)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "235306a6-9aea-411f-9e67-eda59dbd3fd6")
-	)
-	(junction
-		(at 39.37 43.18)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "383cf7fb-498a-4cf6-8324-9d5e96dea6ee")
+		(uuid "6c440156-6cec-4df1-a845-3686a498857e")
 	)
 	(junction
 		(at 121.92 82.55)
@@ -1169,18 +1157,6 @@
 		(uuid "885b0015-9daa-4032-a1e1-24c79226a9e5")
 	)
 	(junction
-		(at 121.92 83.82)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "9b54a74d-d130-4a4b-b157-5691c14343eb")
-	)
-	(junction
-		(at 35.56 40.64)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a62efbaa-acc6-48cd-acdd-80d37d9133c5")
-	)
-	(junction
 		(at 50.8 27.94)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1193,20 +1169,20 @@
 		(uuid "b519714b-3aed-4ecc-b35d-78a964e7b0b1")
 	)
 	(junction
+		(at 38.1 43.18)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d8564584-4a9d-44f7-bac6-2effe45633d8")
+	)
+	(junction
 		(at 35.56 27.94)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "f7aec686-b273-4173-8464-32a32ddc996e")
 	)
-	(junction
-		(at 39.37 55.88)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f7b51c8d-821e-44a9-8441-e2457f910bf9")
-	)
 	(wire
 		(pts
-			(xy 39.37 30.48) (xy 39.37 43.18)
+			(xy 38.1 30.48) (xy 38.1 43.18)
 		)
 		(stroke
 			(width 0)
@@ -1246,17 +1222,7 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 107.95) (xy 128.27 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1b03fe7c-a539-4e02-b2ef-4fed34b69320")
-	)
-	(wire
-		(pts
-			(xy 50.8 41.91) (xy 50.8 39.37)
+			(xy 50.8 40.64) (xy 50.8 38.1)
 		)
 		(stroke
 			(width 0)
@@ -1266,23 +1232,13 @@
 	)
 	(wire
 		(pts
-			(xy 31.75 55.88) (xy 39.37 55.88)
+			(xy 83.82 115.57) (xy 128.27 115.57)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "3577ff95-59a6-464f-a066-76b381f5cbcb")
-	)
-	(wire
-		(pts
-			(xy 121.92 104.14) (xy 121.92 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "390d087f-daa0-4d06-b64b-8cc0e57d59d8")
+		(uuid "33f18b55-4179-44e3-8e06-3737ede19fdf")
 	)
 	(wire
 		(pts
@@ -1296,16 +1252,6 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 107.95) (xy 134.62 107.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "423ecefd-fee1-4588-aaee-85371530371b")
-	)
-	(wire
-		(pts
 			(xy 83.82 83.82) (xy 121.92 83.82)
 		)
 		(stroke
@@ -1316,7 +1262,17 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 43.18) (xy 39.37 55.88)
+			(xy 50.8 53.34) (xy 63.5 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c9c0705-d588-46fe-b1df-907d72623518")
+	)
+	(wire
+		(pts
+			(xy 38.1 43.18) (xy 38.1 53.34)
 		)
 		(stroke
 			(width 0)
@@ -1346,16 +1302,6 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 129.54) (xy 134.62 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6e3d33bc-34eb-4bbe-91ed-6913800555d1")
-	)
-	(wire
-		(pts
 			(xy 100.33 78.74) (xy 100.33 81.28)
 		)
 		(stroke
@@ -1363,16 +1309,6 @@
 			(type default)
 		)
 		(uuid "70dc41e3-ae6f-4253-957e-339d2e686dae")
-	)
-	(wire
-		(pts
-			(xy 121.92 125.73) (xy 121.92 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "755ba63d-acb9-45ba-b281-a7633d8443fc")
 	)
 	(wire
 		(pts
@@ -1406,13 +1342,23 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 55.88) (xy 39.37 62.23)
+			(xy 128.27 115.57) (xy 128.27 86.36)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8294a855-58b2-41f6-848d-021db7894cc5")
+		(uuid "8441c074-98a9-454d-b7a7-c461351b4051")
+	)
+	(wire
+		(pts
+			(xy 83.82 110.49) (xy 100.33 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "86dcd4b4-a451-4daf-9c49-2b2827c9643e")
 	)
 	(wire
 		(pts
@@ -1446,13 +1392,23 @@
 	)
 	(wire
 		(pts
-			(xy 39.37 30.48) (xy 31.75 30.48)
+			(xy 38.1 30.48) (xy 31.75 30.48)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "a05b2c9a-3545-4d43-9f5b-ae9616a0f174")
+	)
+	(wire
+		(pts
+			(xy 83.82 118.11) (xy 100.33 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a7ad0c2c-52df-4105-b537-eb7848dbb9eb")
 	)
 	(wire
 		(pts
@@ -1466,23 +1422,13 @@
 	)
 	(wire
 		(pts
-			(xy 31.75 53.34) (xy 35.56 53.34)
+			(xy 83.82 113.03) (xy 121.92 113.03)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "adb25abe-ab90-4780-9bc4-5ed0f3eccb68")
-	)
-	(wire
-		(pts
-			(xy 128.27 86.36) (xy 128.27 107.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b3ac48d4-2d64-4dc6-98ff-b8dc3d83ca6c")
+		(uuid "aea84ce4-881c-419b-8810-d006c71305cd")
 	)
 	(wire
 		(pts
@@ -1516,16 +1462,6 @@
 	)
 	(wire
 		(pts
-			(xy 121.92 104.14) (xy 134.62 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c6e7c44b-d903-4578-a94c-78d75a20a897")
-	)
-	(wire
-		(pts
 			(xy 128.27 62.23) (xy 128.27 86.36)
 		)
 		(stroke
@@ -1533,6 +1469,16 @@
 			(type default)
 		)
 		(uuid "c8dbb55c-a606-46b7-82d1-95573fbae3bc")
+	)
+	(wire
+		(pts
+			(xy 100.33 107.95) (xy 100.33 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cc6e6a5b-6c9f-418d-88ed-8a86444bac4c")
 	)
 	(wire
 		(pts
@@ -1546,23 +1492,33 @@
 	)
 	(wire
 		(pts
-			(xy 35.56 53.34) (xy 35.56 40.64)
+			(xy 50.8 48.26) (xy 50.8 53.34)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "cfede3e1-8cc2-49b3-a15c-af98119221ac")
+		(uuid "d4c07143-e38c-44cb-837f-ec95b93e9a13")
 	)
 	(wire
 		(pts
-			(xy 31.75 43.18) (xy 39.37 43.18)
+			(xy 31.75 43.18) (xy 38.1 43.18)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "e129e28a-8295-4f41-9492-44e537d7ca79")
+	)
+	(wire
+		(pts
+			(xy 121.92 113.03) (xy 121.92 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e6d2b129-3851-4332-a07d-de3a4f939557")
 	)
 	(wire
 		(pts
@@ -1576,33 +1532,33 @@
 	)
 	(wire
 		(pts
-			(xy 50.8 62.23) (xy 50.8 49.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f2554646-1807-49c3-8860-bceff4ff2398")
-	)
-	(wire
-		(pts
-			(xy 134.62 125.73) (xy 121.92 125.73)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f32cd336-812a-4278-abfd-57432b2d9d1d")
-	)
-	(wire
-		(pts
-			(xy 50.8 31.75) (xy 50.8 27.94)
+			(xy 50.8 30.48) (xy 50.8 27.94)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "f894ead4-e0ec-42df-91ff-11706d6ecd5d")
+	)
+	(wire
+		(pts
+			(xy 100.33 118.11) (xy 100.33 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f9db8a6c-9dc0-4187-99bb-1b646dbb3b9a")
+	)
+	(label "SW_POWER"
+		(at 88.9 113.03 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1d61ec33-bc94-4162-a7bb-e7d5072d57b6")
 	)
 	(label "SW_POWER"
 		(at 88.9 83.82 0)
@@ -1615,6 +1571,16 @@
 		(uuid "4a42ca3a-ad69-4b24-95b7-73c1278ef582")
 	)
 	(label "SW_logical"
+		(at 53.34 53.34 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "52f114e3-4722-4872-91c8-1caa7deb78ae")
+	)
+	(label "SW_logical"
 		(at 88.9 86.36 0)
 		(effects
 			(font
@@ -1624,75 +1590,19 @@
 		)
 		(uuid "5de893b2-5d7f-454a-a791-474093168b30")
 	)
-	(symbol
-		(lib_id "power:GND")
-		(at 254 158.75 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0faf4a05-7130-4724-9745-e9c9cc3a9b15")
-		(property "Reference" "#PWR017"
-			(at 254 165.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
+	(label "SW_logical"
+		(at 88.9 115.57 0)
+		(effects
+			(font
+				(size 1.27 1.27)
 			)
+			(justify left bottom)
 		)
-		(property "Value" "GND"
-			(at 254 163.83 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 254 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 254 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 254 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "08e1bdb7-5d05-4462-a817-d38f86180c97")
-		)
-		(instances
-			(project "tricotter"
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
-					(reference "#PWR017")
-					(unit 1)
-				)
-			)
-		)
+		(uuid "77fa3b78-f67e-4f7b-96d0-d80c3222a1cc")
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 39.37 62.23 0)
+		(at 38.1 53.34 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1701,7 +1611,7 @@
 		(fields_autoplaced yes)
 		(uuid "1ba45361-25b3-441b-9b30-27f91c6e9bbd")
 		(property "Reference" "#PWR8"
-			(at 39.37 68.58 0)
+			(at 38.1 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1710,7 +1620,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 39.37 67.31 0)
+			(at 38.1 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1718,7 +1628,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 39.37 62.23 0)
+			(at 38.1 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1727,7 +1637,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 39.37 62.23 0)
+			(at 38.1 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1736,7 +1646,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 39.37 62.23 0)
+			(at 38.1 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1901,16 +1811,16 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 50.8 62.23 0)
+		(at 100.33 120.65 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "438a41d2-99c3-4b48-a5c6-1f715fcb522e")
-		(property "Reference" "#PWR20"
-			(at 50.8 68.58 0)
+		(uuid "4655ee94-5e8b-49c7-99ab-549468b9ba9b")
+		(property "Reference" "#PWR03"
+			(at 100.33 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1919,7 +1829,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 50.8 67.31 0)
+			(at 100.33 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1927,7 +1837,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 50.8 62.23 0)
+			(at 100.33 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1936,7 +1846,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 50.8 62.23 0)
+			(at 100.33 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1945,7 +1855,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 50.8 62.23 0)
+			(at 100.33 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1954,12 +1864,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "8aca0db5-b822-491f-8501-467f03b11143")
+			(uuid "ff6ee3f5-0c95-4c9a-b8bb-fab6ebf107e1")
 		)
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
-					(reference "#PWR20")
+					(reference "#PWR03")
 					(unit 1)
 				)
 			)
@@ -2043,6 +1953,89 @@
 			(project ""
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
 					(reference "J5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_connectors:22053041")
+		(at 83.82 113.03 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6a22a905-27ff-4853-a606-f4ffe52cca62")
+		(property "Reference" "J3"
+			(at 78.105 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22053041"
+			(at 78.105 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:22053041"
+			(at 83.82 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 83.82 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "mini KK, 2.54mm pitch, 4 ways, right angle"
+			(at 83.82 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C5271241"
+			(at 83.82 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5c98cc3d-4afa-44ed-8a00-a61a41d71a7a")
+		)
+		(pin "4"
+			(uuid "dab741c9-2859-41a5-a775-2cb4a3bf5d3a")
+		)
+		(pin "2"
+			(uuid "42021eeb-9176-4b31-aafa-d1be10475060")
+		)
+		(pin "3"
+			(uuid "6bfa4c2c-80b3-4cc4-904d-24fbf8e7819a")
+		)
+		(instances
+			(project "tricotter"
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
+					(reference "J3")
 					(unit 1)
 				)
 			)
@@ -2187,7 +2180,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7e3e678c-50f5-4209-8927-a82888507fef")
 		(property "Reference" "J1"
@@ -2325,7 +2318,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_10k_0603_1%")
-		(at 50.8 35.56 0)
+		(at 50.8 34.29 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2334,7 +2327,7 @@
 		(fields_autoplaced yes)
 		(uuid "904fc1cc-6b3b-4827-8b77-6b6f16f69771")
 		(property "Reference" "R38"
-			(at 53.34 34.2899 0)
+			(at 53.34 33.0199 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2343,7 +2336,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 53.34 36.8299 0)
+			(at 53.34 35.5599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2352,7 +2345,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 49.022 35.56 90)
+			(at 49.022 34.29 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2361,7 +2354,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 50.8 35.56 0)
+			(at 50.8 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2370,7 +2363,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 50.8 35.56 0)
+			(at 50.8 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2379,7 +2372,7 @@
 			)
 		)
 		(property "Specification" "10k 0603 1% 100mW"
-			(at 50.8 35.56 0)
+			(at 50.8 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2388,7 +2381,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 50.8 35.56 0)
+			(at 50.8 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2397,7 +2390,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C25804"
-			(at 50.8 35.56 0)
+			(at 50.8 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2421,8 +2414,74 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+BATT")
+		(at 100.33 107.95 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "91e72f66-35c9-4dfe-accb-a433317cece2")
+		(property "Reference" "#PWR02"
+			(at 100.33 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+BATT"
+			(at 100.33 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 100.33 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 100.33 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+BATT\""
+			(at 100.33 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "237d9e44-58ae-4174-b537-77f77c9a7f51")
+		)
+		(instances
+			(project "tricotter"
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
+					(reference "#PWR02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_diodes:white_led_0603")
-		(at 50.8 45.72 90)
+		(at 50.8 44.45 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2431,7 +2490,7 @@
 		(fields_autoplaced yes)
 		(uuid "955fd95c-4aaa-4054-82eb-0067e04e4e20")
 		(property "Reference" "D6"
-			(at 54.61 47.3074 90)
+			(at 54.61 46.0374 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2440,7 +2499,7 @@
 			)
 		)
 		(property "Value" "white, 0603"
-			(at 53.34 45.72 0)
+			(at 53.34 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2449,7 +2508,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-			(at 50.8 45.72 0)
+			(at 50.8 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2458,7 +2517,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 50.8 45.72 0)
+			(at 50.8 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2467,7 +2526,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode, white, Vf=[2.6V; 3.1V]"
-			(at 55.372 45.72 0)
+			(at 55.372 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2476,7 +2535,7 @@
 			)
 		)
 		(property "DIGIKEY_REF" ""
-			(at 50.8 45.72 0)
+			(at 50.8 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2485,7 +2544,7 @@
 			)
 		)
 		(property "MOUSER_REF" ""
-			(at 50.8 45.72 0)
+			(at 50.8 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2494,7 +2553,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C2290"
-			(at 50.8 45.72 0)
+			(at 50.8 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2512,83 +2571,6 @@
 			(project ""
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
 					(reference "D6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_connectors:XT60PW-M")
-		(at 31.75 54.61 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a64934c9-879f-4e93-8b63-49474ab123d5")
-		(property "Reference" "J3"
-			(at 26.035 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "XT60PW-M"
-			(at 26.035 49.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_connectors:XT60PW-M"
-			(at 31.75 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1445055&DocType=Customer%20Drawing&DocLang=English&DocFormat=pdf&PartCntxt=2-1445055-2"
-			(at 31.75 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "XT60 male, 45A continuous, right angle, pcb mount"
-			(at 31.75 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C98732"
-			(at 31.75 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "M"
-			(uuid "ee615fbc-408a-4005-81b9-356e7cdd17de")
-		)
-		(pin "P"
-			(uuid "72a86625-7fff-49a1-a7fa-6fe48f2ca222")
-		)
-		(instances
-			(project "tricotter"
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
-					(reference "J3")
 					(unit 1)
 				)
 			)
@@ -2921,73 +2903,6 @@
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
 					(reference "#PWR12")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_others:MountingHole_Pad_M3")
-		(at 254 156.21 0)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d751ec39-416e-489b-ab6f-45b53fe8f8ce")
-		(property "Reference" "H6"
-			(at 256.54 153.6699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "MountingHole_Pad_M3"
-			(at 256.54 156.2099 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_others:MountingHole_3.2mm_M3_Pad_Via"
-			(at 254 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 254 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Mounting Hole with connection"
-			(at 254 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ab574a1a-7e09-450e-87f0-3a5ae001fccf")
-		)
-		(instances
-			(project "tricotter"
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
-					(reference "H6")
 					(unit 1)
 				)
 			)
@@ -3442,130 +3357,6 @@
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
 					(page "2")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 134.62 97.79)
-		(size 20.32 15.24)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "92d47f87-1221-411f-970b-88cc7613f8c7")
-		(property "Sheetname" "channel3"
-			(at 134.62 97.0784 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "pw_channel.kicad_sch"
-			(at 134.62 113.6146 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(pin "SW_POWER" input
-			(at 134.62 104.14 180)
-			(uuid "5aa55d67-7877-42fc-8b6f-ee999ef4a581")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "SW_LOGICAL" input
-			(at 134.62 107.95 180)
-			(uuid "d1ab8ece-fe80-469a-801c-3bfb510d6949")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(instances
-			(project "tricotter"
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
-					(page "5")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 134.62 119.38)
-		(size 20.32 15.24)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "ca0c6b50-9c9b-4490-8c4a-d3f36554147f")
-		(property "Sheetname" "channel4"
-			(at 134.62 118.6684 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "pw_channel.kicad_sch"
-			(at 134.62 135.2046 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(pin "SW_POWER" input
-			(at 134.62 125.73 180)
-			(uuid "1d007830-dc87-40f0-b2ed-6e3b47687afa")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "SW_LOGICAL" input
-			(at 134.62 129.54 180)
-			(uuid "b1debfb2-b181-49bd-8ebf-e873b7d2f4ee")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(instances
-			(project "tricotter"
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4"
-					(page "6")
 				)
 			)
 		)

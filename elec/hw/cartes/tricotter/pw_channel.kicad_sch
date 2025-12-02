@@ -1845,6 +1845,12 @@
 		)
 	)
 	(junction
+		(at 147.32 81.28)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0aacf734-1973-47bb-816a-95bdea5a0ea2")
+	)
+	(junction
 		(at 118.11 101.6)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1869,25 +1875,31 @@
 		(uuid "3a0b1a89-6065-4117-b273-f7b8b558329a")
 	)
 	(junction
+		(at 134.62 101.6)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "488c8fa8-344a-4be0-80b4-b2277752810b")
+	)
+	(junction
 		(at 114.3 101.6)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "57cb0e8d-33f7-4171-a0ef-ce9fbb8d1469")
 	)
 	(junction
-		(at 154.94 97.79)
+		(at 168.91 97.79)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6537fd57-5daa-4a5d-8528-2e447ebd02e0")
 	)
 	(junction
-		(at 146.05 81.28)
+		(at 160.02 81.28)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "9f43b067-111d-436a-932f-f041183e8926")
 	)
 	(junction
-		(at 130.81 81.28)
+		(at 134.62 81.28)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b9f7264f-d66f-45cd-ae6f-5f1b824b3a74")
@@ -1956,7 +1968,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 81.28) (xy 146.05 87.63)
+			(xy 160.02 81.28) (xy 160.02 87.63)
 		)
 		(stroke
 			(width 0)
@@ -1966,7 +1978,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 81.28) (xy 163.83 87.63)
+			(xy 177.8 81.28) (xy 177.8 87.63)
 		)
 		(stroke
 			(width 0)
@@ -1976,7 +1988,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 90.17) (xy 130.81 91.44)
+			(xy 134.62 90.17) (xy 134.62 91.44)
 		)
 		(stroke
 			(width 0)
@@ -2026,7 +2038,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 81.28) (xy 130.81 82.55)
+			(xy 134.62 81.28) (xy 134.62 82.55)
 		)
 		(stroke
 			(width 0)
@@ -2036,7 +2048,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 97.79) (xy 154.94 119.38)
+			(xy 168.91 97.79) (xy 168.91 119.38)
 		)
 		(stroke
 			(width 0)
@@ -2046,7 +2058,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 101.6) (xy 124.46 101.6)
+			(xy 134.62 101.6) (xy 124.46 101.6)
 		)
 		(stroke
 			(width 0)
@@ -2056,7 +2068,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 97.79) (xy 154.94 97.79)
+			(xy 160.02 97.79) (xy 168.91 97.79)
 		)
 		(stroke
 			(width 0)
@@ -2066,7 +2078,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 87.63) (xy 149.86 87.63)
+			(xy 160.02 87.63) (xy 163.83 87.63)
 		)
 		(stroke
 			(width 0)
@@ -2076,7 +2088,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 80.01) (xy 130.81 81.28)
+			(xy 134.62 80.01) (xy 134.62 81.28)
 		)
 		(stroke
 			(width 0)
@@ -2086,7 +2098,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 97.79) (xy 163.83 90.17)
+			(xy 177.8 97.79) (xy 177.8 90.17)
 		)
 		(stroke
 			(width 0)
@@ -2116,7 +2128,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 81.28) (xy 163.83 81.28)
+			(xy 160.02 81.28) (xy 177.8 81.28)
 		)
 		(stroke
 			(width 0)
@@ -2136,7 +2148,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 66.04) (xy 130.81 69.85)
+			(xy 134.62 66.04) (xy 134.62 69.85)
 		)
 		(stroke
 			(width 0)
@@ -2146,7 +2158,7 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 54.61) (xy 130.81 54.61)
+			(xy 114.3 54.61) (xy 134.62 54.61)
 		)
 		(stroke
 			(width 0)
@@ -2156,7 +2168,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 97.79) (xy 163.83 97.79)
+			(xy 168.91 97.79) (xy 177.8 97.79)
 		)
 		(stroke
 			(width 0)
@@ -2166,23 +2178,13 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 87.63) (xy 160.02 87.63)
+			(xy 177.8 87.63) (xy 173.99 87.63)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "9a46d2c7-31dd-4e5e-a69b-955175d64031")
-	)
-	(wire
-		(pts
-			(xy 130.81 81.28) (xy 146.05 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a06c9bd0-1c42-45e3-a246-443b2ee33992")
 	)
 	(wire
 		(pts
@@ -2206,7 +2208,17 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 99.06) (xy 130.81 101.6)
+			(xy 147.32 99.06) (xy 147.32 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b131b3f0-ecc0-457c-87c4-23b6ad482cac")
+	)
+	(wire
+		(pts
+			(xy 134.62 99.06) (xy 134.62 101.6)
 		)
 		(stroke
 			(width 0)
@@ -2226,7 +2238,7 @@
 	)
 	(wire
 		(pts
-			(xy 163.83 90.17) (xy 160.02 90.17)
+			(xy 177.8 90.17) (xy 173.99 90.17)
 		)
 		(stroke
 			(width 0)
@@ -2236,7 +2248,7 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 74.93) (xy 123.19 74.93)
+			(xy 114.3 74.93) (xy 127 74.93)
 		)
 		(stroke
 			(width 0)
@@ -2246,13 +2258,53 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 90.17) (xy 149.86 90.17)
+			(xy 147.32 90.17) (xy 147.32 91.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c4f29d24-7ac7-4487-8e81-8cdc359f4230")
+	)
+	(wire
+		(pts
+			(xy 160.02 90.17) (xy 163.83 90.17)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "c75c820c-426e-459c-b467-153341db9f63")
+	)
+	(wire
+		(pts
+			(xy 147.32 81.28) (xy 147.32 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d49e100f-65d6-45e4-bcbc-3090f52d96c9")
+	)
+	(wire
+		(pts
+			(xy 134.62 81.28) (xy 147.32 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd961008-12c9-4609-b1e3-86899958e255")
+	)
+	(wire
+		(pts
+			(xy 147.32 81.28) (xy 160.02 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e36ad41c-a5d4-4dba-8b66-ec977eba4e01")
 	)
 	(wire
 		(pts
@@ -2276,7 +2328,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 58.42) (xy 130.81 54.61)
+			(xy 134.62 58.42) (xy 134.62 54.61)
 		)
 		(stroke
 			(width 0)
@@ -2296,7 +2348,17 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 90.17) (xy 146.05 97.79)
+			(xy 147.32 101.6) (xy 134.62 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fac88dbf-eced-47c4-9ec4-11727ad086c0")
+	)
+	(wire
+		(pts
+			(xy 160.02 90.17) (xy 160.02 97.79)
 		)
 		(stroke
 			(width 0)
@@ -2345,6 +2407,111 @@
 			(justify right)
 		)
 		(uuid "d6ddae87-3cbc-43cd-93d7-54cb6aa3f33f")
+	)
+	(symbol
+		(lib_id "cocotter_diodes:green_led_0603")
+		(at 147.32 95.25 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "13f41a75-ee67-4483-b048-4af7577cc127")
+		(property "Reference" "D1"
+			(at 151.13 96.8374 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "green, 0603"
+			(at 149.86 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
+			(at 147.32 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 147.32 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
+			(at 147.32 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
+			(at 147.32 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MOUSER_REF" "710-150060VS55040"
+			(at 147.32 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C22371299"
+			(at 147.32 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "A"
+			(uuid "c13b94d8-fc72-4b6c-bbd2-0c139739ede5")
+		)
+		(pin "C"
+			(uuid "fa11f5f3-48fd-4b43-876d-71d5790f6a4a")
+		)
+		(instances
+			(project "tricotter"
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
+					(reference "D2")
+					(unit 1)
+				)
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
+					(reference "D3")
+					(unit 1)
+				)
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
+					(reference "D1")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -2417,20 +2584,12 @@
 					(reference "#PWR21")
 					(unit 1)
 				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "#PWR0107")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
-					(reference "#PWR0110")
-					(unit 1)
-				)
 			)
 		)
 	)
 	(symbol
 		(lib_id "cocotter_resistors:R_10k_0603_1%")
-		(at 130.81 86.36 0)
+		(at 134.62 86.36 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2439,7 +2598,7 @@
 		(fields_autoplaced yes)
 		(uuid "1e5d5d21-2127-4076-bf62-54061b8d92f5")
 		(property "Reference" "R42"
-			(at 133.35 85.0899 0)
+			(at 137.16 85.0899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2448,7 +2607,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 133.35 87.6299 0)
+			(at 137.16 87.6299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2457,7 +2616,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 129.032 86.36 90)
+			(at 132.842 86.36 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2466,7 +2625,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 130.81 86.36 0)
+			(at 134.62 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2475,7 +2634,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 130.81 86.36 0)
+			(at 134.62 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2484,7 +2643,7 @@
 			)
 		)
 		(property "Specification" "10k 0603 1% 100mW"
-			(at 130.81 86.36 0)
+			(at 134.62 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2493,7 +2652,7 @@
 			)
 		)
 		(property "mouser" "603-RC0603FR-10100KL"
-			(at 130.81 86.36 0)
+			(at 134.62 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2502,7 +2661,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C25804"
-			(at 130.81 86.36 0)
+			(at 134.62 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2519,22 +2678,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R42")
+					(reference "R50")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R42")
+					(reference "R58")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "R42")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R42")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "R42")
 					(unit 1)
 				)
@@ -2632,22 +2783,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R43")
+					(reference "R51")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R43")
+					(reference "R59")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "R43")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R43")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "R43")
 					(unit 1)
 				)
@@ -2742,22 +2885,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R45")
+					(reference "R53")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R45")
+					(reference "R61")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "R45")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R45")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "R45")
 					(unit 1)
 				)
@@ -2766,7 +2901,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 154.94 119.38 0)
+		(at 168.91 119.38 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2775,7 +2910,7 @@
 		(fields_autoplaced yes)
 		(uuid "395eae12-82f2-4cee-ae58-2e256b61ea0d")
 		(property "Reference" "#PWR22"
-			(at 154.94 125.73 0)
+			(at 168.91 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2784,7 +2919,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 154.94 124.46 0)
+			(at 168.91 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2792,7 +2927,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 154.94 119.38 0)
+			(at 168.91 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2801,7 +2936,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 154.94 119.38 0)
+			(at 168.91 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2810,7 +2945,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 154.94 119.38 0)
+			(at 168.91 119.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2835,20 +2970,12 @@
 					(reference "#PWR22")
 					(unit 1)
 				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "#PWR0108")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
-					(reference "#PWR0111")
-					(unit 1)
-				)
 			)
 		)
 	)
 	(symbol
 		(lib_id "cocotter_others:FH1-200CK-B")
-		(at 130.81 62.23 90)
+		(at 134.62 62.23 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2857,7 +2984,7 @@
 		(fields_autoplaced yes)
 		(uuid "40f63143-37af-49ac-9de0-d6eed8dec6f3")
 		(property "Reference" "F6"
-			(at 133.35 60.9599 90)
+			(at 137.16 60.9599 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2866,7 +2993,7 @@
 			)
 		)
 		(property "Value" "FH1-200CK-B"
-			(at 133.35 63.4999 90)
+			(at 137.16 63.4999 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2875,7 +3002,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_others:FUSEHOLDER_5x20mm"
-			(at 130.81 62.23 0)
+			(at 134.62 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2884,7 +3011,7 @@
 			)
 		)
 		(property "Datasheet" "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588943920449392640"
-			(at 133.35 62.23 0)
+			(at 137.16 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2893,7 +3020,7 @@
 			)
 		)
 		(property "Description" "fuse holder, 5x20 mm, 10A 250VAC, through hole"
-			(at 130.81 62.23 0)
+			(at 134.62 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2902,7 +3029,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C136374"
-			(at 133.35 62.23 0)
+			(at 137.16 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2919,22 +3046,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "F6")
+					(reference "F7")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "F6")
+					(reference "F8")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "F6")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "F6")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "F6")
 					(unit 1)
 				)
@@ -2943,7 +3062,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_diodes:green_led_0603")
-		(at 130.81 95.25 90)
+		(at 134.62 95.25 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2952,7 +3071,7 @@
 		(fields_autoplaced yes)
 		(uuid "4a158829-bd4a-4213-ab83-11871a039f4a")
 		(property "Reference" "D7"
-			(at 134.62 96.8374 90)
+			(at 138.43 96.8374 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2961,7 +3080,7 @@
 			)
 		)
 		(property "Value" "green, 0603"
-			(at 133.35 95.25 0)
+			(at 137.16 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2970,7 +3089,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_diodes:LED_0603_1608Metric"
-			(at 130.81 95.25 0)
+			(at 134.62 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2979,7 +3098,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 130.81 95.25 0)
+			(at 134.62 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2988,7 +3107,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode, Green, Vf=[2V; 2.4V]"
-			(at 130.81 95.25 0)
+			(at 134.62 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2997,7 +3116,7 @@
 			)
 		)
 		(property "DIGIKEY_REF" "3147-B19Y1UYG-20C000313U1930CT-ND"
-			(at 130.81 95.25 0)
+			(at 134.62 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3006,7 +3125,7 @@
 			)
 		)
 		(property "MOUSER_REF" "710-150060VS55040"
-			(at 130.81 95.25 0)
+			(at 134.62 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3015,7 +3134,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C22371299"
-			(at 130.81 95.25 0)
+			(at 134.62 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3032,22 +3151,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "D7")
+					(reference "D8")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "D7")
+					(reference "D9")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "D7")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "D7")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "D7")
 					(unit 1)
 				)
@@ -3056,7 +3167,7 @@
 	)
 	(symbol
 		(lib_id "cocotter_connectors:3-794618-4")
-		(at 154.94 88.9 0)
+		(at 168.91 88.9 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3064,7 +3175,7 @@
 		(dnp no)
 		(uuid "5b4b9504-311c-4bc2-b53f-806a6f3c4346")
 		(property "Reference" "J8"
-			(at 154.94 95.25 0)
+			(at 168.91 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3072,7 +3183,7 @@
 			)
 		)
 		(property "Value" "3-794618-4"
-			(at 154.94 92.964 0)
+			(at 168.91 92.964 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3080,7 +3191,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_connectors:3-794618-4"
-			(at 154.94 88.9 0)
+			(at 168.91 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3089,7 +3200,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=82181_SOFTSHELL_HIGH_DENSITY&DocType=Catalog%20Section&DocLang=English&DocFormat=pdf&PartCntxt=794618-4"
-			(at 154.94 88.9 0)
+			(at 168.91 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3098,7 +3209,7 @@
 			)
 		)
 		(property "Description" "2x2POS MICRO MNL ASSY, R/A HDR"
-			(at 154.94 88.9 0)
+			(at 168.91 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3107,7 +3218,7 @@
 			)
 		)
 		(property "JLCPCB Part #" ""
-			(at 154.94 88.9 0)
+			(at 168.91 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3129,22 +3240,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "J8")
+					(reference "J9")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "J8")
+					(reference "J10")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "J8")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "J8")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "J8")
 					(unit 1)
 				)
@@ -3242,22 +3345,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R44")
+					(reference "R52")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R44")
+					(reference "R60")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "R44")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R44")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "R44")
 					(unit 1)
 				)
@@ -3355,23 +3450,120 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R41")
+					(reference "R49")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R41")
+					(reference "R57")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
 					(reference "R41")
 					(unit 1)
 				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R41")
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_10k_0603_1%")
+		(at 147.32 86.36 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(fields_autoplaced yes)
+		(uuid "7b7de279-5379-4aff-996d-81ea91d49502")
+		(property "Reference" "R1"
+			(at 149.86 85.0899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k 1%"
+			(at 149.86 87.6299 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 145.542 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 147.32 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 147.32 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "10k 0603 1% 100mW"
+			(at 147.32 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" "603-RC0603FR-10100KL"
+			(at 147.32 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C25804"
+			(at 147.32 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "735383f2-e173-4ecd-b819-366949fd3252")
+		)
+		(pin "1"
+			(uuid "e281f10e-ad1e-4538-abef-0dbbad052cd3")
+		)
+		(instances
+			(project "tricotter"
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
+					(reference "R2")
 					(unit 1)
 				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
-					(reference "R41")
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
+					(reference "R3")
+					(unit 1)
+				)
+				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
+					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -3446,14 +3638,6 @@
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
 					(reference "#PWR23")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "#PWR0109")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
-					(reference "#PWR0112")
 					(unit 1)
 				)
 			)
@@ -3550,22 +3734,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R39")
+					(reference "R47")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R39")
+					(reference "R55")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "R39")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R39")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "R39")
 					(unit 1)
 				)
@@ -3663,22 +3839,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R46")
+					(reference "R54")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R46")
+					(reference "R62")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "R46")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R46")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "R46")
 					(unit 1)
 				)
@@ -3776,22 +3944,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "R40")
+					(reference "R48")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "R40")
+					(reference "R56")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "R40")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "R40")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "R40")
 					(unit 1)
 				)
@@ -3876,22 +4036,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "Q12")
+					(reference "Q14")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "Q12")
+					(reference "Q16")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "Q12")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "Q12")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "Q12")
 					(unit 1)
 				)
@@ -3900,17 +4052,16 @@
 	)
 	(symbol
 		(lib_id "cocotter_transistors:G120P06M")
-		(at 130.81 74.93 0)
+		(at 134.62 74.93 0)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "f4adc334-bf9f-41ae-aaba-0a51b0d6d386")
 		(property "Reference" "Q11"
-			(at 134.62 76.2001 0)
+			(at 138.43 73.6599 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3919,7 +4070,7 @@
 			)
 		)
 		(property "Value" "G120P06M"
-			(at 134.62 73.6601 0)
+			(at 138.43 76.1999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3928,7 +4079,7 @@
 			)
 		)
 		(property "Footprint" "cocotter_transistors:TO-263-2-GOFORD"
-			(at 130.81 74.93 0)
+			(at 134.62 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3937,7 +4088,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.gofordsemi.com/upload/cn/propdf/G120P06M.pdf"
-			(at 130.81 74.93 0)
+			(at 134.62 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3946,7 +4097,7 @@
 			)
 		)
 		(property "Description" "VDS max -60V, ID max -120A, rdson 8.5mOhms, Vgs max +/-20V"
-			(at 130.81 74.93 0)
+			(at 134.62 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3955,7 +4106,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C5162393"
-			(at 130.81 74.93 0)
+			(at 134.62 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3975,22 +4126,14 @@
 		(instances
 			(project "tricotter"
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/543c5ac6-69c5-4ff3-b696-b9aa317aa204"
-					(reference "Q11")
+					(reference "Q13")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/7acaccf7-a6a9-442e-a810-ff45149bbf90"
-					(reference "Q11")
+					(reference "Q15")
 					(unit 1)
 				)
 				(path "/258bda07-73c0-491a-a59b-a18717f490a4/918f25d5-ba23-459b-bb26-8c3fe437b06b"
-					(reference "Q11")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/92d47f87-1221-411f-970b-88cc7613f8c7"
-					(reference "Q11")
-					(unit 1)
-				)
-				(path "/258bda07-73c0-491a-a59b-a18717f490a4/ca0c6b50-9c9b-4490-8c4a-d3f36554147f"
 					(reference "Q11")
 					(unit 1)
 				)

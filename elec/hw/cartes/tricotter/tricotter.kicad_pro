@@ -467,6 +467,7 @@
       "single_global_label": "ignore",
       "unannotated": "error",
       "unconnected_wire_endpoint": "warning",
+      "undefined_netclass": "error",
       "unit_value_mismatch": "error",
       "unresolved_variable": "error",
       "wire_dangling": "error"
@@ -648,14 +649,6 @@
     [
       "7acaccf7-a6a9-442e-a810-ff45149bbf90",
       "channel2"
-    ],
-    [
-      "92d47f87-1221-411f-970b-88cc7613f8c7",
-      "channel3"
-    ],
-    [
-      "ca0c6b50-9c9b-4490-8c4a-d3f36554147f",
-      "channel4"
     ]
   ],
   "text_variables": {}

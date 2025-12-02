@@ -1,7 +1,7 @@
 (footprint "22053041"
-	(version 20240108)
+	(version 20241229)
 	(generator "pcbnew")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(layer "F.Cu")
 	(property "Reference" "REF**"
 		(at 0 -1.905 0)
@@ -20,19 +20,6 @@
 		(unlocked yes)
 		(layer "F.Fab")
 		(uuid "29bdc158-4af1-4495-b747-c10a286ad4df")
-		(effects
-			(font
-				(size 1 1)
-				(thickness 0.15)
-			)
-		)
-	)
-	(property "Footprint" ""
-		(at -1.27 0 0)
-		(unlocked yes)
-		(layer "F.Fab")
-		(hide yes)
-		(uuid "0de903f3-9515-4b27-833e-de37164e9c77")
 		(effects
 			(font
 				(size 1 1)
@@ -414,7 +401,7 @@
 			(width 0.1)
 			(type default)
 		)
-		(fill solid)
+		(fill yes)
 		(layer "F.SilkS")
 		(uuid "506fc736-d53e-488d-81e2-b56d83f7f224")
 	)
@@ -425,7 +412,7 @@
 			(width 0.05)
 			(type default)
 		)
-		(fill none)
+		(fill no)
 		(layer "F.CrtYd")
 		(uuid "27fc80c1-f0f4-41d4-a6e3-d2fd00d0daef")
 	)
@@ -477,7 +464,8 @@
 		(remove_unused_layers no)
 		(uuid "b364fd4b-cf43-4514-bbdd-4ddcfca92a2a")
 	)
-	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/0022053051.stp"
+	(embedded_fonts no)
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_connectors.pretty/3d/0022053041.stp"
 		(offset
 			(xyz 0 -4.3 3.25)
 		)
