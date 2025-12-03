@@ -154,7 +154,7 @@ struct SCH16TAcc12Ctrl {
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]
-struct Sch16tStatRate {
+pub struct Sch16tStatRate {
     decimated_rate_saturation_ok: bool,
     interpolated_rate_saturation_ok: bool,
     digital_continuous_self_test_ok: bool,
