@@ -28,7 +28,7 @@ use ssd1306::{
     },
 };
 use tca6408::TCA6408;
-use vlx::{VlxI2cDriver, VlxSensor, l1::VL53L1X, l5::VL53L5CX};
+use vlx::{VlxI2cDriver, VlxSensor, l5::VL53L5CX};
 
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 
@@ -38,12 +38,6 @@ pub type LineSensor = TCA6408<I2CType>;
 pub type Bt = BtDriver<'static, Ble>;
 pub type Display = Ssd1306<DisplayI2CInterface<I2CType>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
 
-
-pub struct VlxSensors {
-    pub first: VL53L1X,
-    pub back: VL53L5CX,
-    pub front: VL53L5CX,
-}
 
 pub const PWM_EXTENDED_CHANNEL_SERVO: [Channel; 4] = [Channel::C0, Channel::C1, Channel::C2, Channel::C3];
 pub const PWM_EXTENDED_CHANEL_VACCUM: Channel = Channel::C5;
@@ -61,11 +55,9 @@ pub struct BoardPami {
     pub buttons: Option<PamiButtons>,
     pub display: Option<Display>,
     pub vbatt: Option<Vbatt>,
-    vlx_sensors: Option<VlxSensors>,
+    vlx_sensor: Option<(VL53L5CX, PinDriver<'static, AnyOutputPin, Output>)>,
     // Data needed to prepare VLX sensors
     pwm_controller: PwmController,
-    vlx_back_enable: PinDriver<'static, AnyOutputPin, Output>,
-    vlx_front_enable: PinDriver<'static, AnyOutputPin, Output>,
 }
 
 impl BoardPami {
@@ -106,13 +98,8 @@ impl BoardPami {
 
         // VLX sensors
         let vlx_i2c_driver = VlxI2cDriver::register(MutexDevice::new(i2c_driver_static));
-        let vlx_sensors = VlxSensors {
-            first: VL53L1X::new(&vlx_i2c_driver, 0x30),
-            back: VL53L5CX::new(&vlx_i2c_driver, 0x31),
-            front: VL53L5CX::new(&vlx_i2c_driver, 0x32),
-        };
-        let vlx_back_enable = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio3)).unwrap();
-        let vlx_front_enable = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio16)).unwrap();
+        let vlx_sensor = VL53L5CX::new(&vlx_i2c_driver, 0x31);
+        let vlx_enable = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio3)).unwrap();
 
         // ADC
         let adc = Rc::new(AdcDriver::new(peripherals.adc1).unwrap());
@@ -144,63 +131,29 @@ impl BoardPami {
             buttons: Some(buttons),
             display: Some(display),
             vbatt: Some(vbatt),
-            vlx_sensors: Some(vlx_sensors),
+            vlx_sensor: Some((vlx_sensor, vlx_enable)),
             pwm_controller,
-            vlx_back_enable,
-            vlx_front_enable,
         }
     }
 
-    /// Initialize VLX sensors and return them
+    /// Initialize VLX back sensor and return it
     ///
     /// Run the disable/reset/enable procedure, then regular init.
-    pub fn init_vlx_sensors(&mut self) -> Option<VlxSensors> {
-        let mut vlx_sensors = self.vlx_sensors.take()?;
+    pub fn init_vlx_sensor(&mut self) -> Option<VL53L5CX> {
+        let (mut vlx_sensor, mut vlx_enable) = self.vlx_sensor.take()?;
 
-        // Disable back/front VLX
-        self.vlx_back_enable.set_low().unwrap();
-        self.vlx_front_enable.set_low().unwrap();
-
-        // Reset first VLX
-        {
-            let mut pwm = self.pwm_controller.lock().unwrap();
-            pwm.set_channel_on_off(PWM_EXTENDED_RESET_TOF, 0, 0).unwrap();
-            std::thread::sleep(std::time::Duration::from_millis(100));
-            pwm.set_channel_off(PWM_EXTENDED_RESET_TOF, 0).unwrap();
-            pwm.set_channel_full_on(PWM_EXTENDED_RESET_TOF, 1).unwrap();
-
-            // Wait for reset to stabilize
-            std::thread::sleep(std::time::Duration::from_millis(10));
-        }
-
-        // Enable back/front VLX
-        self.vlx_back_enable.set_high().unwrap();
-        self.vlx_front_enable.set_high().unwrap();
-
-        // Enable first VLX
-        {
-            let mut pwm = self.pwm_controller.lock().unwrap();
-            pwm.set_channel_full_off(PWM_EXTENDED_ENABLE_TOF).unwrap();
-            std::thread::sleep(std::time::Duration::from_millis(100));
-            pwm.set_channel_off(PWM_EXTENDED_ENABLE_TOF, 0).unwrap();
-            pwm.set_channel_full_on(PWM_EXTENDED_ENABLE_TOF, 0).unwrap();
-        }
-
-        // Small delay after enable
+        // Disable then enable VLX
+        vlx_enable.set_low().unwrap();
+        std::thread::sleep(std::time::Duration::from_millis(10));
+        vlx_enable.set_high().unwrap();
         std::thread::sleep(std::time::Duration::from_millis(100));
 
-        // Initialize sensors
-        if vlx_sensors.first.init().is_err() {
-            log::error!("Failed to initialize first VLX sensor");
-        }
-        if vlx_sensors.back.init().is_err() {
+        // Initialize sensor
+        if vlx_sensor.init().is_err() {
             log::error!("Failed to initialize back VLX sensor");
         }
-        if vlx_sensors.front.init().is_err() {
-            log::error!("Failed to initialize front VLX sensor");
-        }
 
-        Some(vlx_sensors)
+        Some(vlx_sensor)
     }
 }
 

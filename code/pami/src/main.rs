@@ -58,7 +58,7 @@ fn main() {
     // ble_client.start_scanning(10).unwrap();
 
     log::info!("Initializing VLX sensors...");
-    let mut vlx = board.init_vlx_sensors().unwrap();
+    let mut vlx = board.init_vlx_sensor().unwrap();
 
     std::thread::spawn(move || {
         log::info!("Start BLE RX thread");
@@ -95,9 +95,8 @@ fn main() {
         */
 
         // VLX capture
-        // Print VLX sensor distance (only back sensor is working)
         if tick % 10 == 0 {
-            if let Ok(distance) = vlx.back.get_distance() {
+            if let Ok(distance) = vlx.get_distance() {
                 log::info!("VLX sensor distance: {:?}", distance);
             } else {
                 log::error!("Failed to get VLX sensor distance");
