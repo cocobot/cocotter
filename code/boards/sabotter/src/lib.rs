@@ -82,7 +82,7 @@ impl BoardSabotter {
         let config = I2cConfig::new().baudrate(Hertz(400_000));
         let i2c_vlx_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c1, peripherals.pins.gpio21, peripherals.pins.gpio47, &config).unwrap());
         let i2c_vlx_driver_static = Box::leak(Box::new(i2c_vlx_driver));
-        let i2c_vlx_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_vlx_driver_static);
+        let _i2c_vlx_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_vlx_driver_static);
 
 
         // Initialize LEDC timer for motors
@@ -106,6 +106,10 @@ impl BoardSabotter {
         // Initialize main I2C bus
         let i2c_gpio_expander_mot_0 = MutexDevice::new(i2c_vlx_driver_static);
         motor_gpio_expander[0] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_0, 0b010_0000));
+        let i2c_gpio_expander_mot_1 = MutexDevice::new(i2c_vlx_driver_static);
+        motor_gpio_expander[1] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_1, 0b010_0001));
+        let i2c_gpio_expander_mot_2 = MutexDevice::new(i2c_vlx_driver_static);
+        motor_gpio_expander[2] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_2, 0b010_0010));
     
 
         // Motor 1  
