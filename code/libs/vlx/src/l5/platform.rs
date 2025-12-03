@@ -4,8 +4,9 @@
 
 use core::ffi::c_void;
 use std::{thread, time::Duration};
-use crate::esp::VlxI2cDriver;
+use crate::VlxI2cDriver;
 
+#[allow(dead_code)]
 pub const VL53L5CX_NB_TARGET_PER_ZONE: u8 = 1;
 
 #[repr(C)]

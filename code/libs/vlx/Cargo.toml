@@ -5,12 +5,9 @@ edition = "2024"
 
 [dependencies]
 embedded-hal = "1.0"
-log = "0.4.27"
-
-[features]
-default = []
+log = "0.4"
 
 [build-dependencies]
-cbindgen = "0.29.0"
-bindgen = "0.72.0"
-cc = "1.2.29"
+cbindgen = "0.29"
+bindgen = "0.72"
+cc = "1.2"

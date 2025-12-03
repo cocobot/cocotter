@@ -2,7 +2,7 @@ mod config;
 mod ui;
 
 use ble::{BleBuilder, BleScanResult, RomePeripheral};
-use vlx::common::VlxSensor;
+use vlx::VlxSensor;
 
 use std::{thread, time::Duration};
 use config::PAMIConfig;

@@ -1,13 +1,22 @@
-pub mod platform;
+mod platform;
 
-use crate::bindings;
-use crate::{VlxSensor, VlxError};
-use crate::esp::VlxI2cDriver;
 use std::{thread, time::Duration};
+use crate::bindings::*;
+use crate::{DistanceData, VlxSensor, VlxError, VlxI2cDriver, ZoneAlarm};
 
 
 /// Default I2C address of VL53L1X devices
 pub const DEFAULT_ADDR: u16 = 0x29;
+
+macro_rules! status_result {
+    ($expr:expr) => {
+        match unsafe { $expr } {
+            0 => Ok(()),
+            _ => Err(VlxError::LowLevelError),
+        }
+    }
+}
+
 
 pub struct VL53L1X {
     address: u8,
@@ -19,6 +28,20 @@ impl VL53L1X {
             address,
         }
     }
+
+    fn set_distance_threshold(&mut self, low: u16, high: u16, interrupt: bool) -> Result<(), VlxError> {
+        // VL53L1X has threshold detection functionality
+        // Set distance threshold for interrupt generation
+        status_result!(
+            VL53L1X_SetDistanceThreshold(
+                self.address as u16,
+                low,              // Low threshold in mm
+                high,             // High threshold in mm
+                3,                // Window mode: 0=below low, 1=above high, 2=out of window, 3=in window
+                interrupt as u8,  // Interrupt on new sample ready
+            )
+        )
+    }
 }
 
 
@@ -28,69 +51,48 @@ impl VlxSensor for VL53L1X {
 
         // Check if alreay initialized
         let mut sensor_id = 0u16;
-        let status = unsafe { bindings::VL53L1X_GetSensorId(self.address as u16, &mut sensor_id) };
+        let status = unsafe { VL53L1X_GetSensorId(self.address as u16, &mut sensor_id) };
         if status == 0 && sensor_id != 0xEACC {
             return Ok(());
         }
 
-        // Start with default I2C address (0x29)
-        let status = unsafe { bindings::VL53L1X_GetSensorId(DEFAULT_ADDR, &mut sensor_id) };
-        if status != 0 || sensor_id != 0xEACC {
-            return Err(VlxError::InitError);
+        // Start with default I2C address
+        status_result!(VL53L1X_GetSensorId(DEFAULT_ADDR, &mut sensor_id))?;
+        if sensor_id != 0xEACC {
+            return Err(VlxError::SensorNotFound);
         }
 
         // Wait for sensor to boot
         loop {
             let mut boot_state = 0u8;
-            let status = unsafe { bindings::VL53L1X_BootState(DEFAULT_ADDR, &mut boot_state) };
-            if status != 0 {
-                return Err(VlxError::InitError);
-            }
+            status_result!(VL53L1X_BootState(DEFAULT_ADDR, &mut boot_state))?;
             if boot_state != 0 {
                 break;
             }
-
             // Small delay
             thread::sleep(Duration::from_millis(10));
         }
 
         // Initialize sensor with default settings using default address
-        let status = unsafe { bindings::VL53L1X_SensorInit(DEFAULT_ADDR) };
-        if status != 0 {
-            return Err(VlxError::InitError);
-        }
-
+        status_result!(VL53L1X_SensorInit(DEFAULT_ADDR))?;
 
         // Set the new I2C address
-        let status = unsafe { bindings::VL53L1X_SetI2CAddress(DEFAULT_ADDR, self.address * 2) };
-        if status != 0 {
-            return Err(VlxError::InitError);
-        }
+        status_result!(VL53L1X_SetI2CAddress(DEFAULT_ADDR, self.address * 2))?;
 
         // Continue configuration with the final address
         let final_addr = self.address as u16;
 
         // Configure sensor with default settings
-        let status = unsafe { bindings::VL53L1X_SetDistanceMode(final_addr, 1) }; // Long range mode
-        if status != 0 {
-            return Err(VlxError::InitError);
-        }
 
-        let status = unsafe { bindings::VL53L1X_SetTimingBudgetInMs(final_addr, 100) }; // 100ms timing budget
-        if status != 0 {
-            return Err(VlxError::InitError);
-        }
-
-        let status = unsafe { bindings::VL53L1X_SetInterMeasurementInMs(final_addr, 100) }; // 100ms interval
-        if status != 0 {
-            return Err(VlxError::InitError);
-        }
-
+        // Long range mode
+        status_result!(VL53L1X_SetDistanceMode(final_addr, 1))?;
+        // 100ms timing budget
+        status_result!(VL53L1X_SetTimingBudgetInMs(final_addr, 100))?;
+        // 100ms interval
+        status_result!(VL53L1X_SetInterMeasurementInMs(final_addr, 100))?;
         // Start ranging automatically
-        let status = unsafe { bindings::VL53L1X_StartRanging(final_addr) };
-        if status != 0 {
-            return Err(VlxError::InitError);
-        }
+        status_result!(VL53L1X_StartRanging(final_addr))?;
+
         Ok(())
     }
 
@@ -100,85 +102,37 @@ impl VlxSensor for VL53L1X {
         let mut range_status = 0u8;
 
         // Check if data is ready
-        let status = unsafe { bindings::VL53L1X_CheckForDataReady(self.address as u16, &mut is_data_ready) };
-        if status != 0 {
-            return Err(VlxError::RangingError);
-        }
-
+        status_result!(VL53L1X_CheckForDataReady(self.address as u16, &mut is_data_ready))?;
         if is_data_ready == 0 {
-            return Err(VlxError::RangingError);
+            return Err(VlxError::DataNotReady);
         }
 
         // Get range status first to check measurement validity
-        let status = unsafe { bindings::VL53L1X_GetRangeStatus(self.address as u16, &mut range_status) };
-        if status != 0 {
-            return Err(VlxError::RangingError);
-        }
-
+        status_result!(VL53L1X_GetRangeStatus(self.address as u16, &mut range_status))?;
         // Check if measurement is valid (0 = no error)
         if range_status != 0 {
             // Clear interrupt even for invalid measurements
-            let _ = unsafe { bindings::VL53L1X_ClearInterrupt(self.address as u16) };
-            return Err(VlxError::RangingError);
+            let _ = unsafe { VL53L1X_ClearInterrupt(self.address as u16) };
+            return Err(VlxError::InvalidMeasure);
         }
 
         // Get distance measurement
-        let status = unsafe { bindings::VL53L1X_GetDistance(self.address as u16, &mut distance) };
-        if status != 0 {
-            return Err(VlxError::RangingError);
-        }
-
+        status_result!(VL53L1X_GetDistance(self.address as u16, &mut distance))?;
         // Clear interrupt to arm for next measurement
-        let status = unsafe { bindings::VL53L1X_ClearInterrupt(self.address as u16) };
-        if status != 0 {
-            return Err(VlxError::RangingError);
-        }
+        status_result!(VL53L1X_ClearInterrupt(self.address as u16))?;
 
-        Ok(crate::DistanceData::new_single(distance))
+        Ok(DistanceData::new_single(distance))
     }
 
-    fn set_alarm(&mut self, low: u16, high: u16, _zone: Option<(usize, usize)>) -> Result<(), VlxError> {
-        // VL53L1X has threshold detection functionality
-        // Set distance threshold for interrupt generation
-        let status = unsafe {
-            bindings::VL53L1X_SetDistanceThreshold(
-                self.address as u16,
-                low,   // Low threshold in mm
-                high,  // High threshold in mm
-                3,     // Window mode: 0=below low, 1=above high, 2=out of window, 3=in window
-                1      // Interrupt on new sample ready
-            )
-        };
-        if status != 0 {
-            return Err(VlxError::ConfigError);
-        }
-        Ok(())
-    }
-
-    fn set_multiple_alarms(&mut self, alarms: &[crate::ZoneAlarm]) -> Result<(), VlxError> {
-        // VL53L1X is single zone, so we just use the first alarm if any
-        if let Some(alarm) = alarms.first() {
-            self.set_alarm(alarm.low, alarm.high, Some(alarm.zone))
+    fn set_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
+        if alarms.len() > 1 {
+            Err(VlxError::TooManyAlarms)
+        } else if alarms.is_empty() {
+            // Disable threshold detection by setting very wide thresholds
+            self.set_distance_threshold(0, u16::MAX, false)
         } else {
-            Ok(())
+            let alarm = &alarms[0];
+            self.set_distance_threshold(alarm.low, alarm.high, true)
         }
     }
-
-    fn clear_alarm(&mut self) -> Result<(), VlxError> {
-        // Disable threshold detection by setting very wide thresholds
-        let status = unsafe {
-            bindings::VL53L1X_SetDistanceThreshold(
-                self.address as u16,
-                0,          // Low threshold = 0mm
-                u16::MAX,   // High threshold = max range
-                3,          // Window mode: in window (always triggered)
-                0           // Disable interrupt
-            )
-        };
-        if status != 0 {
-            return Err(VlxError::ConfigError);
-        }
-        Ok(())
-    }
-
 }

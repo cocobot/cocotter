@@ -1,4 +1,3 @@
-/// ESP-specific declarations, for the real stuff
 use std::sync::Mutex;
 use embedded_hal::i2c::{I2c, SevenBitAddress};
 
@@ -30,7 +29,7 @@ impl<T: I2c + Send + Sync> VlxI2c for T {
 // Upstream C implementations don't support multiple I2C buses.
 // Use a single, global I2C bus for all VLX devices.
 
-pub struct VlxI2cDriver {}
+pub struct VlxI2cDriver;
 
 impl VlxI2cDriver {
     /// Register the unique I2C used for VLX devices

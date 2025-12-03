@@ -74,35 +74,12 @@ impl VlxSensor for FakeVlx {
         Ok(DistanceData::new(self.width, self.height, self.distances.clone()))
     }
 
-    fn set_alarm(&mut self, low: u16, high: u16, zone: Option<(usize, usize)>) -> Result<(), VlxError> {
+    fn set_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
         if !self.initialized {
             return Err(VlxError::InitError);
         }
-
-        let alarm = ZoneAlarm {
-            zone: zone.unwrap_or((0, 0)),
-            low,
-            high,
-        };
-        self.alarms.push(alarm);
-        Ok(())
-    }
-
-    fn set_multiple_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
-        if !self.initialized {
-            return Err(VlxError::InitError);
-        }
-
-        self.alarms.extend_from_slice(alarms);
-        Ok(())
-    }
-
-    fn clear_alarm(&mut self) -> Result<(), VlxError> {
-        if !self.initialized {
-            return Err(VlxError::InitError);
-        }
-
         self.alarms.clear();
+        self.alarms.extend_from_slice(alarms);
         Ok(())
     }
 }

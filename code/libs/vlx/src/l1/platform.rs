@@ -3,16 +3,7 @@
 #![allow(non_snake_case)]
 
 use std::{thread, time::Duration};
-use crate::esp::VlxI2cDriver;
-
-// Define the device struct exactly as in the C header so that the size/layout match.
-#[repr(C)]
-pub struct VL53L1_Dev_t {
-    pub dummy: u32,
-}
-
-// Type alias to keep the same semantics as the C header.
-pub type VL53L1_DEV = *mut VL53L1_Dev_t;
+use crate::VlxI2cDriver;
 
 // Below are stub implementations of the platform-dependent functions expected by the
 // ST VL53L1X driver. They currently return 0 (success) and do not perform any I/O.
