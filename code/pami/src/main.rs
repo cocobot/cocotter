@@ -1,64 +1,43 @@
 mod config;
 mod ui;
 
-use ble::{BleBuilder, BleScanResult, RomePeripheral};
-use vlx::VlxSensor;
-
 use std::{thread, time::Duration};
-use config::PAMIConfig;
+use vlx::VlxSensor;
+use board_pami::{PamiBoard, PamiButtonsState, Vbatt};
+use config::PamiConfig;
+use ui::UiEvent;
 
-#[cfg(target_os = "espidf")]    
-use board_pami::{BoardPami, PamiButtonsState};
-
+#[cfg(target_os = "espidf")]
+use board_pami::EspPamiBoard as PamiBoardImpl;
 #[cfg(not(target_os = "espidf"))]
-use board_simulator::BoardPami;
-
-use crate::ui::UiEvent;
+use board_pami::MockPamiBoard as PamiBoardImpl;
 
 
 fn main() {
-    let mut board = BoardPami::new();
+    let mut board = PamiBoardImpl::init();
 
-    //if we panic here, it means the board is not configured. 
-    //should be fixed, robot will not work.
-    let config = match PAMIConfig::get_config() {
-        Some(config) => {
-            log::info!("Board id {} is configured with color {:?}", config.id, config.color);
-            config
-        },
-        None => {
-            panic!("Board is not configured (mac address is {:?})", PAMIConfig::get_mac_address());
-        }
+    let mac_addr = board.bt_mac_address();
+    let config = if let Some(config) = PamiConfig::by_bt_mac(&mac_addr) {
+        log::info!("Board '{}' with color {:?}", config.name, config.color);
+        config
+    } else {
+        panic!("Board is not configured (MAC address: {mac_addr:?})");
     };
 
     log::info!("Start UI thread");
-    let ui_queue = ui::Ui::run(board.display.take().unwrap());
-
-    fn scan_dump(scan_result: BleScanResult) {
-        if let Some(name) = scan_result.local_name() {
-            log::info!("SCAN: addr: {}, name: {}", scan_result.addr, name);
-        } else {
-            log::info!("SCAN: addr: {}", scan_result.addr);
-        }
-    }
+    let ui_queue = ui::Ui::run(board.display().unwrap());
 
     let passkey_notifier = {
         let ui_queue = ui_queue.clone();
         move |_addr, key| { ui_queue.send(UiEvent::KeypassNotif(key)).unwrap(); }
     };
+    let (rome_tx, rome_rx) = board.rome(config.name.into(), passkey_notifier).unwrap();
 
-    let device_name = format!("PAMI {}", config.id);
-    let (ble_server, ble_client) = BleBuilder::new(board.ble.take().unwrap())
-        .with_scanner(scan_dump)
-        .with_passkey_notifier(passkey_notifier)
-        .run();
-    let (rome_tx, rome_rx) = RomePeripheral::run(ble_server, device_name);
-    let mut led_heartbeat = board.led_heartbeat.take().unwrap();
-
-    // ble_client.start_scanning(10).unwrap();
-
-    log::info!("Initializing VLX sensors...");
-    let mut vlx = board.init_vlx_sensor().unwrap();
+    let mut vlx = board.vlx_sensor().unwrap();
+    log::info!("Initialiaze VLX");
+    if let Err(err) = vlx.init() {
+        log::error!("VLX initalization failed: {err:?}");
+    }
 
     std::thread::spawn(move || {
         log::info!("Start BLE RX thread");
@@ -72,8 +51,8 @@ fn main() {
         }
     });
 
-    let mut buttons = board.buttons.take().unwrap();
-    let mut vbatt = board.vbatt.take().unwrap();
+    let mut buttons = board.buttons().unwrap();
+    let mut vbatt = board.vbatt().unwrap();
 
     log::info!("Start BLE TX dummy main loop");
     let mut tick = 0u32;
@@ -85,7 +64,7 @@ fn main() {
         /*
         // Heartbeat + test BLE message
         if tick % 10 == 0 {
-            //led_heartbeat.toggle().ok();
+            //heartbeat_led.toggle().ok();
             let data = format!("tx-{tick}");
             log::debug!("BLE send data: {:?}", data);
             if let Err(err) = rome_tx.send(data.as_bytes().into()) {
@@ -96,10 +75,9 @@ fn main() {
 
         // VLX capture
         if tick % 10 == 0 {
-            if let Ok(distance) = vlx.get_distance() {
-                log::info!("VLX sensor distance: {:?}", distance);
-            } else {
-                log::error!("Failed to get VLX sensor distance");
+            match vlx.get_distance() {
+                Ok(distance) => log::info!("VLX sensor distance: {distance:?}"),
+                Err(err) => log::error!("Failed to get VLX sensor distance: {err:?}"),
             }
         }
 
@@ -116,7 +94,7 @@ fn main() {
 
         // Battery voltage
         if tick % 50 == 0 {
-            let (vbatt_mv, vbatt_pct) = vbatt.read();
+            let (vbatt_mv, vbatt_pct) = vbatt.read_vbatt();
             log::info!("Battery: {vbatt_mv} mV, {vbatt_pct}%");
             ui_queue.send(UiEvent::Battery { percent: vbatt_pct }).unwrap();
             if let Err(err) = rome_tx.send(rome::Message::BatteryLevel { mv: vbatt_mv, percent: vbatt_pct }.encode()) {

@@ -1,34 +1,23 @@
 [package]
 name = "pami"
 version = "0.1.0"
-authors = ["Damien Espitallier <de.electronique@gmail.com>"]
-edition = "2021"
-resolver = "2"
-rust-version = "1.77"
+edition = "2024"
 
 [[bin]]
 name = "pami"
-harness = false # do not use the built in cargo test harness -> resolve rust-analyzer errors
-
-[features]
-default = []
-
-experimental = ["esp-idf-svc/experimental"]
 
 [dependencies]
+board-pami = { path = "../boards/pami" }
+embedded-graphics = "0.8"
 log = "0.4"
-phf = { version = "0.12.1", features = ["std", "macros"]}
+rome = { path = "../libs/rome" }
+vlx = { path = "../libs/vlx" }
 
-[target.'cfg(not(target_os = "espidf"))'.dependencies]
-board-simulator = { path = "../boards/simulator" }
+#[target.'cfg(not(target_os = "espidf"))'.dependencies]
+#board-simulator = { path = "../boards/simulator" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = "0.51"
-embedded-graphics = "0.8"
-board-pami = { path = "../boards/pami" }
-ble = { path = "../libs/ble" }
-vlx = { path = "../libs/vlx" }
-rome = { path = "../libs/rome" }
 
 [build-dependencies]
-embuild = {version = "0.33", features = ["espidf"]}
+embuild = { version = "0.33", features = ["espidf"] }

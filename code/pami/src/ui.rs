@@ -14,20 +14,20 @@ pub trait UiTarget: DrawTarget {
     fn flush_display(&mut self) {}
 }
 
-#[cfg(target_os = "espidf")]    
 use board_pami::DpadState;
 
 #[cfg(target_os = "espidf")]    
-impl UiTarget for board_pami::Display {
+impl UiTarget for board_pami::esp::PamiDisplay {
     fn flush_display(&mut self) {
         self.flush().unwrap()
     }
 }
 
+impl UiTarget for embedded_graphics::mock_display::MockDisplay<BinaryColor> {}
+
 
 pub enum UiEvent {
     Battery { percent: u8 },
-    DistanceSensors { first: u16, back: u16, front: u16 },
     Dpad(DpadState),
     KeypassNotif(u32), 
 }
@@ -35,6 +35,7 @@ pub enum UiEvent {
 
 const DISPLAY_WIDTH: u32 = 128;
 const DISPLAY_HEIGHT: u32 = 64;
+#[allow(dead_code)]
 const YELLOW_HEIGHT: u32 = 16;
 const TOP_BAR_SIZE: u32 = 9;
 
