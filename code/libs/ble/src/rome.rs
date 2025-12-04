@@ -1,4 +1,4 @@
-use std::sync::{Arc, Condvar, Mutex};
+use std::sync::{Arc, Mutex};
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::time::Duration;
 use esp_idf_svc::{
@@ -19,8 +19,8 @@ use log::{debug, error, info, warn};
 use crate::BleServer;
 
 const SERVICE_ROME_UUID: BtUuid = BtUuid::uuid128(0x8187_0000_ffa549699ab4e777ca411f95);
-const CHAR_ROME_TX_UUID: BtUuid = BtUuid::uuid128(0x8187_0001_ffa549699ab4e777ca411f95);
-const CHAR_ROME_RX_UUID: BtUuid = BtUuid::uuid128(0x8187_0002_ffa549699ab4e777ca411f95);
+const CHAR_ROME_TELEMETRY_UUID: BtUuid = BtUuid::uuid128(0x8187_0001_ffa549699ab4e777ca411f95);
+const CHAR_ROME_ORDERS_UUID: BtUuid = BtUuid::uuid128(0x8187_0002_ffa549699ab4e777ca411f95);
 
 const CCCD_UUID: BtUuid = BtUuid::uuid16(0x2902);
 
@@ -29,26 +29,39 @@ const MAX_CONNECTIONS: usize = 1;
 
 #[derive(Debug, Clone)]
 struct Connection {
-    peer: BdAddr,
-    conn_id: Handle,
+    conn_id: ConnectionId,
+    subscribed_telemetry: bool,
+}
+
+impl Connection {
+    fn new(conn_id: ConnectionId) -> Self {
+        Self {
+            conn_id,
+            subscribed_telemetry: false,
+        }
+    }
 }
 
 struct PeripheralState {
     name: String,
     gatt_if: Option<GattInterface>,
     service_handle: Option<Handle>,
-    rx_handle: Option<u16>,
-    tx_handle: Option<u16>,
-    tx_cccd_handle: Option<u16>,
+    orders_handle: Option<Handle>,
+    telemetry_handle: Option<Handle>,
     connections: Vec<Connection>,
-    tx_confirmed: Option<BdAddr>,
 }
+
+impl PeripheralState {
+    fn get_connection_mut(&mut self, conn_id: ConnectionId) -> Option<&mut Connection> {
+        self.connections.iter_mut().find(|conn| conn.conn_id == conn_id)
+    }
+}
+
 
 pub struct RomePeripheral {
     server: BleServer,
     state: Arc<Mutex<PeripheralState>>,
     rome_rx: Sender<Box<[u8]>>,
-    condvar: Arc<Condvar>,
 }
 
 impl RomePeripheral {
@@ -60,18 +73,15 @@ impl RomePeripheral {
             name,
             gatt_if: None,
             service_handle: None,
-            rx_handle: None,
-            tx_handle: None,
-            tx_cccd_handle: None,
+            orders_handle: None,
+            telemetry_handle: None,
             connections: Vec::new(),
-            tx_confirmed: None,
         }));
 
         let instance = Arc::new(Self {
             server,
             state,
             rome_rx,
-            condvar: Arc::new(Condvar::new()),
         });
 
         // Register GATT server callbacks
@@ -91,23 +101,15 @@ impl RomePeripheral {
         std::thread::spawn(move || {
             loop {
                 if let Ok(data) = rome_tx.recv() {
-                    //TODO Use notifications for telemetry and indications for order ACKs
-                    for peer_index in 0..MAX_CONNECTIONS {
-                        let mut state = instance.state.lock().unwrap();
-
-                        // Wait confirmation of previous indication
-                        state = instance.condvar.wait_while(state, |state| {
-                            state.tx_confirmed.is_some()
-                        }).unwrap();
-
-                        let Some(conn) = state.connections.get(peer_index) else { continue; };
-                        let Some(gatt_if) = state.gatt_if else { continue; };
-                        let Some(tx_handle) = state.tx_handle else { continue; };
-
-                        if let Err(e) = instance.server.gatts.indicate(gatt_if, conn.conn_id, tx_handle, &data) {
-                            warn!("GATT server indicate error: {e:?}");
-                        }                                                                   
-                        state.tx_confirmed = Some(conn.peer);
+                    let state = instance.state.lock().unwrap();
+                    let Some(gatt_if) = state.gatt_if else { continue; };
+                    let Some(telemetry_handle) = state.telemetry_handle else { continue; };
+                    for conn in &state.connections {
+                        if conn.subscribed_telemetry {
+                            if let Err(e) = instance.server.gatts.notify(gatt_if, conn.conn_id, telemetry_handle, &data) {
+                                warn!("GATT server notification error: {e:?}");
+                            }
+                        }
                     }
                 } else {
                     warn!("No data recv on rome TX");
@@ -182,7 +184,7 @@ impl RomePeripheral {
                 }
             }
             GattsEvent::Write { conn_id, trans_id, handle, offset, need_rsp, is_prep, value, .. } => {
-                if self.on_write_data(handle, value) {
+                if self.on_write_data(conn_id, handle, value) {
                     if need_rsp {
                         let response = if is_prep {
                             let mut response = GattResponse::new();
@@ -199,10 +201,6 @@ impl RomePeripheral {
                         self.server.gatts.send_response(gatt_if, conn_id, trans_id, GattStatus::Ok, (&response).into())?;
                     }
                 }
-            }
-            GattsEvent::Confirm { status, .. } => {
-                check_gatt_status(status)?;
-                self.confirm_indication();
             }
             _ => (),
         }
@@ -239,26 +237,27 @@ impl RomePeripheral {
 
         // Characteristics added here must be matched in `register_characteristic()`
 
+        const ROME_MAX_FRAME_LEN: usize = 200;
+
         self.server.gatts.add_characteristic(
             service_handle,
             &GattCharacteristic {
-                uuid: CHAR_ROME_RX_UUID,
+                uuid: CHAR_ROME_ORDERS_UUID,
                 permissions: enum_set!(Permission::WriteEncrypted),
                 properties: enum_set!(Property::Write),
-                max_len: 200,
+                max_len: ROME_MAX_FRAME_LEN,
                 auto_rsp: AutoResponse::ByApp,
             },
             &[],
         )?;
 
-        //TODO Use a separate charateristic for telemetry, Notify instead of Indicate
         self.server.gatts.add_characteristic(
             service_handle,
             &GattCharacteristic {
-                uuid: CHAR_ROME_TX_UUID,
+                uuid: CHAR_ROME_TELEMETRY_UUID,
                 permissions: enum_set!(),
-                properties: enum_set!(Property::Indicate),
-                max_len: 200,
+                properties: enum_set!(Property::Notify),
+                max_len: ROME_MAX_FRAME_LEN,
                 auto_rsp: AutoResponse::ByApp,
             },
             &[],
@@ -276,10 +275,10 @@ impl RomePeripheral {
 
         // Descriptors added here must be matched in `register_descriptor()`
 
-        if char_uuid == CHAR_ROME_RX_UUID {
-            state.rx_handle = Some(attr_handle);
-        } else if char_uuid == CHAR_ROME_TX_UUID {
-            state.tx_handle = Some(attr_handle);
+        if char_uuid == CHAR_ROME_ORDERS_UUID {
+            state.orders_handle = Some(attr_handle);
+        } else if char_uuid == CHAR_ROME_TELEMETRY_UUID {
+            state.telemetry_handle = Some(attr_handle);
             self.server.gatts.add_descriptor(
                 service_handle,
                 &GattDescriptor {
@@ -295,13 +294,12 @@ impl RomePeripheral {
 
     /// Called during GATT server service setup, when a descriptor is added
     fn register_descriptor(&self, service_handle: Handle, attr_handle: Handle, descr_uuid: BtUuid) -> Result<(), EspError> {
-        let mut state = self.state.lock().unwrap();
+        let state = self.state.lock().unwrap();
         if state.service_handle != Some(service_handle) {
             return Ok(());
         }
 
-        if Some(attr_handle) == state.tx_handle && descr_uuid == CCCD_UUID {
-            state.tx_cccd_handle = Some(attr_handle);
+        if Some(attr_handle) == state.telemetry_handle && descr_uuid == CCCD_UUID {
         } else {
             // Should never happen
         }
@@ -316,7 +314,7 @@ impl RomePeripheral {
         let added = {
             let mut state = self.state.lock().unwrap();
             if state.connections.len() < MAX_CONNECTIONS {
-                state.connections.push(Connection { peer: addr, conn_id, });
+                state.connections.push(Connection::new(conn_id));
                 true
             } else {
                 false
@@ -353,24 +351,26 @@ impl RomePeripheral {
         Ok(())
     }
 
-    /// Called after a peer confirmed an indication
-    fn confirm_indication(&self) {
-        let mut state = self.state.lock().unwrap();
-        if state.tx_confirmed.is_none() {
-            error!("Indication confirmation received but none was expected")
-        } else {
-            state.tx_confirmed = None;
-            self.condvar.notify_all();
-        }
-    }
-
     /// Called on incoming "write", return true if message has been processed
-    fn on_write_data(&self, handle: Handle, value: &[u8]) -> bool {
-        let state = self.state.lock().unwrap();
+    fn on_write_data(&self, conn_id: ConnectionId, handle: Handle, value: &[u8]) -> bool {
+        // Parse CCCD value
+        fn parse_cccd_value(value: &[u8]) -> Option<u16> {
+            // 0 = disable, 1 = enable notification, 2 = enable indication
+            if value.len() == 2 {
+                Some(value[0] as u16 + ((value[1] as u16) << 8))
+            } else {
+                None
+            }
+        }
 
-        if Some(handle) == state.tx_cccd_handle {
-            // Nothing to do, could be used to keep track of subscribers
-        } else if Some(handle) == state.rx_handle {
+        let mut state = self.state.lock().unwrap();
+
+        if Some(handle) == state.telemetry_handle {
+            if let Some(conn) = state.get_connection_mut(conn_id) {
+                // Note: disable on invalid value
+                conn.subscribed_telemetry = parse_cccd_value(value) == Some(1);
+            }
+        } else if Some(handle) == state.orders_handle {
             if let Err(e) = self.rome_rx.send(Box::from(value)) {
                 error!("Failed to push RX data: {e:?}");
             }
