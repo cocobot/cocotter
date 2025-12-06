@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.8,
-          "height": 1.27,
-          "width": 2.54
+          "drill": 1.2,
+          "height": 2.0,
+          "width": 2.0
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -58,7 +58,28 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "clearance|153725000|89725000|67d745ff-7fae-4dbb-91b5-aa48132a2c04|57d6d712-2fb2-4c85-8b4b-96e73536d845",
+          ""
+        ],
+        [
+          "clearance|154362500|90275000|015624e9-6094-47b5-bbca-7ac6c56ce5b3|67d745ff-7fae-4dbb-91b5-aa48132a2c04",
+          ""
+        ],
+        [
+          "clearance|154362500|90275000|015624e9-6094-47b5-bbca-7ac6c56ce5b3|faf4284f-49c6-4c9d-9fe5-adbe619e6dc5",
+          ""
+        ],
+        [
+          "clearance|155000000|90175000|57d6d712-2fb2-4c85-8b4b-96e73536d845|faf4284f-49c6-4c9d-9fe5-adbe619e6dc5",
+          ""
+        ],
+        [
+          "clearance|171600000|113650000|47042145-9c41-4e20-af78-11ffd6923f03|f31e3976-3a31-42cf-8194-af9e512da068",
+          ""
+        ]
+      ],
       "meta": {
         "version": 2
       },
@@ -112,7 +133,7 @@
         "through_hole_pad_without_hole": "error",
         "too_many_vias": "error",
         "track_angle": "error",
-        "track_dangling": "warning",
+        "track_dangling": "error",
         "track_segment_length": "error",
         "track_width": "error",
         "tracks_crossing": "error",
