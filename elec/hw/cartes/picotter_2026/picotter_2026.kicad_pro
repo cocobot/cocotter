@@ -821,6 +821,18 @@
           "label": "#",
           "name": "${ITEM_NUMBER}",
           "show": false
+        },
+        {
+          "group_by": false,
+          "label": "DIGIKEY_REF",
+          "name": "DIGIKEY_REF",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "MOUSER_REF",
+          "name": "MOUSER_REF",
+          "show": false
         }
       ],
       "filter_string": "",
