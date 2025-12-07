@@ -5,8 +5,9 @@ pub mod mock;
 
 use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal::{
-    digital::StatefulOutputPin,
+    digital::{InputPin, StatefulOutputPin},
     i2c::I2c,
+    pwm::SetDutyCycle,
 };
 use embedded_graphics::{
     draw_target::DrawTarget,
@@ -25,8 +26,11 @@ pub trait PamiBoard {
     type I2c: I2c;
     type Led: StatefulOutputPin;
     type Display: DrawTarget<Color=BinaryColor>;
-    type Vbatt: crate::Vbatt;
+    type Vbatt: Vbatt;
     type Vlx: VlxSensor;
+    type MotorEncoder: Encoder<i32>;
+    type MotorPwm: SetDutyCycle;
+    type EmergencyStop: InputPin;
 
     /// Initialize the board and return its instance
     ///
@@ -42,10 +46,32 @@ pub trait PamiBoard {
     fn display(&mut self) -> Option<Self::Display>;
     fn vbatt(&mut self) -> Option<Self::Vbatt>;
     fn vlx_sensor(&mut self) -> Option<Self::Vlx>;
+    fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>>;
+    fn emergency_stop(&mut self) -> Option<Self::EmergencyStop>;
+
     /// Configure and return ROME interface
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;
 }
 
+
+pub struct PamiMotor<E: Encoder<i32>, PWM: SetDutyCycle> {
+    pub encoder: E,
+    pub pwm_forward: PWM,
+    pub pwm_backward: PWM,
+}
+
+pub struct PamiMotors<E: Encoder<i32>, PWM: SetDutyCycle> {
+    pub left: PamiMotor<E, PWM>,
+    pub right: PamiMotor<E, PWM>,
+}
+
+
+pub trait Encoder<T> {
+    type Error: core::fmt::Debug;
+
+    /// Get encoded value
+    fn get_value(&self) -> Result<T, Self::Error>;
+}
 
 /// Read and return battery voltage
 pub trait Vbatt {

@@ -2,6 +2,7 @@ use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal_mock::eh1::{
     digital::{Mock as PinMock},
     i2c::{Mock as I2cMock},
+    pwm::{Mock as SetDutyCycleMock},
 };
 use embedded_graphics::{
     pixelcolor::BinaryColor,
@@ -9,7 +10,7 @@ use embedded_graphics::{
 };
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxError, VlxSensor, ZoneAlarm};
-use crate::{PamiBoard, PamiButtons, Vbatt};
+use crate::{Encoder, PamiBoard, PamiButtons, PamiMotors, Vbatt};
 
 
 pub struct MockPamiBoard;
@@ -20,6 +21,9 @@ impl PamiBoard for MockPamiBoard {
     type Display = MockDisplay<BinaryColor>;
     type Vbatt = MockVbatt;
     type Vlx = MockVlxSensor;
+    type MotorEncoder = MockEncoder;
+    type MotorPwm = SetDutyCycleMock;
+    type EmergencyStop = PinMock;
 
     fn init() -> Self {
         Self
@@ -53,6 +57,14 @@ impl PamiBoard for MockPamiBoard {
         None
     }
 
+    fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>> {
+        None
+    }
+
+    fn emergency_stop(&mut self) -> Option<Self::EmergencyStop> {
+        None
+    }
+
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, _device_name: String, _passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
         None
     }
@@ -83,4 +95,13 @@ impl VlxSensor for MockVlxSensor {
     }
 }
 
+pub struct MockEncoder;
+
+impl<T: Default> Encoder<T> for MockEncoder {
+    type Error = ();
+
+    fn get_value(&self) -> Result<T, Self::Error> {
+        Ok(T::default())
+    }
+}
 

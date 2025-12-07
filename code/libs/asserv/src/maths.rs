@@ -73,12 +73,16 @@ impl XY {
         } else {
             self / d
         }
-
     }
 
     /// Add angle information
     pub const fn with_a(&self, a: f32) -> XYA {
         XYA { x: self.x, y: self.y, a }
+    }
+
+    /// Return vector angle 
+    pub fn angle(&self) -> f32 {
+        self.y.atan2(self.x)
     }
 }
 

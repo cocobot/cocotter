@@ -1,11 +1,15 @@
-use crate::conf::*;
-use crate::control_system::ControlSystem;
+pub mod conf;
+mod control_system;
+mod motor_filter;
+
 use crate::maths::{XY, XYA, normalize_radians_pi_pi};
+use conf::*;
+use control_system::ControlSystem;
 
 
 // This struct is very similar to `conf::TrajectoryConf`.
 // Field names are different (mostly historical).
-// And angular speed/acc are not stored in (they are set on quadramp).
+// And angular speed/acc are not stored in it (they are set on quadramp).
 #[derive(Default)]
 struct AsservInternalConf {
     pub cruise_speed: f32,

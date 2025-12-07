@@ -7,8 +7,10 @@ edition = "2024"
 name = "pami"
 
 [dependencies]
+asserv = { path = "../libs/asserv" }
 board-pami = { path = "../boards/pami" }
 embedded-graphics = "0.8"
+embedded-hal = "1.0"
 log = "0.4"
 rome = { path = "../libs/rome" }
 vlx = { path = "../libs/vlx" }

@@ -50,7 +50,8 @@ impl MotorFilter {
         self.pid_x.reset();
         self.pid_y.reset();
         self.pid_a.reset();
-        self.qramp_a.reset_finished_to(0);  //TODO Previously, was resetting to current state
+        //TODO Previously, was resetting to current state, use `reset_finished()`?
+        self.qramp_a.reset_finished_to(0);
     }
 
     /// Provide access to PID configurations
@@ -82,6 +83,4 @@ pub const fn cs_unit_to_rcs_mm(v: i32) -> f32 { v as f32 / RCS_MM_TO_CSUNIT }
 pub const fn rcs_rad_to_cs_unit(v: f32) -> i32 { (v * RCS_RAD_TO_CSUNIT) as i32 }
 #[inline]
 pub const fn cs_unit_to_rcs_rad(v: i32) -> f32 { v as f32 / RCS_RAD_TO_CSUNIT }
-
-
 

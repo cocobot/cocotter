@@ -1,6 +1,6 @@
-use crate::conf::AsservHardware;
 use crate::maths::{mult_matrix33_vec, Matrix33, MATRIX33_IDENTITY, XY, XYA};
-use crate::motor_filter::MotorFilter;
+use super::conf::AsservHardware;
+use super::motor_filter::MotorFilter;
 
 
 pub struct ControlSystem<H: AsservHardware> {

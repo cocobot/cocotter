@@ -8,15 +8,12 @@ pub struct PidFilter {
     prev_sample: i32,
     /// Previous integral parameter
     integral: i32,
-    /// Previous derivate parameter
-    prev_d: i32,
 }
 
 impl PidFilter {
     pub fn reset(&mut self) {
         self.prev_sample = 0;
         self.integral = 0;
-        self.prev_d = 0;
     }
 
     pub fn filter(&mut self, mut value_in: i32) -> i32 {
@@ -58,7 +55,6 @@ impl PidFilter {
 
         // Backup of current error value (for the next calcul of derivate value)
         self.prev_sample = value_in;
-        self.prev_d = derivate;
 
         command
     }
