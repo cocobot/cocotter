@@ -7409,6 +7409,12 @@
 		(uuid "06ba84fa-8fe7-4b1b-97fa-7391ee338299")
 	)
 	(junction
+		(at 388.62 194.31)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1130e299-ca41-44f7-9055-5b4ee4259144")
+	)
+	(junction
 		(at 168.91 332.74)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -8240,6 +8246,16 @@
 	)
 	(wire
 		(pts
+			(xy 388.62 196.85) (xy 381 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "11553e49-c561-4149-8018-93b530b5ef80")
+	)
+	(wire
+		(pts
 			(xy 344.17 184.15) (xy 344.17 170.18)
 		)
 		(stroke
@@ -8277,6 +8293,16 @@
 			(type default)
 		)
 		(uuid "1418bffc-f972-4ebf-bdce-7220b91b8ac2")
+	)
+	(wire
+		(pts
+			(xy 356.87 194.31) (xy 373.38 194.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "164cc626-dcd2-44bc-9b38-bac5f165877f")
 	)
 	(wire
 		(pts
@@ -8417,6 +8443,16 @@
 			(type default)
 		)
 		(uuid "1dfff057-7afe-4868-9509-3a4ff798da6c")
+	)
+	(wire
+		(pts
+			(xy 388.62 194.31) (xy 400.05 194.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1fc9c260-24a8-4a54-bac2-95b099a10d67")
 	)
 	(wire
 		(pts
@@ -8890,16 +8926,6 @@
 	)
 	(wire
 		(pts
-			(xy 356.87 194.31) (xy 373.38 194.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3da65c94-df46-4b47-9cbb-11ecc51dac6b")
-	)
-	(wire
-		(pts
 			(xy 114.3 355.6) (xy 119.38 355.6)
 		)
 		(stroke
@@ -9037,6 +9063,16 @@
 			(type default)
 		)
 		(uuid "43e3d231-86e7-44c4-ad12-5248314b1c55")
+	)
+	(wire
+		(pts
+			(xy 388.62 194.31) (xy 388.62 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "45004df1-dd23-4e5f-aad6-a3bb354d5486")
 	)
 	(wire
 		(pts
@@ -9227,6 +9263,16 @@
 			(type default)
 		)
 		(uuid "52a5cd07-5f0f-4fcf-b34d-44cc213e0e40")
+	)
+	(wire
+		(pts
+			(xy 356.87 196.85) (xy 373.38 196.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "52bfb8be-9fd5-4b8a-8099-dcb3757f449d")
 	)
 	(wire
 		(pts
@@ -9867,6 +9913,16 @@
 			(type default)
 		)
 		(uuid "856b27cf-ef3b-414d-8847-d408d2df1d29")
+	)
+	(wire
+		(pts
+			(xy 388.62 194.31) (xy 381 194.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "858e3836-34b8-431f-aa27-568211fa65bb")
 	)
 	(wire
 		(pts
@@ -11988,7 +12044,7 @@
 		(uuid "3b97a779-266f-4a65-babc-475dae9fefab")
 	)
 	(label "neopixel_cmd_5v"
-		(at 360.68 194.31 0)
+		(at 387.35 194.31 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -12527,7 +12583,7 @@
 		)
 		(uuid "b26ce0b7-0776-402f-a6c3-574013325103")
 	)
-	(label "neopixel_cmd_3v3"
+	(label "neopixel_cmd_con"
 		(at 26.67 125.73 0)
 		(effects
 			(font
@@ -12697,6 +12753,16 @@
 		)
 		(uuid "e04dfb16-6f7e-49c9-8885-efca0fefbf20")
 	)
+	(label "neopixel_cmd_con"
+		(at 356.87 196.85 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "e8759e7c-5e16-4933-8e52-0f80ba0da845")
+	)
 	(label "neopixel_cmd_0_5v"
 		(at 274.32 251.46 0)
 		(effects
@@ -12707,7 +12773,7 @@
 		)
 		(uuid "e92a684b-ab5d-436d-b001-6e1d74901a47")
 	)
-	(label "neopixel_cmd_3v3"
+	(label "neopixel_cmd_con"
 		(at 311.15 194.31 0)
 		(effects
 			(font
@@ -14309,7 +14375,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "1f774bbb-ff42-4bc9-806a-2a126f7901f0")
 		(property "Reference" "C34"
@@ -18811,7 +18877,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "73b322b4-de26-4e5e-8f2a-2478256b9d39")
 		(property "Reference" "U9"
 			(at 352.806 185.42 0)
@@ -18899,7 +18965,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "75e17f25-dee3-4fa1-abf3-91983bf4ae8e")
 		(property "Reference" "R62"
@@ -23292,7 +23358,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "b3aaa453-812b-4217-b869-8a3b48686433")
 		(property "Reference" "C33"
@@ -23892,6 +23958,100 @@
 			(project "meca_extension_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "#PWR0123")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_0R_0603")
+		(at 377.19 196.85 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c558bb38-df02-4f3a-b7c8-38713ec56de7")
+		(property "Reference" "R66"
+			(at 382.27 195.834 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 377.19 196.85 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 377.19 198.628 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 377.19 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 377.19 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 377.19 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 377.19 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 377.19 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a80020e7-0357-41b1-9840-6682aa24482b")
+		)
+		(pin "2"
+			(uuid "43fefa58-107a-47e8-87d3-1fd9e671959a")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "R66")
 					(unit 1)
 				)
 			)
@@ -25466,6 +25626,100 @@
 			(project "meca_extension_2026"
 				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
 					(reference "#PWR0121")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_resistors:R_0R_0603")
+		(at 377.19 194.31 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp yes)
+		(uuid "e533cf3c-f1ca-46a4-a429-ec66901fcfc0")
+		(property "Reference" "R65"
+			(at 382.27 193.294 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 377.19 194.31 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(at 377.19 196.088 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 377.19 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 377.19 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "0R 0603 20mOhms max 100mW"
+			(at 377.19 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "mouser" ""
+			(at 377.19 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C431718"
+			(at 377.19 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "84b4a254-3a0e-4a42-83ac-25345f5cf2ac")
+		)
+		(pin "2"
+			(uuid "4c362c11-e418-4822-9d67-cab1d0a17361")
+		)
+		(instances
+			(project "meca_extension_2026"
+				(path "/f6dc6b20-ab52-4b2b-893a-1fb4f3ec4277"
+					(reference "R65")
 					(unit 1)
 				)
 			)
