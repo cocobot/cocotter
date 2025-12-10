@@ -15,13 +15,20 @@ struct AsservInternalConf {
     pub xy_cruise_angle_window: f32,
     pub xy_approach_window: f32,
     pub a_stop_window: f32,
+    pub xy_idle_speed: f32,
+    pub a_idle_speed: f32,
 }
 
 
 /// Trajectory order being processed
 enum TrajectoryOrder {
+    /// No active order
+    Idle,
+    /// Order finished, waiting for motors to stop
     Stop,
-    Xy { xy: XY, aiming: bool },
+    /// Goto XY order is active
+    Xy { xy: XY, aiming: bool, stopping: bool },
+    /// Goto angle order is active
     Angle(f32),
 }
 
@@ -52,7 +59,7 @@ impl<H: AsservHardware> Asserv<H> {
         Self {
             cs,
             conf: Default::default(),
-            order: TrajectoryOrder::Stop,
+            order: TrajectoryOrder::Idle,
         }
     }
 
@@ -66,6 +73,7 @@ impl<H: AsservHardware> Asserv<H> {
         self.set_xy_speed(conf.trajectory.xy_speed, conf.trajectory.xy_acc, conf.update_period);
         self.set_xy_order_windows(conf.trajectory.xy_stop_window, conf.trajectory.xy_aim_angle_window, conf.trajectory.xy_cruise_angle_window, conf.trajectory.xy_approach_window);
         self.set_angle_order_window(conf.trajectory.a_stop_window);
+        self.set_idle_speed(conf.trajectory.xy_idle_speed, conf.trajectory.a_idle_speed);
 
         self.reset_position(XYA::new(0.0, 0.0, 0.0));
     }
@@ -97,8 +105,8 @@ impl<H: AsservHardware> Asserv<H> {
     //
 
     /// Return true if there is no active order
-    pub fn done(&self) -> bool {
-        matches!(self.order, TrajectoryOrder::Stop)
+    pub fn idle(&self) -> bool {
+        matches!(self.order, TrajectoryOrder::Idle)
     }
 
 
@@ -110,7 +118,7 @@ impl<H: AsservHardware> Asserv<H> {
     pub fn goto_xy(&mut self, x: f32, y: f32) {
         let xy = XY::new(x, y);
         self.cs.reset_targets();
-        self.order = TrajectoryOrder::Xy{ xy, aiming: true };
+        self.order = TrajectoryOrder::Xy{ xy, aiming: true, stopping: true };
     }
 
     /// Same as [goto_xy()] but position is relative to current one
@@ -156,6 +164,11 @@ impl<H: AsservHardware> Asserv<H> {
         self.conf.a_stop_window = da;
     }
 
+    pub fn set_idle_speed(&mut self, xy: f32, a: f32) {
+        self.conf.xy_idle_speed = xy;
+        self.conf.a_idle_speed = a;
+    }
+
     /// Reset position, target, consigns
     pub fn reset_position(&mut self, xya: XYA) {
         self.cs.motor_filter.reset();
@@ -170,11 +183,24 @@ impl<H: AsservHardware> Asserv<H> {
     /// Update trajectory management
     fn update_trajectory(&mut self) {
         match &self.order {
-            TrajectoryOrder::Stop => {
+            TrajectoryOrder::Idle => {
                 // Nothing to do
             }
 
-            TrajectoryOrder::Xy { xy, aiming } => {
+            TrajectoryOrder::Stop => {
+                if self.idle_speeds() {
+                    self.cs.reset_targets();
+                    self.order = TrajectoryOrder::Idle;
+                }
+            }
+
+            TrajectoryOrder::Xy { xy, aiming, stopping: true } => {
+                if self.idle_speeds() {
+                    self.order = TrajectoryOrder::Xy { xy: *xy, aiming: *aiming, stopping: false };
+                }
+            }
+
+            TrajectoryOrder::Xy { xy, aiming, stopping: false } => {
                 let dxy = xy - &self.cs.position().xy();
                 let angle_to_target = dxy.angle();
                 let current_a = self.cs.position().a;
@@ -185,19 +211,18 @@ impl<H: AsservHardware> Asserv<H> {
                         // Aiming complete
                         self.cs.reset_targets();
                         self.cs.set_target_dist(self.cs.dist() + dxy.length());
-                        self.order = TrajectoryOrder::Xy { xy: *xy, aiming: false };
+                        self.order = TrajectoryOrder::Xy { xy: *xy, aiming: false, stopping: true };
                     } else {
                         self.cs.set_target_a(current_a + da);
                     }
                 } else if in_window_xy(&dxy, self.conf.xy_stop_window) {
                     // Target position reached
-                    self.cs.reset_targets();
                     self.order = TrajectoryOrder::Stop;
                 } else if da.abs() > self.conf.xy_cruise_angle_window {
                     // Start aiming
                     self.cs.reset_targets();
                     self.cs.set_target_a(current_a + da);
-                    self.order = TrajectoryOrder::Xy { xy: *xy, aiming: true };
+                    self.order = TrajectoryOrder::Xy { xy: *xy, aiming: true, stopping: true };
                 } else {
                     // Update targets
                     let len = dxy.length();
@@ -218,6 +243,12 @@ impl<H: AsservHardware> Asserv<H> {
                 }
             },
         }
+    }
+
+    /// Return true if speeds are low enough to be idle
+    fn idle_speeds(&self) -> bool {
+        let (dist_speed, a_speed) = self.cs.speeds();
+        dist_speed < self.conf.xy_idle_speed && a_speed < self.conf.a_idle_speed
     }
 }
 

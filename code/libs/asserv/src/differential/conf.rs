@@ -52,6 +52,10 @@ pub struct TrajectoryConf {
     pub xy_approach_window: f32,
     /// Tolerance angle distance for angle move
     pub a_stop_window: f32,
+    /// Linear speed under which robot is considered idle
+    pub xy_idle_speed: f32,
+    /// Angular speed under which robot is considered idle
+    pub a_idle_speed: f32,
 }
 
 

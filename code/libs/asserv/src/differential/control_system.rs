@@ -88,6 +88,11 @@ impl<H: AsservHardware> ControlSystem<H> {
         self.dist
     }
 
+    /// Return current linear and angular speeds (in this order)
+    pub fn speeds(&self) -> (f32, f32) {
+        (self.speed_dist, self.speed_angle)
+    }
+
     /// Reset robot position, and target (but not consigns)
     ///
     /// This method should only be called when robot is not moving.

@@ -101,25 +101,27 @@ fn main() {
             .. Default::default()
         },
         trajectory: TrajectoryConf {
-            a_speed: 10.0, //30.0,
-            a_acc: 50.0, //100.0,
-            xy_speed: 200.0, //2000.0,
-            xy_acc: 500.0, //1000.0,
+            a_speed: 30.0,
+            a_acc: 100.0,
+            xy_speed: 2000.0,
+            xy_acc: 1000.0,
             xy_stop_window: 20.0,
-            xy_aim_angle_window: 1.0,
+            xy_aim_angle_window: 0.05,
             xy_cruise_angle_window: 1.5,
             xy_approach_window: 50.0,
             a_stop_window: 0.03,
+            xy_idle_speed: 0.01,
+            a_idle_speed: 0.01,
         },
         motors: MotorsConf::from_dimensions(75.0, 30.0, 256),
         update_period: config::ASSERV_PERIOD,
     });
 
     let mut asserv_period = Periodicity::new(config::ASSERV_PERIOD);
-    let mut asserv_tm_period = Periodicity::new(Duration::from_millis(100));
+    let mut asserv_tm_period = Periodicity::new(Duration::from_millis(500)); //TODO large value for debug
     let mut buttons_period = Periodicity::new(Duration::from_millis(200));
     let mut vbatt_period = Periodicity::new(Duration::from_millis(2000));
-    let mut vlx_period = Periodicity::new(Duration::from_millis(100));
+    let mut vlx_period = Periodicity::new(Duration::from_millis(2000));
 
     loop {
         let now = Instant::now();
@@ -145,7 +147,7 @@ fn main() {
                 x: position.x,
                 y: position.y,
                 a: position.a,
-                done: asserv.done(),
+                done: asserv.idle(),
             };
             if let Err(err) = rome_tx.send(message.encode()) {
                 log::error!("ROME send error: {:?}", err);
