@@ -13,3 +13,24 @@
   BatteryLevel:
     mv: u16
     percent: u8
+# PAMI
+50:
+  AsservTelemetry:
+    x: f32
+    y: f32
+    a: f32
+    done: bool
+  AsservGotoXy:
+    x: f32
+    y: f32
+  AsservGotoA:
+    a: f32
+  AsservGotoXyRel:
+    dx: f32
+    dy: f32
+  AsservGotoARel:
+    da: f32
+  AsservResetPosition:
+    x: f32
+    y: f32
+    a: f32

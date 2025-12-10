@@ -9,12 +9,11 @@ use embedded_graphics::{
     prelude::*,
     text::{Alignment, Baseline, Text, TextStyleBuilder},
 };
+use crate::events::UiEvent;
 
 pub trait UiTarget: DrawTarget {
     fn flush_display(&mut self) {}
 }
-
-use board_pami::DpadState;
 
 #[cfg(target_os = "espidf")]    
 impl UiTarget for board_pami::esp::PamiDisplay {
@@ -24,13 +23,6 @@ impl UiTarget for board_pami::esp::PamiDisplay {
 }
 
 impl UiTarget for embedded_graphics::mock_display::MockDisplay<BinaryColor> {}
-
-
-pub enum UiEvent {
-    Battery { percent: u8 },
-    Dpad(DpadState),
-    KeypassNotif(u32), 
-}
 
 
 const DISPLAY_WIDTH: u32 = 128;

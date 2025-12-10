@@ -39,13 +39,13 @@ impl<H: AsservHardware> ControlSystem<H> {
         }
     }
 
-    pub(crate) fn update(&mut self, elapsed: Duration) {
+    pub(crate) fn update(&mut self, elapsed: &Duration) {
         self.update_position(elapsed);
         self.update_motors();
     }
 
-    fn update_position(&mut self, elapsed: Duration) {
-        assert!(elapsed > Duration::ZERO);
+    fn update_position(&mut self, elapsed: &Duration) {
+        assert!(*elapsed > Duration::ZERO);
 
         // Update encoder values
         let encoder_offsets = self.hardware.get_motor_offsets();

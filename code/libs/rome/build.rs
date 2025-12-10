@@ -184,6 +184,14 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     //             id => Err(DecodeError::UnknownMessage(id)),
     //         }
     //     }
+    //
+    //     pub fn message_id(&self) -> u8 {
+    //         match self {
+    //             Self::Empty => 20,
+    //             Self::SomeValues => 21,
+    //             Self::Coordinates => 22,
+    //         }
+    //     }
     // }
     writeln!(writer, "impl Message {{").unwrap();
     writeln!(writer, "    pub(crate) fn deserialize_with_id<R: Reader>(id: u8, reader: &mut R) -> Result<Self, DecodeError> {{").unwrap();
@@ -211,6 +219,13 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     }
     writeln!(writer, "            id => Err(DecodeError::UnknownMessage(id)),").unwrap();
     writeln!(writer, "        }}").unwrap();
+    writeln!(writer, "    }}\n").unwrap();
+    writeln!(writer, "    pub fn message_id(&self) -> u8 {{").unwrap();
+    writeln!(writer, "        match self {{").unwrap();
+    for message in messages {
+        writeln!(writer, "            {} => {},", destructured_parameters_ignored(message), message.id).unwrap();
+    }
+    writeln!(writer, "      }}").unwrap();
     writeln!(writer, "    }}").unwrap();
     writeln!(writer, "}}\n").unwrap();
 
@@ -325,6 +340,21 @@ fn destructured_parameters(message: &Message<'_>) -> String {
                 .collect::<Vec<_>>()
                 .join(", ");
             format!("Self::{} {{ {} }}", message.name, names)
+        }
+    }
+}
+
+fn destructured_parameters_ignored(message: &Message<'_>) -> String {
+    match &message.parameters {
+        Parameters::None => {
+            format!("Self::{}", message.name)
+        }
+        Parameters::Positional(params) => {
+            let names = (0..params.len()).map(|_| "_").collect::<Vec<_>>().join(", ");
+            format!("Self::{}({})", message.name, names)
+        }
+        Parameters::Named(_params) => {
+            format!("Self::{} {{ .. }}", message.name)
         }
     }
 }

@@ -1,3 +1,6 @@
+use core::time::Duration;
+
+
 pub struct PamiConfig {
     pub name: &'static str,
     pub bt_mac: [u8; 6],
@@ -33,3 +36,5 @@ impl PamiConfig {
     }
 }
 
+
+pub const ASSERV_PERIOD: Duration = Duration::from_millis(15);

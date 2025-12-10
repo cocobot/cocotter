@@ -81,8 +81,8 @@ impl<H: AsservHardware> Asserv<H> {
     /// Run a single asserv step
     ///
     /// This method must be called periodically.
-    pub fn update(&mut self, elapsed: Duration) {
-        if elapsed <= Duration::ZERO {
+    pub fn update(&mut self, elapsed: &Duration) {
+        if elapsed <= &Duration::ZERO {
             return;  // Should not happen
         }
 
