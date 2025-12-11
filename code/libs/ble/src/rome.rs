@@ -15,7 +15,6 @@ use esp_idf_svc::{
 };
 use esp_idf_svc::sys::{EspError, ESP_FAIL};
 use enumset::enum_set;
-use log::{debug, error, info, warn};
 use crate::BleServer;
 
 const SERVICE_ROME_UUID: BtUuid = BtUuid::uuid128(0x8187_0000_ffa549699ab4e777ca411f95);
@@ -48,6 +47,7 @@ struct PeripheralState {
     service_handle: Option<Handle>,
     orders_handle: Option<Handle>,
     telemetry_handle: Option<Handle>,
+    telemetry_cccd_handle: Option<Handle>,
     connections: Vec<Connection>,
 }
 
@@ -75,6 +75,7 @@ impl RomePeripheral {
             service_handle: None,
             orders_handle: None,
             telemetry_handle: None,
+            telemetry_cccd_handle: None,
             connections: Vec::new(),
         }));
 
@@ -88,7 +89,7 @@ impl RomePeripheral {
         let cloned_instance = instance.clone();
         instance.server.gatts.subscribe(move |(gatt_if, event)| {
             if let Err(e) = cloned_instance.on_gatts_event(gatt_if, event) {
-                warn!("GATTS event error: {e:?}");
+                log::warn!("GATTS event error: {e:?}");
             }
         }).unwrap();
 
@@ -107,12 +108,12 @@ impl RomePeripheral {
                     for conn in &state.connections {
                         if conn.subscribed_telemetry {
                             if let Err(e) = instance.server.gatts.notify(gatt_if, conn.conn_id, telemetry_handle, &data) {
-                                warn!("GATT server notification error: {e:?}");
+                                log::warn!("GATT server notification error: {e:?}");
                             }
                         }
                     }
                 } else {
-                    warn!("No data recv on rome TX");
+                    log::warn!("No data recv on rome TX");
                     std::thread::sleep(Duration::from_millis(1000));
                 }
             }
@@ -122,12 +123,12 @@ impl RomePeripheral {
     }
 
     fn on_gatts_event(&self, gatt_if: GattInterface, event: GattsEvent) -> Result<(), EspError> {
-        debug!("Gatts event: {event:?}");
+        log::debug!("Gatts event: {event:?}");
 
         fn check_gatt_status(status: GattStatus) -> Result<(), EspError> {
             if status != GattStatus::Ok {
                 // Bad status is logged right away, but another error will be logged above
-                warn!("GATTS unexpected status: {status:?}");
+                log::warn!("GATTS unexpected status: {status:?}");
                 Err(EspError::from_infallible::<ESP_FAIL>())
             } else {
                 Ok(())
@@ -155,18 +156,18 @@ impl RomePeripheral {
                 self.register_descriptor(service_handle, attr_handle, descr_uuid)?;
             }
             GattsEvent::Mtu { conn_id, mtu } => {
-                info!("Connection {conn_id} requested MTU {mtu}");
+                log::info!("Connection {conn_id} requested MTU {mtu}");
             }
             GattsEvent::PeerConnected { conn_id, addr, .. } => {
-                info!("Peer connected ({conn_id}): {addr}");
+                log::info!("Peer connected ({conn_id}): {addr}");
                 self.create_conn(conn_id, addr)?;
             }
             GattsEvent::PeerDisconnected { conn_id, addr, .. } => {
-                info!("Peer disconnected ({conn_id}): {addr}");
+                log::info!("Peer disconnected ({conn_id}): {addr}");
                 self.delete_conn(conn_id)?;
             }
             GattsEvent::Read { conn_id, trans_id, addr, handle, offset, need_rsp, .. } => {
-                debug!("Read data from conn {conn_id}, addr {addr}, need_rsp: {need_rsp:?}");
+                log::debug!("Read data from conn {conn_id}, addr {addr}, need_rsp: {need_rsp:?}");
                 if need_rsp {
                     let mut response = GattResponse::new();
                     response
@@ -263,6 +264,14 @@ impl RomePeripheral {
             &[],
         )?;
 
+        self.server.gatts.add_descriptor(
+            service_handle,
+            &GattDescriptor {
+                uuid: CCCD_UUID,
+                permissions: enum_set!(Permission::ReadEncrypted | Permission::WriteEncrypted),
+            },
+        )?;
+
         Ok(())
     }
 
@@ -279,13 +288,6 @@ impl RomePeripheral {
             state.orders_handle = Some(attr_handle);
         } else if char_uuid == CHAR_ROME_TELEMETRY_UUID {
             state.telemetry_handle = Some(attr_handle);
-            self.server.gatts.add_descriptor(
-                service_handle,
-                &GattDescriptor {
-                    uuid: CCCD_UUID,
-                    permissions: enum_set!(Permission::ReadEncrypted | Permission::WriteEncrypted),
-                },
-            )?;
         } else {
             // Should never happen
         }
@@ -294,12 +296,14 @@ impl RomePeripheral {
 
     /// Called during GATT server service setup, when a descriptor is added
     fn register_descriptor(&self, service_handle: Handle, attr_handle: Handle, descr_uuid: BtUuid) -> Result<(), EspError> {
-        let state = self.state.lock().unwrap();
+        let mut state = self.state.lock().unwrap();
         if state.service_handle != Some(service_handle) {
             return Ok(());
         }
 
-        if Some(attr_handle) == state.telemetry_handle && descr_uuid == CCCD_UUID {
+        if descr_uuid == CCCD_UUID {
+            // As we only register one CCCD, we know it's the telemetry one
+            state.telemetry_cccd_handle = Some(attr_handle);
         } else {
             // Should never happen
         }
@@ -344,7 +348,7 @@ impl RomePeripheral {
         if state.connections.is_empty() {
             // Restart advertising, just in case (currently, should not be needed)
             if let Err(e) = self.server.start_advertising() {
-                error!("Unable to restart advertising: {e:?}");
+                log::error!("Unable to restart advertising: {e:?}");
             }
         }
 
@@ -365,14 +369,15 @@ impl RomePeripheral {
 
         let mut state = self.state.lock().unwrap();
 
-        if Some(handle) == state.telemetry_handle {
+        if Some(handle) == state.telemetry_cccd_handle {
             if let Some(conn) = state.get_connection_mut(conn_id) {
-                // Note: disable on invalid value
-                conn.subscribed_telemetry = parse_cccd_value(value) == Some(1);
+                // Note: enable on both 'notify' and 'indicate'
+                log::info!("Client {conn_id} subscribed to telemetry");
+                conn.subscribed_telemetry = parse_cccd_value(value) != Some(0);
             }
         } else if Some(handle) == state.orders_handle {
             if let Err(e) = self.rome_rx.send(Box::from(value)) {
-                error!("Failed to push RX data: {e:?}");
+                log::error!("Failed to push RX data: {e:?}");
             }
         } else {
             return false;

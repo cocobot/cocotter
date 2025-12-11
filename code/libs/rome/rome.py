@@ -244,6 +244,8 @@ def _parse_type_name(value) -> ParamType:
     if not isinstance(value, str):
         raise ValueError(f"Invalid parameter type: must be a string, got {value!r}")
     match value:
+        case "bool":
+            return ("fmt", "<?")
         case "u8":
             return ("fmt", "<B")
         case "u16":
