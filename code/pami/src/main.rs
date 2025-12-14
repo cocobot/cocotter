@@ -1,16 +1,12 @@
-mod config;
-mod events;
-mod pami_asserv;
-mod ui;
-
 use std::time::{Duration, Instant};
 use asserv::differential::conf::*;
 use asserv::{differential::Asserv, maths::XYA};
 use board_pami::{PamiBoard, PamiButtonsState, Vbatt};
 use vlx::VlxSensor;
-use config::PamiConfig;
-use crate::pami_asserv::{ASSERV_PERIOD, PamiAsservHardware};
-use crate::events::{AsservOrder, Periodicity, UiEvent};
+use pami::config::PamiConfig;
+use pami::events::{AsservOrder, Periodicity, UiEvent};
+use pami::pami_asserv::{ASSERV_PERIOD, PamiAsservHardware};
+use pami::ui::Ui;
 
 #[cfg(target_os = "espidf")]
 type PamiBoardImpl = board_pami::EspPamiBoard<'static>;
@@ -30,7 +26,7 @@ fn main() {
     };
 
     log::info!("Start UI thread");
-    let ui_queue = ui::Ui::run(board.display().unwrap());
+    let ui_queue = Ui::run(board.display().unwrap());
 
     let passkey_notifier = {
         let ui_queue = ui_queue.clone();
