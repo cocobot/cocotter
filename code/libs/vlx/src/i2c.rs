@@ -44,6 +44,7 @@ impl VlxI2cDriver {
         Self {}
     }
 
+    #[allow(dead_code)]
     pub(crate) fn vlx_i2c_write(address: u8, register: u16, data: &[u8]) -> bool {
         let mut singleton = match VLX_I2C_SINGLETON.lock() {
             Ok(guard) => guard,
@@ -57,6 +58,7 @@ impl VlxI2cDriver {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn vlx_i2c_read(address: u8, register: u16, data: &mut [u8]) -> bool {
         let mut singleton = match VLX_I2C_SINGLETON.lock() {
             Ok(guard) => guard,
