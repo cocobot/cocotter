@@ -1,5 +1,5 @@
 use core::time::Duration;
-use crate::conf::PidConf;
+pub use crate::conf::PidConf;
 
 
 /// Implement asserv hardware behavior

@@ -1,4 +1,4 @@
-use crate::conf::PidConf;
+pub use crate::conf::PidConf;
 use crate::maths::{Matrix33, MATRIX33_IDENTITY};
 
 
