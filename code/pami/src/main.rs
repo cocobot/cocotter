@@ -4,7 +4,7 @@ use asserv::{differential::Asserv, maths::XYA};
 use board_pami::{PamiBoard, PamiButtonsState, Vbatt};
 use vlx::VlxSensor;
 use pami::config::PamiConfig;
-use pami::events::{AsservOrder, Periodicity, UiEvent};
+use pami::events::{AsservOrder, Periodicity, UiEvent, UiTrigger};
 use pami::pami_asserv::{ASSERV_PERIOD, PamiAsservHardware};
 use pami::ui::Ui;
 
@@ -12,6 +12,13 @@ use pami::ui::Ui;
 type PamiBoardImpl = board_pami::EspPamiBoard<'static>;
 #[cfg(not(target_os = "espidf"))]
 use board_pami::MockPamiBoard as PamiBoardImpl;
+
+#[cfg(target_os = "espidf")]
+fn flush_display(display: &mut board_pami::esp::PamiDisplay) {
+    display.flush().unwrap();
+}
+#[cfg(not(target_os = "espidf"))]
+fn flush_display(_display: &mut board_pami::mock::PamiDisplay) {}
 
 
 fn main() {
@@ -26,16 +33,17 @@ fn main() {
     };
 
     log::info!("Start UI thread");
-    let ui_queue = Ui::run(board.display().unwrap());
+    let (ui_events, ui_triggers) = Ui::run_thread(config.name, board.display().unwrap(), flush_display);
 
     let passkey_notifier = {
-        let ui_queue = ui_queue.clone();
-        move |_addr, key| { ui_queue.send(UiEvent::KeypassNotif(key)).unwrap(); }
+        //TODO Don't notify during a match
+        let ui_events = ui_events.clone();
+        move |_addr, key| { ui_events.send(UiEvent::KeypassNotif(key)).unwrap(); }
     };
     let (rome_tx, rome_rx) = board.rome(config.name.into(), passkey_notifier).unwrap();
 
     let mut vlx = board.vlx_sensor().unwrap();
-    log::info!("Initialiaze VLX");
+    log::info!("Initialize VLX");
     if let Err(err) = vlx.init() {
         log::error!("VLX initalization failed: {err:?}");
     }
@@ -80,8 +88,6 @@ fn main() {
 
     log::info!("Start BLE TX dummy main loop");
 
-    let mut button_state = PamiButtonsState(0);
-
     let mut asserv = Asserv::new(PamiAsservHardware::new(&mut board));
     asserv.set_conf(AsservConf {
         pid_dist: PidConf {
@@ -117,6 +123,11 @@ fn main() {
     let mut vbatt_period = Periodicity::new(Duration::from_millis(2000));
     let mut vlx_period = Periodicity::new(Duration::from_millis(2000));
 
+    // Keep track of last state, to avoid useless UI updates
+    let mut button_state = PamiButtonsState(0);
+    let mut battery_percent = 0;
+    let mut emergency_stop_state = false;
+
     loop {
         let now = Instant::now();
 
@@ -148,18 +159,6 @@ fn main() {
             }
         }
 
-        /*
-        // Heartbeat + test BLE message
-        if tick % 10 == 0 {
-            //heartbeat_led.toggle().ok();
-            let data = format!("tx-{tick}");
-            log::debug!("BLE send data: {:?}", data);
-            if let Err(err) = rome_tx.send(data.as_bytes().into()) {
-                log::error!("BLE send error: {:?}", err);
-            }
-        }
-        */
-
         // VLX capture
         if vlx_period.update(&now) {
             match vlx.get_distance() {
@@ -168,24 +167,49 @@ fn main() {
             }
         }
 
-        // Dpad buttons
+        // Dpad and emergency stop buttons
         if buttons_period.update(&now) {
             let new_state = buttons.read_state();
             if new_state != button_state {
                 let dpad = new_state.dpad();
-                ui_queue.send(UiEvent::Dpad(dpad)).unwrap();
-                log::info!("New buttons state: {}  {:08b}", dpad.as_char(), new_state.0);
+                ui_events.send(UiEvent::Dpad(dpad)).unwrap();
                 button_state = new_state;
+            }
+
+            let new_stop = asserv.hardware_mut().emergency_stop_active();
+            if new_stop != emergency_stop_state {
+                emergency_stop_state = new_stop;
+                log::info!("Emergency stop changed: {new_stop}");
+                ui_events.send(UiEvent::EmergencyStop(new_stop)).unwrap();
             }
         }
 
         // Battery voltage
         if vbatt_period.update(&now) {
-            let (vbatt_mv, vbatt_pct) = vbatt.read_vbatt();
-            log::info!("Battery: {vbatt_mv} mV, {vbatt_pct}%");
-            ui_queue.send(UiEvent::Battery { percent: vbatt_pct }).unwrap();
+            let new_vbatt = vbatt.read_vbatt();
+            let (vbatt_mv, vbatt_pct) = new_vbatt;
             if let Err(err) = rome_tx.send(rome::Message::BatteryLevel { mv: vbatt_mv, percent: vbatt_pct }.encode()) {
                 log::error!("BLE send error: {:?}", err);
+            }
+            if vbatt_pct != battery_percent {
+                battery_percent = vbatt_pct;
+                log::info!("Battery: {vbatt_mv} mV, {vbatt_pct}%");
+                ui_events.send(UiEvent::Battery { percent: vbatt_pct }).unwrap();
+            }
+        }
+
+        // Process UI events
+        while let Ok(trigger) = ui_triggers.try_recv() {
+            match trigger {
+                UiTrigger::ChangeTeam(team) => {
+                    ui_events.send(UiEvent::ChangeTeam(team)).unwrap();
+                }
+                UiTrigger::ChangeMode(mode) => {
+                    ui_events.send(UiEvent::ChangeMode(mode)).unwrap();
+                }
+                UiTrigger::Reboot => {
+                    PamiBoardImpl::restart();
+                }
             }
         }
 

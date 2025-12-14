@@ -35,10 +35,36 @@ impl Periodicity {
 }
 
 
+#[derive(Clone, Copy, PartialEq, Eq,)]
+pub enum UiTeam {
+    Unknown,
+    Left,
+    Right,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq,)]
+pub enum UiPamiMode {
+    Match,
+    QuickStart,
+    Debug,
+}
+
+/// Event to sent to UI to update its state
+//TODO UiUpdateEvent
 pub enum UiEvent {
     Battery { percent: u8 },
+    EmergencyStop(bool),
     Dpad(DpadState),
     KeypassNotif(u32), 
+    ChangeTeam(UiTeam),
+    ChangeMode(UiPamiMode),
+}
+
+/// Event triggered by the UI, usually in response to user actions
+pub enum UiTrigger {
+    ChangeTeam(UiTeam),
+    ChangeMode(UiPamiMode),
+    Reboot,
 }
 
 

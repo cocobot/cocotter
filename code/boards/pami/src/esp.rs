@@ -145,6 +145,10 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         }
     }
 
+    fn restart() {
+        esp_idf_svc::hal::reset::restart();
+    }
+
     fn bt_mac_address(&self) -> [u8; 6] {
         let mut mac = [0; 6];
         let mac_type = esp_idf_svc::sys::esp_mac_type_t_ESP_MAC_BT;

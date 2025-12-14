@@ -36,6 +36,8 @@ pub trait PamiBoard {
     ///
     /// Call this method at the very beginning of main.
     fn init() -> Self;
+    /// Restart the board
+    fn restart();
 
     /// Return Bluetooth MAC address of the device
     fn bt_mac_address(&self) -> [u8; 6];

@@ -15,10 +15,12 @@ use crate::{Encoder, PamiBoard, PamiButtons, PamiMotors, Vbatt};
 
 pub struct MockPamiBoard;
 
+pub type PamiDisplay = MockDisplay<BinaryColor>;
+
 impl PamiBoard for MockPamiBoard {
     type I2c = I2cMock;
     type Led = PinMock;
-    type Display = MockDisplay<BinaryColor>;
+    type Display = PamiDisplay;
     type Vbatt = MockVbatt;
     type Vlx = MockVlxSensor;
     type MotorEncoder = MockEncoder;
@@ -27,6 +29,11 @@ impl PamiBoard for MockPamiBoard {
 
     fn init() -> Self {
         Self
+    }
+
+    fn restart() {
+        // Don't actually restart (it's not trivial)
+        log::warn!("Restart requested");
     }
 
     fn bt_mac_address(&self) -> [u8; 6] {
