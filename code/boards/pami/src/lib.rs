@@ -5,7 +5,7 @@ pub mod mock;
 
 use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal::{
-    digital::{InputPin, StatefulOutputPin},
+    digital::StatefulOutputPin,
     i2c::I2c,
     pwm::SetDutyCycle,
 };
@@ -30,7 +30,6 @@ pub trait PamiBoard {
     type Vlx: VlxSensor;
     type MotorEncoder: Encoder<i32>;
     type MotorPwm: SetDutyCycle;
-    type EmergencyStop: InputPin;
 
     /// Initialize the board and return its instance
     ///
@@ -49,7 +48,7 @@ pub trait PamiBoard {
     fn vbatt(&mut self) -> Option<Self::Vbatt>;
     fn vlx_sensor(&mut self) -> Option<Self::Vlx>;
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>>;
-    fn emergency_stop(&mut self) -> Option<Self::EmergencyStop>;
+    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
 
     /// Configure and return ROME interface
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;

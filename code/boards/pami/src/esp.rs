@@ -63,7 +63,6 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
     type Vlx = PamiVlxSensor;
     type MotorEncoder = EspEncoder<'d>;
     type MotorPwm = LedcDriver<'static>;
-    type EmergencyStop = PinDriver<'static, AnyInputPin, Input>;
 
     fn init() -> Self {
         esp_idf_svc::sys::link_patches();
@@ -185,8 +184,10 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         self.motors.take()
     }
 
-    fn emergency_stop(&mut self) -> Option<Self::EmergencyStop> {
-        self.emergency_stop.take()
+    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
+        let pin = self.emergency_stop.take()?;
+        let f = move || { pin.is_low() };
+        Some(Box::new(f))
     }
 
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {

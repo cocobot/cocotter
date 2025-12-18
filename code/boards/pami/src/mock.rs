@@ -25,7 +25,6 @@ impl PamiBoard for MockPamiBoard {
     type Vlx = MockVlxSensor;
     type MotorEncoder = MockEncoder;
     type MotorPwm = SetDutyCycleMock;
-    type EmergencyStop = PinMock;
 
     fn init() -> Self {
         Self
@@ -68,7 +67,7 @@ impl PamiBoard for MockPamiBoard {
         None
     }
 
-    fn emergency_stop(&mut self) -> Option<Self::EmergencyStop> {
+    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
         None
     }
 

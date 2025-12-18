@@ -1,10 +1,7 @@
 use std::time::Duration;
 use asserv::differential::conf::AsservHardware;
 use board_pami::{Encoder, PamiBoard, PamiMotor, PamiMotors};
-use embedded_hal::{
-    digital::InputPin,
-    pwm::SetDutyCycle,
-};
+use embedded_hal::pwm::SetDutyCycle;
 
 pub const ASSERV_PERIOD: Duration = Duration::from_millis(15);
 
@@ -13,7 +10,7 @@ type PamiMotorImpl<B> = PamiMotor<<B as PamiBoard>::MotorEncoder, <B as PamiBoar
 type PamiMotorsImpl<B> = PamiMotors<<B as PamiBoard>::MotorEncoder, <B as PamiBoard>::MotorPwm>;
 
 pub struct PamiAsservHardware<B: PamiBoard> {
-    emergency_stop: B::EmergencyStop,
+    emergency_stop: Box<dyn FnMut() -> bool>,
     motors: PamiMotorsImpl<B>,
     last_encoder_reads: [i32; 2],
 }
@@ -57,7 +54,7 @@ impl<B: PamiBoard> PamiAsservHardware<B> {
 impl<B: PamiBoard> AsservHardware for PamiAsservHardware<B> {
     fn emergency_stop_active(&mut self) -> bool {
         //TODO Fallback to true? or false?
-        InputPin::is_low(&mut self.emergency_stop).unwrap_or(true)
+        (self.emergency_stop)()
     }
 
     fn set_motor_consigns(&mut self, values: [f32; 2]) {
