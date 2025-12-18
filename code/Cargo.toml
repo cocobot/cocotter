@@ -10,6 +10,7 @@ members = [
     "libs/tca6408",
     "libs/vlx",
 
+    "boards/common",
     "boards/pami",
     "boards/sabotter",
     "boards/simulator",
