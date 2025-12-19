@@ -1,10 +1,11 @@
 use std::time::{Duration, Instant};
 use asserv::differential::conf::*;
 use asserv::{differential::Asserv, maths::XYA};
+use board_common::Periodicity;
 use board_pami::{BatteryLevel, PamiBoard, PamiButtonsState};
 use vlx::VlxSensor;
 use pami::config::PamiConfig;
-use pami::events::{AsservOrder, Periodicity, UiEvent, UiTrigger};
+use pami::events::{AsservOrder, UiEvent, UiTrigger};
 use pami::pami_asserv::{ASSERV_PERIOD, PamiAsservHardware};
 use pami::ui::Ui;
 

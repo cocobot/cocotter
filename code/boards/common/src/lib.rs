@@ -2,6 +2,8 @@
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
+use std::time::{Duration, Instant};
+
 
 /// Read battery voltage
 pub trait BatteryLevel {
@@ -63,4 +65,43 @@ impl Team {
         }
     }
 }
+
+
+/// Helper for periodic events
+///
+/// Call `update()` with the the current date to check if the event must be triggered.
+/// After an update, the next update is scheduled based on the current date, not the previous
+/// scheduled date. As a result error may propagate.
+pub struct Periodicity {
+    next: Instant,
+    period: Duration,
+}
+
+impl Periodicity {
+    pub fn new(period: Duration) -> Self {
+        Self {
+            next: Instant::now(),
+            period,
+        }
+    }
+
+    /// Update periodicity, return `true` if a new period is reached
+    pub fn update(&mut self, now: &Instant) -> bool {
+        if now >= &self.next {
+            self.next = *now + self.period;
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn next(&self) -> &Instant {
+        &self.next
+    }
+
+    pub fn period(&self) -> &Duration {
+        &self.period
+    }
+}
+
 

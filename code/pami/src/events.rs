@@ -1,39 +1,6 @@
-use std::time::{Duration, Instant};
 use asserv::maths::XYA;
 use board_common::Team;
 use board_pami::DpadState;
-
-
-pub struct Periodicity {
-    next: Instant,
-    period: Duration,
-}
-
-impl Periodicity {
-    pub fn new(period: Duration) -> Self {
-        Self {
-            next: Instant::now(),
-            period,
-        }
-    }
-
-    pub fn update(&mut self, instant: &Instant) -> bool {
-        if instant >= &self.next {
-            self.next = *instant + self.period;
-            true
-        } else {
-            false
-        }
-    }
-
-    pub fn next(&self) -> &Instant {
-        &self.next
-    }
-
-    pub fn period(&self) -> &Duration {
-        &self.period
-    }
-}
 
 
 #[derive(Clone, Copy, PartialEq, Eq)]
