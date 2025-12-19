@@ -44,6 +44,14 @@ impl PamiBoard for MockPamiBoard {
         None
     }
 
+    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
+        None
+    }
+
+    fn starting_cord(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
+        None
+    }
+
     fn heartbeat_led(&mut self) -> Option<Self::Led> {
         None
     }
@@ -65,10 +73,6 @@ impl PamiBoard for MockPamiBoard {
     }
 
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>> {
-        None
-    }
-
-    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
         None
     }
 

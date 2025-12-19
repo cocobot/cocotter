@@ -11,7 +11,7 @@ use embedded_graphics::{
 };
 use board_common::Team;
 use board_pami::DpadState;
-use crate::events::{UiEvent, UiPamiMode, UiTrigger};
+use crate::events::*;
 
 
 const DISPLAY_WIDTH: u32 = 128;
@@ -306,7 +306,8 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
 
 struct MainScreen {
     team: Team,
-    mode: UiPamiMode,
+    start_delay: u8,
+    pami_role: PamiRole,
     focused: Option<u8>,
 }
 
@@ -314,7 +315,8 @@ impl Default for MainScreen {
     fn default() -> Self {
         Self {
             team: Team::None,
-            mode: UiPamiMode::Match,
+            start_delay: 0,
+            pami_role: PamiRole::Granary,
             // Start unfocused, it smoother for the eye
             focused: None,
         }
@@ -349,11 +351,10 @@ impl MainScreen {
         .alignment(Alignment::Center)
         .build();
 
-    fn mode_label(&self) -> &'static str {
-        match self.mode {
-            UiPamiMode::Match => "MATCH",
-            UiPamiMode::QuickStart => "RAPIDE",
-            UiPamiMode::Debug => "DEBUG",
+    fn pami_role_label(&self) -> &'static str {
+        match self.pami_role {
+            PamiRole::Granary => "GRENIER",
+            PamiRole::Land => "TERRAIN",
         }
     }
 
@@ -368,17 +369,19 @@ impl MainScreen {
                 ScreenEventResult::Trigger(UiTrigger::ChangeTeam(team))
             },
             1 => {
-                let mode = match self.mode {
-                    UiPamiMode::Match => UiPamiMode::QuickStart,
-                    UiPamiMode::QuickStart => UiPamiMode::Debug,
-                    UiPamiMode::Debug => UiPamiMode::Match,
-                };
-                ScreenEventResult::Trigger(UiTrigger::ChangeMode(mode))
+                let delay =
+                    if self.start_delay < 10 { 10 }
+                    else if self.start_delay < 90 { 90 }
+                    else { 3 };
+                ScreenEventResult::Trigger(UiTrigger::ChangeStartDelay(delay))
             },
             2 => {
-                //TODO Require a long press
-                ScreenEventResult::Trigger(UiTrigger::Reboot)
-            }
+                let role = match self.pami_role {
+                    PamiRole::Granary => PamiRole::Land,
+                    PamiRole::Land => PamiRole::Granary,
+                };
+                ScreenEventResult::Trigger(UiTrigger::ChangeRole(role))
+            },
             _ => {
                 // Should not happen
                 ScreenEventResult::None
@@ -392,10 +395,12 @@ impl MainScreen {
     fn draw_boxes<T: DrawTarget<Color = BinaryColor>>(&self, target: &mut T) -> Result<(), T::Error> {
         const { assert!(Self::CELLS <= Self::COLS * Self::ROWS); };
 
-        let box_labels: [&'static str; Self::CELLS as usize] = [
+        // Note: allocation could be avoided
+        let delay_str = format!("{}s", self.start_delay);
+        let box_labels: [&str; Self::CELLS as usize] = [
             self.team.name_upper(),
-            self.mode_label(),
-            "REBOOT",
+            delay_str.as_str(),
+            self.pami_role_label(),
         ];
         for (i, label) in box_labels.iter().enumerate() {
             let focused = Some(i as u8) == self.focused;
@@ -413,6 +418,13 @@ impl MainScreen {
         }
 
         Ok(())
+    }
+
+    /// Clear a box background
+    fn clear_box<T: DrawTarget<Color = BinaryColor>>(&self, target: &mut T, index: u8) -> Result<(), T::Error> {
+        Rectangle::new(Self::box_origin(index), Self::BOX_SIZE)
+            .into_styled(Self::BOX_BG_STYLE)
+            .draw(target)
     }
 
     const fn box_text_center(index: u8) -> Point {
@@ -438,9 +450,9 @@ impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MainScreen {
     }
 
     fn on_event_active(&mut self, event: &UiEvent, target: &mut T) -> Result<ScreenEventResult, T::Error> {
-        let mut new_focused = self.focused;
         let updated = match event {
             UiEvent::Dpad(dpad) => {
+                let mut new_focused = self.focused;
                 if let Some(focused) = self.focused {
                     // Note: empty cells are selectable; it could be improved but it's complicated
                     let current_x = focused % Self::COLS;
@@ -476,28 +488,33 @@ impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MainScreen {
                 } else if *dpad != DpadState::None {
                     new_focused = Some(0);
                 }
+                // Clear the rectangle of the previously focused box
+                if self.focused != new_focused {
+                    if let Some(focused) = self.focused {
+                        self.clear_box(target, focused)?;
+                    }
+                    self.focused = new_focused;
+                }
                 true
             }
             UiEvent::ChangeTeam(team) => {
                 self.team = *team;
+                self.clear_box(target, 0)?;
                 true
             }
-            UiEvent::ChangeMode(mode) => {
-                self.mode = *mode;
+            UiEvent::ChangeStartDelay(delay) => {
+                self.start_delay = *delay;
+                self.clear_box(target, 1)?;
+                true
+            }
+            UiEvent::ChangeRole(role) => {
+                self.pami_role = *role;
+                self.clear_box(target, 2)?;
                 true
             }
             _ => false,
         };
         if updated {
-            // Clear the rectangle of the previously focused box
-            if self.focused != new_focused {
-                if let Some(focused) = self.focused {
-                    Rectangle::new(Self::box_origin(focused), Self::BOX_SIZE)
-                        .into_styled(Self::BOX_BG_STYLE)
-                        .draw(target)?;
-                }
-                self.focused = new_focused;
-            }
             self.draw_boxes(target)?;
             Ok(ScreenEventResult::Updated)
         } else {
@@ -510,8 +527,11 @@ impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MainScreen {
             UiEvent::ChangeTeam(team) => {
                 self.team = *team;
             }
-            UiEvent::ChangeMode(mode) => {
-                self.mode = *mode;
+            UiEvent::ChangeStartDelay(delay) => {
+                self.start_delay = *delay;
+            }
+            UiEvent::ChangeRole(role) => {
+                self.pami_role = *role;
             }
             _ => {},
         }

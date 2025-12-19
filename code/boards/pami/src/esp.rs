@@ -45,6 +45,8 @@ pub type PamiDisplay = Ssd1306<DisplayI2CInterface<I2cType>, DisplaySize128x64, 
 
 pub struct EspPamiBoard<'d> {
     battery_level: Option<PamiBatteryLevel>,
+    emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
+    starting_cord: Option<PinDriver<'static, AnyInputPin, Input>>,
     ble: Option<BtDriver<'static, Ble>>,
     buttons: Option<PamiButtons<I2cType>>,
     display: Option<PamiDisplay>,
@@ -52,7 +54,6 @@ pub struct EspPamiBoard<'d> {
     line_sensor: Option<TCA6408<I2cType>>,
     vlx_sensor: Option<PamiVlxSensor>,
     motors: Option<PamiMotors<EspEncoder<'d>, LedcDriver<'static>>>,
-    emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
 }
 
 impl<'d> PamiBoard for EspPamiBoard<'d> {
@@ -130,17 +131,19 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         };
 
         let emergency_stop = PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio15)).unwrap();
+        let starting_cord = PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio2)).unwrap();
 
         Self {
+            battery_level: Some(battery_level),
+            emergency_stop: Some(emergency_stop),
+            starting_cord: Some(starting_cord),
             heartbeat_led: Some(heartbeat_led),
             ble,
             line_sensor: Some(line_sensor),
             buttons: Some(buttons),
             display: Some(display),
-            battery_level: Some(battery_level),
             vlx_sensor: Some(vlx_sensor),
             motors: Some(motors),
-            emergency_stop: Some(emergency_stop),
         }
     }
 
@@ -158,6 +161,18 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 
     fn battery_level(&mut self) -> Option<Self::BatteryLevel> {
         self.battery_level.take()
+    }
+
+    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
+        let pin = self.emergency_stop.take()?;
+        let f = move || { pin.is_low() };
+        Some(Box::new(f))
+    }
+
+    fn starting_cord(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
+        let pin = self.starting_cord.take()?;
+        let f = move || { pin.is_low() };
+        Some(Box::new(f))
     }
 
     fn heartbeat_led(&mut self) -> Option<Self::Led> {
@@ -182,12 +197,6 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>> {
         self.motors.take()
-    }
-
-    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
-        let pin = self.emergency_stop.take()?;
-        let f = move || { pin.is_low() };
-        Some(Box::new(f))
     }
 
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {

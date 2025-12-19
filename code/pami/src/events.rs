@@ -1,13 +1,12 @@
 use asserv::maths::XYA;
-use board_common::Team;
-use board_pami::DpadState;
+pub use board_common::Team;
+pub use board_pami::DpadState;
 
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-pub enum UiPamiMode {
-    Match,
-    QuickStart,
-    Debug,
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum PamiRole {
+    Granary,
+    Land,
 }
 
 /// Event to sent to UI to update its state
@@ -18,14 +17,15 @@ pub enum UiEvent {
     Dpad(DpadState),
     KeypassNotif(u32), 
     ChangeTeam(Team),
-    ChangeMode(UiPamiMode),
+    ChangeStartDelay(u8),
+    ChangeRole(PamiRole),
 }
 
 /// Event triggered by the UI, usually in response to user actions
 pub enum UiTrigger {
     ChangeTeam(Team),
-    ChangeMode(UiPamiMode),
-    Reboot,
+    ChangeStartDelay(u8),
+    ChangeRole(PamiRole),
 }
 
 
@@ -36,5 +36,17 @@ pub enum AsservOrder {
     GotoARel(f32),
     ResetPosition(XYA),
     //TODO Configuration
+}
+
+
+/// Steps for the main routine
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum MainStep {
+    /// Selecting team or waiting to unplug cord
+    Free,
+    /// Starting cord plugged in
+    CordPlugged,
+    /// Match started
+    Match,
 }
 

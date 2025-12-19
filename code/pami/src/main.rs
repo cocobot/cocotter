@@ -1,11 +1,13 @@
 use std::time::{Duration, Instant};
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use asserv::differential::conf::*;
 use asserv::{differential::Asserv, maths::XYA};
 use board_common::Periodicity;
-use board_pami::{BatteryLevel, PamiBoard, PamiButtonsState};
+use board_pami::{BatteryLevel, PamiBoard};
 use vlx::VlxSensor;
 use pami::config::PamiConfig;
-use pami::events::{AsservOrder, UiEvent, UiTrigger};
+use pami::events::*;
 use pami::pami_asserv::{ASSERV_PERIOD, PamiAsservHardware};
 use pami::ui::Ui;
 
@@ -36,10 +38,16 @@ fn main() {
     log::info!("Start UI thread");
     let (ui_events, ui_triggers) = Ui::run_thread(config.name, board.display().unwrap(), flush_display);
 
+    // Use a "enabled" flag to disable during a match
+    let passkey_enabled = Arc::new(AtomicBool::new(true));
     let passkey_notifier = {
-        //TODO Don't notify during a match
+        let passkey_enabled = passkey_enabled.clone();
         let ui_events = ui_events.clone();
-        move |_addr, key| { ui_events.send(UiEvent::KeypassNotif(key)).unwrap(); }
+        move |_addr, key| {
+            if passkey_enabled.load(Ordering::Relaxed) {
+                ui_events.send(UiEvent::KeypassNotif(key)).unwrap();
+            }
+        }
     };
     let (rome_tx, rome_rx) = board.rome(config.name.into(), passkey_notifier).unwrap();
 
@@ -124,13 +132,75 @@ fn main() {
     let mut battery_period = Periodicity::new(Duration::from_millis(2000));
     let mut vlx_period = Periodicity::new(Duration::from_millis(2000));
 
+    let mut starting_cord_read = board.starting_cord().unwrap();
+
     // Keep track of last state, to avoid useless UI updates
-    let mut button_state = PamiButtonsState(0);
     let mut battery_percent = 0;
-    let mut emergency_stop_state = false;
+    let mut button_state = buttons.read_state();
+    let mut emergency_stop_state = asserv.hardware_mut().emergency_stop_active();
+    let mut starting_cord_state = (starting_cord_read)();
+    let (mut team, mut start_delay, mut pami_role) = {
+        let switches = button_state.switches();
+        (
+            match switches[0] {
+                false => Team::Left,
+                true => Team::Right,
+            },
+            match switches[1] {
+                false => 90,
+                true => 3,
+            },
+            match switches[2] {
+                false => PamiRole::Granary,
+                true => PamiRole::Land,
+            },
+        )
+    };
+    let mut main_step = MainStep::Free;
+
+    // Initialize state and UI state
+    ui_events.send(UiEvent::ChangeTeam(team)).unwrap();
+    ui_events.send(UiEvent::ChangeStartDelay(start_delay)).unwrap();
+    ui_events.send(UiEvent::ChangeRole(pami_role)).unwrap();
+    ui_events.send(UiEvent::EmergencyStop(emergency_stop_state)).unwrap();
 
     loop {
         let now = Instant::now();
+
+        // Starting cord: check whenever possible
+        //TODO Add anti-rebound?
+        {
+            let new_state = (starting_cord_read)();
+            if new_state != starting_cord_state {
+                log::info!("Starting cord state: {}", new_state);
+                starting_cord_state = new_state;
+                match (main_step, new_state) {
+                    (MainStep::Free, false) => {
+                        // Initial unplugging, no change
+                    }
+                    (MainStep::Free, true) => {
+                        // Starting cord plugging, preparing for match
+                        log::warn!("Ready for match, remove starting cord to start");
+                        main_step = MainStep::CordPlugged;
+                        // Note: it's not possible to disable BLE advertising.
+                        // It would require to make RomePeripheral available for non-ESP target,
+                        // and update the board interface.
+                        passkey_enabled.store(false, Ordering::Relaxed);
+                    }
+                    (MainStep::CordPlugged, false) => {
+                        log::warn!("Start match, team {}, delay {}s, role {:?}", team.name(), start_delay, pami_role);
+                        main_step = MainStep::Match;
+                        //TODO Match starts! Trigger events (UI, etc.)
+                    }
+                    (MainStep::CordPlugged, true) => {
+                        unreachable!();
+                    }
+                    (MainStep::Match, _) => {
+                        // Ignore changes during a match
+                    }
+                }
+            }
+        }
 
         // Note: "disconnected" errors are not detected
         while let Ok(order) = asserv_order_recv.try_recv() {
@@ -168,12 +238,15 @@ fn main() {
             }
         }
 
-        // Dpad and emergency stop buttons
+        // Buttons: dpad, switches, emergency stop
         if buttons_period.update(&now) {
             let new_state = buttons.read_state();
             if new_state != button_state {
                 let dpad = new_state.dpad();
-                ui_events.send(UiEvent::Dpad(dpad)).unwrap();
+                if dpad != button_state.dpad() {
+                    ui_events.send(UiEvent::Dpad(dpad)).unwrap();
+                }
+                // Note: don't detect switch changes at runtime, only at startup
                 button_state = new_state;
             }
 
@@ -202,14 +275,17 @@ fn main() {
         // Process UI events
         while let Ok(trigger) = ui_triggers.try_recv() {
             match trigger {
-                UiTrigger::ChangeTeam(team) => {
-                    ui_events.send(UiEvent::ChangeTeam(team)).unwrap();
+                UiTrigger::ChangeTeam(new) => {
+                    team = new;
+                    ui_events.send(UiEvent::ChangeTeam(new)).unwrap();
                 }
-                UiTrigger::ChangeMode(mode) => {
-                    ui_events.send(UiEvent::ChangeMode(mode)).unwrap();
+                UiTrigger::ChangeStartDelay(new) => {
+                    start_delay = new;
+                    ui_events.send(UiEvent::ChangeStartDelay(new)).unwrap();
                 }
-                UiTrigger::Reboot => {
-                    PamiBoardImpl::restart();
+                UiTrigger::ChangeRole(new) => {
+                    pami_role = new;
+                    ui_events.send(UiEvent::ChangeRole(new)).unwrap();
                 }
             }
         }

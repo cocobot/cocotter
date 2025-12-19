@@ -43,13 +43,14 @@ pub trait PamiBoard {
     fn bt_mac_address(&self) -> [u8; 6];
 
     fn battery_level(&mut self) -> Option<Self::BatteryLevel>;
+    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
+    fn starting_cord(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
     fn heartbeat_led(&mut self) -> Option<Self::Led>;
     fn line_sensor(&mut self) -> Option<TCA6408<Self::I2c>>;
     fn buttons(&mut self) -> Option<PamiButtons<Self::I2c>>;
     fn display(&mut self) -> Option<Self::Display>;
     fn vlx_sensor(&mut self) -> Option<Self::Vlx>;
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>>;
-    fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
 
     /// Configure and return ROME interface
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;
@@ -102,9 +103,9 @@ impl PamiButtonsState {
 
     pub fn switches(&self) -> [bool; 3] {
         [
-            self.0 & 0b001_00000 != 0,
-            self.0 & 0b010_00000 != 0,
             self.0 & 0b100_00000 != 0,
+            self.0 & 0b010_00000 != 0,
+            self.0 & 0b001_00000 != 0,
         ]
     }
 }
