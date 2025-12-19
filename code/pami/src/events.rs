@@ -1,5 +1,6 @@
 use std::time::{Duration, Instant};
 use asserv::maths::XYA;
+use board_common::Team;
 use board_pami::DpadState;
 
 
@@ -35,14 +36,7 @@ impl Periodicity {
 }
 
 
-#[derive(Clone, Copy, PartialEq, Eq,)]
-pub enum UiTeam {
-    Unknown,
-    Left,
-    Right,
-}
-
-#[derive(Clone, Copy, PartialEq, Eq,)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum UiPamiMode {
     Match,
     QuickStart,
@@ -56,13 +50,13 @@ pub enum UiEvent {
     EmergencyStop(bool),
     Dpad(DpadState),
     KeypassNotif(u32), 
-    ChangeTeam(UiTeam),
+    ChangeTeam(Team),
     ChangeMode(UiPamiMode),
 }
 
 /// Event triggered by the UI, usually in response to user actions
 pub enum UiTrigger {
-    ChangeTeam(UiTeam),
+    ChangeTeam(Team),
     ChangeMode(UiPamiMode),
     Reboot,
 }

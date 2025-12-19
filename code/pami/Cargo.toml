@@ -8,6 +8,7 @@ name = "pami"
 
 [dependencies]
 asserv = { path = "../libs/asserv" }
+board-common = { path = "../boards/common" }
 board-pami = { path = "../boards/pami" }
 embedded-graphics = "0.8"
 embedded-hal = "1.0"

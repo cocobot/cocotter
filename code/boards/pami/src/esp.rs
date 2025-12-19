@@ -36,7 +36,7 @@ use ssd1306::{
 use ble::{BleBuilder, RomePeripheral};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxI2cDriver, VlxError, VlxSensor, ZoneAlarm, l5::VL53L5CX};
-use crate::{Encoder, PamiBoard, PamiButtons, PamiMotor, PamiMotors, Vbatt};
+use crate::{BatteryLevel, Encoder, PamiBoard, PamiButtons, PamiMotor, PamiMotors};
 
 
 pub type I2cType = MutexDevice<'static, I2cDriver<'static>>;
@@ -44,22 +44,22 @@ pub type PamiDisplay = Ssd1306<DisplayI2CInterface<I2cType>, DisplaySize128x64, 
 
 
 pub struct EspPamiBoard<'d> {
+    battery_level: Option<PamiBatteryLevel>,
     ble: Option<BtDriver<'static, Ble>>,
     buttons: Option<PamiButtons<I2cType>>,
     display: Option<PamiDisplay>,
     heartbeat_led: Option<PinDriver<'static, AnyOutputPin, Output>>,
     line_sensor: Option<TCA6408<I2cType>>,
-    vbatt: Option<PamiVbatt>,
     vlx_sensor: Option<PamiVlxSensor>,
     motors: Option<PamiMotors<EspEncoder<'d>, LedcDriver<'static>>>,
     emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
 }
 
 impl<'d> PamiBoard for EspPamiBoard<'d> {
+    type BatteryLevel = PamiBatteryLevel;
     type I2c = I2cType;
     type Led = PinDriver<'static, AnyOutputPin, Output>;
     type Display = PamiDisplay;
-    type Vbatt = PamiVbatt;
     type Vlx = PamiVlxSensor;
     type MotorEncoder = EspEncoder<'d>;
     type MotorPwm = LedcDriver<'static>;
@@ -95,7 +95,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
             peripherals.pins.gpio1,
             &AdcChannelConfig { attenuation: attenuation::DB_11, ..Default::default() },
         ).unwrap();
-        let vbatt = PamiVbatt(adc_vbatt);
+        let battery_level = PamiBatteryLevel(adc_vbatt);
 
         let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
 
@@ -137,7 +137,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
             line_sensor: Some(line_sensor),
             buttons: Some(buttons),
             display: Some(display),
-            vbatt: Some(vbatt),
+            battery_level: Some(battery_level),
             vlx_sensor: Some(vlx_sensor),
             motors: Some(motors),
             emergency_stop: Some(emergency_stop),
@@ -156,6 +156,10 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         mac
     }
 
+    fn battery_level(&mut self) -> Option<Self::BatteryLevel> {
+        self.battery_level.take()
+    }
+
     fn heartbeat_led(&mut self) -> Option<Self::Led> {
         self.heartbeat_led.take()
     }
@@ -170,10 +174,6 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 
     fn display(&mut self) -> Option<Self::Display> {
         self.display.take()
-    }
-
-    fn vbatt(&mut self) -> Option<Self::Vbatt> {
-        self.vbatt.take()
     }
 
     fn vlx_sensor(&mut self) -> Option<Self::Vlx> {
@@ -203,9 +203,9 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 }
 
 
-pub struct PamiVbatt(AdcChannelDriver<'static, Gpio1, Rc<AdcDriver<'static, ADC1>>>);
+pub struct PamiBatteryLevel(AdcChannelDriver<'static, Gpio1, Rc<AdcDriver<'static, ADC1>>>);
 
-impl PamiVbatt {
+impl PamiBatteryLevel {
     const fn raw_to_mv(raw: f32) -> f32 {
         const VBATT_RL_KOHMS: f32 = 91.0;
         const VBATT_RH_KOHMS: f32 = 91.0;
@@ -243,7 +243,7 @@ impl PamiVbatt {
     }
 }
 
-impl Vbatt for PamiVbatt {
+impl BatteryLevel for PamiBatteryLevel {
     fn read_vbatt(&mut self) -> (u16, u8) {
         let raw = self.0.read().unwrap() as f32;
         let mv = Self::raw_to_mv(raw);

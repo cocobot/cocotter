@@ -8,9 +8,10 @@ use embedded_graphics::{
     pixelcolor::BinaryColor,
     mock_display::MockDisplay,
 };
+use board_common::mock::{MockBatteryLevel, MockEncoder};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxError, VlxSensor, ZoneAlarm};
-use crate::{Encoder, PamiBoard, PamiButtons, PamiMotors, Vbatt};
+use crate::{PamiBoard, PamiButtons, PamiMotors};
 
 
 pub struct MockPamiBoard;
@@ -18,12 +19,12 @@ pub struct MockPamiBoard;
 pub type PamiDisplay = MockDisplay<BinaryColor>;
 
 impl PamiBoard for MockPamiBoard {
+    type BatteryLevel = MockBatteryLevel;
     type I2c = I2cMock;
     type Led = PinMock;
     type Display = PamiDisplay;
-    type Vbatt = MockVbatt;
     type Vlx = MockVlxSensor;
-    type MotorEncoder = MockEncoder;
+    type MotorEncoder = MockEncoder<i32>;
     type MotorPwm = SetDutyCycleMock;
 
     fn init() -> Self {
@@ -39,6 +40,10 @@ impl PamiBoard for MockPamiBoard {
         [0; 6]
     }
 
+    fn battery_level(&mut self) -> Option<Self::BatteryLevel> {
+        None
+    }
+
     fn heartbeat_led(&mut self) -> Option<Self::Led> {
         None
     }
@@ -52,10 +57,6 @@ impl PamiBoard for MockPamiBoard {
     }
 
     fn display(&mut self) -> Option<Self::Display> {
-        None
-    }
-
-    fn vbatt(&mut self) -> Option<Self::Vbatt> {
         None
     }
 
@@ -77,14 +78,6 @@ impl PamiBoard for MockPamiBoard {
 }
 
 
-pub struct MockVbatt;
-
-impl Vbatt for MockVbatt {
-    fn read_vbatt(&mut self) -> (u16, u8) {
-        (1000, 50)
-    }
-}
-
 pub struct MockVlxSensor;
 
 impl VlxSensor for MockVlxSensor {
@@ -98,16 +91,6 @@ impl VlxSensor for MockVlxSensor {
 
     fn set_alarms(&mut self, _alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
         Ok(())
-    }
-}
-
-pub struct MockEncoder;
-
-impl<T: Default> Encoder<T> for MockEncoder {
-    type Error = ();
-
-    fn get_value(&self) -> Result<T, Self::Error> {
-        Ok(T::default())
     }
 }
 

@@ -1,7 +1,7 @@
 use std::time::{Duration, Instant};
 use asserv::differential::conf::*;
 use asserv::{differential::Asserv, maths::XYA};
-use board_pami::{PamiBoard, PamiButtonsState, Vbatt};
+use board_pami::{BatteryLevel, PamiBoard, PamiButtonsState};
 use vlx::VlxSensor;
 use pami::config::PamiConfig;
 use pami::events::{AsservOrder, Periodicity, UiEvent, UiTrigger};
@@ -84,7 +84,7 @@ fn main() {
     });
 
     let mut buttons = board.buttons().unwrap();
-    let mut vbatt = board.vbatt().unwrap();
+    let mut battery_level = board.battery_level().unwrap();
 
     log::info!("Start BLE TX dummy main loop");
 
@@ -120,7 +120,7 @@ fn main() {
     let mut asserv_period = Periodicity::new(ASSERV_PERIOD);
     let mut asserv_tm_period = Periodicity::new(Duration::from_millis(500)); //TODO large value for debug
     let mut buttons_period = Periodicity::new(Duration::from_millis(200));
-    let mut vbatt_period = Periodicity::new(Duration::from_millis(2000));
+    let mut battery_period = Periodicity::new(Duration::from_millis(2000));
     let mut vlx_period = Periodicity::new(Duration::from_millis(2000));
 
     // Keep track of last state, to avoid useless UI updates
@@ -185,8 +185,8 @@ fn main() {
         }
 
         // Battery voltage
-        if vbatt_period.update(&now) {
-            let new_vbatt = vbatt.read_vbatt();
+        if battery_period.update(&now) {
+            let new_vbatt = battery_level.read_vbatt();
             let (vbatt_mv, vbatt_pct) = new_vbatt;
             if let Err(err) = rome_tx.send(rome::Message::BatteryLevel { mv: vbatt_mv, percent: vbatt_pct }.encode()) {
                 log::error!("BLE send error: {:?}", err);

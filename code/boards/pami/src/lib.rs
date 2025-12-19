@@ -13,6 +13,7 @@ use embedded_graphics::{
     draw_target::DrawTarget,
     pixelcolor::BinaryColor,
 };
+pub use board_common::{BatteryLevel, Encoder};
 use tca6408::TCA6408;
 use vlx::VlxSensor;
 
@@ -23,10 +24,10 @@ pub use mock::MockPamiBoard;
 
 
 pub trait PamiBoard {
+    type BatteryLevel: BatteryLevel;
     type I2c: I2c;
     type Led: StatefulOutputPin;
     type Display: DrawTarget<Color=BinaryColor>;
-    type Vbatt: Vbatt;
     type Vlx: VlxSensor;
     type MotorEncoder: Encoder<i32>;
     type MotorPwm: SetDutyCycle;
@@ -41,11 +42,11 @@ pub trait PamiBoard {
     /// Return Bluetooth MAC address of the device
     fn bt_mac_address(&self) -> [u8; 6];
 
+    fn battery_level(&mut self) -> Option<Self::BatteryLevel>;
     fn heartbeat_led(&mut self) -> Option<Self::Led>;
     fn line_sensor(&mut self) -> Option<TCA6408<Self::I2c>>;
     fn buttons(&mut self) -> Option<PamiButtons<Self::I2c>>;
     fn display(&mut self) -> Option<Self::Display>;
-    fn vbatt(&mut self) -> Option<Self::Vbatt>;
     fn vlx_sensor(&mut self) -> Option<Self::Vlx>;
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>>;
     fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
@@ -64,20 +65,6 @@ pub struct PamiMotor<E: Encoder<i32>, PWM: SetDutyCycle> {
 pub struct PamiMotors<E: Encoder<i32>, PWM: SetDutyCycle> {
     pub left: PamiMotor<E, PWM>,
     pub right: PamiMotor<E, PWM>,
-}
-
-
-pub trait Encoder<T> {
-    type Error: core::fmt::Debug;
-
-    /// Get encoded value
-    fn get_value(&self) -> Result<T, Self::Error>;
-}
-
-/// Read and return battery voltage
-pub trait Vbatt {
-    /// Read battery voltage, return value in mV and percentage
-    fn read_vbatt(&mut self) -> (u16, u8);
 }
 
 

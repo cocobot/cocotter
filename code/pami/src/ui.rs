@@ -9,8 +9,9 @@ use embedded_graphics::{
     prelude::*,
     text::{Alignment, Baseline, Text, TextStyle, TextStyleBuilder},
 };
+use board_common::Team;
 use board_pami::DpadState;
-use crate::events::{UiEvent, UiPamiMode, UiTeam, UiTrigger};
+use crate::events::{UiEvent, UiPamiMode, UiTrigger};
 
 
 const DISPLAY_WIDTH: u32 = 128;
@@ -304,7 +305,7 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
 
 
 struct MainScreen {
-    team: UiTeam,
+    team: Team,
     mode: UiPamiMode,
     focused: Option<u8>,
 }
@@ -312,7 +313,7 @@ struct MainScreen {
 impl Default for MainScreen {
     fn default() -> Self {
         Self {
-            team: UiTeam::Unknown,
+            team: Team::None,
             mode: UiPamiMode::Match,
             // Start unfocused, it smoother for the eye
             focused: None,
@@ -348,14 +349,6 @@ impl MainScreen {
         .alignment(Alignment::Center)
         .build();
 
-    fn team_label(&self) -> &'static str {
-        match self.team {
-            UiTeam::Unknown => "neutre",
-            UiTeam::Left => "JAUNE",
-            UiTeam::Right => "BLEU",
-        }
-    }
-
     fn mode_label(&self) -> &'static str {
         match self.mode {
             UiPamiMode::Match => "MATCH",
@@ -368,9 +361,9 @@ impl MainScreen {
         match index {
             0 => {
                 let team = match self.team {
-                    UiTeam::Unknown => UiTeam::Left,
-                    UiTeam::Left => UiTeam::Right,
-                    UiTeam::Right => UiTeam::Left,
+                    Team::None => Team::Left,
+                    Team::Left => Team::Right,
+                    Team::Right => Team::Left,
                 };
                 ScreenEventResult::Trigger(UiTrigger::ChangeTeam(team))
             },
@@ -400,7 +393,7 @@ impl MainScreen {
         const { assert!(Self::CELLS <= Self::COLS * Self::ROWS); };
 
         let box_labels: [&'static str; Self::CELLS as usize] = [
-            self.team_label(),
+            self.team.name_upper(),
             self.mode_label(),
             "REBOOT",
         ];

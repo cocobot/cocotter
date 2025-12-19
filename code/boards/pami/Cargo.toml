@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies] 
+board-common = { path = "../common" }
 embedded-graphics = "0.8"
 embedded-hal = "1.0"
 embedded-hal-bus = { version = "0.3", features = ["std"] }
