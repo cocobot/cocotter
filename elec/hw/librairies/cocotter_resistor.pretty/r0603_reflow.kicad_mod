@@ -1,8 +1,9 @@
 (footprint "r0603_reflow"
-	(version 20240108)
+	(version 20241229)
 	(generator "pcbnew")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(layer "F.Cu")
+	(descr "https://www.vishay.com/docs/28773/crcwce3.pdf")
 	(property "Reference" "REF**"
 		(at 0 -1.330652 0)
 		(unlocked yes)
@@ -27,19 +28,7 @@
 			)
 		)
 	)
-	(property "Footprint" ""
-		(at 0 0 0)
-		(unlocked yes)
-		(layer "F.Fab")
-		(hide yes)
-		(uuid "95960b19-1e05-4dab-8487-522f6c90e87c")
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-	)
-	(property "Datasheet" ""
+	(property "Datasheet" "https://www.vishay.com/docs/28773/crcwce3.pdf"
 		(at 0 0 0)
 		(unlocked yes)
 		(layer "F.Fab")
@@ -48,6 +37,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +50,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -139,7 +130,7 @@
 	(pad "1" smd roundrect
 		(at -0.75 0)
 		(size 0.8 0.8)
-		(layers "F.Cu" "F.Paste" "F.Mask")
+		(layers "F.Cu" "F.Mask" "F.Paste")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
 		(uuid "923aaf13-d003-4347-94aa-3f1f3eebc975")
@@ -147,11 +138,12 @@
 	(pad "2" smd roundrect
 		(at 0.75 0)
 		(size 0.8 0.8)
-		(layers "F.Cu" "F.Paste" "F.Mask")
+		(layers "F.Cu" "F.Mask" "F.Paste")
 		(roundrect_rratio 0.05)
 		(thermal_bridge_angle 45)
 		(uuid "1431a10a-609d-49f0-9ce0-1a9cade172b0")
 	)
+	(embedded_fonts no)
 	(model "3d/RC0603N_VIS.step"
 		(offset
 			(xyz 0 0 0)

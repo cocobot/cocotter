@@ -1,0 +1,158 @@
+(footprint "r0402_reflow"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(descr "https://www.vishay.com/docs/28773/crcwce3.pdf")
+	(property "Reference" "REF**"
+		(at 0 -1.330652 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "c3f31673-83a0-4098-ac44-3b40c65983dc")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "r0402_reflow"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "699eee51-337a-441b-a53a-330fe38ddf69")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" "https://www.vishay.com/docs/28773/crcwce3.pdf"
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "fe337eec-4ecb-4f3d-9c09-fbca62157312")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "7b5c7577-2359-4d50-b9ea-00a4a546dd93")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_line
+		(start -0.1 -0.28)
+		(end 0.1 -0.28)
+		(stroke
+			(width 0.15)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "0c1c9a6a-b80f-49d4-a5d1-2b3b03367402")
+	)
+	(fp_line
+		(start -0.1 0.28)
+		(end 0.1 0.28)
+		(stroke
+			(width 0.15)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "76a583a0-a26d-43e0-b617-b0af9cc9b6b9")
+	)
+	(fp_line
+		(start -0.85 -0.5)
+		(end -0.85 0.5)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "9b112490-e911-4c48-b4f1-812bcdc25b7a")
+	)
+	(fp_line
+		(start -0.85 -0.5)
+		(end 0.85 -0.5)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "6649d3e7-1051-4c87-a99b-5e471adb37f1")
+	)
+	(fp_line
+		(start -0.85 0.5)
+		(end 0.85 0.5)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "1ccaaddf-e8d4-4a93-a594-6ff139542663")
+	)
+	(fp_line
+		(start 0.85 -0.5)
+		(end 0.85 0.5)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "6a9e2e94-3f9b-49fa-a846-ad6fa01124fe")
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 2.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "3096ff1c-43cd-49ff-90e5-f45b63f452ba")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -0.45 0)
+		(size 0.4 0.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.05)
+		(thermal_bridge_angle 45)
+		(uuid "923aaf13-d003-4347-94aa-3f1f3eebc975")
+	)
+	(pad "2" smd roundrect
+		(at 0.45 0)
+		(size 0.4 0.6)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.05)
+		(thermal_bridge_angle 45)
+		(uuid "1431a10a-609d-49f0-9ce0-1a9cade172b0")
+	)
+	(embedded_fonts no)
+	(model "3d/RC0603N_VIS.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)

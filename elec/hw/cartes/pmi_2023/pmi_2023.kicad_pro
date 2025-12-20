@@ -128,10 +128,6 @@
           ""
         ],
         [
-          "silk_overlap|139225000|98200000|3f853692-490f-4655-bb36-e6802a37d915|ae9eec3b-39e1-415d-8886-8e6b943a3e90",
-          ""
-        ],
-        [
           "silk_overlap|151320314|96738000|ce222e0d-6531-4f68-b198-13401c4f2f65|ec97056e-9046-4e0b-b288-b2b8bb362e79",
           ""
         ],
@@ -182,7 +178,7 @@
       "rule_severities": {
         "annular_width": "error",
         "clearance": "error",
-        "connection_width": "warning",
+        "connection_width": "error",
         "copper_edge_clearance": "error",
         "copper_sliver": "warning",
         "courtyards_overlap": "error",
@@ -695,7 +691,7 @@
           "show": false
         },
         {
-          "group_by": false,
+          "group_by": true,
           "label": "Footprint",
           "name": "Footprint",
           "show": true
@@ -802,7 +798,7 @@
       "include_excluded_from_bom": false,
       "name": "",
       "sort_asc": false,
-      "sort_field": "Reference"
+      "sort_field": "Footprint"
     },
     "connection_grid_size": 50.0,
     "drawing": {
