@@ -102,10 +102,22 @@
 		(uuid "7b75a219-fe25-4703-a0fc-5f8eb21c88ec")
 	)
 	(junction
+		(at 132.08 106.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d74763ed-b748-485d-afb9-0b4f4e5e8852")
+	)
+	(junction
 		(at 210.82 76.2)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e4ffd00b-bcb2-4cbe-8211-90d5ff6e2500")
+	)
+	(junction
+		(at 129.54 104.14)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f33de465-e6a0-4b92-88a5-bba1026731ef")
 	)
 	(bus_entry
 		(at 140.97 64.77)
@@ -134,6 +146,16 @@
 			(type default)
 		)
 		(uuid "1082ec71-ebf8-44d5-b62c-85928cd4c859")
+	)
+	(wire
+		(pts
+			(xy 132.08 118.11) (xy 132.08 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "10d6588d-9632-4b22-afaf-6f1fabf64be6")
 	)
 	(wire
 		(pts
@@ -387,6 +409,16 @@
 	)
 	(wire
 		(pts
+			(xy 129.54 120.65) (xy 219.71 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "869fee80-064d-49d9-b79a-a405ca3c01a9")
+	)
+	(wire
+		(pts
 			(xy 259.08 57.15) (xy 271.78 57.15)
 		)
 		(stroke
@@ -434,6 +466,16 @@
 			(type default)
 		)
 		(uuid "9d2edf61-0363-49bc-a64d-6868a1322000")
+	)
+	(wire
+		(pts
+			(xy 219.71 118.11) (xy 132.08 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a39865bd-ba46-4132-8d29-51ae614952c6")
 	)
 	(wire
 		(pts
@@ -574,6 +616,16 @@
 			(type default)
 		)
 		(uuid "d15236b5-9b10-4da6-b3b5-93cd0afa50b4")
+	)
+	(wire
+		(pts
+			(xy 129.54 104.14) (xy 129.54 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e1426a7d-50ea-4023-9b37-0c631c1ea15b")
 	)
 	(wire
 		(pts
@@ -1152,6 +1204,26 @@
 		(pin "enable_pw_conv_3v7" output
 			(at 219.71 113.03 180)
 			(uuid "8a6b4f64-03a3-48d7-864d-7c5dd9454276")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "scl_3v3" input
+			(at 219.71 118.11 180)
+			(uuid "1f489978-ec4f-4817-ab5e-5dc4a9d2cb97")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "sda_3v3" bidirectional
+			(at 219.71 120.65 180)
+			(uuid "cb65cabf-0124-4e2c-b626-ad0a05ca7515")
 			(effects
 				(font
 					(size 1.27 1.27)
