@@ -94,7 +94,11 @@ impl<H: AsservHardware> Asserv<H> {
             return;  // Should not happen
         }
 
-        self.update_trajectory();
+        if self.cs.hardware.emergency_stop_active() {
+            self.order = TrajectoryOrder::Idle;
+        } else {
+            self.update_trajectory();
+        }
         // Update control system (position, motors)
         self.cs.update(elapsed);
     }

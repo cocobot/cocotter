@@ -64,6 +64,7 @@ impl<H: AsservHardware> ControlSystem<H> {
 
     fn update_motors(&mut self) {
         let speeds = if self.hardware.emergency_stop_active() {
+            self.reset_targets();
             [0.0, 0.0]
         } else {
             let (dist_speed, angle_speed) = self.motor_filter.filter(self.dist, self.position.a, self.target_dist, self.target_angle);
