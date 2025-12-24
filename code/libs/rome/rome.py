@@ -3,12 +3,14 @@ import re
 import struct
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Self
+from typing import Any, Self, TextIO
 import yaml
 
+DEFAULT_MESSAGES_PATH = Path(__file__).parent / "rome_messages.yaml"
 
 ParamType = (str, Any)
 Parameters = tuple[ParamType] | dict[str, ParamType] | None
+Arguments = tuple[Any] | dict[str, Any] | None
 
 
 class Encoder:
@@ -122,45 +124,45 @@ class MessageNamed(Message):
 class Frame:
     """Instance of a message, with specific values"""
     message: Message
-    # Parameter valeus
-    params: Parameters
+    # Parameter values
+    args: Arguments
 
-    def __init__(self, message: Message, params: Parameters):
-        if type(params) is not type(message.params):
-            raise ValueError("Provided parameters type does not match message declaration")
-        match params:
-            case tuple(params):
-                if len(params) != len(message.params):
-                    raise ValueError("Provided parameters count does not match message declaration")
-            case dict(params):
-                if set(params) != set(message.params):
-                    raise ValueError("Provided parameter names does not match message declaration")
+    def __init__(self, message: Message, args: Arguments):
+        if type(args) is not type(message.params):
+            raise ValueError("Provided arguments type does not match message declaration")
+        match args:
+            case tuple(args):
+                if len(args) != len(message.params):
+                    raise ValueError("Provided arguments count does not match message declaration")
+            case dict(args):
+                if set(args) != set(message.params):
+                    raise ValueError("Provided argument names does not match message declaration")
         # Note: values are not checked at this stage
         self.message = message
-        self.params = params
+        self.args = args
 
     def __str__(self) -> str:
-        match self.params:
+        match self.args:
             case None:
-                params_str = "-"
-            case tuple(params):
-                params_str = ", ".join(str(v) for v in params)
-            case dict(params):
-                params_str = ", ".join(f"{k}={v}" for k, v in params.items())
-        return f"<Frame {self.message.name!r} {params_str}>"
+                args_str = "-"
+            case tuple(args):
+                args_str = ", ".join(str(v) for v in args)
+            case dict(args):
+                args_str = ", ".join(f"{k}={v}" for k, v in args.items())
+        return f"<Frame {self.message.name!r} {args_str}>"
 
     def encode(self) -> bytes:
         encoder = Encoder()
         encoder.buffer.append(self.message.id)
-        match self.params:
+        match self.args:
             case None:
                 pass  # Nothing encode
-            case tuple(params):
-                for typ, v in zip(self.message.params, params, strict=True):
+            case tuple(args):
+                for typ, v in zip(self.message.params, args, strict=True):
                     encoder.write_type(typ, v)
-            case dict(params):
+            case dict(args):
                 for name in self.message.params:
-                    encoder.write_type(self.message.params[name], params[name])
+                    encoder.write_type(self.message.params[name], args[name])
         return bytes(encoder.buffer)
 
 
@@ -170,11 +172,14 @@ messages: dict[int, Message] = {}
 messages_by_name: dict[str, Message] = {}
 
 
-def load_messages(path: Path | str) -> list[Message]:
-    """Load message declarations from a YAML file"""
+def load_messages(source: Path | str | TextIO) -> list[Message]:
+    """Load message declarations from a YAML file or file object"""
 
-    with open(path) as f:
-        doc = yaml.safe_load(f)
+    if isinstance(source, (Path, str)):
+        with open(source) as f:
+            doc = yaml.safe_load(f)
+    else:
+        doc = yaml.safe_load(source)
 
     if not isinstance(doc, dict):
         raise ValueError("Invalid document: top level element must be an object")
@@ -220,13 +225,14 @@ def load_messages(path: Path | str) -> list[Message]:
     return list(declarations.values())
 
 
-def register_messages(path: Path | str, append: bool = True) -> None:
-    """Load and register message declarations from a YAML file"""
+def register_messages(declarations: Path | str | list[Message], append: bool = True) -> None:
+    """Register message declarations from list, or loaded from a YAML file"""
 
     global messages
     global messages_by_name
 
-    declarations = load_messages(path)
+    if not isinstance(declarations, list):
+        declarations = load_messages(declarations)
     if append is False:
         messages.clear()
         messages_by_name.clear()
@@ -238,6 +244,10 @@ def register_messages(path: Path | str, append: bool = True) -> None:
                 raise ValueError(f"Message with name {decl.name} already registered with id {messages_by_name[decl.name].id}")
     messages |= {decl.id: decl for decl in declarations}
     messages_by_name |= {decl.name: decl for decl in declarations}
+
+def register_default_messages() -> None:
+    """Register default messages"""
+    return register_messages(DEFAULT_MESSAGES_PATH)
 
 
 def _parse_type_name(value) -> ParamType:
