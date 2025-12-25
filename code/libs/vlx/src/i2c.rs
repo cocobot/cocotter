@@ -1,5 +1,5 @@
 use std::sync::Mutex;
-use embedded_hal::i2c::{I2c, SevenBitAddress};
+use embedded_hal::i2c::{I2c, Operation, SevenBitAddress};
 
 
 /// VLX I2C operations
@@ -18,10 +18,8 @@ impl<T: I2c + Send + Sync> VlxI2c for T {
 
     fn vlx_i2c_write(&mut self, address: SevenBitAddress, register: u16, data: &[u8]) -> bool {
         let reg_bytes = register.to_be_bytes();
-        let mut buffer = Vec::with_capacity(reg_bytes.len() + data.len());
-        buffer.extend_from_slice(&reg_bytes);
-        buffer.extend_from_slice(data);
-        self.write(address, &buffer).is_ok()
+        let mut transactions = [Operation::Write(&reg_bytes), Operation::Write(data)];
+        self.transaction(address, &mut transactions).is_ok()
     }
 }
 
