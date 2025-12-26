@@ -272,6 +272,9 @@ impl RomePeripheral {
             },
         )?;
 
+        // There is only one descriptor to configure
+        // It is assumed by register_descriptor() to call on_service_fully_configured()
+
         Ok(())
     }
 
@@ -304,11 +307,25 @@ impl RomePeripheral {
         if descr_uuid == CCCD_UUID {
             // As we only register one CCCD, we know it's the telemetry one
             state.telemetry_cccd_handle = Some(attr_handle);
+
+            // For now, there is only one descriptor to configure
+            // Assume service is fully configured when this descriptor is
+            // See comment in configure_and_start_service()
+            self.on_service_fully_configured();
         } else {
             // Should never happen
         }
 
         Ok(())
+    }
+
+    /// Called when service has been fully configured
+    fn on_service_fully_configured(&self) {
+        if let Err(e) = self.server.start_advertising() {
+            log::error!("Unable to start advertising: {:?}", e);
+        } else {
+            log::info!("ROME service configured, advertising started");
+        }
     }
 
     /// Called on an incoming connection

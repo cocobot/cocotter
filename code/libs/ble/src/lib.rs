@@ -34,6 +34,10 @@ pub struct BleServer {
 }
 
 impl BleServer {
+    /// Start advertising
+    ///
+    /// This is recommend to start advertising after service has been fully setup.
+    /// Otherwise, clients may attempt to use characteristics not yet available.
     pub fn start_advertising(&self) -> Result<(), EspError> {
         log::info!("Start advertising");
         self.gap.start_advertising()
@@ -186,6 +190,7 @@ impl BleBuilder {
 
 /// Internal structure to implement GAP event handler
 struct BleInstance {
+    #[allow(dead_code)]
     gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
     handlers: BleGapHandlers,
 }
@@ -194,14 +199,10 @@ impl BleInstance {
     fn on_gap_event(&self, event: BleGapEvent) {
         match event {
             BleGapEvent::AdvertisingConfigured(status) => {
-                if status != BtStatus::Success {
-                    log::warn!("Unexpected AdvertisingConfigured status {:?}", status);
+                if status == BtStatus::Success {
+                    log::info!("GAP advertising configured");
                 } else {
-                    if let Err(e) = self.gap.start_advertising() {
-                        log::error!("Unable to start advertising: {:?}", e);
-                    } else {
-                        log::info!("GAP advertising configured and started");
-                    }
+                    log::warn!("Unexpected AdvertisingConfigured status {:?}", status);
                 }
             }
             BleGapEvent::ScanResult(scan_result) => {
