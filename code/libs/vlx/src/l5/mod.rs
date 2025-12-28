@@ -80,8 +80,14 @@ impl VlxSensor for VL53L5CX {
             status_result!(vl53l5cx_init(&mut *self.conf))?;
 
             // Set final I2C address
-            status_result!(vl53l5cx_set_i2c_address(&mut *self.conf, self.address * 2))?;
+            // Ignore error: the last I2C write of vl53l5cx_set_i2c_address() fails for no reason
+            // Check that device is alive afterwards to confirm the address change
+            let _ = status_result!(vl53l5cx_set_i2c_address(&mut *self.conf, self.address * 2));
             self.conf.platform.address = self.address;
+            status_result!(vl53l5cx_is_alive(&mut *self.conf, &mut is_alive))?;
+            if is_alive == 0 {
+                return Err(VlxError::SensorNotFound);
+            }
 
             // Set 4x4 resolution for better performance
             // Note: 4x4 resolution is hardcoded in `resolution()`
