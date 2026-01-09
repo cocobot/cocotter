@@ -104,8 +104,8 @@ pub struct PidConf {
 impl Default for PidConf {
     fn default() -> Self {
         Self {
-            gain_p: 1,
-            gain_i: 0,
+            gain_p: 25,
+            gain_i: 1,
             gain_d: 0,
             max_in: 0,
             max_i: 0,
