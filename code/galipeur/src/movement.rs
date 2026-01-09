@@ -1,5 +1,6 @@
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 use asserv::{conf::{AsservHardware, AsservConf, MotorsConf, PidConf, TrajectoryConf}, Asserv, maths::MATRIX33_IDENTITY};
+use log::info;
 use sch16t::Sch16t;
 use crate::shared_gpio::SharedGpioPin;
 
@@ -108,7 +109,7 @@ impl AsservHardware for MovementLowLevelHardware {
 
         let new_encoder_offsets = {
             if let (Ok(v0), Ok(v1), Ok(v2)) = (new_encoder_offsets[0], new_encoder_offsets[1], new_encoder_offsets[2]) {
-                [v0, v1, v2]
+                [v0, -v1, -v2]
             } else {
                 log::error!("Error reading encoder values");
                 return [0.0, 0.0, 0.0];
@@ -149,7 +150,7 @@ impl AsservHardware for MovementLowLevelHardware {
                 let offset = new_angle - last_angle;
                 self.gyro_last_angle = Some(new_angle);
 
-                offset
+                offset.to_radians()
             },
             None => {
                 self.gyro_last_angle = Some(new_angle);

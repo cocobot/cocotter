@@ -99,7 +99,7 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel0, &timer_pwm, peripherals.pins.gpio17),
             LedcDriver::new(peripherals.ledc.channel1, &timer_pwm, peripherals.pins.gpio18),
-            Encoder::new(peripherals.pcnt0, peripherals.pins.gpio11, peripherals.pins.gpio12)
+            Encoder::new(peripherals.pcnt0, peripherals.pins.gpio12, peripherals.pins.gpio11)
         ) {
             motors[0] = Some(Motor { pwm, dir, encoder });
         }
@@ -116,7 +116,7 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel2, &timer_pwm, peripherals.pins.gpio3),
             LedcDriver::new(peripherals.ledc.channel3, &timer_pwm, peripherals.pins.gpio8),
-            Encoder::new(peripherals.pcnt1, peripherals.pins.gpio15, peripherals.pins.gpio16)
+            Encoder::new(peripherals.pcnt1, peripherals.pins.gpio16, peripherals.pins.gpio15)
         ) {
             motors[1] = Some(Motor { pwm, dir, encoder });
         }
@@ -125,7 +125,7 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel4, &timer_pwm, peripherals.pins.gpio35),
             LedcDriver::new(peripherals.ledc.channel5, &timer_pwm, peripherals.pins.gpio48),
-            Encoder::new(peripherals.pcnt2, peripherals.pins.gpio13, peripherals.pins.gpio14)
+            Encoder::new(peripherals.pcnt2, peripherals.pins.gpio14, peripherals.pins.gpio13)
         ) {
             motors[2] = Some(Motor { pwm, dir, encoder });
         }
