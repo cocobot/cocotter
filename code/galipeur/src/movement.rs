@@ -17,7 +17,15 @@ impl Movement {
         asserv.set_conf(AsservConf {
             pid_x: PidConf::default(),
             pid_y: PidConf::default(),
-            pid_a: PidConf::default(),
+            pid_a: PidConf {
+                gain_p: 25,
+                gain_i: 1,
+                gain_d: 0,
+                max_in: 0,
+                max_i: 0,
+                max_out: 0,
+                out_shift: 0,
+                },
             trajectory: TrajectoryConf::default(),
             motors: MotorsConf {
                 matrix: [
