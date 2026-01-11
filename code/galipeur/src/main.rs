@@ -103,6 +103,17 @@ fn main() {
 ////    motor_2.dir.set_duty(0).ok();
 ////    motor_2.pwm.set_duty(500).ok();
 
+    let positions = [
+        (0.0, 0.0),
+        /*
+        (0.0, 100.0),
+        (100.0, 100.0),
+        (100.0, 0.0),
+        */
+        (0.0, 500.0),
+    ];
+    let mut index = 0;
+    let mut wait = 0;
 
     loop {       
         led_heartbeat.toggle().ok();
@@ -116,8 +127,27 @@ fn main() {
             
             let movement = movement.lock().unwrap();
             let asserv = movement.get_asserv();
-            let asserv = asserv.lock().unwrap();
+            let mut asserv = asserv.lock().unwrap();
             let position = asserv.position().clone();
+
+            if asserv.done_xy() {
+                if wait == 0 {
+                    index = (index + 1) % positions.len();
+                    let (x, y) = positions[index]; 
+                    log::info!("Done, increment index: i: {} x: {} y: {}", index, x, y);
+                    wait = 2;
+                } else {
+                    log::info!("Waiting... {}", wait);
+                    wait -= 1;
+                    if wait == 0 {
+                        let (x, y) = positions[index]; 
+                        log::info!("Send new order: i: {} x: {} y: {}", index, x, y);
+                        asserv.goto_xy(x, y);
+                    }
+                }
+            }
+            //asserv.goto_xy(0.0, 0.0);
+
             drop(asserv);
             drop(movement);
                         
