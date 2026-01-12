@@ -6,10 +6,6 @@ CONFIG_PTHREAD_TASK_STACK_SIZE_DEFAULT=8192
 # This allows to use 1 ms granularity for thread sleeps (10 ms by default).
 CONFIG_FREERTOS_HZ=1000
 
-# Workaround for https://github.com/espressif/esp-idf/issues/7631
-#CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=n
-#CONFIG_MBEDTLS_CERTIFICATE_BUNDLE_DEFAULT_FULL=n
-
 # Enable NVS Flash (required for BT)
 CONFIG_NVS_FLASH=y
 

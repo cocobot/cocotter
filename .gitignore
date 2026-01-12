@@ -1,9 +1,7 @@
 # rust
-debug/
 target/
 Cargo.lock
-**/*.rs.bk
-
+.embuild/
 
 # kicad
 *-backups
