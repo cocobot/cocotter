@@ -9,8 +9,8 @@ use esp_idf_svc::{
     sys::EspError
 };
 
-const LOW_LIMIT: i16 = -100;
-const HIGH_LIMIT: i16 = 100;
+const LOW_LIMIT: i16 = -10000;
+const HIGH_LIMIT: i16 = 10000;
 
 /// ESP32 Encoder driver using PCNT peripheral
 /// 

@@ -6,7 +6,6 @@ use esp_idf_svc::{bt::Ble, hal::{
 use esp_idf_svc::{nvs::EspDefaultNvsPartition, bt::BtDriver};
 use embedded_hal_bus::i2c::MutexDevice;
 use pca9535::Pca9535Immediate;
-use vlx::{VLX, Config, SensorType};
 use esp32_encoder::Encoder;
 use std::{rc::Rc, sync::Mutex};
 
@@ -17,9 +16,6 @@ pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type LedHeartbeat = PinDriver<'static, Gpio45, Output>;
 // Motor control types
 pub type MotorPwm = LedcDriver<'static>;
-
-// VLX sensors configuration
-pub type VlxSensors = VLX<I2CType, 1>;
 
 // GPIO expander type
 pub type GpioExpander = Pca9535Immediate<I2CType>;
@@ -53,7 +49,6 @@ pub struct BoardSabotter {
     pub led_heartbeat: Option<LedHeartbeat>,
     pub motors: [Option<Motor>; 3],
     pub motor_gpio_expander: [Option<GpioExpander>; 3],
-    pub vlx_sensors: Option<VlxSensors>,
     pub gpio_expander: Option<GpioExpander>,
     pub can_bus: Option<CanBus>,
     pub uart_asserv: Option<UartAsserv>,
@@ -87,17 +82,7 @@ impl BoardSabotter {
         let config = I2cConfig::new().baudrate(Hertz(400_000));
         let i2c_vlx_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c1, peripherals.pins.gpio21, peripherals.pins.gpio47, &config).unwrap());
         let i2c_vlx_driver_static = Box::leak(Box::new(i2c_vlx_driver));
-        let i2c_vlx_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_vlx_driver_static);
-
-        let vlx_configs: [Config<Box<dyn FnMut(bool)>, Box<dyn FnMut(bool)>>; 1] = [
-            Config {
-                i2c_address: 0x30,  // Adresse du premier capteur
-                sensor_type: SensorType::L1,
-                enable_fn: None,
-                reset_fn: None,
-            },           
-        ];
-        let vlx_sensors = Some(VLX::new(i2c_vlx_bus_vlx, vlx_configs)); 
+        let _i2c_vlx_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_vlx_driver_static);
 
 
         // Initialize LEDC timer for motors
@@ -114,20 +99,24 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel0, &timer_pwm, peripherals.pins.gpio17),
             LedcDriver::new(peripherals.ledc.channel1, &timer_pwm, peripherals.pins.gpio18),
-            Encoder::new(peripherals.pcnt0, peripherals.pins.gpio11, peripherals.pins.gpio12)
+            Encoder::new(peripherals.pcnt0, peripherals.pins.gpio12, peripherals.pins.gpio11)
         ) {
             motors[0] = Some(Motor { pwm, dir, encoder });
         }
         // Initialize main I2C bus
         let i2c_gpio_expander_mot_0 = MutexDevice::new(i2c_vlx_driver_static);
         motor_gpio_expander[0] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_0, 0b010_0000));
+        let i2c_gpio_expander_mot_1 = MutexDevice::new(i2c_vlx_driver_static);
+        motor_gpio_expander[1] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_1, 0b010_0001));
+        let i2c_gpio_expander_mot_2 = MutexDevice::new(i2c_vlx_driver_static);
+        motor_gpio_expander[2] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_2, 0b010_0010));
     
 
         // Motor 1  
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel2, &timer_pwm, peripherals.pins.gpio3),
             LedcDriver::new(peripherals.ledc.channel3, &timer_pwm, peripherals.pins.gpio8),
-            Encoder::new(peripherals.pcnt1, peripherals.pins.gpio15, peripherals.pins.gpio16)
+            Encoder::new(peripherals.pcnt1, peripherals.pins.gpio16, peripherals.pins.gpio15)
         ) {
             motors[1] = Some(Motor { pwm, dir, encoder });
         }
@@ -136,7 +125,7 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel4, &timer_pwm, peripherals.pins.gpio35),
             LedcDriver::new(peripherals.ledc.channel5, &timer_pwm, peripherals.pins.gpio48),
-            Encoder::new(peripherals.pcnt2, peripherals.pins.gpio13, peripherals.pins.gpio14)
+            Encoder::new(peripherals.pcnt2, peripherals.pins.gpio14, peripherals.pins.gpio13)
         ) {
             motors[2] = Some(Motor { pwm, dir, encoder });
         }
@@ -213,7 +202,6 @@ impl BoardSabotter {
         Self {
             led_heartbeat,
             motors,
-            vlx_sensors,
             gpio_expander,
             motor_gpio_expander,
             can_bus: None,

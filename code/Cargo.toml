@@ -9,6 +9,7 @@ members = [
     "libs/rome",
     "libs/tca6408",
     "libs/vlx",
+    "libs/sch16t",
 
     "boards/common",
     "boards/pami",
