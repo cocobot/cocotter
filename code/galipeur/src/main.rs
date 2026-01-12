@@ -37,14 +37,46 @@ fn main() {
     let mut gyro = Sch16t::new(board.imu_spi.take().unwrap(), 0);
     gyro.init().unwrap();
 
-     let mut mot_ena = board.mot_ena.take().unwrap();
-    mot_ena.set_high().ok(); 
-    thread::sleep(Duration::from_millis(500));
-    mot_ena.set_low().ok();
-    unsafe {
-        ets_delay_us(10);
+    let mut led_heartbeat = board.led_heartbeat.take().unwrap();
+    let mut motor_0_heartbeat = motor_0_gpio_expander.get_pin(2);
+    let mut motor_1_heartbeat = motor_1_gpio_expander.get_pin(2);
+    let mut motor_2_heartbeat = motor_2_gpio_expander.get_pin(2);
+
+    // Motor driver startup procedure
+    // See DRV8243 §7.7.2.1 HW Variant
+    //TODO heartbeat led follows expected nFAULT state
+    {
+        log::info!("Motor drivers init");
+
+        motor_0_heartbeat.pin_set_high();
+        motor_1_heartbeat.pin_set_high();
+        motor_2_heartbeat.pin_set_high();
+
+        let expanders = [&motor_0_gpio_expander, &motor_1_gpio_expander, &motor_2_gpio_expander];
+        let mut mot_ena = board.mot_ena.take().unwrap();
+
+        mot_ena.set_low().ok();
+        thread::sleep(Duration::from_millis(10));
+
+        mot_ena.set_high().ok();
+        // Assert all expanders nFAULT low
+        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
+            thread::sleep(Duration::from_millis(10));
+        }
+        thread::sleep(Duration::from_millis(10));
+
+        mot_ena.set_low().ok();
+        // A short wait (between 5µs and 10µs) is required; don't replace with a `thread::sleep()`
+        unsafe { ets_delay_us(10); }
+        mot_ena.set_high().ok();
+
+        // Assert all expanders nFAULT high
+        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
+            thread::sleep(Duration::from_millis(10));
+        }
+
+        log::info!("Motor drivers initialized");
     }
-    mot_ena.set_high().ok();
 
     //configure low level hardware for asserv
     let asserv_hardware = MovementLowLevelHardware::new(
@@ -52,106 +84,73 @@ fn main() {
         gpio_expander.get_pin(3),
         [
             (board.motors[0].take().unwrap(), motor_0_gpio_expander.get_pin(4)),
-            (board.motors[1].take().unwrap(), motor_1_gpio_expander.get_pin(4)), 
+            (board.motors[1].take().unwrap(), motor_1_gpio_expander.get_pin(4)),
             (board.motors[2].take().unwrap(), motor_2_gpio_expander.get_pin(4)),
         ],
     );
     let movement = Arc::new(Mutex::new(Movement::new(asserv_hardware)));
-    
-   
 
-    let mut led_heartbeat = board.led_heartbeat.take().unwrap();
-    let mut motor_0_heartbeat = motor_0_gpio_expander.get_pin(2);
-    let mut motor_1_heartbeat = motor_1_gpio_expander.get_pin(2);
-    let mut motor_2_heartbeat = motor_2_gpio_expander.get_pin(2);
+    use asserv::maths::XY;
 
-////
-////    let mut motor_0 = board.motors[0].take().unwrap();
-////    let mut motor_1 = board.motors[1].take().unwrap();
-////    let mut motor_2 = board.motors[2].take().unwrap();
-////    
-////    //open brake
-////    let _gpio_expander = board.gpio_expander.take().unwrap();
-////
-////    let mut motor_gpio_expander_0 = board.motor_gpio_expander[0].take().unwrap();
-////    motor_gpio_expander_0.pin_into_output(GPIOBank::Bank0, 2).unwrap();
-////    motor_gpio_expander_0.pin_into_output(GPIOBank::Bank0, 4).unwrap();
-////    motor_gpio_expander_0.pin_set_low(GPIOBank::Bank0, 4).unwrap();
-////
-////    /*
-////    gpio_expander.pin_into_output(GPIOBank::Bank0, 3).unwrap();
-////
-////    gpio_expander.pin_set_high(GPIOBank::Bank0, 3).unwrap();
-////    gpio_expander.pin_set_low(GPIOBank::Bank0, 3).unwrap();
-////    gpio_expander.pin_set_high(GPIOBank::Bank0, 3).unwrap();
-////    */
-////    let mut mot_ena = board.mot_ena.take().unwrap();
-////    mot_ena.set_high().ok(); 
-////    thread::sleep(Duration::from_millis(500));
-////    mot_ena.set_low().ok();
-////    unsafe {
-////        ets_delay_us(10);
-////    }
-////    mot_ena.set_high().ok();
-////
-////    motor_0.dir.set_duty(0).ok();
-////    motor_0.pwm.set_duty(500).ok();
-////
-////    motor_1.dir.set_duty(0).ok();
-////    motor_1.pwm.set_duty(500).ok();
-////
-////    motor_2.dir.set_duty(0).ok();
-////    motor_2.pwm.set_duty(500).ok();
+    #[derive(Debug)]
+    enum Order<'a> {
+        GotoXy(f32, f32),
+        GotoA(f32),
+        GotoXyA(f32, f32, f32),
+        RunPath(&'a [XY]),
+    }
 
-    let positions = [
-        (0.0, 0.0),
-        /*
-        (0.0, 100.0),
-        (100.0, 100.0),
-        (100.0, 0.0),
-        */
-        (0.0, 500.0),
+    impl Order<'_> {
+        fn apply(&self, asserv: &mut asserv::Asserv<MovementLowLevelHardware>) {
+            match self {
+                Order::GotoXy(x, y) => asserv.goto_xy(*x, *y),
+                Order::GotoA(a) => asserv.goto_a(*a),
+                Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
+                Order::RunPath(path) => asserv.run_path(path),
+            }
+        }
+    }
+
+    let orders = [
+        Order::RunPath(&[
+            XY::new(0.0, 500.0),
+            XY::new(500.0, 500.0),
+        ]),
+        Order::GotoA(std::f32::consts::PI * 0.9),
+        Order::RunPath(&[
+            XY::new(500.0, 0.0),
+            XY::new(0.0, 0.0),
+        ]),
+        Order::GotoXyA(-200.0, 200.0, 0.0),
     ];
     let mut index = 0;
-    let mut wait = 0;
 
-    loop {       
+    {
+        let movement = movement.lock().unwrap();
+        let asserv = movement.get_asserv();
+        let mut asserv = asserv.lock().unwrap();
+        asserv.goto_xya(0., 0., 0.);
+    }
+
+    loop {
         led_heartbeat.toggle().ok();
         motor_0_heartbeat.toggle();
         motor_1_heartbeat.toggle();
         motor_2_heartbeat.toggle();
         thread::sleep(Duration::from_millis(500));
-       
 
-        {
-            
-            let movement = movement.lock().unwrap();
-            let asserv = movement.get_asserv();
-            let mut asserv = asserv.lock().unwrap();
-            let position = asserv.position().clone();
+        let movement = movement.lock().unwrap();
+        let asserv = movement.get_asserv();
+        let mut asserv = asserv.lock().unwrap();
+        let position = asserv.position().clone();
 
-            if asserv.done_xy() {
-                if wait == 0 {
-                    index = (index + 1) % positions.len();
-                    let (x, y) = positions[index]; 
-                    log::info!("Done, increment index: i: {} x: {} y: {}", index, x, y);
-                    wait = 2;
-                } else {
-                    log::info!("Waiting... {}", wait);
-                    wait -= 1;
-                    if wait == 0 {
-                        let (x, y) = positions[index]; 
-                        log::info!("Send new order: i: {} x: {} y: {}", index, x, y);
-                        asserv.goto_xy(x, y);
-                    }
-                }
-            }
-            //asserv.goto_xy(0.0, 0.0);
+        log::info!("Position: x: {:.2} y: {:.2} theta: {:.2}", position.x, position.y, position.a);
 
-            drop(asserv);
-            drop(movement);
-                        
-            log::info!("Position: x: {:.2} y: {:.2} theta: {:.2}", position.x, position.y, position.a); 
+        if asserv.done_xy() && asserv.done_a() {
+            let order = &orders[index];
+            log::info!("Send new order: {:?}", order);
+            order.apply(&mut asserv);
+            index = (index + 1) % orders.len();
         }
     }
 }
