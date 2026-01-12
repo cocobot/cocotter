@@ -49,7 +49,7 @@ pub fn mult_matrix33_vec(m: &Matrix33, v: &[f32; 3]) -> [f32; 3] {
 
 
 /// 2D vector for linear coordinates
-#[derive(Default, Clone, Copy)]
+#[derive(Default, Clone, Copy, Debug)]
 pub struct XY {
     pub x: f32,
     pub y: f32,
@@ -88,7 +88,7 @@ impl XY {
 
 
 /// 3D vector for linear and angle coordinates
-#[derive(Default, Clone, Copy)]
+#[derive(Default, Clone, Copy, Debug)]
 pub struct XYA {
     pub x: f32,
     pub y: f32,
