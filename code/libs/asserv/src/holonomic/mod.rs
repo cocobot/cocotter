@@ -445,9 +445,9 @@ impl<H: AsservHardware> Asserv<H> {
                 let is_last_point: bool = path_data.borrow().is_last_point();
                 let in_window_xy: bool = {
                     let window = if is_last_point {
-                        self.conf.xy_steering_window
-                    } else {
                         self.conf.xy_stop_window
+                    } else {
+                        self.conf.xy_steering_window
                     };
                     self.in_window_xy(path_data.borrow().next_point(), window)
                 };
