@@ -142,7 +142,7 @@ fn main() {
         let movement = movement.lock().unwrap();
         let asserv = movement.get_asserv();
         let mut asserv = asserv.lock().unwrap();
-        let position = asserv.position().clone();
+        let position = asserv.cs.position().clone();
 
         log::info!("Position: x: {:.2} y: {:.2} theta: {:.2}", position.x, position.y, position.a);
 

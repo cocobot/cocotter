@@ -281,11 +281,6 @@ impl<H: AsservHardware> Asserv<H> {
         matches!(self.order, TrajectoryOrder::Autoset(_))
     }
 
-    /// Return the current robot position
-    pub fn position(&self) -> &XYA {
-        self.cs.position()
-    }
-
 
     //
     // Movement orders
