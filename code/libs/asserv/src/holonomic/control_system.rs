@@ -10,8 +10,8 @@ pub struct ControlSystem<H: AsservHardware> {
     target: XYA,
     motor_control: bool,
     motors_reactivated: bool,
-    motors_matrix: Matrix33,
-    motors_inv_matrix: Matrix33,
+    motors_velocities_to_consigns: Matrix33,
+    motors_encoders_to_position: Matrix33,
 }
 
 
@@ -24,8 +24,8 @@ impl<H: AsservHardware> ControlSystem<H> {
             target: XYA::default(),
             motor_control: true,
             motors_reactivated: false,
-            motors_matrix: MATRIX33_IDENTITY,
-            motors_inv_matrix: MATRIX33_IDENTITY,
+            motors_velocities_to_consigns: MATRIX33_IDENTITY,
+            motors_encoders_to_position: MATRIX33_IDENTITY,
         }
     }
 
@@ -39,7 +39,7 @@ impl<H: AsservHardware> ControlSystem<H> {
         let gyro_offset = self.hardware.get_gyro_offset();
 
         // Convert speed from encoders coordinates to robot coordinates
-        let dp = mult_matrix33_vec(&self.motors_inv_matrix, &motor_offsets);
+        let dp = mult_matrix33_vec(&self.motors_encoders_to_position, &motor_offsets);
         let dp = XY::new(dp[0], dp[1]);
 
         //TODO Why this? Shouldn't be included in matrix?!
@@ -116,7 +116,7 @@ impl<H: AsservHardware> ControlSystem<H> {
 
     /// Set motors duty cycles from linear and angular velocities
     pub fn set_motors_from_velocities(&mut self, vx: f32, vy: f32, va: f32) {
-        let values = mult_matrix33_vec(&self.motors_matrix, &[vx, vy, va]);
+        let values = mult_matrix33_vec(&self.motors_velocities_to_consigns, &[vx, vy, va]);
         self.hardware.set_motor_consigns(values);
     }
 
@@ -144,13 +144,13 @@ impl<H: AsservHardware> ControlSystem<H> {
     }
 
     /// Set matrix that converts velocities to motor consigns
-    pub fn set_motors_matrix(&mut self, matrix: Matrix33) {
-        self.motors_matrix = matrix;
+    pub fn set_motors_velocities_to_consigns_matrix(&mut self, matrix: Matrix33) {
+        self.motors_velocities_to_consigns = matrix;
     }
 
     /// Set matrix that converts motor offsets to position offsets
-    pub fn set_motors_inv_matrix(&mut self, matrix: Matrix33) {
-        self.motors_inv_matrix = matrix;
+    pub fn set_motors_encoders_to_position_matrix(&mut self, matrix: Matrix33) {
+        self.motors_encoders_to_position = matrix;
     }
 }
 

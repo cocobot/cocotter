@@ -67,16 +67,16 @@ pub struct TrajectoryConf {
 #[derive(Clone)]
 pub struct MotorsConf {
     /// Matrix used to convert target velocity (relative to robot) to motor duty cycles
-    pub matrix: Matrix33,
+    pub velocities_to_consigns: Matrix33,
     /// Matrix used to convert motor encoder values to displacement (relative to robot)
-    pub inv_matrix: Matrix33,
+    pub encoders_to_position: Matrix33,
 }
 
 impl Default for MotorsConf {
     fn default() -> Self {
         Self {
-            matrix: MATRIX33_IDENTITY,
-            inv_matrix: MATRIX33_IDENTITY,
+            velocities_to_consigns: MATRIX33_IDENTITY,
+            encoders_to_position: MATRIX33_IDENTITY,
         }
     }
 }

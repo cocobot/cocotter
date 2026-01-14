@@ -240,8 +240,8 @@ impl<H: AsservHardware> Asserv<H> {
         self.set_autoset_speed(conf.trajectory.autoset_speed);
         self.set_autoset_delays(conf.trajectory.autoset_wait, conf.trajectory.autoset_duration);
 
-        self.cs.set_motors_matrix(conf.motors.matrix);
-        self.cs.set_motors_inv_matrix(conf.motors.inv_matrix);
+        self.cs.set_motors_velocities_to_consigns_matrix(conf.motors.velocities_to_consigns);
+        self.cs.set_motors_encoders_to_position_matrix(conf.motors.encoders_to_position);
 
         self.reset_position(XYA::new(0.0, 0.0, 0.0));
     }
