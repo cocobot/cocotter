@@ -1,5 +1,4 @@
 use embedded_hal::spi::{Operation, SpiDevice};
-use num_traits::FromBytes;
 use std::{
     thread,
     time::{Duration, Instant},
@@ -20,6 +19,7 @@ pub struct Sch16t<SPI> {
     last_measure_instant: Option<Instant>,
 }
 
+#[derive(Default)]
 pub struct Sch16tAxis {
     x: f32,
     y: f32,
@@ -231,10 +231,7 @@ pub enum Sch16tError<SPI> {
     ZReading(Sch16tStatRate),
 }
 
-impl<SPI> Debug for Sch16tError<SPI>
-where
-    SPI: SpiDevice,
-{
+impl<SPI: SpiDevice> Debug for Sch16tError<SPI> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Sch16tError::Spi(_) => write!(f, "SPI communication error"),
@@ -245,31 +242,20 @@ where
     }
 }
 
-impl<SPI> Sch16t<SPI>
-where
-    SPI: SpiDevice, // Sch16tError<SPI>: From<Sch16tError<<SPI as embedded_hal::spi::ErrorType>::Error>>
-{
+impl<SPI: SpiDevice> Sch16t<SPI> {
     /// Create a new SCH16T instance
     ///
     /// # Arguments
     /// * `spi` - spi peripheral
-    /// * `address` - TC address of the SCH16T (typically 0x00-0x03)
+    /// * `address` - TC address of the SCH16T (2 bits)
     pub fn new(spi: SPI, address: u8) -> Self {
         Self {
             spi,
             address: address & 0x03,
             acceleration_scale: SCH16TAccScale::Scale15ms2,
-            angle_scale: SCH16TAngleScale::Scale300degs, //SCH16TAngleScale::Scale62_5degs,
-            angle: Sch16tAxis {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            },
-            acceleration: Sch16tAxis {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            },
+            angle_scale: SCH16TAngleScale::Scale300degs,
+            angle: Sch16tAxis::default(),
+            acceleration: Sch16tAxis::default(),
             last_measure_instant: None,
         }
     }
@@ -277,17 +263,14 @@ where
     /// Initialize the TCA6408 with default configuration
     /// All pins are configured as inputs with normal polarity
     pub fn init(&mut self) -> Result<(), Sch16tError<SPI>> {
-        // wait 50ms for NVM read and SPI start up
+        // Wait 32ms for NVM read and SPI start up
         thread::sleep(Duration::from_millis(50));
-        self.write_register(Register::CtrlReset, 0x10_u32);
+        self.write_register(Register::CtrlReset, 0x10);  //TODO Why 0x10?
         thread::sleep(Duration::from_millis(50));
-        println!("version {}", self.read_register(Register::AsicId)?);
-        println!("comp id {}", self.read_register(Register::CompId)?);
+        //XXX Communication is not allowed during 2ms after SPI SOFTRESET
+        log::info!("sch16t: asic_id {:03x}, comp_id: {:04x}", self.read_register(Register::AsicId)?, self.read_register(Register::CompId)?);
 
-        println!("test {}", self.read_register(Register::SysTest)?);
-        self.write_register(Register::SysTest, 0x1234_5678);
-        println!("test {}", self.read_register(Register::SysTest)?);
-        // configure registers
+        // Configure registers
         let ctrl_rate_val = SCH16TRateCtrl {
             xyz1_scale: self.angle_scale,
             xyz2_scale: SCH16TAngleScale::Scale300degs,
@@ -295,12 +278,8 @@ where
             y2_decim_ratio: SCH16TDecimationRatio::DecRatio16,
             z2_decim_ratio: SCH16TDecimationRatio::DecRatio16,
         };
-        self.write_register(Register::CtrlRate, u32::from(ctrl_rate_val));
-        println!("u32 ctrl rate {:#010x}", u32::from(ctrl_rate_val));
-
-        let ctrl_usr_if_val = 0b0010_0000_0000_1100;
-        self.write_register(Register::CtrlUserIf, ctrl_usr_if_val);
-
+        self.write_register(Register::CtrlRate, ctrl_rate_val.into());
+        self.write_register(Register::CtrlUserIf, 0b0010_0000_0000_1100);
         let ctrl_acc12_val = SCH16TAcc12Ctrl {
             xyz1_scale: self.acceleration_scale,
             xyz2_scale: SCH16TAccScale::Scale80ms2,
@@ -308,15 +287,15 @@ where
             y2_decim_ratio: SCH16TDecimationRatio::DecRatio16,
             z2_decim_ratio: SCH16TDecimationRatio::DecRatio16,
         };
-        self.write_register(Register::CtrlAcc12, u32::from(ctrl_acc12_val));
+        self.write_register(Register::CtrlAcc12, ctrl_acc12_val.into());
 
-        // finally set ctrl mode
-        self.write_register(Register::CtrlMode, 0x0001);
+        // Write EN_SENSOR=1 (CTRL_MODE = EN_SENSOR)
+        self.write_register(Register::CtrlMode, 0b01);
 
-        // wait 215ms
+        // Wait 215ms
         thread::sleep(Duration::from_millis(215));
 
-        // read status bits
+        // Read status bits
         let _ = self.read_register(Register::StatSum);
         let _ = self.read_register(Register::StatSumStat);
         let _ = self.read_register(Register::StatCom);
@@ -328,14 +307,17 @@ where
         let _ = self.read_register(Register::StatAccZ);
         let _ = self.read_register(Register::StatInfo);
 
-        // finally set ctrl mode
-        self.write_register(Register::CtrlMode, 0x0003);
+        // Write EOI=1 (CTRL_MODE = EN_SENSOR | EOI_CTRL)
+        self.write_register(Register::CtrlMode, 0b11);
 
-        //wait 3ms
+        // Wait 3ms
         thread::sleep(Duration::from_millis(3));
 
-        // read all status registers twice
-        for _i in 0..2 {
+        //TODO The exemple start-up sequence could probably be simplified
+        // We don't check read values, so it's probably useless
+
+        // Read all status registers twice
+        for _ in 0..2 {
             let _ = self.read_register(Register::StatSum);
             let _ = self.read_register(Register::StatSumStat);
             let _ = self.read_register(Register::StatCom);
@@ -348,10 +330,6 @@ where
             let _ = self.read_register(Register::StatInfo);
         }
 
-        println!(
-            "ctrl rate {:#010x}",
-            self.read_register(Register::CtrlRate)?
-        );
         let _ = self.read_register(Register::CtrlUserIf);
         let _ = self.read_register(Register::CtrlAcc12);
 
@@ -359,21 +337,19 @@ where
     }
 
     pub fn update_angle(&mut self) -> Result<(), Sch16tError<SPI>> {
-        let mut response = Ok(());
-
         let x_stat = self.read_register(Register::StatRateX)?;
         let y_stat = self.read_register(Register::StatRateY)?;
         let z_stat = self.read_register(Register::StatRateZ)?;
         let new_instant = Instant::now();
-        if let Some(last_instant) = self.last_measure_instant {
-            let elapsed = (new_instant - last_instant).as_secs_f32();
+        if let Some(previous_instant) = self.last_measure_instant.replace(new_instant) {
+            let elapsed = (new_instant - previous_instant).as_secs_f32();
 
             let stat = Sch16tStatRate::from(x_stat as u16);
             if stat.all_flags_ok() {
                 self.angle.x += self.angle_from_register(Register::RateX1)? * elapsed;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateX2)? * elapsed;
-                response = Err(Sch16tError::XReading(stat));
+                return Err(Sch16tError::XReading(stat));
             }
 
 
@@ -382,7 +358,7 @@ where
                 self.angle.y += self.angle_from_register(Register::RateY1)? * elapsed;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateY2)? * elapsed;
-                response = Err(Sch16tError::YReading(stat));
+                return Err(Sch16tError::YReading(stat));
             }
 
             let stat = Sch16tStatRate::from(z_stat as u16);
@@ -390,12 +366,11 @@ where
                 self.angle.z += self.angle_from_register(Register::RateZ1)? * elapsed;
             } else {
                 self.angle.x += self.angle_from_register(Register::RateZ2)? * elapsed;
-                response = Err(Sch16tError::ZReading(stat));
+                return Err(Sch16tError::ZReading(stat));
             }
         }
-        self.last_measure_instant = Some(new_instant);
-       
-       response
+
+        Ok(())
     }
 
     fn angle_from_register(&mut self, register: Register) -> Result<f32, Sch16tError<SPI>> {
@@ -420,96 +395,78 @@ where
     }
 
     fn read_register(&mut self, register: Register) -> Result<u32, Sch16tError<SPI>> {
-        let frame = self.create_spi48bf(register, true, 0x00000000);
+        let frame = create_spi48bf(self.address, register, true, 0);
 
         let mut answer: [u8; 6] = [0x00; 6];
         // `transaction` asserts and deasserts CS for us. No need to do it manually!
-        let _ = self
-            .spi
-            .transaction(&mut [Operation::Write(&frame)])
-            .map_err(Sch16tError::Spi);
-
-        let _ = self
-            .spi
-            .transaction(&mut [Operation::Read(&mut answer)])
-            .map_err(Sch16tError::Spi);
-
-        let parsed_answer = Self::parse_spi48bf(answer);
-
+        let _ = self.spi.transaction(&mut [Operation::Write(&frame)]);
+        let _ = self.spi.transaction(&mut [Operation::Read(&mut answer)]);
+        let parsed_answer = parse_spi48bf(answer);
         Ok(parsed_answer.data)
     }
 
     /// write a register to the SCH16T and return the write error status
     fn write_register(&mut self, register: Register, data: u32) -> bool {
-        let frame = self.create_spi48bf(register, false, data);
-        let mut answer: [u8; 6] = [0x00; 6];
-        let _ = self
-            .spi
-            .transaction(&mut [Operation::Write(&frame)])
-            .map_err(Sch16tError::Spi);
-        let _ = self
-            .spi
-            .transaction(&mut [Operation::Read(&mut answer)])
-            .map_err(Sch16tError::Spi);
-        let parsed_answer = Self::parse_spi48bf(answer);
+        let frame = create_spi48bf(self.address, register, false, data);
+        let mut answer: [u8; 6] = [0; 6];
+        let _ = self.spi.transaction(&mut [Operation::Write(&frame)]);
+        let _ = self.spi.transaction(&mut [Operation::Read(&mut answer)]);
+        let parsed_answer = parse_spi48bf(answer);
         matches!(parsed_answer.status, SCH16TFrameStatus::Error)
     }
+}
 
-    fn parse_spi48bf(raw: [u8; 6]) -> SPI48bRdFrame {
-        let mut raw_u64 = [0x00; 8];
-        for (i, &val) in raw.iter().enumerate() {
-            raw_u64[i + 2] = val;
-        }
-        let full_frame: u64 = FromBytes::from_be_bytes(&raw_u64);
-        // received SPI48B frame structure
-        // D TA[9:0] IDS CE S[1:0] DCNT* RFU* DATA[19:0] CRC|7:0]
-        let dcnt = if full_frame & (1 << 47) != 0 {
-            Some((full_frame >> 29) as u8 & 0b0000_1111)
-        } else {
-            None
-        };
 
-        let address: u8 = (full_frame >> 45) as u8 & 0x03;
-        let register: u8 = (full_frame >> 38) as u8;
-        let status = if full_frame & (1 << 35) == 0 {
-            SCH16TFrameStatus::from((full_frame >> 33) as u8)
-        } else {
-            SCH16TFrameStatus::Error
-        };
-        let data = (full_frame >> 8 & 0x000FFFFF) as u32; // 20 bits
-
-        let crc_received = raw[5];
-        //TODO bugged
-        let frame_crc = compute_crc8(&raw[1..]);
-
-        SPI48bRdFrame {
-            address,
-            register,
-            data,
-            dcnt,
-            crc_ok: crc_received == frame_crc,
-            status,
-        }
+fn parse_spi48bf(raw: [u8; 6]) -> SPI48bRdFrame {
+    let mut raw_u64 = [0; 8];
+    for (i, &val) in raw.iter().enumerate() {
+        raw_u64[i + 2] = val;
     }
+    let full_frame = u64::from_be_bytes(raw_u64);
+    // Received SPI 48-bit frame structure:
+    // D TA[9:0] IDS CE S[1:0] DCNT* RFU* DATA[19:0] CRC|7:0]
+    let dcnt = if full_frame & (1 << 47) != 0 {
+        Some((full_frame >> 29) as u8 & 0b0000_1111)
+    } else {
+        None
+    };
 
-    /// create the spi48 bit frame
-    fn create_spi48bf(&self, register: Register, read: bool, data: u32) -> [u8; 6] {
-        // the SPI 48b frame definition :
-        // TA[9:0] RW_bit 0 1 AE[6:0] data[19:0] CRC8[7:0]
-        let mut full_frame: u64 = (1_u64) << 35; // set FT bit that indicates that the frame is 48 bits long 
-        full_frame |= (self.address as u64) << 46; // address lsb contains the TA[9:8] bits     
-        full_frame |= (register as u64) << 38; // TA[7:0] must contains the register address
-        full_frame |= match read {
-            true => 0,
-            false => 1,
-        } << 37;
-        full_frame |= (data as u64 & 0x0000_0000_000f_ffff) << 8;
+    let address: u8 = (full_frame >> 45) as u8 & 0x03;
+    let register: u8 = (full_frame >> 38) as u8;
+    let status = if full_frame & (1 << 35) == 0 {
+        SCH16TFrameStatus::from((full_frame >> 33) as u8)
+    } else {
+        SCH16TFrameStatus::Error
+    };
+    let data = (full_frame >> 8 & 0x000FFFFF) as u32; // 20 bits
 
-        let crc = compute_crc8(&full_frame.to_be_bytes()[2..7]);
-        full_frame |= crc as u64;
+    let crc_received = raw[5];
+    //TODO bugged
+    let frame_crc = compute_crc8(&raw[1..]);
 
-        <[u8; 6]>::try_from(&full_frame.to_be_bytes()[2..8]).unwrap()
+    SPI48bRdFrame {
+        address,
+        register,
+        data,
+        dcnt,
+        crc_ok: crc_received == frame_crc,
+        status,
     }
+}
+
+/// Create an SPI 48-bit frame
+fn create_spi48bf(address: u8, register: Register, read: bool, data: u32) -> [u8; 6] {
+    // Sent SPI 48-bit frame structure:
+    // TA[9:0] RW_bit 0 1 AE[6:0] data[19:0] CRC8[7:0]
+    let mut frame_value: u64 = 1 << 35; // Frame Type bit: 1 for 48-bit frame
+    frame_value |= (address as u64) << 46; // TA[9:8]: chip select (2-bit address)
+    frame_value |= (register as u64) << 38; // TA[7:0]: register address
+    frame_value |= if read { 0 } else { 1 } << 37;
+    frame_value |= ((data & 0xfffff) as u64) << 8;
+
+    let mut frame_bytes: [u8; 6] = frame_value.to_be_bytes()[2..8].try_into().unwrap();
+    frame_bytes[5] = compute_crc8(&frame_bytes[..5]);
+    frame_bytes
 }
 
 fn compute_crc8(frame: &[u8]) -> u8 {
@@ -523,79 +480,11 @@ fn compute_crc8(frame: &[u8]) -> u8 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    /*
-    #[test]
-    fn test_gpio_pins_bitfield() {
-        let mut pins = GpioPins::new();
 
-        // Test setting individual pins
-        pins.set_p0(true);
-        pins.set_p7(true);
-
-        assert!(pins.p0());
-        assert!(pins.p7());
-        assert!(!pins.p1());
-        assert_eq!(pins.as_u8(), 0b10000001);
-
-        // Test setting via pin number
-        pins.set_pin(3, true);
-        assert!(pins.get_pin(3));
-        assert_eq!(pins.as_u8(), 0b10001001);
-    }
-    */
     #[test]
     fn test_create_48b_frame() {
-        let mut inst = sch16t::new(spi::spi2, 0x00);
-
-        let frame = inst.create_spi48bf(Register::CtrlMode, false, 0x0000_0003);
-
+        let frame = create_spi48bf(0x0, Register::CtrlMode, false, 0x0000_0003);
         let expected_frame = [0x0D, 0x68, 0x00, 0x00, 0x03, 0x8D];
-
         assert_eq!(frame, expected_frame);
     }
-    /*
-    #[test]
-    fn test_gpio_pins_default() {
-        let pins = GpioPins::default();
-        assert_eq!(pins.as_u8(), 0);
-
-        for i in 0..8 {
-            assert!(!pins.get_pin(i));
-        }
-    }
-
-    #[test]
-    fn test_gpio_pins_set_get() {
-        let mut pins = GpioPins::new();
-
-        // Test all pins
-        for i in 0..8 {
-            pins.set_pin(i, true);
-            assert!(pins.get_pin(i));
-        }
-
-        assert_eq!(pins.as_u8(), 0xFF);
-
-        // Test clearing pins
-        for i in 0..8 {
-            pins.set_pin(i, false);
-            assert!(!pins.get_pin(i));
-        }
-
-        assert_eq!(pins.as_u8(), 0x00);
-    }
-
-    #[test]
-    fn test_gpio_pins_invalid_pin() {
-        let pins = GpioPins::new();
-
-        // Test invalid pin numbers
-        assert!(!pins.get_pin(8));
-        assert!(!pins.get_pin(255));
-
-        let mut pins = GpioPins::new();
-        pins.set_pin(8, true);  // Should be ignored
-        pins.set_pin(255, true); // Should be ignored
-        assert_eq!(pins.as_u8(), 0);
-    }*/
 }
