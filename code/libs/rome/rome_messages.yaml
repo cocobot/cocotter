@@ -1,36 +1,148 @@
-# Dummy messages, for tests
-90:
-  Empty: null
-  SensorValues:
-    - u32
-    - "[u16; 3]"
-  Position:
-    x: f32
-    y: f32
-    z: f32
-# Common messages
-20:
+# General messages
+10:
   BatteryLevel:
     mv: u16
     percent: u8
-# PAMI
-50:
-  AsservTelemetry:
+
+  MatchTm:
+    team:
+      - none
+      - left
+      - right
+    time_ms: u32  # Match timer
+
+# Asserv common messages
+20:
+  # Main status
+  AsservTmStatus:
     x: f32
     y: f32
     a: f32
-    done: bool
+    idle: bool
+
+  # Common velocities (not sent by PAMI)
+  AsservTmVelocity:
+    vx: f32
+    vy: f32
+    va: f32
+
+  # Enable or disable asserv
+  AsservActivate: [bool]
+
+  # Reset position; should only be called when robot is not moving
+  AsservSetPosition:
+    x: f32
+    y: f32
+    a: f32
+
+  # Common movement orders
   AsservGotoXy:
     x: f32
     y: f32
-  AsservGotoA:
-    a: f32
   AsservGotoXyRel:
     dx: f32
     dy: f32
+  AsservGotoA:
+    a: f32
   AsservGotoARel:
     da: f32
-  AsservResetPosition:
+  AsservGotoXya:
     x: f32
     y: f32
     a: f32
+
+# Holonomic asserv (Galipeur)
+40:
+  AsservHoloTmStatus:
+    status:
+      - idle
+      - path
+      - autoset
+    carrot_x: f32
+    carrot_y: f32
+    carrot_a: f32
+
+  # Send only when a path is active
+  AsservHoloTmPath:
+    carrot_speed: f32
+    path_index: u8
+    path_size: u8
+
+  AsservHoloAutoset:
+    robot_side: [left, right, back]
+    table_side: [left, right, up, down]
+    target_x: f32
+    target_y: f32
+
+  AsservHoloSetPidConf:
+    pid: [x, y, a]
+    gain_p: i16
+    gain_i: i16
+    gain_d: i16
+    max_in: i32
+    max_i: i32
+    max_out: i32
+    # out_shift: u8
+
+  AsservHoloSetTrajectoryConf:
+    a_speed: f32
+    a_acc: f32
+    xy_cruise_speed: f32
+    xy_cruise_acc: f32
+    xy_steering_speed: f32
+    xy_steering_acc: f32
+    xy_stop_speed: f32
+    xy_stop_acc: f32
+    xy_steering_window: f32
+    xy_stop_window: f32
+    a_stop_window: f32
+    autoset_speed: f32
+    autoset_wait: u8
+    autoset_duration: u8
+
+  AsservHoloSetMotorsConf:
+    # 3x3 matrixes, row major order
+    velocities_to_consigns: "[f32; 9]"
+    encoders_to_position: "[f32; 9]"
+  
+
+# Differential asserv (PAMI)
+50:
+  AsservDiffTmStatus:
+    status:
+      - idle
+      - stop
+      - xy
+      - angle
+    dist: f32  # Cumulative distance, reset by some orders
+    vdist: f32  # Linear speed
+    va: f32  # Angular speed (same as AsservTmVelocity.va)
+
+  AsservDiffSetPidConf:
+    pid: [dist, angle]
+    gain_p: i16
+    gain_i: i16
+    gain_d: i16
+    max_in: i32
+    max_i: i32
+    max_out: i32
+    # out_shift: u8
+
+  AsservDiffSetTrajectoryConf:
+    a_speed: f32
+    a_acc: f32
+    xy_speed: f32
+    xy_acc: f32
+    xy_stop_window: f32
+    xy_aim_angle_window: f32
+    xy_cruise_angle_window: f32
+    xy_approach_window: f32
+    a_stop_window: f32
+    xy_idle_speed: f32
+    a_idle_speed: f32
+
+  AsservDiffSetMotorsConf:
+    # See MotorsConf::from_dimensions() for a way to compute those values from wheel and encoder parameters
+    tick_to_mm: f32
+    tick_to_rad: f32
+
