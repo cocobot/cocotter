@@ -5,7 +5,10 @@ use std::collections::{HashMap, HashSet};
 use yaml_rust::{YamlLoader, Yaml};
 
 
-type ParamType<'a> = &'a str;
+enum ParamType<'a> {
+    Name(&'a str),
+    Choice(Vec<&'a str>),
+}
 
 enum Parameters<'a> {
     None,
@@ -88,8 +91,8 @@ fn parse_message_doc(doc: &Yaml) -> Vec<Message<'_>> {
                         } else {
                             panic!("Invalid parameter name: must be a string, got {name:?}");
                         };
-                        let type_name = parse_type_name(value);
-                        (param_name, type_name)
+                        let param_type = parse_type_name(value);
+                        (param_name, param_type)
                     }).collect();
                     Parameters::Named(items)
                 }
@@ -107,12 +110,35 @@ fn parse_message_doc(doc: &Yaml) -> Vec<Message<'_>> {
     messages
 }
 
-fn parse_type_name(yaml: &Yaml) -> &str {
-    if let Yaml::String(name) = yaml {
-        name.as_str()
-    } else {
-        panic!("Invalid parameter type: must be a string, got {yaml:?}");
+fn parse_type_name(yaml: &Yaml) -> ParamType<'_> {
+    match yaml {
+        Yaml::String(name) => ParamType::Name(name.as_str()),
+        Yaml::Array(items) => ParamType::Choice(items.iter().map(|v| {
+            if let Yaml::String(s) = v {
+                s.as_str()
+            } else {
+                panic!("Invalid choice value: must be a string, got {v:?}")
+            }
+        }).collect()),
+        _ => panic!("Invalid parameter type: {yaml:?}"),
     }
+}
+
+
+fn capitalize(s: &str) -> String {
+    let mut result = String::with_capacity(s.len());
+    let mut upper = true;
+    for c in s.chars() {
+        if c == '_' {
+            upper = true;
+        } else if upper {
+            result.push(c.to_ascii_uppercase());
+            upper = false;
+        } else {
+            result.push(c);
+        }
+    }
+    result
 }
 
 
@@ -124,12 +150,12 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     writeln!(writer, "use crate::DecodeError;").unwrap();
     writeln!(writer, "use crate::deserialize::{{Deserialize, Reader}};").unwrap();
     writeln!(writer, "use crate::serialize::{{Serialize, Writer}};").unwrap();
-    writeln!(writer).unwrap();
+    writeln!(writer, "\n").unwrap();
 
     // #[derive(Debug)]
     // pub enum Message {
     //     Empty,
-    //     SomeValues([u16; 3]),
+    //     SomeValues([u16; 3], params::SomeValuesParam1),
     //     Coordinates {
     //         x: f32,
     //         y: f32,
@@ -143,19 +169,23 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
                 writeln!(writer, "    {},", message.name).unwrap();
             }
             Parameters::Positional(params) => {
-                let values = params.join(", ");
+                let values = params.iter().enumerate().map(|(i, typ)| {
+                    let suffix = if params.len() == 1 { ParamChoiceSuffix::None } else { ParamChoiceSuffix::Index(i) };
+                    format_rust_type(typ, message.name, suffix)
+                }).collect::<Vec<_>>().join(", ");
                 writeln!(writer, "    {}({}),", message.name, values).unwrap();
             }
             Parameters::Named(params) => {
                 writeln!(writer, "    {} {{", message.name).unwrap();
                 for (name, typ) in params {
-                    writeln!(writer, "        {name}: {typ},").unwrap();
+                    let type_name = format_rust_type(typ, message.name, ParamChoiceSuffix::Name(name));
+                    writeln!(writer, "        {name}: {type_name},").unwrap();
                 }
                 writeln!(writer, "    }},").unwrap();
             }
         }
     }
-    write!(writer, "}}\n\n").unwrap();
+    writeln!(writer, "}}\n").unwrap();
 
     // #[repr(u8)]
     // pub enum MessageId {
@@ -168,7 +198,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     for message in messages {
         writeln!(writer, "    {} = {},", message.name, message.id).unwrap();
     }
-    write!(writer, "}}\n\n").unwrap();
+    writeln!(writer, "}}\n").unwrap();
 
     // impl Message {
     //     pub(crate) fn deserialize_with_id<R: Reader>(id: u8, reader: &mut R) -> Result<Self, DecodeError> {
@@ -176,6 +206,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     //             20 => Ok(Self::Empty),
     //             21 => Ok(Self::SomeValues(
     //                 <[u16; 3]>::deserialize(reader)?,
+    //                 SomeValuesParam1::deserialize(reader)?,
     //             )),
     //             22 => Ok(Self::Coordinates {
     //                 x: f32::deserialize(reader)?,
@@ -203,15 +234,18 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
             }
             Parameters::Positional(params) => {
                 writeln!(writer, "            {} => Ok(Self::{}(", message.id, message.name).unwrap();
-                for typ in params {
-                    writeln!(writer, "                {}::deserialize(reader)?,", enclosed_rust_type(typ)).unwrap();
+                for (i, typ) in params.iter().enumerate() {
+                    let suffix = if params.len() == 1 { ParamChoiceSuffix::None } else { ParamChoiceSuffix::Index(i) };
+                    let type_name = format_rust_type(typ, message.name, suffix);
+                    writeln!(writer, "                {}::deserialize(reader)?,", enclosed_rust_type(&type_name)).unwrap();
                 }
                 writeln!(writer, "            )),").unwrap();
             }
             Parameters::Named(params) => {
                 writeln!(writer, "            {} => Ok(Self::{} {{", message.id, message.name).unwrap();
                 for (name, typ) in params {
-                    writeln!(writer, "                {}: {}::deserialize(reader)?,", name, enclosed_rust_type(typ)).unwrap();
+                    let type_name = format_rust_type(typ, message.name, ParamChoiceSuffix::Name(name));
+                    writeln!(writer, "                {}: {}::deserialize(reader)?,", name, enclosed_rust_type(&type_name)).unwrap();
                 }
                 writeln!(writer, "            }}),").unwrap();
             }
@@ -233,8 +267,9 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     //     fn serialized_size(&self) -> usize {
     //         (match self {
     //             Self::Empty => 0,
-    //             Self::SomeValues(v0) => {
-    //                 v0.serialized_size()
+    //             Self::SomeValues(v0, v1) => {
+    //                 v0.serialized_size() +
+    //                 v1.serialized_size()
     //             }
     //             Self::Coordinates { x, y } => {
     //                 x.serialized_size() +
@@ -248,9 +283,10 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     //             Self::Empty => {
     //                 20u8.serialize(writer);
     //             },
-    //             Self::SomeValues(v0) => {
+    //             Self::SomeValues(v0, v1) => {
     //                 21u8.serialize(writer);
     //                 v0.serialize(writer);
+    //                 v1.serialize(writer);
     //             }
     //             Self::Coordinates { x, y } => {
     //                 22u8.serialize(writer);
@@ -261,7 +297,6 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     //     }
     // }
     writeln!(writer, "impl Serialize for Message {{").unwrap();
-
     writeln!(writer, "    fn serialized_size(&self) -> usize {{").unwrap();
     writeln!(writer, "        (match self {{").unwrap();
     for message in messages {
@@ -310,8 +345,105 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     }
     writeln!(writer, "        }}").unwrap();
     writeln!(writer, "    }}").unwrap();
+    writeln!(writer, "}}\n\n").unwrap();
 
-    writeln!(writer, "}}\n").unwrap();
+    // Parameter types are gathered in `params` module
+    writeln!(writer, "pub mod params {{").unwrap();
+    writeln!(writer, "    use super::*;").unwrap();
+
+    // #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+    // #[repr(u8)]
+    // pub enum MessageParam {
+    //     Choice = 0,
+    //     Alternative = 1,
+    // }
+    //
+    // impl Deserialize for MessageParam {
+    //     fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {
+    //         match u8:deserialize(reader)? {
+    //             0 => Ok(Self::Choice),
+    //             1 => Ok(Self::Alternative),
+    //             n => Err(DecodeError::BadChoiceValue(n)),
+    //         }
+    //     }
+    // }
+    //
+    // impl Serialize for MessageParam {
+    //     fn serialized_size(&self) -> usize { core::mem::size_of::<u8>() }
+    //     fn serialize<W: Writer>(&self, encoder: &mut W) { (*self as u8).serialize(encoder) }
+    // }
+    let mut rust_choices = vec![];
+    for message in messages {
+        match &message.parameters {
+            Parameters::None => {},
+            Parameters::Positional(params) => {
+                for (i, typ) in params.iter().enumerate() {
+                    if let ParamType::Choice(choices) = typ {
+                        let suffix = if params.len() == 1 { ParamChoiceSuffix::None } else { ParamChoiceSuffix::Index(i) };
+                        let type_name = format_rust_choice_type(message.name, suffix);
+                        rust_choices.push((type_name, choices));
+                    }
+                }
+            }
+            Parameters::Named(params) => {
+                for (name, typ) in params {
+                    if let ParamType::Choice(choices) = typ {
+                        let type_name = format_rust_choice_type(message.name, ParamChoiceSuffix::Name(name));
+                        rust_choices.push((type_name, choices));
+                    }
+                }
+            }
+        }
+    }
+    for (name, choices) in &rust_choices {
+        writeln!(writer).unwrap();
+        writeln!(writer, "    #[derive(Clone, Copy, PartialEq, Eq, Debug)]").unwrap();
+        writeln!(writer, "    #[repr(u8)]").unwrap();
+        writeln!(writer, "    pub enum {} {{", name).unwrap();
+        for (i, choice) in choices.iter().enumerate() {
+            writeln!(writer, "        {} = {i},", capitalize(choice)).unwrap();
+        }
+        writeln!(writer, "    }}\n").unwrap();
+
+        writeln!(writer, "    impl Deserialize for {name} {{").unwrap();
+        writeln!(writer, "        fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {{").unwrap();
+        writeln!(writer, "            match u8::deserialize(reader)? {{").unwrap();
+        for (i, choice) in choices.iter().enumerate() {
+            writeln!(writer, "                {i} => Ok(Self::{}),", capitalize(choice)).unwrap();
+        }
+        writeln!(writer, "                n => Err(DecodeError::BadChoiceValue(n)),").unwrap();
+        writeln!(writer, "            }}").unwrap();
+        writeln!(writer, "        }}").unwrap();
+        writeln!(writer, "    }}\n").unwrap();
+
+        writeln!(writer, "    impl Serialize for {name} {{").unwrap();
+        writeln!(writer, "        fn serialized_size(&self) -> usize {{ core::mem::size_of::<u8>() }}").unwrap();
+        writeln!(writer, "        fn serialize<W: Writer>(&self, encoder: &mut W) {{ (*self as u8).serialize(encoder) }}").unwrap();
+        writeln!(writer, "    }}").unwrap();
+    }
+
+    writeln!(writer, "}}").unwrap();  // End of `params` module
+}
+
+enum ParamChoiceSuffix<'a> {
+    None,
+    Index(usize),
+    Name(&'a str),
+}
+
+fn format_rust_type(typ: &ParamType<'_>, message_name: &str, suffix: ParamChoiceSuffix) -> String {
+    match typ {
+        ParamType::Name(s) => s.to_string(),
+        ParamType::Choice(_) => format!("params::{}", format_rust_choice_type(message_name, suffix)),
+    }
+}
+
+fn format_rust_choice_type(message_name: &str, suffix: ParamChoiceSuffix) -> String {
+    match suffix {
+        ParamChoiceSuffix::None => format!("{message_name}Param"),
+        ParamChoiceSuffix::Index(i) => format!("{message_name}Param{i}"),
+        ParamChoiceSuffix::Name(s) => format!("{message_name}{}", capitalize(s)),
+    }
 }
 
 fn enclosed_rust_type(name: &str) -> String {

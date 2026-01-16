@@ -27,8 +27,10 @@ class Encoder:
             case "array":
                 for v in data:
                     self.write_type(val[0], v)
+            case "choice":
+                return self.write_pack("<B", val.index(data))
             case _:
-                raise ValueError("Unexpected type: {typ!r}")
+                raise ValueError(f"Unexpected type: {typ!r}")
 
     def write_pack(self, fmt: str, data: Any) -> Any:
         self.buffer += struct.pack(fmt, data)
@@ -50,8 +52,10 @@ class Decoder:
                 return self.read_unpack(val)
             case "array":
                 return [self.read_type(val[0]) for _ in range(val[1])]
+            case "choice":
+                return val[self.read_unpack("<B")]
             case _:
-                raise ValueError("Unexpected type: {typ!r}")
+                raise ValueError(f"Unexpected type: {typ!r}")
 
     def read_unpack(self, fmt: str) -> Any:
         data = self.io.read(struct.calcsize(fmt))
@@ -197,7 +201,7 @@ def load_messages(source: Path | str | TextIO) -> list[Message]:
 
         for message_name, parameters_decl in group_items.items():
             if not isinstance(message_name, str):
-                raise ValueError("Invalid message name: must be a string, got {message_name!r}")
+                raise ValueError(f"Invalid message name: must be a string, got {message_name!r}")
             if current_id in declarations:
                 raise ValueError(f"Duplicate message ID {current_id}, used by {declarations[current_id].name} and {message_name}")
             if message_name in names_in_use:
@@ -251,20 +255,29 @@ def register_default_messages() -> None:
 
 
 def _parse_type_name(value) -> ParamType:
-    if not isinstance(value, str):
-        raise ValueError(f"Invalid parameter type: must be a string, got {value!r}")
-    match value:
-        case "bool":
-            return ("fmt", "<?")
-        case "u8":
-            return ("fmt", "<B")
-        case "u16":
-            return ("fmt", "<H")
-        case "u32":
-            return ("fmt", "<L")
-        case "f32":
-            return ("fmt", "<f")
-    if m := re.match(r"^\[(.*); (\d+)\]$", value):
-        return ("array", (_parse_type_name(m.group(1)), int(m.group(2))))
-    raise ValueError("Unsupported type: {value!r}")
+    if isinstance(value, str):
+        match value:
+            case "bool":
+                return ("fmt", "<?")
+            case "u8":
+                return ("fmt", "<B")
+            case "i8":
+                return ("fmt", "<b")
+            case "u16":
+                return ("fmt", "<H")
+            case "i16":
+                return ("fmt", "<h")
+            case "u32":
+                return ("fmt", "<L")
+            case "i32":
+                return ("fmt", "<l")
+            case "f32":
+                return ("fmt", "<f")
+        if m := re.match(r"^\[(.*); (\d+)\]$", value):
+            return ("array", (_parse_type_name(m.group(1)), int(m.group(2))))
+    elif isinstance(value, list):
+        # Note: nested choices are not supported, but accepted here
+        if all(isinstance(v, str) for v in value):
+            return ("choice", value)
+    raise ValueError(f"Unsupported type: {value!r}")
 

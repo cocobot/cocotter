@@ -22,37 +22,26 @@ pub trait Deserialize: Sized {
     fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError>;
 }
 
-impl Deserialize for u8 {
-    fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {
-        let mut buffer = [0u8; 1];
-        reader.read(&mut buffer)?;
-        Ok(buffer[0])
+macro_rules! impl_deserialize_le_bytes {
+    ($name:ident) => {
+        impl Deserialize for $name {
+            fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {
+                let mut buffer = [0u8; core::mem::size_of::<Self>()];
+                reader.read(&mut buffer)?;
+                Ok(Self::from_le_bytes(buffer))
+            }
+        }
+
     }
 }
 
-impl Deserialize for u16 {
-    fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {
-        let mut buffer = [0u8; 2];
-        reader.read(&mut buffer)?;
-        Ok(Self::from_le_bytes(buffer))
-    }
-}
-
-impl Deserialize for u32 {
-    fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {
-        let mut buffer = [0u8; 4];
-        reader.read(&mut buffer)?;
-        Ok(Self::from_le_bytes(buffer))
-    }
-}
-
-impl Deserialize for f32 {
-    fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {
-        let mut buffer = [0u8; 4];
-        reader.read(&mut buffer)?;
-        Ok(Self::from_le_bytes(buffer))
-    }
-}
+impl_deserialize_le_bytes!(i8);
+impl_deserialize_le_bytes!(u8);
+impl_deserialize_le_bytes!(u16);
+impl_deserialize_le_bytes!(i16);
+impl_deserialize_le_bytes!(u32);
+impl_deserialize_le_bytes!(i32);
+impl_deserialize_le_bytes!(f32);
 
 impl Deserialize for bool {
     fn deserialize<R: Reader>(reader: &mut R) -> Result<Self, DecodeError> {

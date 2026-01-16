@@ -16,37 +16,25 @@ pub trait Serialize {
     fn serialize<W: Writer>(&self, encoder: &mut W);
 }
 
-impl Serialize for u8 {
-    fn serialized_size(&self) -> usize { core::mem::size_of::<Self>() }
+macro_rules! impl_serialize_le_bytes {
+    ($name:ident) => {
+        impl Serialize for $name {
+            fn serialized_size(&self) -> usize { core::mem::size_of::<Self>() }
 
-    fn serialize<W: Writer>(&self, encoder: &mut W) {
-        encoder.write(&[*self])
+            fn serialize<W: Writer>(&self, encoder: &mut W) {
+                encoder.write(&self.to_le_bytes())
+            }
+        }
     }
 }
 
-impl Serialize for u16 {
-    fn serialized_size(&self) -> usize { core::mem::size_of::<Self>() }
-
-    fn serialize<W: Writer>(&self, encoder: &mut W) {
-        encoder.write(&self.to_le_bytes())
-    }
-}
-
-impl Serialize for u32 {
-    fn serialized_size(&self) -> usize { core::mem::size_of::<Self>() }
-
-    fn serialize<W: Writer>(&self, encoder: &mut W) {
-        encoder.write(&self.to_le_bytes())
-    }
-}
-
-impl Serialize for f32 {
-    fn serialized_size(&self) -> usize { core::mem::size_of::<Self>() }
-
-    fn serialize<W: Writer>(&self, encoder: &mut W) {
-        encoder.write(&self.to_le_bytes())
-    }
-}
+impl_serialize_le_bytes!(u8);
+impl_serialize_le_bytes!(i8);
+impl_serialize_le_bytes!(u16);
+impl_serialize_le_bytes!(i16);
+impl_serialize_le_bytes!(u32);
+impl_serialize_le_bytes!(i32);
+impl_serialize_le_bytes!(f32);
 
 impl Serialize for bool {
     fn serialized_size(&self) -> usize { core::mem::size_of::<Self>() }
@@ -65,5 +53,4 @@ impl<T: Serialize, const N: usize> Serialize for [T; N] {
         }
     }
 }
-
 

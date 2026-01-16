@@ -16,6 +16,8 @@ pub enum DecodeError {
     UnknownMessage(u8),
     /// Some data has not been read, message is probably corrupted
     UnparsedData(Message, usize),
+    /// Invalid choice value
+    BadChoiceValue(u8),
 }
 
 
