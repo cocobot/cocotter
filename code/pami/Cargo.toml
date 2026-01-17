@@ -7,7 +7,7 @@ edition = "2024"
 name = "pami"
 
 [dependencies]
-asserv = { path = "../libs/asserv" }
+asserv = { path = "../libs/asserv", features = ["rome"] }
 board-common = { path = "../boards/common" }
 board-pami = { path = "../boards/pami" }
 embedded-graphics = "0.8"

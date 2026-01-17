@@ -1,4 +1,3 @@
-use asserv::maths::XYA;
 pub use board_common::Team;
 pub use board_pami::DpadState;
 
@@ -26,16 +25,6 @@ pub enum UiTrigger {
     ChangeTeam(Team),
     ChangeStartDelay(u8),
     ChangeRole(PamiRole),
-}
-
-
-pub enum AsservOrder {
-    GotoXy(f32, f32),
-    GotoA(f32),
-    GotoXyRel(f32, f32),
-    GotoARel(f32),
-    ResetPosition(XYA),
-    //TODO Configuration
 }
 
 

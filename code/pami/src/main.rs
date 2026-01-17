@@ -1,8 +1,8 @@
 use std::time::{Duration, Instant};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
-use asserv::differential::conf::*;
-use asserv::{differential::Asserv, maths::XYA};
+use asserv::differential::{conf::*, Asserv};
+use asserv::{rome::AsservRome, differential::rome::AsservDiffRome};
 use board_common::Periodicity;
 use board_pami::{BatteryLevel, PamiBoard};
 use vlx::VlxSensor;
@@ -57,47 +57,12 @@ fn main() {
         log::error!("VLX initalization failed: {err:?}");
     }
 
-    let (asserv_order_send, asserv_order_recv) = std::sync::mpsc::channel();
-    std::thread::spawn(move || {
-        log::info!("Start BLE RX thread");
-        loop {
-            if let Ok(data) = rome_rx.recv_timeout(std::time::Duration::from_millis(500)) {
-                match rome::Message::decode(&data) {
-                    Ok(rome::Message::AsservGotoXy { x, y }) => {
-                        log::info!("ROME: goto_xy: {x},{y}");
-                        asserv_order_send.send(AsservOrder::GotoXy(x, y)).unwrap();
-                    }
-                    Ok(rome::Message::AsservGotoA { a }) => {
-                        log::info!("ROME: goto_a: {a}");
-                        asserv_order_send.send(AsservOrder::GotoA(a)).unwrap();
-                    }
-                    Ok(rome::Message::AsservGotoXyRel { dx, dy }) => {
-                        log::info!("ROME: goto_xy_rel: {dx},{dy}");
-                        asserv_order_send.send(AsservOrder::GotoXyRel(dx, dy)).unwrap();
-                    }
-                    Ok(rome::Message::AsservGotoARel { da }) => {
-                        log::info!("ROME: goto_a_rel: {da}");
-                        asserv_order_send.send(AsservOrder::GotoARel(da)).unwrap();
-                    }
-                    Ok(rome::Message::AsservResetPosition { x, y, a }) => {
-                        log::info!("ROME: reset_position: {x},{y},{a}");
-                        asserv_order_send.send(AsservOrder::ResetPosition(XYA::new(x, y, a))).unwrap();
-                    }
-                    Ok(msg) => {
-                        log::warn!("ROME: ignored message: {}", msg.message_id());
-                    }
-                    Err(err) => log::error!("ROME RX error: {err:?}"),
-                }
-            }
-        }
-    });
-
     let mut buttons = board.buttons().unwrap();
     let mut battery_level = board.battery_level().unwrap();
 
     log::info!("Start BLE TX dummy main loop");
 
-    let mut asserv = Asserv::new(PamiAsservHardware::new(&mut board));
+    let mut asserv = Asserv::new(PamiAsservHardware::new(&mut board), ASSERV_PERIOD);
     asserv.set_conf(AsservConf {
         pid_dist: PidConf {
             gain_p: 10,
@@ -123,7 +88,6 @@ fn main() {
             a_idle_speed: 0.01,
         },
         motors: MotorsConf::from_dimensions(75.0, 30.0, 256),
-        update_period: ASSERV_PERIOD,
     });
 
     let mut asserv_period = Periodicity::new(ASSERV_PERIOD);
@@ -202,14 +166,15 @@ fn main() {
             }
         }
 
-        // Note: "disconnected" errors are not detected
-        while let Ok(order) = asserv_order_recv.try_recv() {
-            match order {
-                AsservOrder::GotoXy(x, y) => asserv.goto_xy(x, y),
-                AsservOrder::GotoA(a) => asserv.goto_a(a),
-                AsservOrder::GotoXyRel(dx, dy) => asserv.goto_xy_rel(dx, dy),
-                AsservOrder::GotoARel(da) => asserv.goto_a(da),
-                AsservOrder::ResetPosition(xya) => asserv.reset_position(xya),
+        // Process ROME input messages
+        for data in rome_rx.try_iter() {
+            match rome::Message::decode(&data) {
+                Err(err) => log::error!("ROME RX error: {err:?}"),
+                Ok(message) => {
+                    if !asserv.on_rome_message(&message) {
+                        log::warn!("ROME: ignored message: {}", message.message_id());
+                    }
+                },
             }
         }
 
@@ -218,14 +183,10 @@ fn main() {
         }
 
         if asserv_tm_period.update(&now) {
-            let position = asserv.cs.position();
-            let message = rome::Message::AsservTelemetry {
-                x: position.x,
-                y: position.y,
-                a: position.a,
-                done: asserv.idle(),
-            };
-            if let Err(err) = rome_tx.send(message.encode()) {
+            if let Err(err) = rome_tx.send(asserv.asserv_tm_status().encode()) {
+                log::error!("ROME send error: {:?}", err);
+            }
+            if let Err(err) = rome_tx.send(asserv.asserv_diff_tm_status().encode()) {
                 log::error!("ROME send error: {:?}", err);
             }
         }
