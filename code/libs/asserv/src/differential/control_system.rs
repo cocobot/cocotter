@@ -124,13 +124,13 @@ impl<H: AsservHardware> ControlSystem<H> {
     }
 
     /// Set linear speed and acceleration
-    pub fn set_xy_speed(&mut self, speed: f32, acc: f32, time_step: Duration) {
-        self.motor_filter.set_dist_ramp_conf(speed, acc, time_step);
+    pub fn set_xy_speed(&mut self, speed: f32, acc: f32, step_secs: f32) {
+        self.motor_filter.set_dist_ramp_conf(speed, acc, step_secs);
     }
 
     /// Set angular speed and acceleration
-    pub fn set_a_speed(&mut self, speed: f32, acc: f32, time_step: Duration) {
-        self.motor_filter.set_angle_ramp_conf(speed, acc, time_step);
+    pub fn set_a_speed(&mut self, speed: f32, acc: f32, step_secs: f32) {
+        self.motor_filter.set_angle_ramp_conf(speed, acc, step_secs);
     }
 
     /// Set encoder tick ratios

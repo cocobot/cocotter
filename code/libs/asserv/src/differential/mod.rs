@@ -1,6 +1,8 @@
 pub mod conf;
 mod control_system;
 mod motor_filter;
+#[cfg(feature = "rome")]
+pub mod rome;
 
 use core::time::Duration;
 use crate::maths::{XY, XYA, normalize_radians_pi_pi};
@@ -45,6 +47,9 @@ enum TrajectoryOrder {
 pub struct Asserv<H: AsservHardware> {
     pub cs: ControlSystem<H>,
 
+    // Asserv step duration, used to scale some configuration values
+    update_period_secs: f32,
+
     // Trajectory parameters
     conf: AsservInternalConf,
 
@@ -53,11 +58,12 @@ pub struct Asserv<H: AsservHardware> {
 }
 
 impl<H: AsservHardware> Asserv<H> {
-    /// Create an asserv from hardware components
-    pub fn new(hardware: H) -> Self {
+    /// Create an asserv from hardware components and update period
+    pub fn new(hardware: H, update_period: Duration) -> Self {
         let cs = ControlSystem::new(hardware);
         Self {
             cs,
+            update_period_secs: update_period.as_secs_f32(),
             conf: Default::default(),
             order: TrajectoryOrder::Idle,
         }
@@ -65,17 +71,35 @@ impl<H: AsservHardware> Asserv<H> {
 
     /// Fully configure the asserv and fully reset position()
     pub fn set_conf(&mut self, conf: AsservConf) {
-        *self.cs.motor_filter.pid_dist_conf_mut() = conf.pid_dist;
-        *self.cs.motor_filter.pid_angle_conf_mut() = conf.pid_angle;
-        self.cs.set_encoder_conversion(conf.motors.tick_to_mm, conf.motors.tick_to_rad);
-
-        self.set_a_speed(conf.trajectory.a_speed, conf.trajectory.a_acc, conf.update_period);
-        self.set_xy_speed(conf.trajectory.xy_speed, conf.trajectory.xy_acc, conf.update_period);
-        self.set_xy_order_windows(conf.trajectory.xy_stop_window, conf.trajectory.xy_aim_angle_window, conf.trajectory.xy_cruise_angle_window, conf.trajectory.xy_approach_window);
-        self.set_angle_order_window(conf.trajectory.a_stop_window);
-        self.set_idle_speed(conf.trajectory.xy_idle_speed, conf.trajectory.a_idle_speed);
-
+        self.set_dist_pid_conf(conf.pid_dist);
+        self.set_angle_pid_conf(conf.pid_angle);
+        self.set_trajectory_conf(conf.trajectory);
+        self.set_motors_conf(conf.motors);
         self.reset_position(XYA::new(0.0, 0.0, 0.0));
+    }
+
+    /// Set dist PID configuration
+    pub fn set_dist_pid_conf(&mut self, conf: PidConf) {
+        *self.cs.motor_filter.pid_dist_conf_mut() = conf;
+    }
+
+    /// Set angle PID configuration
+    pub fn set_angle_pid_conf(&mut self, conf: PidConf) {
+        *self.cs.motor_filter.pid_angle_conf_mut() = conf;
+    }
+
+    /// Set trajectory configuration
+    pub fn set_trajectory_conf(&mut self, conf: TrajectoryConf) {
+        self.set_a_speed(conf.a_speed, conf.a_acc);
+        self.set_xy_speed(conf.xy_speed, conf.xy_acc);
+        self.set_xy_order_windows(conf.xy_stop_window, conf.xy_aim_angle_window, conf.xy_cruise_angle_window, conf.xy_approach_window);
+        self.set_angle_order_window(conf.a_stop_window);
+        self.set_idle_speed(conf.xy_idle_speed, conf.a_idle_speed);
+    }
+
+    /// Set motors configuration
+    pub fn set_motors_conf(&mut self, conf: MotorsConf) {
+        self.cs.set_encoder_conversion(conf.tick_to_mm, conf.tick_to_rad);
     }
 
     pub fn hardware(&self) -> &H {
@@ -149,12 +173,12 @@ impl<H: AsservHardware> Asserv<H> {
     // Configuration setters
     //
 
-    pub fn set_a_speed(&mut self, speed: f32, acc: f32, time_step: Duration) {
-        self.cs.set_a_speed(speed, acc, time_step);
+    pub fn set_a_speed(&mut self, speed: f32, acc: f32) {
+        self.cs.set_a_speed(speed, acc, self.update_period_secs);
     }
 
-    pub fn set_xy_speed(&mut self, speed: f32, acc: f32, time_step: Duration) {
-        self.cs.set_xy_speed(speed, acc, time_step);
+    pub fn set_xy_speed(&mut self, speed: f32, acc: f32) {
+        self.cs.set_xy_speed(speed, acc, self.update_period_secs);
     }
 
     pub fn set_xy_order_windows(&mut self, xy_win: f32, aim_da: f32, cruise_da: f32, approach_win: f32) {

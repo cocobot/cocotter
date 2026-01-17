@@ -1,4 +1,3 @@
-use core::time::Duration;
 pub use crate::conf::PidConf;
 
 
@@ -25,13 +24,13 @@ pub struct AsservConf {
     pub pid_angle: PidConf,
     pub motors: MotorsConf,
     pub trajectory: TrajectoryConf,
-    /// Period between asserv updates
-    ///
-    /// Value is used to scale speeds and accelerations values
-    pub update_period: Duration,
 }
 
 
+/// Trajectory configuration
+///
+/// All values are in mm, rads and seconds.
+/// Asserv's `update_period` is used to scale them to raw values internally.
 #[derive(Clone, Default)]
 pub struct TrajectoryConf {
     /// Maximum angular speed

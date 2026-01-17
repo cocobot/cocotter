@@ -1,6 +1,8 @@
 pub mod conf;
 mod control_system;
 mod motor_filter;
+#[cfg(feature = "rome")]
+pub mod rome;
 
 use crate::maths::{XY, XYA, normalize_radians_pi_pi};
 use conf::*;
@@ -67,7 +69,7 @@ struct AutosetConfig {
 
 /// Trajectory order being processed
 enum TrajectoryOrder {
-    Stop,
+    Idle,
     Path(std::cell::RefCell<PathData>),
     Autoset(std::cell::RefCell<AutosetData>),
 }
@@ -215,7 +217,7 @@ impl<H: AsservHardware> Asserv<H> {
         Self {
             cs,
             conf: Default::default(),
-            order: TrajectoryOrder::Stop,
+            order: TrajectoryOrder::Idle,
             carrot: Default::default(),
             carrot_a: 0.0,
             synced_angle: None,
@@ -230,20 +232,42 @@ impl<H: AsservHardware> Asserv<H> {
             *pid_confs.y = conf.pid_y;
             *pid_confs.a = conf.pid_a;
         }
-
-        self.set_a_speed(conf.trajectory.a_speed, conf.trajectory.a_acc);
-        self.set_xy_cruise_speed(conf.trajectory.xy_cruise_speed, conf.trajectory.xy_cruise_acc);
-        self.set_xy_steering_speed(conf.trajectory.xy_steering_speed, conf.trajectory.xy_steering_acc);
-        self.set_xy_stop_speed(conf.trajectory.xy_stop_speed, conf.trajectory.xy_stop_acc);
-        self.set_steering_window(conf.trajectory.xy_steering_window);
-        self.set_stop_windows(conf.trajectory.xy_stop_window, conf.trajectory.a_stop_window);
-        self.set_autoset_speed(conf.trajectory.autoset_speed);
-        self.set_autoset_delays(conf.trajectory.autoset_wait, conf.trajectory.autoset_duration);
-
-        self.cs.set_motors_velocities_to_consigns_matrix(conf.motors.velocities_to_consigns);
-        self.cs.set_motors_encoders_to_position_matrix(conf.motors.encoders_to_position);
-
+        self.set_trajectory_conf(conf.trajectory);
+        self.set_motors_conf(conf.motors);
         self.reset_position(XYA::new(0.0, 0.0, 0.0));
+    }
+
+    /// Set X coordinate PID configuration
+    pub fn set_x_pid_conf(&mut self, conf: PidConf) {
+        *self.cs.motor_filter.pid_confs_mut().x = conf;
+    }
+
+    /// Set Y coordinate PID configuration
+    pub fn set_y_pid_conf(&mut self, conf: PidConf) {
+        *self.cs.motor_filter.pid_confs_mut().y = conf;
+    }
+
+    /// Set angle coordinate PID configuration
+    pub fn set_a_pid_conf(&mut self, conf: PidConf) {
+        *self.cs.motor_filter.pid_confs_mut().a = conf;
+    }
+
+    /// Set trajectory configuration
+    pub fn set_trajectory_conf(&mut self, conf: TrajectoryConf) {
+        self.set_a_speed(conf.a_speed, conf.a_acc);
+        self.set_xy_cruise_speed(conf.xy_cruise_speed, conf.xy_cruise_acc);
+        self.set_xy_steering_speed(conf.xy_steering_speed, conf.xy_steering_acc);
+        self.set_xy_stop_speed(conf.xy_stop_speed, conf.xy_stop_acc);
+        self.set_steering_window(conf.xy_steering_window);
+        self.set_stop_windows(conf.xy_stop_window, conf.a_stop_window);
+        self.set_autoset_speed(conf.autoset_speed);
+        self.set_autoset_delays(conf.autoset_wait, conf.autoset_duration);
+    }
+
+    /// Set motors configuration
+    pub fn set_motors_conf(&mut self, conf: MotorsConf) {
+        self.cs.set_motors_velocities_to_consigns_matrix(conf.velocities_to_consigns);
+        self.cs.set_motors_encoders_to_position_matrix(conf.encoders_to_position);
     }
 
     pub fn hardware(&self) -> &H {
@@ -271,7 +295,7 @@ impl<H: AsservHardware> Asserv<H> {
 
     /// Return true if target linear position is reached
     pub fn done_xy(&self) -> bool {
-        matches!(self.order, TrajectoryOrder::Stop)
+        matches!(self.order, TrajectoryOrder::Idle)
     }
 
     /// Return true if target angular position is reached
@@ -310,7 +334,7 @@ impl<H: AsservHardware> Asserv<H> {
         if path.is_empty() {
             // Empty path: stop to current position
             self.set_carrot_xy_consign(self.cs.position().xy());
-            self.order = TrajectoryOrder::Stop;
+            self.order = TrajectoryOrder::Idle;
         } else {
             // Truncate path len if needed
             let n = (TRAJECTORY_MAX_POINTS as usize).min(path.len());
@@ -437,7 +461,7 @@ impl<H: AsservHardware> Asserv<H> {
     /// Update trajectory management
     fn update_trajectory(&mut self) {
         match &self.order {
-            TrajectoryOrder::Stop => {
+            TrajectoryOrder::Idle => {
                 // Nothing to do
             }
 
@@ -459,7 +483,7 @@ impl<H: AsservHardware> Asserv<H> {
                         // Set carrot to last position
                         let next_point = *path_data.borrow().next_point();
                         self.set_carrot_xy_consign(next_point);
-                        self.order = TrajectoryOrder::Stop;
+                        self.order = TrajectoryOrder::Idle;
                         return;
                     }
                     // Switch to next point
@@ -557,7 +581,7 @@ impl<H: AsservHardware> Asserv<H> {
                             let target = autoset_data.borrow().target();
                             self.reset_position(target);
                             self.cs.enable_motor_control();
-                            self.order = TrajectoryOrder::Stop;
+                            self.order = TrajectoryOrder::Idle;
                         }
                     }
                 }

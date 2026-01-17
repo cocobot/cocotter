@@ -1,5 +1,3 @@
-use core::time::Duration;
-
 
 #[derive(Default)]
 pub struct RampFilter {
@@ -10,10 +8,15 @@ pub struct RampFilter {
 }
 
 impl RampFilter {
-    pub fn configure(&mut self, max_speed: f32, acceleration: f32, time_step: Duration) {
-        let step_secs = time_step.as_secs_f32();
-        self.max_speed = max_speed * step_secs;
-        self.acceleration = acceleration * step_secs * step_secs;
+    /// Configure using raw values (unit-less)
+    pub fn configure_raw(&mut self, max_speed: f32, acceleration: f32) {
+        self.max_speed = max_speed;
+        self.acceleration = acceleration;
+    }
+
+    /// Configure using in s⁻̂¹, s⁻², and step duration values
+    pub fn configure_scaled(&mut self, max_speed: f32, acceleration: f32, step_secs: f32) {
+        self.configure_raw(max_speed * step_secs, acceleration * step_secs * step_secs);
     }
 
     /// Return filtered target position

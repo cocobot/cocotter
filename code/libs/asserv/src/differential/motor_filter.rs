@@ -1,4 +1,3 @@
-use core::time::Duration;
 use crate::conf::PidConf;
 use crate::pid::PidFilter;
 use crate::ramp::RampFilter;
@@ -56,13 +55,13 @@ impl MotorFilter {
     }
 
     /// Set linear ramp configuration
-    pub(crate) fn set_dist_ramp_conf(&mut self, speed: f32, acc: f32, time_step: Duration) {
-        self.ramp_dist.configure(speed, acc, time_step);
+    pub(crate) fn set_dist_ramp_conf(&mut self, speed: f32, acc: f32, step_secs: f32) {
+        self.ramp_dist.configure_scaled(speed, acc, step_secs);
     }
 
     /// Set angle ramp configuration
-    pub(crate) fn set_angle_ramp_conf(&mut self, speed: f32, acc: f32, time_step: Duration) {
-        self.ramp_angle.configure(speed, acc, time_step);
+    pub(crate) fn set_angle_ramp_conf(&mut self, speed: f32, acc: f32, step_secs: f32) {
+        self.ramp_angle.configure_scaled(speed, acc, step_secs);
     }
 }
 

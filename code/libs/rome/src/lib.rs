@@ -5,7 +5,7 @@ mod serialize;
 use deserialize::Reader;
 use serialize::Serialize;
 
-pub use message::{Message, MessageId};
+pub use message::{Message, MessageId, params};
 
 
 #[derive(Debug)]
