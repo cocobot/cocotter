@@ -71,7 +71,7 @@ impl MotorsConf {
     pub const fn from_dimensions(wheel_distance: f32, wheel_diameter: f32, encoder_ticks: usize) -> Self {
         Self {
             tick_to_mm: core::f32::consts::PI * wheel_diameter / encoder_ticks as f32,
-            tick_to_rad: core::f32::consts::TAU * wheel_distance / (wheel_diameter * encoder_ticks as f32),
+            tick_to_rad: core::f32::consts::TAU * wheel_diameter / (wheel_distance * encoder_ticks as f32),
         }
     }
 }
