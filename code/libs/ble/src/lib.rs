@@ -1,7 +1,7 @@
 pub mod rome;
 pub mod scan;
 
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use esp_idf_svc::bt::{
     ble::{
         gap::{
@@ -31,6 +31,7 @@ pub use scan::BleScanResult;
 pub struct BleServer {
     gap: Arc<EspBleGap<'static, Ble, Arc<BtDriver<'static, Ble>>>>,
     pub gatts: EspGatts<'static, Ble, Arc<BtDriver<'static, Ble>>>,
+    last_connected_addr: Arc<Mutex<Option<BdAddr>>>,
 }
 
 impl BleServer {
@@ -56,7 +57,10 @@ impl BleServer {
         latency_ms: u32,
         timeout_ms: u32,
     ) -> Result<(), EspError> {
-        self.gap.set_conn_params_conf(addr, min_int_ms, max_int_ms, latency_ms, timeout_ms)
+        self.gap.set_conn_params_conf(addr, min_int_ms, max_int_ms, latency_ms, timeout_ms)?;
+        // HACK: Workaround for esp-idf binding limitation, SecurityRequest event does not provide the address
+        *self.last_connected_addr.lock().unwrap() = Some(addr);
+        Ok(())
     }
 
     /// Setup and start advertising
@@ -137,6 +141,7 @@ pub struct BleBuilder {
 struct BleGapHandlers {
     on_scan_result: Option<Box<dyn Fn(BleScanResult) + Send + Sync + 'static>>,
     on_passkey_notification: Option<Box<dyn Fn(BdAddr, u32) + Send + Sync + 'static>>,
+    on_security_request: Option<Box<dyn Fn() + Send + Sync + 'static>>,
 }
 
 impl BleBuilder {
@@ -164,9 +169,20 @@ impl BleBuilder {
     /// The server/client separation is somehow artifical, to keep things separated.
     /// Server is used for peripheral role, client is used for central role.
     pub fn run(self) -> (BleServer, BleClient) {
-        let Self { bt, handlers } = self;
+        let Self { bt, mut handlers } = self;
         let bt = Arc::new(bt);
         let gap = Arc::new(EspBleGap::new(bt.clone()).unwrap());
+
+        // HACK: Workaround for esp-idf binding limitation, SecurityRequest event does not provide the address
+        let last_connected_addr: Arc<Mutex<Option<BdAddr>>> = Arc::new(Mutex::new(None));
+        {
+            let last_connected_addr = last_connected_addr.clone();
+            handlers.on_security_request = Some(Box::new(move || {
+                if let Some(addr) = last_connected_addr.lock().unwrap().take() {
+                    sys::esp!(unsafe { sys::esp_ble_gap_security_rsp(&addr.addr() as *const _ as *mut _, true) }).unwrap();
+                }
+            }));
+        }
 
         let instance = Arc::new(BleInstance {
             gap: gap.clone(),
@@ -178,6 +194,7 @@ impl BleBuilder {
         let server = BleServer {
             gap: gap.clone(),
             gatts: EspGatts::new(bt).unwrap(),
+            last_connected_addr,
         };
         let client = BleClient {
             gap,
@@ -197,6 +214,8 @@ struct BleInstance {
 
 impl BleInstance {
     fn on_gap_event(&self, event: BleGapEvent) {
+        log::debug!("GAP event: {event:?}");
+
         match event {
             BleGapEvent::AdvertisingConfigured(status) => {
                 if status == BtStatus::Success {
@@ -222,6 +241,13 @@ impl BleInstance {
             BleGapEvent::ScanStopped(_status) => {
                 log::info!("BLE scanning stopped");
             }
+            BleGapEvent::SecurityRequest => {
+                log::info!("BLE security request");
+                // HACK: Workaround for esp-idf binding limitation, SecurityRequest event does not provide the address
+                if let Some(handler) = &self.handlers.on_security_request {
+                    handler();
+                }
+            },
             BleGapEvent::PasskeyNotification { addr, passkey } => {
                 log::info!("Passkey notification for {addr}: key is {passkey:06}");
                 if let Some(handler) = &self.handlers.on_passkey_notification {
