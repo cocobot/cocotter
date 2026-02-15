@@ -19,7 +19,7 @@ use esp_idf_svc::bt::{
     BdAddr, Ble, BtDriver, BtStatus, BtUuid,
 };
 use esp_idf_svc::hal::sys::esp;
-use esp_idf_svc::sys::{self, EspError, ESP_BLE_ADV_FLAG_GEN_DISC};
+use esp_idf_svc::sys::{self, EspError};
 
 pub use rome::RomePeripheral;
 pub use scan::BleScanResult;
@@ -65,7 +65,7 @@ impl BleServer {
         self.gap.set_adv_conf(&AdvConfiguration {
             include_name: true,
             include_txpower: true,
-            flag: ESP_BLE_ADV_FLAG_GEN_DISC as _,
+            flag: (sys::ESP_BLE_ADV_FLAG_GEN_DISC | sys::ESP_BLE_ADV_FLAG_BREDR_NOT_SPT) as _,
             service_uuid: Some(uuid),
             ..Default::default()
         })
