@@ -36,7 +36,7 @@ use ssd1306::{
 use ble::{BleBuilder, RomePeripheral};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxI2cDriver, VlxError, VlxSensor, ZoneAlarm, l5::VL53L5CX};
-use crate::{BatteryLevel, Encoder, PamiBoard, PamiButtons, PamiMotor, PamiMotors};
+use crate::{BatteryLevel, DpadState, Encoder, PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotor, PamiMotors, PamiPwmController};
 
 
 pub type I2cType = MutexDevice<'static, I2cDriver<'static>>;
@@ -48,12 +48,13 @@ pub struct EspPamiBoard<'d> {
     emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
     starting_cord: Option<PinDriver<'static, AnyInputPin, Input>>,
     ble: Option<BtDriver<'static, Ble>>,
-    buttons: Option<PamiButtons<I2cType>>,
+    buttons: Option<EspPamiButtons>,
     display: Option<PamiDisplay>,
-    heartbeat_led: Option<PinDriver<'static, AnyOutputPin, Output>>,
+    leds: Option<PamiLeds<PinDriver<'static, AnyOutputPin, Output>>>,
     line_sensor: Option<TCA6408<I2cType>>,
     vlx_sensor: Option<PamiVlxSensor>,
     motors: Option<PamiMotors<EspEncoder<'d>, LedcDriver<'static>>>,
+    pwm_controller: Option<PamiPwmController<I2cType>>,
 }
 
 impl<'d> PamiBoard for EspPamiBoard<'d> {
@@ -61,6 +62,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
     type I2c = I2cType;
     type Led = PinDriver<'static, AnyOutputPin, Output>;
     type Display = PamiDisplay;
+    type Buttons = EspPamiButtons;
     type Vlx = PamiVlxSensor;
     type MotorEncoder = EspEncoder<'d>;
     type MotorPwm = LedcDriver<'static>;
@@ -73,7 +75,10 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         let peripherals = Peripherals::take().unwrap();
 
         // Initialize digital output pins
-        let heartbeat_led = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio4)).unwrap();
+        let leds = PamiLeds {
+            esp: PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio4)).unwrap(),
+            com: PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio5)).unwrap(),
+        };
 
         // Initialize the I2C bus
         let config = I2cConfig::new().baudrate(Hertz(100_000));
@@ -101,7 +106,10 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
 
         let line_sensor = TCA6408::new(MutexDevice::new(i2c_driver_static), 0b010_0000);
-        let buttons = PamiButtons(TCA6408::new(MutexDevice::new(i2c_driver_static), 0b010_0001));
+        let buttons = EspPamiButtons {
+            tca: TCA6408::new(MutexDevice::new(i2c_driver_static), 0b010_0001),
+            pin: PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio7)).unwrap(),
+        };
 
         // Screen
         let display = {
@@ -130,6 +138,8 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
             },
         };
 
+        let pwm_controller = PamiPwmController::new(MutexDevice::new(i2c_driver_static), 0b110_1001).unwrap();
+
         let emergency_stop = PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio15)).unwrap();
         let starting_cord = PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio2)).unwrap();
 
@@ -137,13 +147,14 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
             battery_level: Some(battery_level),
             emergency_stop: Some(emergency_stop),
             starting_cord: Some(starting_cord),
-            heartbeat_led: Some(heartbeat_led),
+            leds: Some(leds),
             ble,
             line_sensor: Some(line_sensor),
             buttons: Some(buttons),
             display: Some(display),
             vlx_sensor: Some(vlx_sensor),
             motors: Some(motors),
+            pwm_controller: Some(pwm_controller),
         }
     }
 
@@ -175,15 +186,15 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         Some(Box::new(f))
     }
 
-    fn heartbeat_led(&mut self) -> Option<Self::Led> {
-        self.heartbeat_led.take()
+    fn leds(&mut self) -> Option<PamiLeds<Self::Led>> {
+        self.leds.take()
     }
 
     fn line_sensor(&mut self) -> Option<TCA6408<Self::I2c>> {
         self.line_sensor.take()
     }
 
-    fn buttons(&mut self) -> Option<PamiButtons<Self::I2c>> {
+    fn buttons(&mut self) -> Option<Self::Buttons> {
         self.buttons.take()
     }
 
@@ -197,6 +208,10 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>> {
         self.motors.take()
+    }
+
+    fn pwm_controller(&mut self) -> Option<PamiPwmController<Self::I2c>> {
+        self.pwm_controller.take()
     }
 
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
@@ -375,3 +390,26 @@ impl Encoder<i32> for EspEncoder<'_> {
         Ok(value)
     }
 }
+
+
+pub struct EspPamiButtons {
+    tca: TCA6408<I2cType>,
+    pin: PinDriver<'static, AnyInputPin, Input>,
+}
+
+impl PamiButtons for EspPamiButtons {
+    fn read_state(&mut self) -> PamiButtonsState {
+        let value = self.tca.read_inputs().unwrap_or(0);
+        let dpad = match value & 0b11111 {
+            0b00001 => DpadState::Right,
+            0b00010 => DpadState::Down,
+            0b00100 => DpadState::Up,
+            0b01000 => DpadState::Middle,
+            0b10000 => DpadState::Left,
+            _ => DpadState::None,
+        };
+        let switches = (value >> 5) | if self.pin.is_high() { 0b1000 } else { 0 };
+        PamiButtonsState { dpad, switches }
+    }
+}
+

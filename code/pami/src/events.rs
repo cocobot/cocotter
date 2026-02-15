@@ -4,6 +4,7 @@ pub use board_pami::DpadState;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum PamiRole {
+    None,
     Granary,
     Land,
 }

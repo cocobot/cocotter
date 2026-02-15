@@ -316,7 +316,7 @@ impl Default for MainScreen {
         Self {
             team: Team::None,
             start_delay: 0,
-            pami_role: PamiRole::Granary,
+            pami_role: PamiRole::None,
             // Start unfocused, it smoother for the eye
             focused: None,
         }
@@ -353,6 +353,7 @@ impl MainScreen {
 
     fn pami_role_label(&self) -> &'static str {
         match self.pami_role {
+            PamiRole::None => "none",
             PamiRole::Granary => "GRENIER",
             PamiRole::Land => "TERRAIN",
         }
@@ -377,6 +378,8 @@ impl MainScreen {
             },
             2 => {
                 let role = match self.pami_role {
+                    // Note: Cannot switch back to None
+                    PamiRole::None => PamiRole::Land,
                     PamiRole::Granary => PamiRole::Land,
                     PamiRole::Land => PamiRole::Granary,
                 };

@@ -13,7 +13,9 @@ use embedded_graphics::{
     draw_target::DrawTarget,
     pixelcolor::BinaryColor,
 };
-pub use board_common::{BatteryLevel, Encoder};
+pub use board_common::{BatteryLevel, Color, Encoder};
+use pwm_pca9685::{self, Pca9685};
+use pwm_pca9685::{Channel as Pca9685Channel};
 use tca6408::TCA6408;
 use vlx::VlxSensor;
 
@@ -22,11 +24,14 @@ pub use esp::EspPamiBoard;
 #[cfg(not(target_os = "espidf"))]
 pub use mock::MockPamiBoard;
 
+type Pca9685Error<I2C> = pwm_pca9685::Error<<I2C as embedded_hal::i2c::ErrorType>::Error>;
+
 
 pub trait PamiBoard {
     type BatteryLevel: BatteryLevel;
     type I2c: I2c;
     type Led: StatefulOutputPin;
+    type Buttons: PamiButtons;
     type Display: DrawTarget<Color=BinaryColor>;
     type Vlx: VlxSensor;
     type MotorEncoder: Encoder<i32>;
@@ -45,15 +50,23 @@ pub trait PamiBoard {
     fn battery_level(&mut self) -> Option<Self::BatteryLevel>;
     fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
     fn starting_cord(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
-    fn heartbeat_led(&mut self) -> Option<Self::Led>;
+    fn leds(&mut self) -> Option<PamiLeds<Self::Led>>;
     fn line_sensor(&mut self) -> Option<TCA6408<Self::I2c>>;
-    fn buttons(&mut self) -> Option<PamiButtons<Self::I2c>>;
+    fn buttons(&mut self) -> Option<Self::Buttons>;
     fn display(&mut self) -> Option<Self::Display>;
     fn vlx_sensor(&mut self) -> Option<Self::Vlx>;
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>>;
+    fn pwm_controller(&mut self) -> Option<PamiPwmController<Self::I2c>>;
 
     /// Configure and return ROME interface
     fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;
+}
+
+
+/// Normal leds, driven directly
+pub struct PamiLeds<Led: StatefulOutputPin> {
+    pub esp: Led,
+    pub com: Led,
 }
 
 
@@ -72,6 +85,12 @@ pub struct PamiMotors<E: Encoder<i32>, PWM: SetDutyCycle> {
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum DpadState { None, Middle, Up, Down, Left, Right }
 
+impl Default for DpadState {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 impl DpadState {
     pub fn as_char(&self) -> char {
         match self {
@@ -85,38 +104,79 @@ impl DpadState {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub struct PamiButtonsState(pub u8);
+#[derive(Clone, Copy, PartialEq, Eq, Default, Debug)]
+pub struct PamiButtonsState {
+    // Assume 1 active action on the dpad
+    pub dpad: DpadState,
+    pub switches: u8,  // Only 4 bits are relevant
+}
 
 impl PamiButtonsState {
-    pub fn dpad(&self) -> DpadState {
-        // Assume 1 action on the dpad
-        match self.0 & 0b11111 {
-            0b00001 => DpadState::Right,
-            0b00010 => DpadState::Down,
-            0b00100 => DpadState::Up,
-            0b01000 => DpadState::Middle,
-            0b10000 => DpadState::Left,
-            _ => DpadState::None,
+    pub const fn switch(&self, idx: u8) -> bool {
+        self.switches & (1 << idx) != 0
+    }
+}
+
+pub trait PamiButtons {
+    /// Read new button state
+    fn read_state(&mut self) -> PamiButtonsState;
+}
+
+
+//const PWM_CONTROLLER_SERVO: [Pca9685Channel; 4] = [Pca9685Channel::C0, Pca9685Channel::C1, Pca9685Channel::C2, Pca9685Channel::C3];
+const PWM_CONTROLLER_FAN: Pca9685Channel = Pca9685Channel::C5;
+//const PWM_CONTROLLER_RESET_TOF: Pca9685Channel = Pca9685Channel::C6;
+//const PWM_CONTROLLER_ENABLE_TOF: Pca9685Channel = Pca9685Channel::C7;
+const PWM_CONTROLLER_VBAT_RGB: [Pca9685Channel; 3] = [Pca9685Channel::C10, Pca9685Channel::C8, Pca9685Channel::C9];
+const PWM_CONTROLLER_LINE_LED: Pca9685Channel = Pca9685Channel::C11;
+const PWM_CONTROLLER_GROUND_RGB: [Pca9685Channel; 3] = [Pca9685Channel::C12, Pca9685Channel::C13, Pca9685Channel::C14];
+
+pub struct PamiPwmController<I2C: I2c>(Pca9685<I2C>);
+
+impl<I2C: I2c> PamiPwmController<I2C> {
+    fn new(i2c: I2C, addr: u8) -> Result<Self, Pca9685Error<I2C>> {
+        Ok(Self(Pca9685::new(i2c, addr)?))
+    }
+
+    pub fn init(&mut self) -> Result<(), Pca9685Error<I2C>> {
+        // The driver is not always reset when PAMI is switched on
+        self.0.set_prescale(100)?;  // For the servo
+        self.0.enable()?;
+        // Reset to default state
+        self.0.set_channel_full_off(Pca9685Channel::All)?;
+        self.0.set_channel_on(Pca9685Channel::All, 0)?;
+        Ok(())
+    }
+
+    pub fn set_battery_rgb(&mut self, color: Color) {
+        self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[0], color.r);
+        self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[1], color.g);
+        self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[2], color.b);
+    }
+
+    pub fn set_ground_rgb(&mut self, color: Color) {
+        self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[0], color.r);
+        self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[1], color.g);
+        self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[2], color.b);
+    }
+
+    pub fn set_fan_speed(&mut self, speed: f32) {
+        self.set_channel_duty(PWM_CONTROLLER_FAN, speed);
+    }
+
+    pub fn set_line_led(&mut self, value: f32) {
+        self.set_channel_duty(PWM_CONTROLLER_LINE_LED, value);
+    }
+
+    fn set_inverted_channel_duty(&mut self, channel: Pca9685Channel, value: f32) {
+        if value == 0.0 {
+            let _ = self.0.set_channel_full_on(channel, 0);
+        } else {
+            let _ = self.0.set_channel_on(channel, ((4095.0 * value) as u16).min(4095));
         }
     }
 
-    pub fn switches(&self) -> [bool; 3] {
-        [
-            self.0 & 0b100_00000 != 0,
-            self.0 & 0b010_00000 != 0,
-            self.0 & 0b001_00000 != 0,
-        ]
+    fn set_channel_duty(&mut self, channel: Pca9685Channel, value: f32) {
+        let _ = self.0.set_channel_on_off(channel, 0, 4095 - ((4095.0 * value) as u16).min(4095));
     }
 }
-
-pub struct PamiButtons<I2C: I2c>(TCA6408<I2C>);
-
-impl<I2C: I2c> PamiButtons<I2C> {
-    /// Read new button state
-    pub fn read_state(&mut self) -> PamiButtonsState {
-        //XXX Errors are ignored
-        PamiButtonsState(self.0.read_inputs().unwrap_or(0))
-    }
-}
-

@@ -23,6 +23,7 @@ impl PamiBoard for MockPamiBoard {
     type I2c = I2cMock;
     type Led = PinMock;
     type Display = PamiDisplay;
+    type Buttons = MockPamiButtons,
     type Vlx = MockVlxSensor;
     type MotorEncoder = MockEncoder<i32>;
     type MotorPwm = SetDutyCycleMock;
@@ -52,7 +53,7 @@ impl PamiBoard for MockPamiBoard {
         None
     }
 
-    fn heartbeat_led(&mut self) -> Option<Self::Led> {
+    fn leds(&mut self) -> Option<PamiLeds<Self::Led>> {
         None
     }
 
@@ -60,7 +61,7 @@ impl PamiBoard for MockPamiBoard {
         None
     }
 
-    fn buttons(&mut self) -> Option<PamiButtons<Self::I2c>> {
+    fn buttons(&mut self) -> Option<Self::Buttons> {
         None
     }
 
@@ -73,6 +74,10 @@ impl PamiBoard for MockPamiBoard {
     }
 
     fn motors(&mut self) -> Option<PamiMotors<Self::MotorEncoder, Self::MotorPwm>> {
+        None
+    }
+
+    fn pwm_controller(&mut self) -> Option<PamiPwmController<Self::I2c>> {
         None
     }
 
@@ -95,6 +100,14 @@ impl VlxSensor for MockVlxSensor {
 
     fn set_alarms(&mut self, _alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
         Ok(())
+    }
+}
+
+pub struct MockPamiButtons;
+
+impl<I2C: I2c> PamiButtons for EspPamiButtons<I2C> {
+    pub fn read_state(&mut self) -> PamiButtonsState {
+        PamiButtonsState::default()
     }
 }
 

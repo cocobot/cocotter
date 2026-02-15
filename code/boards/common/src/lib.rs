@@ -64,6 +64,15 @@ impl Team {
 
         }
     }
+
+    /// Return team color
+    pub const fn color(self) -> Color {
+        match self {
+            Self::None => Color::new(0.5, 0.5, 0.5),
+            Self::Left => Color::new(0.8, 0.8, 0.0),
+            Self::Right => Color::new(0.0, 0.0, 1.0),
+        }
+    }
 }
 
 
@@ -95,6 +104,11 @@ impl Periodicity {
         }
     }
 
+    /// Reset periodicity to given instance
+    pub fn reset(&mut self, now: &Instant) {
+        self.next = *now + self.period;
+    }
+
     pub fn next(&self) -> &Instant {
         &self.next
     }
@@ -104,4 +118,30 @@ impl Periodicity {
     }
 }
 
+
+/// RGB Color
+#[derive(Clone, Debug)]
+pub struct Color {
+    pub r: f32,
+    pub g: f32,
+    pub b: f32
+}
+
+impl Color {
+    pub const fn new(r: f32, g: f32, b: f32) -> Self {
+        Self { r, g, b }
+    }
+
+    pub const fn off() -> Self {
+        Self::new(0.0, 0.0, 0.0)
+    }
+
+    pub const fn rgb8(r: u8, g: u8, b: u8) -> Self {
+        Self {
+            r: r as f32 / 255.0,
+            g: g as f32 / 255.0,
+            b: b as f32 / 255.0,
+        }
+    }
+}
 
