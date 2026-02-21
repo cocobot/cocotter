@@ -28,7 +28,7 @@ impl BleScanResult {
     /// Iterate on advertisement data structures
     ///
     /// Return slices for each structure, without length but with AD type
-    pub fn iter_ad(&self) -> AdvDataIter {
+    pub fn iter_ad(&self) -> AdvDataIter<'_> {
         AdvDataIter { data: self.adv_data() }
     }
 

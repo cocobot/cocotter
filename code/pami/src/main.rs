@@ -158,7 +158,7 @@ impl MainState {
                 // Ignore changes during a match
             }
         }
-        return true;
+        true
     }
 
     fn set_team(&mut self, value: Team) {

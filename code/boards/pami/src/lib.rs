@@ -82,13 +82,11 @@ pub struct PamiMotors<E: Encoder<i32>, PWM: SetDutyCycle> {
 }
 
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum DpadState { None, Middle, Up, Down, Left, Right }
-
-impl Default for DpadState {
-    fn default() -> Self {
-        Self::None
-    }
+#[derive(Clone, Copy, Default, PartialEq, Eq, Debug)]
+pub enum DpadState {
+    #[default]
+    None,
+    Middle, Up, Down, Left, Right,
 }
 
 impl DpadState {

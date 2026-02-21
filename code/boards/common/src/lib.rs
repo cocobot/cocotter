@@ -21,17 +21,12 @@ pub trait Encoder<T> {
 
 
 /// Robot team
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
 pub enum Team {
+    #[default]
     None,
     Left,
     Right,
-}
-
-impl Default for Team {
-    fn default() -> Self {
-        Self::None
-    }
 }
 
 impl Team {
