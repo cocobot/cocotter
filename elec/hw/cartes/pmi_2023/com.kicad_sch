@@ -1724,164 +1724,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_diodes:1N5819WS"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "1N5819WS"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_diodes:D_SOD-323"
-				(at 0 -4.445 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C191023"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "diode Schottky"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "D*SOD?323*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "1N5819WS_0_1"
-				(polyline
-					(pts
-						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 0) (xy -1.27 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "1N5819WS_1_1"
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "K"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "cocotter_diodes:green_led_0603"
 			(pin_numbers
 				(hide yes)
@@ -4869,12 +4711,6 @@
 		(uuid "304d3b99-612c-48f0-95a8-b9a60dc4faf1")
 	)
 	(junction
-		(at 93.98 54.61)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "51f226ee-8fcd-4c41-92c6-91a6db36f3ff")
-	)
-	(junction
 		(at 229.87 119.38)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4953,18 +4789,6 @@
 		(uuid "9d0837da-6d22-42ca-964c-5d74a6d4765f")
 	)
 	(junction
-		(at 132.08 55.88)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "9ea5c625-4aaf-4a1e-95cc-a410c2e71da3")
-	)
-	(junction
-		(at 82.55 46.99)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "9edf230a-0d1f-45be-a694-38b9d2c6f32b")
-	)
-	(junction
 		(at 217.17 101.6)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4975,12 +4799,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a4c33529-2953-47d0-823a-2e543f2fd579")
-	)
-	(junction
-		(at 93.98 57.15)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a5c7208e-a40f-42a8-a3c3-269e0c32c962")
 	)
 	(junction
 		(at 46.99 99.06)
@@ -5007,22 +4825,10 @@
 		(uuid "d00f0c28-eb29-42c9-89e5-c523095dfc91")
 	)
 	(junction
-		(at 93.98 55.88)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "dfb8b091-5fd5-4f3d-b9e1-2f1cf6737147")
-	)
-	(junction
 		(at 224.79 101.6)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "e893b66b-fb67-4aee-a201-391ef85997dc")
-	)
-	(junction
-		(at 88.9 69.85)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ee2ff941-2824-460b-a85e-cf8760912865")
 	)
 	(junction
 		(at 175.26 149.86)
@@ -5109,16 +4915,6 @@
 			(type default)
 		)
 		(uuid "102c9c89-2188-471d-a62d-7657648209f3")
-	)
-	(wire
-		(pts
-			(xy 93.98 58.42) (xy 93.98 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "161fa9be-47dc-4f77-bb94-0320ad24d8de")
 	)
 	(wire
 		(pts
@@ -5232,16 +5028,6 @@
 	)
 	(wire
 		(pts
-			(xy 82.55 46.99) (xy 93.98 46.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "30d424d2-184a-4f50-aba6-52063a763d66")
-	)
-	(wire
-		(pts
 			(xy 29.21 96.52) (xy 58.42 96.52)
 		)
 		(stroke
@@ -5259,16 +5045,6 @@
 			(type default)
 		)
 		(uuid "334b5c0f-320a-4ba1-807b-b0027951d382")
-	)
-	(wire
-		(pts
-			(xy 132.08 29.21) (xy 132.08 38.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "36a366a7-40bc-4d8f-a0a1-d7ca5ac868cd")
 	)
 	(wire
 		(pts
@@ -5299,16 +5075,6 @@
 			(type default)
 		)
 		(uuid "3fb4d22b-3bd8-4ee6-942a-5d7f7a2a596a")
-	)
-	(wire
-		(pts
-			(xy 82.55 59.69) (xy 82.55 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3fcf9ffb-6457-416f-bcb6-b16ebe13e91a")
 	)
 	(wire
 		(pts
@@ -5439,16 +5205,6 @@
 			(type default)
 		)
 		(uuid "55559f50-2993-4dd4-94ff-ed3071ba6d67")
-	)
-	(wire
-		(pts
-			(xy 82.55 67.31) (xy 82.55 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "56b2c8e5-8cd1-4eeb-bf06-d9df6eee8901")
 	)
 	(wire
 		(pts
@@ -5612,16 +5368,6 @@
 	)
 	(wire
 		(pts
-			(xy 82.55 69.85) (xy 88.9 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6c1faaca-353c-4c67-945d-df49fe88df77")
-	)
-	(wire
-		(pts
 			(xy 63.5 57.15) (xy 63.5 59.69)
 		)
 		(stroke
@@ -5649,16 +5395,6 @@
 			(type default)
 		)
 		(uuid "6e72507b-3acb-4a1c-a566-d3ee4494dfa1")
-	)
-	(wire
-		(pts
-			(xy 82.55 46.99) (xy 80.01 46.99)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "70315d4d-f562-40de-96c3-ba9d35952fe4")
 	)
 	(wire
 		(pts
@@ -5912,6 +5648,16 @@
 	)
 	(wire
 		(pts
+			(xy 101.6 55.88) (xy 134.62 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9d094dfb-a796-4839-a822-764cd74781ec")
+	)
+	(wire
+		(pts
 			(xy 250.19 140.97) (xy 254 140.97)
 		)
 		(stroke
@@ -6002,16 +5748,6 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 66.04) (xy 93.98 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "adbc3d9a-3ea6-4463-817c-5785bcaab535")
-	)
-	(wire
-		(pts
 			(xy 280.67 146.05) (xy 273.05 146.05)
 		)
 		(stroke
@@ -6082,26 +5818,6 @@
 	)
 	(wire
 		(pts
-			(xy 132.08 55.88) (xy 132.08 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bb1860f5-7764-4371-9016-6145918c0cda")
-	)
-	(wire
-		(pts
-			(xy 88.9 69.85) (xy 93.98 69.85)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bf349654-b417-46a0-9a85-4093e85f3f7b")
-	)
-	(wire
-		(pts
 			(xy 120.65 109.22) (xy 134.62 109.22)
 		)
 		(stroke
@@ -6139,16 +5855,6 @@
 			(type default)
 		)
 		(uuid "c91b8f61-7d49-4991-b840-4a43309df0e4")
-	)
-	(wire
-		(pts
-			(xy 93.98 55.88) (xy 132.08 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "caab156e-1ebb-4347-85aa-419d46e24992")
 	)
 	(wire
 		(pts
@@ -6262,16 +5968,6 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 57.15) (xy 93.98 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dd3c57e1-ddcc-4030-8307-12c35f558e2f")
-	)
-	(wire
-		(pts
 			(xy 217.17 139.7) (xy 217.17 151.13)
 		)
 		(stroke
@@ -6352,16 +6048,6 @@
 	)
 	(wire
 		(pts
-			(xy 93.98 54.61) (xy 93.98 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f4d93307-d399-4707-80cb-5551bfd87c16")
-	)
-	(wire
-		(pts
 			(xy 80.01 143.51) (xy 82.55 143.51)
 		)
 		(stroke
@@ -6402,16 +6088,6 @@
 	)
 	(wire
 		(pts
-			(xy 82.55 54.61) (xy 93.98 54.61)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fb8c01a1-5244-437f-a0de-7a3618ed7616")
-	)
-	(wire
-		(pts
 			(xy 29.21 189.23) (xy 29.21 190.5)
 		)
 		(stroke
@@ -6419,26 +6095,6 @@
 			(type default)
 		)
 		(uuid "fc31b099-839b-472b-b1c5-539537497905")
-	)
-	(wire
-		(pts
-			(xy 82.55 57.15) (xy 93.98 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fd9f8c47-96a2-4cd3-9109-1852fc5ba189")
-	)
-	(wire
-		(pts
-			(xy 132.08 55.88) (xy 134.62 55.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fef392a4-ecd1-49d1-afcc-9dc8f59c0537")
 	)
 	(label "esp32_dbg_rx_3v3"
 		(at 232.41 104.14 0)
@@ -6519,16 +6175,6 @@
 			(justify left bottom)
 		)
 		(uuid "65fafcb1-c9b9-415a-bce9-78abfbbad16a")
-	)
-	(label "esp32_vbatt_mon_1v8"
-		(at 106.68 55.88 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "80793479-ae3c-40d8-bf77-5d27851387ef")
 	)
 	(label "led_esp_3v3"
 		(at 121.92 63.5 0)
@@ -6826,9 +6472,9 @@
 		)
 		(uuid "56576ee3-984e-45d3-aa9c-99972cc3c351")
 	)
-	(hierarchical_label "vbatt_mon_3.45V"
-		(shape input)
-		(at 80.01 46.99 180)
+	(hierarchical_label "dig_servo_cmd_3v3"
+		(shape output)
+		(at 101.6 55.88 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8149,139 +7795,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
-		(at 82.55 63.5 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3f7b4c33-a43b-4166-9cf7-8cfbe0eb6ed2")
-		(property "Reference" "R84"
-			(at 85.09 62.2299 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "91k 1%"
-			(at 85.09 64.7699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 84.328 63.5 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "91k 0603 1% 100mW"
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" ""
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C23265"
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
-			(at 82.55 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "bc2330a9-e8d8-4da3-ab4b-e9d1d8fd60c1")
-		)
-		(pin "2"
-			(uuid "36d50b13-29c6-4fb7-8ab4-e4788c785996")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "R84")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_diodes:green_led_0603")
 		(at 29.21 185.42 90)
 		(unit 1)
@@ -8873,129 +8386,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
 					(reference "R139")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_capacitors:C_100nF_50V_0402")
-		(at 93.98 62.23 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "5a38b394-ad22-42ac-b071-790b31d7271a")
-		(property "Reference" "C33"
-			(at 94.615 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100nF 50V"
-			(at 94.615 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_capacitors:C_0402_1005Metric"
-			(at 94.9452 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor tol +/-10%"
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "100nF 50V X7R 0402"
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C85858"
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
-			(at 93.98 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "748ed179-97e3-4fae-9954-aedf0c2c9b4d")
-		)
-		(pin "2"
-			(uuid "9a187eb6-fb61-4442-9833-d97beca224a8")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "C33")
 					(unit 1)
 				)
 			)
@@ -9649,72 +9039,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
 					(reference "D5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "pmi_2023_specific:GND_m")
-		(at 88.9 69.85 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7b7cf82a-f004-457d-9139-5fb7031a9823")
-		(property "Reference" "#PWR056"
-			(at 88.9 76.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND_m"
-			(at 88.9 74.93 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 88.9 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 88.9 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 88.9 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3eb98625-3e49-4760-b709-62c5124ad80b")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "#PWR056")
 					(unit 1)
 				)
 			)
@@ -10381,121 +9705,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_diodes:1N5819WS")
-		(at 132.08 41.91 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8bbb1a8e-bf81-46de-9641-87fa58541214")
-		(property "Reference" "D6"
-			(at 134.62 39.0524 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 134.62 41.5924 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_diodes:D_SOD-323"
-			(at 127.635 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "https://datasheet.lcsc.com/lcsc/2204281430_Guangdong-Hottech-1N5819WS_C191023.pdf"
-			(at 132.08 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "40V 600mV@1A 1A SOD-323 Schottky Barrier Diodes, SOD-323"
-			(at 132.08 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C191023"
-			(at 134.62 44.1324 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 132.08 41.91 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 132.08 41.91 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 132.08 41.91 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
-			(at 132.08 41.91 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a3c2d4f0-782e-4b7f-a031-35985193d79b")
-		)
-		(pin "2"
-			(uuid "d811965f-b93f-4216-b46f-83da1a128664")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "D6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "cocotter_resistors:R_1k_0603_1%")
 		(at 29.21 177.8 0)
 		(unit 1)
@@ -11026,139 +10235,6 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
-		(at 93.98 50.8 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "9940a27a-7778-4275-9dc7-f9e01c26a370")
-		(property "Reference" "R87"
-			(at 96.52 49.5299 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "91k 1%"
-			(at 96.52 52.0699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 95.758 50.8 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "91k 0603 1% 100mW"
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" "603-RC0603FR-10100KL"
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C23265"
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
-			(at 93.98 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0daa4dc5-4b34-42d0-b6d4-0ad4073cdf7a")
-		)
-		(pin "2"
-			(uuid "eec59a63-ae45-49c0-ae22-488f4e675286")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "R87")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "pmi_2023_specific:GND_m")
 		(at 217.17 151.13 0)
 		(unit 1)
@@ -11352,139 +10428,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
 					(reference "R83")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
-		(at 82.55 50.8 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp yes)
-		(fields_autoplaced yes)
-		(uuid "a33074ac-4a8b-40fa-9a3f-f17770857121")
-		(property "Reference" "R85"
-			(at 85.09 49.5299 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "91k 1%"
-			(at 85.09 52.0699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 84.328 50.8 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "91k 0603 1% 100mW"
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" ""
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C23265"
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
-			(at 82.55 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "18fa7677-5f3e-4031-a399-d03c33c72dda")
-		)
-		(pin "2"
-			(uuid "8cd26ded-3644-43e0-b205-9e2460217502")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "R85")
 					(unit 1)
 				)
 			)
@@ -12034,72 +10977,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
 					(reference "R92")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "pmi_2023_specific:+3V3_m")
-		(at 132.08 29.21 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b61c43b3-ed9e-4354-8a25-418dab32e82b")
-		(property "Reference" "#PWR052"
-			(at 132.08 33.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3_m"
-			(at 132.08 24.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 132.08 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 132.08 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3_m\""
-			(at 132.08 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "46a864be-998c-4d19-84f0-603420d3007b")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/9da1923e-9bb0-4408-8ee2-582c85dcd497/5522c3e1-f1e5-442b-950e-511eafd1cc73"
-					(reference "#PWR052")
 					(unit 1)
 				)
 			)

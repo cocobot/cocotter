@@ -5897,6 +5897,12 @@
 		(uuid "37b6cbea-cf74-4e68-8919-0a5bd650e4fb")
 	)
 	(junction
+		(at 26.67 69.85)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "40cb560d-17d5-4d87-9981-3808bb6da519")
+	)
+	(junction
 		(at 213.36 30.48)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7504,7 +7510,17 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 66.04) (xy 26.67 71.12)
+			(xy 26.67 69.85) (xy 26.67 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b13c6d8b-1f30-4a67-a373-0d16eb947f43")
+	)
+	(wire
+		(pts
+			(xy 26.67 66.04) (xy 26.67 69.85)
 		)
 		(stroke
 			(width 0)
@@ -12666,6 +12682,106 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
 					(reference "#PWR031")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_others:TestPoint_for_pogo_pin-1mm")
+		(at 26.67 69.85 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "255170d6-08bd-465c-8550-2fdf85ec02e0")
+		(property "Reference" "TP21"
+			(at 19.304 68.834 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 17.78 70.612 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 26.67 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 26.67 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 26.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB" ""
+			(at 26.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" ""
+			(at 26.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Pins" ""
+			(at 26.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "specification" ""
+			(at 26.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "04b23fed-14df-4342-a9f9-62a7dd994911")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "TP21")
 					(unit 1)
 				)
 			)
@@ -19450,10 +19566,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "fab79215-7b26-4730-a9ac-58682f3d3c9e")
 		(property "Reference" "TH2"
-			(at 34.29 61.2774 0)
+			(at 34.29 60.198 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -19462,7 +19577,7 @@
 			)
 		)
 		(property "Value" "NRNE104H3435B2H"
-			(at 34.29 63.8174 0)
+			(at 34.29 62.484 0)
 			(effects
 				(font
 					(size 1.27 1.27)
