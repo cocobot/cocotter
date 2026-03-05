@@ -6797,7 +6797,7 @@
 		(uuid "42a8d036-dd69-4f88-b765-d5e56db0c8f8")
 	)
 	(label "scl_3v3"
-		(at 97.79 96.52 0)
+		(at 97.79 93.98 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6937,7 +6937,7 @@
 		(uuid "cf311516-b166-4212-bf93-b914be3c64a1")
 	)
 	(label "sda_3v3"
-		(at 97.79 93.98 0)
+		(at 97.79 96.52 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7020,7 +7020,7 @@
 	)
 	(hierarchical_label "sda_tof_3v3"
 		(shape bidirectional)
-		(at 38.1 93.98 180)
+		(at 38.1 96.52 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7031,7 +7031,7 @@
 	)
 	(hierarchical_label "scl_tof_3v3"
 		(shape input)
-		(at 38.1 96.52 180)
+		(at 38.1 93.98 180)
 		(effects
 			(font
 				(size 1.27 1.27)

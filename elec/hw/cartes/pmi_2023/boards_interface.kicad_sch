@@ -2249,6 +2249,17 @@
 		)
 		(uuid "d731b419-1e49-494f-b952-1166d274039a")
 	)
+	(hierarchical_label "vbatt_mon_3.45V"
+		(shape output)
+		(at 278.13 107.95 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "da99cf15-f593-4176-b418-88809f79554c")
+	)
 	(hierarchical_label "right_encod_A_3v3"
 		(shape input)
 		(at 261.62 64.77 0)

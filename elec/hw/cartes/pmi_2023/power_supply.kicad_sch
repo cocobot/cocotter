@@ -12365,7 +12365,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "1b8b0d6d-11c8-4ee7-881e-0774dc8d687a")
 		(property "Reference" "R65"
 			(at 123.19 25.4 0)
