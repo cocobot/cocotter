@@ -1446,158 +1446,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_resistors:R_0R_0603"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "0R"
-				(at 3.81 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "0R 0603 20mOhms max 100mW"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C431718"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_0R_0603_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_0R_0603_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "cocotter_resistors:R_1k3_0603_1%"
 			(pin_numbers
 				(hide yes)
@@ -2206,7 +2054,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_resistors:R_91k_0603_1%"
+		(symbol "cocotter_resistors:R_91k_0402_1%"
 			(pin_numbers
 				(hide yes)
 			)
@@ -2233,7 +2081,7 @@
 					)
 				)
 			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(property "Footprint" "cocotter_resistor:r0402_reflow"
 				(at -1.778 0 90)
 				(effects
 					(font
@@ -2260,7 +2108,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "91k 0603 1% 100mW"
+			(property "Specification" "91k 0402 1% 100mW"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2278,7 +2126,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C23265"
+			(property "JLCPCB Part #" "C327323"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2305,7 +2153,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "R_91k_0603_1%_0_1"
+			(symbol "R_91k_0402_1%_0_1"
 				(rectangle
 					(start -1.016 -2.54)
 					(end 1.016 2.54)
@@ -2318,7 +2166,7 @@
 					)
 				)
 			)
-			(symbol "R_91k_0603_1%_1_1"
+			(symbol "R_91k_0402_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -5739,7 +5587,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_0R_0603")
+		(lib_id "cocotter_resistors:R_0R_0402")
 		(at 74.93 162.56 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5764,7 +5612,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 74.93 160.782 90)
 			(effects
 				(font
@@ -5791,7 +5639,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "0R 0603 20mOhms max 100mW"
+		(property "Specification" "0R 0603"
 			(at 74.93 162.56 0)
 			(effects
 				(font
@@ -5809,7 +5657,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C431718"
+		(property "JLCPCB Part #" "C"
 			(at 74.93 162.56 0)
 			(effects
 				(font
@@ -6133,7 +5981,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 52.07 185.42 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6160,7 +6008,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 50.292 185.42 90)
 			(effects
 				(font
@@ -6187,7 +6035,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 52.07 185.42 0)
 			(effects
 				(font
@@ -6205,43 +6053,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 52.07 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 52.07 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 52.07 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 52.07 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 52.07 185.42 0)
 			(effects
 				(font
@@ -6904,7 +6716,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 26.67 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6931,7 +6743,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 24.892 132.08 90)
 			(effects
 				(font
@@ -6958,7 +6770,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 26.67 132.08 0)
 			(effects
 				(font
@@ -6976,43 +6788,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 26.67 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 26.67 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 26.67 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 26.67 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 26.67 132.08 0)
 			(effects
 				(font
@@ -7037,7 +6813,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_0R_0603")
+		(lib_id "cocotter_resistors:R_0R_0402")
 		(at 74.93 166.37 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -7062,7 +6838,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 74.93 164.592 90)
 			(effects
 				(font
@@ -7089,7 +6865,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "0R 0603 20mOhms max 100mW"
+		(property "Specification" "0R 0603"
 			(at 74.93 166.37 0)
 			(effects
 				(font
@@ -7107,7 +6883,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C431718"
+		(property "JLCPCB Part #" "C"
 			(at 74.93 166.37 0)
 			(effects
 				(font
@@ -8324,7 +8100,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 35.56 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -8351,7 +8127,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 33.782 132.08 90)
 			(effects
 				(font
@@ -8378,7 +8154,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 35.56 132.08 0)
 			(effects
 				(font
@@ -8396,43 +8172,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 35.56 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 35.56 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 35.56 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 35.56 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 35.56 132.08 0)
 			(effects
 				(font
@@ -9807,7 +9547,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "8da548e4-97de-4c72-ab5e-fa92e93ae8f8")
 		(property "Reference" "R6"
 			(at 72.39 132.08 0)
@@ -11492,7 +11232,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 26.67 55.88 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11519,7 +11259,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 24.892 55.88 90)
 			(effects
 				(font
@@ -11546,7 +11286,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 26.67 55.88 0)
 			(effects
 				(font
@@ -11564,43 +11304,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 26.67 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 26.67 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 26.67 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 26.67 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 26.67 55.88 0)
 			(effects
 				(font
@@ -11897,7 +11601,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "ec03a306-a43d-464d-b1aa-be9a374c6152")
 		(property "Reference" "R7"
 			(at 73.66 55.88 0)
@@ -12451,7 +12155,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 35.56 55.88 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -12478,7 +12182,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 33.782 55.88 90)
 			(effects
 				(font
@@ -12505,7 +12209,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 35.56 55.88 0)
 			(effects
 				(font
@@ -12523,43 +12227,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 35.56 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 35.56 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 35.56 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 35.56 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 35.56 55.88 0)
 			(effects
 				(font

@@ -319,7 +319,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_capacitors:C_2nF_50V_0603"
+		(symbol "cocotter_capacitors:C_1µF_16V_0603"
 			(pin_numbers
 				(hide yes)
 			)
@@ -338,7 +338,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "2nF 50V"
+			(property "Value" "1µF 16V"
 				(at 0.635 -2.54 0)
 				(effects
 					(font
@@ -374,7 +374,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "2nF 50V X7R 0603 "
+			(property "Specification" "1µF 16V X7R 0603 "
 				(at 0 0 0)
 				(effects
 					(font
@@ -383,7 +383,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C282245"
+			(property "JLCPCB Part #" "C59782"
 				(at 0 0 0)
 				(effects
 					(font
@@ -410,7 +410,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "C_2nF_50V_0603_0_1"
+			(symbol "C_1µF_16V_0603_0_1"
 				(polyline
 					(pts
 						(xy -2.032 0.762) (xy 2.032 0.762)
@@ -436,7 +436,164 @@
 					)
 				)
 			)
-			(symbol "C_2nF_50V_0603_1_1"
+			(symbol "C_1µF_16V_0603_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 2.794)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 2.794)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "cocotter_capacitors:C_2nF_50V_0402"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "C"
+				(at 0.635 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "2nF 50V"
+				(at 0.635 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "cocotter_capacitors:C_0402_1005Metric"
+				(at 0.9652 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Unpolarized capacitor tol +/-10%"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Specification" "1nF 50V X7R 0402"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "JLCPCB Part #" "C541393"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "cap capacitor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "C_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "C_2nF_50V_0402_0_1"
+				(polyline
+					(pts
+						(xy -2.032 0.762) (xy 2.032 0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.032 -0.762) (xy 2.032 -0.762)
+					)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "C_2nF_50V_0402_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 2.794)
@@ -745,6 +902,181 @@
 						(effects
 							(font
 								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "cocotter_connectors:BM02B-PASK"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at -1.778 3.556 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "BM02B-PASK"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_connectors:BM02B-PASK"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.jst.fr/core/file.get?path=doc/jst/family/pdf/epa0125.pdf"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "2 pins, 2mm pitch, 3A, 250V, JST connector, through hole"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "#JLC" "C265372"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "2 pins, 2mm pitch, 3A, 250V, JST, through hole"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "BM02B-PASK_1_0"
+				(polyline
+					(pts
+						(xy -3.81 2.54) (xy -3.81 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -3.81 2.54) (xy 0 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -1.27 1.27)
+					(radius 0.635)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -1.27 -1.27)
+					(radius 0.635)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.54) (xy -3.81 -2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.54) (xy 0 2.54)
+					)
+					(stroke
+						(width 0.254)
+						(type solid)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at 3.81 1.27 180)
+					(length 5.08)
+					(name "2"
+						(effects
+							(font
+								(size 0 0)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 -1.27 180)
+					(length 5.08)
+					(name "1"
+						(effects
+							(font
+								(size 0 0)
 							)
 						)
 					)
@@ -2480,6 +2812,113 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "cocotter_others:TestPoint"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0.762)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "cocotter_others:TestPoint_for_pogo_pin-1mm"
 			(pin_numbers
 				(hide yes)
@@ -2805,158 +3244,6 @@
 				)
 			)
 			(symbol "NRNE104H3435B2H_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 1.27)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "cocotter_resistors:R_0R_0402"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "R"
-				(at 1.27 1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "0R"
-				(at 3.81 -1.27 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" "cocotter_resistor:r0402_reflow"
-				(at -1.778 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Specification" "0R 0603"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "mouser" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "JLCPCB Part #" "C"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "R res resistor"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "R_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "R_0R_0402_0_1"
-				(rectangle
-					(start -1.016 -2.54)
-					(end 1.016 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "R_0R_0402_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -3756,7 +4043,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_resistors:R_68k_0603_1%"
+		(symbol "cocotter_resistors:R_68k_0402_1%"
 			(pin_numbers
 				(hide yes)
 			)
@@ -3776,14 +4063,14 @@
 				)
 			)
 			(property "Value" "68k 1%"
-				(at 3.81 -1.27 0)
+				(at 4.826 -1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(property "Footprint" "cocotter_resistor:r0402_reflow"
 				(at -1.778 0 90)
 				(effects
 					(font
@@ -3810,7 +4097,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "68k 0603 1% 100mW"
+			(property "Specification" "68k 0402 1% 100mW"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3828,7 +4115,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C23231"
+			(property "JLCPCB Part #" "C11702"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3855,7 +4142,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "R_68k_0603_1%_0_1"
+			(symbol "R_68k_0402_1%_0_1"
 				(rectangle
 					(start -1.016 -2.54)
 					(end 1.016 2.54)
@@ -3868,7 +4155,7 @@
 					)
 				)
 			)
-			(symbol "R_68k_0603_1%_1_1"
+			(symbol "R_68k_0402_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -3908,7 +4195,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "cocotter_resistors:R_91k_0603_1%"
+		(symbol "cocotter_resistors:R_91k_0402_1%"
 			(pin_numbers
 				(hide yes)
 			)
@@ -3935,7 +4222,7 @@
 					)
 				)
 			)
-			(property "Footprint" "cocotter_resistor:r0603_reflow"
+			(property "Footprint" "cocotter_resistor:r0402_reflow"
 				(at -1.778 0 90)
 				(effects
 					(font
@@ -3962,7 +4249,7 @@
 					(hide yes)
 				)
 			)
-			(property "Specification" "91k 0603 1% 100mW"
+			(property "Specification" "91k 0402 1% 100mW"
 				(at 0 0 0)
 				(effects
 					(font
@@ -3980,7 +4267,7 @@
 					(hide yes)
 				)
 			)
-			(property "JLCPCB Part #" "C23265"
+			(property "JLCPCB Part #" "C327323"
 				(at 0 0 0)
 				(effects
 					(font
@@ -4007,7 +4294,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "R_91k_0603_1%_0_1"
+			(symbol "R_91k_0402_1%_0_1"
 				(rectangle
 					(start -1.016 -2.54)
 					(end 1.016 2.54)
@@ -4020,7 +4307,7 @@
 					)
 				)
 			)
-			(symbol "R_91k_0603_1%_1_1"
+			(symbol "R_91k_0402_1%_1_1"
 				(pin passive line
 					(at 0 3.81 270)
 					(length 1.27)
@@ -5241,6 +5528,19 @@
 		)
 		(uuid "b5b8c7b1-eb44-42f7-90ce-9ec19225b66f")
 	)
+	(text "TODO : ajouter connecteur BM02B-PASS- sur batterie"
+		(exclude_from_sim no)
+		(at 144.78 -9.144 0)
+		(effects
+			(font
+				(size 5.08 5.08)
+				(thickness 1.016)
+				(bold yes)
+				(color 255 0 0 1)
+			)
+		)
+		(uuid "b94304b2-ed6e-4355-98c9-2fffea75ced5")
+	)
 	(text "SPARE FUSE"
 		(exclude_from_sim no)
 		(at 13.97 15.24 0)
@@ -5885,6 +6185,12 @@
 		(uuid "306565cb-989d-4af3-b53e-2329285e4f79")
 	)
 	(junction
+		(at 40.64 40.64)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "350a5950-82ea-4a09-912d-3bb797574bb6")
+	)
+	(junction
 		(at 234.95 120.65)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5973,12 +6279,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5b863065-53bf-49c0-a4ce-39deb1dde99f")
-	)
-	(junction
-		(at 40.64 40.64)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "5d2252f5-113b-41c2-b268-b48f75ffa7dc")
 	)
 	(junction
 		(at 120.65 39.37)
@@ -6260,14 +6560,6 @@
 		(at 78.74 60.96)
 		(uuid "09a1d69f-435f-48bc-9706-bec6a6d75b03")
 	)
-	(no_connect
-		(at 78.74 55.88)
-		(uuid "281354e9-25aa-4732-ab12-a0cf8d1b7790")
-	)
-	(no_connect
-		(at 78.74 53.34)
-		(uuid "950d3684-8fe9-4584-92e9-e33e1901a3ce")
-	)
 	(wire
 		(pts
 			(xy 260.35 116.84) (xy 260.35 120.65)
@@ -6390,7 +6682,7 @@
 	)
 	(wire
 		(pts
-			(xy 116.84 26.67) (xy 120.65 26.67)
+			(xy 116.84 26.67) (xy 133.35 26.67)
 		)
 		(stroke
 			(width 0)
@@ -6900,13 +7192,23 @@
 	)
 	(wire
 		(pts
-			(xy 53.34 40.64) (xy 40.64 40.64)
+			(xy 26.67 40.64) (xy 40.64 40.64)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "51a45e94-e676-482c-ae8b-dbb9092e4885")
+	)
+	(wire
+		(pts
+			(xy 78.74 53.34) (xy 83.82 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "532832c9-1877-427d-bea9-b927e932cb21")
 	)
 	(wire
 		(pts
@@ -6917,6 +7219,16 @@
 			(type default)
 		)
 		(uuid "53922999-1f4d-44a2-865c-bbc563f8f469")
+	)
+	(wire
+		(pts
+			(xy 40.64 40.64) (xy 53.34 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "55ccef1a-292a-4217-a49c-af5aaddc0b5b")
 	)
 	(wire
 		(pts
@@ -7040,13 +7352,23 @@
 	)
 	(wire
 		(pts
-			(xy 128.27 26.67) (xy 133.35 26.67)
+			(xy 22.86 19.05) (xy 25.4 19.05)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "6f99b692-ca04-41eb-943c-db2a5c646fd3")
+		(uuid "6b651781-0722-4924-bfe4-974d307ff62f")
+	)
+	(wire
+		(pts
+			(xy 78.74 55.88) (xy 83.82 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d49c711-e4b9-4e30-a1d8-139658dcdd03")
 	)
 	(wire
 		(pts
@@ -7190,6 +7512,16 @@
 	)
 	(wire
 		(pts
+			(xy 152.4 64.77) (xy 144.78 64.77)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8623bc03-b6c6-49ee-82b0-36abe33ad161")
+	)
+	(wire
+		(pts
 			(xy 213.36 142.24) (xy 213.36 134.62)
 		)
 		(stroke
@@ -7240,7 +7572,7 @@
 	)
 	(wire
 		(pts
-			(xy 12.7 12.7) (xy 12.7 22.86)
+			(xy 12.7 12.7) (xy 12.7 24.13)
 		)
 		(stroke
 			(width 0)
@@ -7650,7 +7982,7 @@
 	)
 	(wire
 		(pts
-			(xy 12.7 12.7) (xy 26.67 12.7)
+			(xy 12.7 12.7) (xy 30.48 12.7)
 		)
 		(stroke
 			(width 0)
@@ -7860,13 +8192,23 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 22.86) (xy 26.67 12.7)
+			(xy 30.48 24.13) (xy 30.48 12.7)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "d391afa2-7ae5-480f-9331-131d41f6f01f")
+	)
+	(wire
+		(pts
+			(xy 152.4 62.23) (xy 144.78 62.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d58cd37e-7e1b-4af9-86a5-255ae4e35adc")
 	)
 	(wire
 		(pts
@@ -7927,16 +8269,6 @@
 			(type default)
 		)
 		(uuid "d99ace29-ab44-40f0-8b5b-1307ecdefde5")
-	)
-	(wire
-		(pts
-			(xy 26.67 40.64) (xy 40.64 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d9a5f9e4-60da-44d6-875c-89a42522b8e7")
 	)
 	(wire
 		(pts
@@ -8170,7 +8502,7 @@
 	)
 	(wire
 		(pts
-			(xy 12.7 22.86) (xy 26.67 22.86)
+			(xy 12.7 24.13) (xy 30.48 24.13)
 		)
 		(stroke
 			(width 0)
@@ -11241,6 +11573,16 @@
 		)
 		(uuid "b724c940-fe46-4761-822e-03a2da1546db")
 	)
+	(label "-cell"
+		(at 24.13 19.05 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c157147d-47d3-40a9-8f09-993577aea48c")
+	)
 	(hierarchical_label "vbatt_mon_3.45V"
 		(shape output)
 		(at 133.35 26.67 0)
@@ -11536,130 +11878,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
 					(reference "L3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_capacitors:C_100nF_50V_0402")
-		(at 40.64 44.45 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "0e1ff666-a910-4b2c-a688-2412bc2886f1")
-		(property "Reference" "C56"
-			(at 44.45 43.1799 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100nF 50V"
-			(at 44.45 45.7199 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "cocotter_capacitors:C_0402_1005Metric"
-			(at 41.6052 48.26 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor tol +/-10%"
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "100nF 50V X7R 0402"
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C85858"
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
-			(at 40.64 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a5b0165b-dee6-47a1-af92-8aabd675d675")
-		)
-		(pin "2"
-			(uuid "fc6bcd68-8ed8-4264-8260-9277673fe11b")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
-					(reference "C56")
 					(unit 1)
 				)
 			)
@@ -11972,7 +12190,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 234.95 109.22 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -11999,7 +12217,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 233.172 109.22 90)
 			(effects
 				(font
@@ -12026,7 +12244,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 234.95 109.22 0)
 			(effects
 				(font
@@ -12044,43 +12262,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 234.95 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 234.95 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 234.95 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 234.95 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 234.95 109.22 0)
 			(effects
 				(font
@@ -12353,137 +12535,6 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
 					(reference "C27")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "cocotter_resistors:R_0R_0402")
-		(at 124.46 26.67 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp yes)
-		(uuid "1b8b0d6d-11c8-4ee7-881e-0774dc8d687a")
-		(property "Reference" "R65"
-			(at 123.19 25.4 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "0R"
-			(at 125.73 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_resistor:r0402_reflow"
-			(at 124.46 28.448 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 124.46 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 124.46 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Specification" "0R 0603"
-			(at 124.46 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "mouser" ""
-			(at 124.46 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB Part #" "C"
-			(at 124.46 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 124.46 26.67 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 124.46 26.67 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 124.46 26.67 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
-			(at 124.46 26.67 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3fadda79-bb40-42d5-9019-c5b0eca41a11")
-		)
-		(pin "2"
-			(uuid "114b80da-1b22-43d3-a5b5-61fe9385271e")
-		)
-		(instances
-			(project "pmi_2023"
-				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
-					(reference "R65")
 					(unit 1)
 				)
 			)
@@ -13751,7 +13802,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
+		(lib_id "cocotter_capacitors:C_2nF_50V_0402")
 		(at 245.11 69.85 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -13778,7 +13829,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
+		(property "Footprint" "cocotter_capacitors:C_0402_1005Metric"
 			(at 246.0752 73.66 0)
 			(effects
 				(font
@@ -13805,7 +13856,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "2nF 50V X7R 0603 "
+		(property "Specification" "1nF 50V X7R 0402"
 			(at 245.11 69.85 0)
 			(effects
 				(font
@@ -13814,7 +13865,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C282245"
+		(property "JLCPCB Part #" "C541393"
 			(at 245.11 69.85 0)
 			(effects
 				(font
@@ -14384,7 +14435,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
+		(lib_id "cocotter_capacitors:C_2nF_50V_0402")
 		(at 245.11 148.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -14411,7 +14462,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
+		(property "Footprint" "cocotter_capacitors:C_0402_1005Metric"
 			(at 246.0752 152.4 0)
 			(effects
 				(font
@@ -14438,7 +14489,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "2nF 50V X7R 0603 "
+		(property "Specification" "1nF 50V X7R 0402"
 			(at 245.11 148.59 0)
 			(effects
 				(font
@@ -14447,7 +14498,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C282245"
+		(property "JLCPCB Part #" "C541393"
 			(at 245.11 148.59 0)
 			(effects
 				(font
@@ -15254,6 +15305,72 @@
 		)
 	)
 	(symbol
+		(lib_id "cocotter_others:TestPoint")
+		(at 83.82 53.34 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "700d3da6-5366-49f1-8621-2e818530edcd")
+		(property "Reference" "TP7"
+			(at 88.9 52.0699 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 88.9 50.292 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 83.82 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 83.82 58.42 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 83.82 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0b6d84e5-2a19-48b7-b712-d567f949bfc3")
+		)
+		(instances
+			(project ""
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "TP7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "cocotter_resistors:R_10M_0402_1%")
 		(at 78.74 34.29 90)
 		(unit 1)
@@ -15509,7 +15626,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_68k_0603_1%")
+		(lib_id "cocotter_resistors:R_68k_0402_1%")
 		(at 201.93 34.29 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15536,7 +15653,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 200.152 34.29 90)
 			(effects
 				(font
@@ -15563,7 +15680,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "68k 0603 1% 100mW"
+		(property "Specification" "68k 0402 1% 100mW"
 			(at 201.93 34.29 0)
 			(effects
 				(font
@@ -15581,43 +15698,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23231"
-			(at 201.93 34.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 201.93 34.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 201.93 34.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 201.93 34.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C11702"
 			(at 201.93 34.29 0)
 			(effects
 				(font
@@ -15642,7 +15723,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 234.95 69.85 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15669,7 +15750,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 233.172 69.85 90)
 			(effects
 				(font
@@ -15696,7 +15777,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 234.95 69.85 0)
 			(effects
 				(font
@@ -15714,43 +15795,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 234.95 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 234.95 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 234.95 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 234.95 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 234.95 69.85 0)
 			(effects
 				(font
@@ -15907,7 +15952,95 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
+		(lib_id "cocotter_capacitors:C_1µF_16V_0603")
+		(at 40.64 44.45 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7dae7b78-18be-4e4d-8a45-2e9fa5194895")
+		(property "Reference" "C33"
+			(at 44.45 43.1799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1µF 16V"
+			(at 44.45 45.7199 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
+			(at 41.6052 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 40.64 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor tol +/-10%"
+			(at 40.64 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Specification" "1µF 16V X7R 0603 "
+			(at 40.64 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "JLCPCB Part #" "C59782"
+			(at 40.64 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "e9e78048-0b0d-4f63-8c9b-11b8d8ea5f64")
+		)
+		(pin "1"
+			(uuid "b1554388-13c9-4b3a-b7a4-6ff5480ffa92")
+		)
+		(instances
+			(project ""
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "C33")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_capacitors:C_2nF_50V_0402")
 		(at 245.11 109.22 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -15934,7 +16067,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
+		(property "Footprint" "cocotter_capacitors:C_0402_1005Metric"
 			(at 246.0752 113.03 0)
 			(effects
 				(font
@@ -15961,7 +16094,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "2nF 50V X7R 0603 "
+		(property "Specification" "1nF 50V X7R 0402"
 			(at 245.11 109.22 0)
 			(effects
 				(font
@@ -15970,7 +16103,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C282245"
+		(property "JLCPCB Part #" "C541393"
 			(at 245.11 109.22 0)
 			(effects
 				(font
@@ -17421,7 +17554,139 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_capacitors:C_2nF_50V_0603")
+		(lib_id "cocotter_others:TestPoint")
+		(at 83.82 55.88 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "a66eb07d-a93f-4b45-bb0d-e367a6a90800")
+		(property "Reference" "TP8"
+			(at 88.9 55.88 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TestPoint"
+			(at 88.9 57.658 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "cocotter_others:testpoint-THT-0.5mm"
+			(at 83.82 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 83.82 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 83.82 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "aee41648-d394-46dc-bb4e-10e21fa473a6")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "TP8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+BATT")
+		(at 144.78 62.23 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ab365b10-35db-46d5-a65a-b89aa2630bbc")
+		(property "Reference" "#PWR0155"
+			(at 144.78 66.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+BATT"
+			(at 144.78 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 144.78 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 144.78 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+BATT\""
+			(at 144.78 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "cc4b9c84-0f26-48df-9578-a9d8c14d6312")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "#PWR0155")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_capacitors:C_2nF_50V_0402")
 		(at 213.36 34.29 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -17448,7 +17713,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
+		(property "Footprint" "cocotter_capacitors:C_0402_1005Metric"
 			(at 214.3252 38.1 0)
 			(effects
 				(font
@@ -17475,7 +17740,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "2nF 50V X7R 0603 "
+		(property "Specification" "1nF 50V X7R 0402"
 			(at 213.36 34.29 0)
 			(effects
 				(font
@@ -17484,7 +17749,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C282245"
+		(property "JLCPCB Part #" "C541393"
 			(at 213.36 34.29 0)
 			(effects
 				(font
@@ -17539,6 +17804,72 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
 					(reference "C29")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 144.78 64.77 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b47d93ff-3cec-457f-b5ea-82ac3ef2193a")
+		(property "Reference" "#PWR056"
+			(at 144.78 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 144.78 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 144.78 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 144.78 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 144.78 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7dc22e8c-331e-4dab-b306-6947a9108a8d")
+		)
+		(instances
+			(project "pmi_2023"
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "#PWR056")
 					(unit 1)
 				)
 			)
@@ -18034,7 +18365,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 110.49 60.96 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -18061,7 +18392,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 108.712 60.96 90)
 			(effects
 				(font
@@ -18088,7 +18419,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 110.49 60.96 0)
 			(effects
 				(font
@@ -18106,43 +18437,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 110.49 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 110.49 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 110.49 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 110.49 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 110.49 60.96 0)
 			(effects
 				(font
@@ -18782,7 +19077,7 @@
 		)
 	)
 	(symbol
-		(lib_id "cocotter_resistors:R_91k_0603_1%")
+		(lib_id "cocotter_resistors:R_91k_0402_1%")
 		(at 234.95 148.59 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -18809,7 +19104,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
+		(property "Footprint" "cocotter_resistor:r0402_reflow"
 			(at 233.172 148.59 90)
 			(effects
 				(font
@@ -18836,7 +19131,7 @@
 				(hide yes)
 			)
 		)
-		(property "Specification" "91k 0603 1% 100mW"
+		(property "Specification" "91k 0402 1% 100mW"
 			(at 234.95 148.59 0)
 			(effects
 				(font
@@ -18854,43 +19149,7 @@
 				(hide yes)
 			)
 		)
-		(property "JLCPCB Part #" "C23265"
-			(at 234.95 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "JLCPCB" ""
-			(at 234.95 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 234.95 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" ""
-			(at 234.95 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "specification" ""
+		(property "JLCPCB Part #" "C327323"
 			(at 234.95 148.59 0)
 			(effects
 				(font
@@ -19355,6 +19614,83 @@
 			(project "pmi_2023"
 				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
 					(reference "R152")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "cocotter_connectors:BM02B-PASK")
+		(at 156.21 63.5 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f7dfc3c3-5136-4cd2-a231-3f0d0406f48d")
+		(property "Reference" "J11"
+			(at 157.988 59.944 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BM02B-PASK"
+			(at 166.878 63.246 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "cocotter_connectors:BM02B-PASK"
+			(at 156.21 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.jst.fr/core/file.get?path=doc/jst/family/pdf/epa0125.pdf"
+			(at 156.21 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "2 pins, 2mm pitch, 3A, 250V, JST connector, through hole"
+			(at 156.21 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "#JLC" "C265372"
+			(at 156.21 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "40ddbda7-e9fb-4737-bc50-0ba519f650a1")
+		)
+		(pin "2"
+			(uuid "f2d05c95-496c-482a-bfe5-56ef89db4438")
+		)
+		(instances
+			(project ""
+				(path "/334a657f-c66c-4260-9567-14f1c99913d7/5ea42701-5087-46e6-be28-1d7732af67f5"
+					(reference "J11")
 					(unit 1)
 				)
 			)
