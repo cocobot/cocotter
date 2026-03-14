@@ -13,7 +13,7 @@ tca6408 = { path = "../../libs/tca6408" }
 vlx = { path = "../../libs/vlx" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
-esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
+esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }
 
 [build-dependencies]
 embuild = { version = "0.33", features = ["espidf"] }

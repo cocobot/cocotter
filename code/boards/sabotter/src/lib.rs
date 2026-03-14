@@ -1,9 +1,23 @@
 pub use pca9535;
 
-use esp_idf_svc::{bt::Ble, hal::{
-    adc::{oneshot::{AdcChannelDriver, AdcDriver}, ADC1}, can::{CanConfig, CanDriver}, gpio::*, i2c::{I2cConfig, I2cDriver}, ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver}, prelude::*, spi::{config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver}, uart::{UartConfig, UartDriver}, units::Hertz
-}};
-use esp_idf_svc::{nvs::EspDefaultNvsPartition, bt::BtDriver};
+use esp_idf_svc::{
+    bt::{Ble, BtDriver},
+    hal::{
+        adc::{
+            ADCU1,
+            oneshot::{AdcChannelDriver, AdcDriver},
+        },
+        can::CanDriver,
+        gpio::{ADCPin, AnyIOPin, Gpio1, Output, PinDriver},
+        i2c::{I2cConfig, I2cDriver},
+        ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver},
+        peripherals::Peripherals,
+        spi::{config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver},
+        uart::{UartConfig, UartDriver},
+        units::{Hertz, FromValueType},
+    },
+    nvs::EspDefaultNvsPartition,
+};
 use embedded_hal_bus::i2c::MutexDevice;
 use pca9535::Pca9535Immediate;
 use esp32_encoder::Encoder;
@@ -13,7 +27,7 @@ use std::{rc::Rc, sync::Mutex};
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 
 // Type aliases
-pub type LedHeartbeat = PinDriver<'static, Gpio45, Output>;
+pub type LedHeartbeat = PinDriver<'static, Output>;
 // Motor control types
 pub type MotorPwm = LedcDriver<'static>;
 
@@ -28,8 +42,8 @@ pub type UartAsserv = UartDriver<'static>;
 pub type UartLidar = UartDriver<'static>;
 
 // ADC type for battery monitoring
-pub type BatteryAdcPin = Gpio1;
-pub type BatteryAdc = AdcChannelDriver<'static, BatteryAdcPin, Rc<AdcDriver<'static, ADC1>>>;
+pub type BatteryAdcPin = Gpio1<'static>;
+pub type BatteryAdc = AdcChannelDriver<'static, <BatteryAdcPin as ADCPin>::AdcChannel, Rc<AdcDriver<'static, ADCU1>>>;
 
 // SPI IMU driver
 pub type ImuSpi = SpiDeviceDriver<'static, SpiDriver<'static>>;
@@ -55,7 +69,7 @@ pub struct BoardSabotter {
     pub uart_lidar: Option<UartLidar>,
     pub battery_adc: Option<BatteryAdc>,
     pub imu_spi: Option<ImuSpi>,
-    pub mot_ena: Option<PinDriver<'static, Gpio7, Output>>,
+    pub mot_ena: Option<PinDriver<'static, Output>>,
     pub lidar_pwm: Option<LedcDriver<'static>>,
     pub ble: Option<Bt>,
 }
@@ -99,7 +113,7 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel0, &timer_pwm, peripherals.pins.gpio17),
             LedcDriver::new(peripherals.ledc.channel1, &timer_pwm, peripherals.pins.gpio18),
-            Encoder::new(peripherals.pcnt0, peripherals.pins.gpio12, peripherals.pins.gpio11)
+            Encoder::new(peripherals.pins.gpio12, peripherals.pins.gpio11)
         ) {
             motors[0] = Some(Motor { pwm, dir, encoder });
         }
@@ -116,7 +130,7 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel2, &timer_pwm, peripherals.pins.gpio3),
             LedcDriver::new(peripherals.ledc.channel3, &timer_pwm, peripherals.pins.gpio8),
-            Encoder::new(peripherals.pcnt1, peripherals.pins.gpio16, peripherals.pins.gpio15)
+            Encoder::new(peripherals.pins.gpio16, peripherals.pins.gpio15)
         ) {
             motors[1] = Some(Motor { pwm, dir, encoder });
         }
@@ -125,7 +139,7 @@ impl BoardSabotter {
         if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
             LedcDriver::new(peripherals.ledc.channel4, &timer_pwm, peripherals.pins.gpio35),
             LedcDriver::new(peripherals.ledc.channel5, &timer_pwm, peripherals.pins.gpio48),
-            Encoder::new(peripherals.pcnt2, peripherals.pins.gpio14, peripherals.pins.gpio13)
+            Encoder::new(peripherals.pins.gpio14, peripherals.pins.gpio13)
         ) {
             motors[2] = Some(Motor { pwm, dir, encoder });
         }

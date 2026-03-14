@@ -1,22 +1,20 @@
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
-use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::Mutex;
 use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
     bt::{Ble, BtDriver},
     hal::{
         adc::{
-            ADC1,
+            ADCU1,
             attenuation,
             oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
         },
-        gpio::{AnyInputPin, AnyOutputPin, Input, InputPin, Output, PinDriver, Gpio1},
+        gpio::{ADCPin, AnyInputPin, Gpio1, Input, InputPin, Output, PinDriver, Pull},
         i2c::{I2cConfig, I2cDriver},
         ledc::{LedcDriver, LedcTimerDriver, Resolution, config::TimerConfig},
-        pcnt::{Pcnt, PcntChannel, PcntChannelConfig, PcntControlMode, PcntCountMode, PcntEvent, PcntEventType, PcntDriver, PinIndex},
-        peripheral::Peripheral,
-        prelude::Peripherals,
+        pcnt::{PcntUnitDriver, config::{ChannelEdgeAction, ChannelLevelAction, GlitchFilterConfig, UnitConfig}},
+        peripherals::Peripherals,
         units::Hertz,
         sys::EspError,
     },
@@ -45,12 +43,12 @@ pub type PamiDisplay = Ssd1306<DisplayI2CInterface<I2cType>, DisplaySize128x64, 
 
 pub struct EspPamiBoard<'d> {
     battery_level: Option<PamiBatteryLevel>,
-    emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
-    starting_cord: Option<PinDriver<'static, AnyInputPin, Input>>,
+    emergency_stop: Option<PinDriver<'static, Input>>,
+    starting_cord: Option<PinDriver<'static, Input>>,
     ble: Option<BtDriver<'static, Ble>>,
     buttons: Option<EspPamiButtons>,
     display: Option<PamiDisplay>,
-    leds: Option<PamiLeds<PinDriver<'static, AnyOutputPin, Output>>>,
+    leds: Option<PamiLeds<PinDriver<'static, Output>>>,
     line_sensor: Option<TCA6408<I2cType>>,
     vlx_sensor: Option<PamiVlxSensor>,
     motors: Option<PamiMotors<EspEncoder<'d>, LedcDriver<'static>>>,
@@ -60,7 +58,7 @@ pub struct EspPamiBoard<'d> {
 impl<'d> PamiBoard for EspPamiBoard<'d> {
     type BatteryLevel = PamiBatteryLevel;
     type I2c = I2cType;
-    type Led = PinDriver<'static, AnyOutputPin, Output>;
+    type Led = PinDriver<'static, Output>;
     type Display = PamiDisplay;
     type Buttons = EspPamiButtons;
     type Vlx = PamiVlxSensor;
@@ -76,8 +74,8 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 
         // Initialize digital output pins
         let leds = PamiLeds {
-            esp: PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio4)).unwrap(),
-            com: PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio5)).unwrap(),
+            esp: PinDriver::output(peripherals.pins.gpio4).unwrap(),
+            com: PinDriver::output(peripherals.pins.gpio5).unwrap(),
         };
 
         // Initialize the I2C bus
@@ -91,7 +89,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         let vlx_i2c_driver = VlxI2cDriver::register(MutexDevice::new(i2c_driver_static));
         let vlx_sensor = PamiVlxSensor {
             sensor: VL53L5CX::new(&vlx_i2c_driver, 0x31),
-            enable: PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio3)).unwrap(),
+            enable: PinDriver::output(peripherals.pins.gpio3).unwrap(),
         };
 
         // ADC
@@ -99,7 +97,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         let adc_vbatt = AdcChannelDriver::new(
             adc,
             peripherals.pins.gpio1,
-            &AdcChannelConfig { attenuation: attenuation::DB_11, ..Default::default() },
+            &AdcChannelConfig { attenuation: attenuation::DB_12, ..Default::default() },
         ).unwrap();
         let battery_level = PamiBatteryLevel(adc_vbatt);
 
@@ -108,7 +106,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         let line_sensor = TCA6408::new(MutexDevice::new(i2c_driver_static), 0b010_0000);
         let buttons = EspPamiButtons {
             tca: TCA6408::new(MutexDevice::new(i2c_driver_static), 0b010_0001),
-            pin: PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio7)).unwrap(),
+            pin: PinDriver::input(peripherals.pins.gpio7, Pull::Floating).unwrap(),
         };
 
         // Screen
@@ -127,12 +125,12 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         ).unwrap();
         let motors = PamiMotors {
             left: PamiMotor {
-                encoder: EspEncoder::new(peripherals.pcnt0,  peripherals.pins.gpio39,  peripherals.pins.gpio40).unwrap(),
+                encoder: EspEncoder::new(peripherals.pins.gpio39,  peripherals.pins.gpio40).unwrap(),
                 pwm_forward: LedcDriver::new(peripherals.ledc.channel0, &motor_pwm, peripherals.pins.gpio21).unwrap(),
                 pwm_backward: LedcDriver::new(peripherals.ledc.channel1, &motor_pwm, peripherals.pins.gpio14).unwrap(),
             },
             right: PamiMotor {
-                encoder: EspEncoder::new(peripherals.pcnt1, peripherals.pins.gpio41, peripherals.pins.gpio42).unwrap(),
+                encoder: EspEncoder::new(peripherals.pins.gpio41, peripherals.pins.gpio42).unwrap(),
                 pwm_forward: LedcDriver::new(peripherals.ledc.channel2, &motor_pwm, peripherals.pins.gpio12).unwrap(),
                 pwm_backward: LedcDriver::new(peripherals.ledc.channel3, &motor_pwm, peripherals.pins.gpio13).unwrap(),
             },
@@ -140,8 +138,8 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 
         let pwm_controller = PamiPwmController::new(MutexDevice::new(i2c_driver_static), 0b110_1001).unwrap();
 
-        let emergency_stop = PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio15)).unwrap();
-        let starting_cord = PinDriver::input(Into::<AnyInputPin>::into(peripherals.pins.gpio2)).unwrap();
+        let emergency_stop = PinDriver::input(peripherals.pins.gpio15, Pull::Up).unwrap();
+        let starting_cord = PinDriver::input(peripherals.pins.gpio2, Pull::Up).unwrap();
 
         Self {
             battery_level: Some(battery_level),
@@ -228,7 +226,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 }
 
 
-pub struct PamiBatteryLevel(AdcChannelDriver<'static, Gpio1, Rc<AdcDriver<'static, ADC1>>>);
+pub struct PamiBatteryLevel(AdcChannelDriver<'static, <Gpio1<'static> as ADCPin>::AdcChannel, Rc<AdcDriver<'static, ADCU1>>>);
 
 impl PamiBatteryLevel {
     const fn raw_to_mv(raw: f32) -> f32 {
@@ -280,7 +278,7 @@ impl BatteryLevel for PamiBatteryLevel {
 
 pub struct PamiVlxSensor {
     sensor: VL53L5CX,
-    enable: PinDriver<'static, AnyOutputPin, Output>,
+    enable: PinDriver<'static, Output>,
 }
 
 impl VlxSensor for PamiVlxSensor {
@@ -305,80 +303,51 @@ impl VlxSensor for PamiVlxSensor {
 
 
 pub struct EspEncoder<'d> {
-    unit: PcntDriver<'d>,
-    approx_value: Arc<AtomicI32>,
+    unit: PcntUnitDriver<'d>,
 }
 
 impl<'d> EspEncoder<'d> {
-    pub fn new<PCNT: Pcnt>(
-        pcnt: impl Peripheral<P = PCNT> + 'd,
-        pin_a: impl Peripheral<P = impl InputPin> + 'd,
-        pin_b: impl Peripheral<P = impl InputPin> + 'd,
-    ) -> Result<Self, EspError> {
-        const LOW_LIMIT: i16 = -100;
-        const HIGH_LIMIT: i16 = 100;
+    pub fn new(pin_a: impl InputPin + 'd, pin_b: impl InputPin + 'd) -> Result<Self, EspError> {
+        const LOW_LIMIT: i32 = -100;
+        const HIGH_LIMIT: i32 = 100;
 
-        let mut unit = PcntDriver::new(
-            pcnt,
-            Some(pin_a),
-            Some(pin_b),
-            Option::<AnyInputPin>::None,
-            Option::<AnyInputPin>::None,
-        )?;
-        unit.channel_config(
-            PcntChannel::Channel0,
-            PinIndex::Pin0,
-            PinIndex::Pin1,
-            &PcntChannelConfig {
-                lctrl_mode: PcntControlMode::Reverse,
-                hctrl_mode: PcntControlMode::Keep,
-                pos_mode: PcntCountMode::Decrement,
-                neg_mode: PcntCountMode::Increment,
-                counter_h_lim: HIGH_LIMIT,
-                counter_l_lim: LOW_LIMIT,
-            },
-        )?;
-        unit.channel_config(
-            PcntChannel::Channel1,
-            PinIndex::Pin1,
-            PinIndex::Pin0,
-            &PcntChannelConfig {
-                lctrl_mode: PcntControlMode::Reverse,
-                hctrl_mode: PcntControlMode::Keep,
-                pos_mode: PcntCountMode::Increment,
-                neg_mode: PcntCountMode::Decrement,
-                counter_h_lim: HIGH_LIMIT,
-                counter_l_lim: LOW_LIMIT,
-            },
-        )?;
-        unit.set_filter_value(1023)?;
-        unit.filter_enable()?;
+        let mut unit = PcntUnitDriver::new(&UnitConfig {
+            low_limit: LOW_LIMIT,
+            high_limit: HIGH_LIMIT,
+            accum_count: true,
+            ..Default::default()
+        })?;
 
-        //TODO Use "overflow" operations to avoid this value
-        let approx_value = Arc::new(AtomicI32::new(0));
-        // unsafe interrupt code to catch the upper and lower limits from the encoder
-        // and track the overflow in `value: Arc<AtomicI32>` - I plan to use this for
-        // a wheeled robot's odomerty
-        //TODO Remove `unsafe`
-        unsafe {
-            let approx_value = approx_value.clone();
-            unit.subscribe(move |status| {
-                let status = PcntEventType::from_repr_truncated(status);
-                if status.contains(PcntEvent::HighLimit) {
-                    approx_value.fetch_add(HIGH_LIMIT as i32, Ordering::SeqCst);
-                }
-                if status.contains(PcntEvent::LowLimit) {
-                    approx_value.fetch_add(LOW_LIMIT as i32, Ordering::SeqCst);
-                }
-            })?;
-        }
-        unit.event_enable(PcntEvent::HighLimit)?;
-        unit.event_enable(PcntEvent::LowLimit)?;
-        unit.counter_pause()?;
-        unit.counter_clear()?;
-        unit.counter_resume()?;
+        unit.set_glitch_filter(Some(&GlitchFilterConfig {
+            max_glitch: std::time::Duration::from_nanos(1023),
+            ..Default::default()
+        }))?;
 
-        Ok(Self { unit, approx_value })
+        // SAFETY: copied from example code
+        let (dup_pin_a, dup_pin_b) = unsafe {
+            (
+                AnyInputPin::steal(pin_a.pin()),
+                AnyInputPin::steal(pin_b.pin()),
+            )
+        };
+
+        unit.add_channel(Some(pin_a), Some(pin_b), &Default::default())?
+            .set_edge_action(ChannelEdgeAction::Decrease, ChannelEdgeAction::Increase)?
+            .set_level_action(ChannelLevelAction::Keep, ChannelLevelAction::Inverse)?;
+
+        unit.add_channel(Some(dup_pin_b), Some(dup_pin_a), &Default::default())?
+            .set_edge_action(ChannelEdgeAction::Increase, ChannelEdgeAction::Decrease)?
+            .set_level_action(ChannelLevelAction::Keep, ChannelLevelAction::Inverse)?;
+
+        unit.enable()?;
+
+        unit.add_watch_points_and_clear([LOW_LIMIT, HIGH_LIMIT])?;
+
+        unit.stop()?;
+        unit.clear_count()?;
+        unit.start()?;
+
+        Ok(Self { unit })
     }
 }
 
@@ -386,16 +355,14 @@ impl Encoder<i32> for EspEncoder<'_> {
     type Error = EspError;
 
     fn get_value(&self) -> Result<i32, EspError> {
-        //TODO check
-        let value = self.approx_value.load(Ordering::Relaxed) + self.unit.get_counter_value()? as i32;
-        Ok(value)
+        self.unit.get_count()
     }
 }
 
 
 pub struct EspPamiButtons {
     tca: TCA6408<I2cType>,
-    pin: PinDriver<'static, AnyInputPin, Input>,
+    pin: PinDriver<'static, Input>,
 }
 
 impl PamiButtons for EspPamiButtons {

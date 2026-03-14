@@ -1,28 +1,20 @@
 use esp_idf_svc::bt::BdAddr;
-use esp_idf_svc::sys;
+use esp_idf_svc::bt::ble::gap::GapSearchResult;
 
 
 /// Scan result passed to BleClient scan handler
 ///
-/// Structure is derived from `sys::esp_ble_gap_cb_param_t_ble_scan_result_evt_param`.
-/// It does not expose all data from the C structure but can be extended if needed.
-///
-/// This structure will be removed when esp-idf provides a proper `BleGapEvent::ScanResult`.
-pub struct BleScanResult {
-    raw: sys::esp_ble_gap_cb_param_t_ble_scan_result_evt_param,
-    pub addr: BdAddr,
-}
+/// Wrap the underlying esp-idf-svc structure to provide helpers.
+/// It does not expose all data but can be extended if needed.
+pub struct BleScanResult<'a>(pub GapSearchResult<'a>);
 
-impl BleScanResult {
+impl BleScanResult<'_> {
+    pub fn addr(&self) -> BdAddr {
+        self.0.bda
+    }
+
     pub fn adv_data(&self) -> &[u8] {
-        if self.raw.adv_data_len > 0 {
-            // Safety: slice validity is ensured by the C interface
-            unsafe {
-                std::slice::from_raw_parts(self.raw.ble_adv.as_ptr(), self.raw.adv_data_len as usize)
-            }
-        } else {
-            &[]
-        }
+        self.0.ble_adv.unwrap_or(&[])
     }
 
     /// Iterate on advertisement data structures
@@ -101,16 +93,4 @@ impl<'a> Iterator for AdvDataIter<'a> {
         }
     }
 }
-
-
-impl From<sys::esp_ble_gap_cb_param_t_ble_scan_result_evt_param> for BleScanResult {
-    fn from(value: sys::esp_ble_gap_cb_param_t_ble_scan_result_evt_param) -> Self {
-        let addr = BdAddr::from_bytes(value.bda);
-        Self {
-            raw: value,
-            addr,
-        }
-    }
-}
-
 

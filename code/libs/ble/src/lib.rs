@@ -10,6 +10,7 @@ use esp_idf_svc::bt::{
             BleGapEvent,
             BleEncryption,
             EspBleGap,
+            GapSearchEvent,
             IOCapabilities,
             KeyMask,
             SecurityConfiguration,
@@ -226,7 +227,17 @@ impl BleInstance {
             }
             BleGapEvent::ScanResult(scan_result) => {
                 if let Some(handler) = &self.handlers.on_scan_result {
-                    handler(scan_result.into());
+                    // Handle all types with a `GapSearchResult` equally and ignore others
+                    // To be adapted if scanning is used for real.
+                    let search_result = match scan_result {
+                        GapSearchEvent::InquiryResult(result) => Some(result),
+                        GapSearchEvent::DiscoveryResult(result) => Some(result),
+                        GapSearchEvent::DiscoveryBleResult(result) => Some(result),
+                        _ => None,
+                    };
+                    if let Some(search_result) = search_result {
+                        handler(BleScanResult(search_result))
+                    }
                 } else {
                     log::warn!("ScanResult received but no handler set, use with_scanner()");
                 }

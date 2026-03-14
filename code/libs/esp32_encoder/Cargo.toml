@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
+esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }
 log = "0.4"
