@@ -222,7 +222,8 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         let (ble_server, _ble_client) = BleBuilder::new(ble)
             .with_passkey_notifier(move |addr, key| { passkey_notifier(addr.into(), key) })
             .run();
-        Some(RomePeripheral::run(ble_server, device_name))
+        let RomePeripheral { sender, receiver } = RomePeripheral::run(ble_server, device_name);
+        Some((sender, receiver))
     }
 }
 

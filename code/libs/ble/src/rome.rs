@@ -20,6 +20,10 @@ use crate::BleServer;
 const SERVICE_ROME_UUID: BtUuid = BtUuid::uuid128(0x8187_0000_ffa549699ab4e777ca411f95);
 const CHAR_ROME_TELEMETRY_UUID: BtUuid = BtUuid::uuid128(0x8187_0001_ffa549699ab4e777ca411f95);
 const CHAR_ROME_ORDERS_UUID: BtUuid = BtUuid::uuid128(0x8187_0002_ffa549699ab4e777ca411f95);
+const CHAR_ROME_LOGS_UUID: BtUuid = BtUuid::uuid128(0x8187_0003_ffa549699ab4e777ca411f95);
+
+const ROME_MAX_FRAME_LEN: usize = 200;
+const MAX_LOG_LEN: usize = 250;
 
 const CCCD_UUID: BtUuid = BtUuid::uuid16(0x2902);
 
@@ -30,6 +34,7 @@ const MAX_CONNECTIONS: usize = 1;
 struct Connection {
     conn_id: ConnectionId,
     subscribed_telemetry: bool,
+    subscribed_logs: bool,
 }
 
 impl Connection {
@@ -37,6 +42,7 @@ impl Connection {
         Self {
             conn_id,
             subscribed_telemetry: false,
+            subscribed_logs: false,
         }
     }
 }
@@ -48,6 +54,8 @@ struct PeripheralState {
     orders_handle: Option<Handle>,
     telemetry_handle: Option<Handle>,
     telemetry_cccd_handle: Option<Handle>,
+    logs_handle: Option<Handle>,
+    logs_cccd_handle: Option<Handle>,
     connections: Vec<Connection>,
 }
 
@@ -58,14 +66,21 @@ impl PeripheralState {
 }
 
 
-pub struct RomePeripheral {
+/// Internal peripheral instance
+struct RomeInternalPeripheral {
     server: BleServer,
     state: Arc<Mutex<PeripheralState>>,
     rome_rx: Sender<Box<[u8]>>,
 }
 
+/// Rome peripheral elements, for the user
+pub struct RomePeripheral {
+    pub sender: Sender<Box<[u8]>>,
+    pub receiver: Receiver<Box<[u8]>>,
+}
+
 impl RomePeripheral {
-    pub fn run(server: BleServer, name: String) -> (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) {
+    pub fn run(server: BleServer, name: String) -> Self {
         let (rome_rx, rome_receiver) = mpsc::channel();
         let (rome_sender, rome_tx) = mpsc::channel::<Box<[u8]>>();
 
@@ -76,10 +91,12 @@ impl RomePeripheral {
             orders_handle: None,
             telemetry_handle: None,
             telemetry_cccd_handle: None,
+            logs_handle: None,
+            logs_cccd_handle: None,
             connections: Vec::new(),
         }));
 
-        let instance = Arc::new(Self {
+        let instance = Arc::new(RomeInternalPeripheral {
             server,
             state,
             rome_rx,
@@ -119,9 +136,14 @@ impl RomePeripheral {
             }
         });
 
-        (rome_sender, rome_receiver)
+        Self {
+            sender: rome_sender,
+            receiver: rome_receiver,
+        }
     }
+}
 
+impl RomeInternalPeripheral {
     fn on_gatts_event(&self, gatt_if: GattInterface, event: GattsEvent) -> Result<(), EspError> {
         log::debug!("Gatts event: {event:?}");
 
@@ -224,7 +246,7 @@ impl RomePeripheral {
                 },
                 is_primary: true,
             },
-            8,
+            12,
         )?;
 
         Ok(())
@@ -237,8 +259,7 @@ impl RomePeripheral {
         self.server.gatts.start_service(service_handle)?;
 
         // Characteristics added here must be matched in `register_characteristic()`
-
-        const ROME_MAX_FRAME_LEN: usize = 200;
+        // Also check maximum handle count in `create_service()` call
 
         self.server.gatts.add_characteristic(
             service_handle,
@@ -263,7 +284,6 @@ impl RomePeripheral {
             },
             &[],
         )?;
-
         self.server.gatts.add_descriptor(
             service_handle,
             &GattDescriptor {
@@ -272,8 +292,26 @@ impl RomePeripheral {
             },
         )?;
 
-        // There is only one descriptor to configure
-        // It is assumed by register_descriptor() to call on_service_fully_configured()
+        self.server.gatts.add_characteristic(
+            service_handle,
+            &GattCharacteristic {
+                uuid: CHAR_ROME_LOGS_UUID,
+                permissions: enum_set!(),
+                properties: enum_set!(Property::Notify),
+                max_len: MAX_LOG_LEN,
+                auto_rsp: AutoResponse::ByApp,
+            },
+            &[],
+        )?;
+        self.server.gatts.add_descriptor(
+            service_handle,
+            &GattDescriptor {
+                uuid: CCCD_UUID,
+                permissions: enum_set!(Permission::ReadEncrypted | Permission::WriteEncrypted),
+            },
+        )?;
+
+        // Descriptor order is important and assumed by register_descriptor()
 
         Ok(())
     }
@@ -291,6 +329,8 @@ impl RomePeripheral {
             state.orders_handle = Some(attr_handle);
         } else if char_uuid == CHAR_ROME_TELEMETRY_UUID {
             state.telemetry_handle = Some(attr_handle);
+        } else if char_uuid == CHAR_ROME_LOGS_UUID {
+            state.logs_handle = Some(attr_handle);
         } else {
             // Should never happen
         }
@@ -305,13 +345,16 @@ impl RomePeripheral {
         }
 
         if descr_uuid == CCCD_UUID {
-            // As we only register one CCCD, we know it's the telemetry one
-            state.telemetry_cccd_handle = Some(attr_handle);
-
-            // For now, there is only one descriptor to configure
-            // Assume service is fully configured when this descriptor is
-            // See comment in configure_and_start_service()
-            self.on_service_fully_configured();
+            // Assume order of descriptors; see configure_and_start_service()
+            if state.telemetry_cccd_handle.is_none() {
+                state.telemetry_cccd_handle = Some(attr_handle);
+            } else if state.logs_cccd_handle.is_none() {
+                state.logs_cccd_handle = Some(attr_handle);
+                // This is the last one, finalize
+                self.on_service_fully_configured();
+            } else {
+                // Should never happen
+            }
         } else {
             // Should never happen
         }
@@ -389,8 +432,14 @@ impl RomePeripheral {
         if Some(handle) == state.telemetry_cccd_handle {
             if let Some(conn) = state.get_connection_mut(conn_id) {
                 // Note: enable on both 'notify' and 'indicate'
-                log::info!("Client {conn_id} subscribed to telemetry");
                 conn.subscribed_telemetry = parse_cccd_value(value) != Some(0);
+                log::info!("Client {conn_id} subscribed to telemetry: {}", conn.subscribed_telemetry);
+            }
+        } else if Some(handle) == state.logs_cccd_handle {
+            if let Some(conn) = state.get_connection_mut(conn_id) {
+                // Note: enable on both 'notify' and 'indicate'
+                conn.subscribed_logs = parse_cccd_value(value) != Some(0);
+                log::info!("Client {conn_id} subscribed to logs: {}", conn.subscribed_logs);
             }
         } else if Some(handle) == state.orders_handle {
             if let Err(e) = self.rome_rx.send(Box::from(value)) {
