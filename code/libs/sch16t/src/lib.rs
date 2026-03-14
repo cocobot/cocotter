@@ -473,7 +473,7 @@ fn compute_crc8(frame: &[u8]) -> u8 {
     let crc = crc::Crc::<u8>::new(&crc::CRC_8_OPENSAFETY);
     let mut digest = crc.digest();
     digest.update(&[0xff]);
-    digest.update(&frame);
+    digest.update(frame);
     digest.finalize()
 }
 

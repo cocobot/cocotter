@@ -156,7 +156,7 @@ impl VlxSensor for VL53L5CX {
             }
         }
 
-        if alarms.len() > ALARMS_COUNT as usize {
+        if alarms.len() > ALARMS_COUNT {
             Err(VlxError::TooManyAlarms)
         } else if alarms.is_empty() {
             // Disable detection thresholds plugin to clear all alarms
