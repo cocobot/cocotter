@@ -8,6 +8,6 @@ embedded-hal = "1.0"
 log = "0.4"
 
 [build-dependencies]
-cbindgen = "0.29"
 bindgen = "0.72"
+cbindgen = "0.29"
 cc = "1.2"

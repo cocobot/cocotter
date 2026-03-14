@@ -1,5 +1,6 @@
 mod movement;
 mod shared_gpio;
+mod strat;
 
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 

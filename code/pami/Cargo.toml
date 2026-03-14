@@ -7,17 +7,14 @@ edition = "2024"
 name = "pami"
 
 [dependencies]
-asserv = { path = "../libs/asserv", features = ["rome"] }
-board-common = { path = "../boards/common" }
-board-pami = { path = "../boards/pami" }
 embedded-graphics = "0.8"
 embedded-hal = "1.0"
 log = "0.4"
+asserv = { path = "../libs/asserv", features = ["rome"] }
+board-common = { path = "../boards/common" }
+board-pami = { path = "../boards/pami" }
 rome = { path = "../libs/rome" }
 vlx = { path = "../libs/vlx" }
-
-#[target.'cfg(not(target_os = "espidf"))'.dependencies]
-#board-simulator = { path = "../boards/simulator" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = "0.51"

@@ -1,17 +1,19 @@
 [package]
 name = "board-sabotter"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies] 
-esp-idf-svc = {version = "0.51", features = ["experimental", "alloc"]}
+embedded-hal = "1.0"
+embedded-hal-bus = { version = "0.3", features = ["std"] }
 log = "0.4"
-embedded-hal = "1.0.0"
-embedded-hal-bus = { version = "0.3.0", features = ["std"] }
-vlx = { path = "../../libs/vlx" }
-tca6408 = { path = "../../libs/tca6408" }
 esp32_encoder = { path = "../../libs/esp32_encoder" }
-pca9535 = { version = "2.0.0", features = ["std"] }
+pca9535 = { version = "2.0", features = ["std"] }
+tca6408 = { path = "../../libs/tca6408" }
+vlx = { path = "../../libs/vlx" }
+
+[target.'cfg(target_os = "espidf")'.dependencies]
+esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
 
 [build-dependencies]
-embuild = {version = "0.33.1", features = ["espidf"]}
+embuild = { version = "0.33", features = ["espidf"] }

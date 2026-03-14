@@ -4,13 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies] 
-board-common = { path = "../common" }
 embedded-graphics = "0.8"
 embedded-hal = "1.0"
 embedded-hal-bus = { version = "0.3", features = ["std"] }
 log = "0.4"
 pwm-pca9685 = "1.0"
 ssd1306 = "0.10"
+board-common = { path = "../common" }
 tca6408 = { path = "../../libs/tca6408" }
 vlx = { path = "../../libs/vlx" }
 
