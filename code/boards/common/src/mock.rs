@@ -1,15 +1,12 @@
-use crate::{BatteryLevel, Encoder};
+use crate::{BatteryLevel, BatteryReader, Encoder};
 
 
-#[derive(Clone, Copy, Default)]
-pub struct MockBatteryLevel {
-    mv: u16,
-    percent: u8,
-}
+#[derive(Default)]
+pub struct MockBatteryReader(BatteryLevel);
 
-impl BatteryLevel for MockBatteryLevel {
-    fn read_vbatt(&mut self) -> (u16, u8) {
-        (self.mv, self.percent)
+impl BatteryReader for MockBatteryReader {
+    fn read_vbatt(&mut self) -> BatteryLevel {
+        self.0
     }
 }
 

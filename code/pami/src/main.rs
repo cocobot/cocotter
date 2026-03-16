@@ -5,7 +5,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use asserv::differential::{conf::*, Asserv};
 use asserv::{rome::AsservRome, differential::rome::AsservDiffRome};
 use board_common::{Color, Periodicity};
-use board_pami::{BatteryLevel, PamiBoard, PamiButtons, PamiButtonsState};
+use board_pami::{BatteryLevel, BatteryReader, PamiBoard, PamiButtons, PamiButtonsState};
 use vlx::VlxSensor;
 use pami::config::PamiConfig;
 use pami::events::*;
@@ -86,13 +86,13 @@ impl MainState {
         self.update_ground_led = true;
     }
 
-    fn set_battery_level(&mut self, mv: u16, percent: u8) {
-        if percent == self.battery_percent {
+    fn set_battery_level(&mut self, level: BatteryLevel) {
+        if level.percent == self.battery_percent {
             return;
         }
-        log::info!("Battery: {mv} mV, {percent}%");
-        self.battery_percent = percent;
-        self.ui_events.send(UiEvent::Battery { percent }).unwrap();
+        log::info!("Battery: {} mV, {}%", level.mv, level.percent);
+        self.battery_percent = level.percent;
+        self.ui_events.send(UiEvent::Battery { percent: level.percent }).unwrap();
     }
 
     fn set_buttons(&mut self, value: PamiButtonsState) {
@@ -258,7 +258,7 @@ fn main() {
     // Other peripherals
     let mut pami_leds = board.leds().unwrap();
     let mut buttons = board.buttons().unwrap();
-    let mut battery_level = board.battery_level().unwrap();
+    let mut battery_reader = board.battery_reader().unwrap();
     let mut starting_cord_read = board.starting_cord().unwrap();
 
     // Initialize state and UI state
@@ -333,10 +333,10 @@ fn main() {
 
         // Battery voltage
         if battery_period.update(&now) {
-            let (mv, percent) = battery_level.read_vbatt();
-            state.set_battery_level(mv, percent);
+            let level = battery_reader.read_vbatt();
+            state.set_battery_level(level);
             pwm_controller.set_battery_rgb(state.battery_led_color());
-            if let Err(err) = rome_tx.send(rome::Message::BatteryLevel { mv, percent }.encode()) {
+            if let Err(err) = rome_tx.send(rome::Message::BatteryLevel { mv: level.mv, percent: level.percent }.encode()) {
                 log::error!("BLE send error: {:?}", err);
             }
         }

@@ -13,7 +13,7 @@ use embedded_graphics::{
     draw_target::DrawTarget,
     pixelcolor::BinaryColor,
 };
-pub use board_common::{BatteryLevel, Color, Encoder};
+pub use board_common::{BatteryLevel, BatteryReader, Color, Encoder};
 use pwm_pca9685::{self, Pca9685};
 use pwm_pca9685::{Channel as Pca9685Channel};
 use tca6408::TCA6408;
@@ -28,7 +28,7 @@ type Pca9685Error<I2C> = pwm_pca9685::Error<<I2C as embedded_hal::i2c::ErrorType
 
 
 pub trait PamiBoard {
-    type BatteryLevel: BatteryLevel;
+    type BatteryReader: BatteryReader;
     type I2c: I2c;
     type Led: StatefulOutputPin;
     type Buttons: PamiButtons;
@@ -47,7 +47,7 @@ pub trait PamiBoard {
     /// Return Bluetooth MAC address of the device
     fn bt_mac_address(&self) -> [u8; 6];
 
-    fn battery_level(&mut self) -> Option<Self::BatteryLevel>;
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader>;
     fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
     fn starting_cord(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
     fn leds(&mut self) -> Option<PamiLeds<Self::Led>>;

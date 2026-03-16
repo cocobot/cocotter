@@ -8,7 +8,7 @@ use embedded_graphics::{
     pixelcolor::BinaryColor,
     mock_display::MockDisplay,
 };
-use board_common::mock::{MockBatteryLevel, MockEncoder};
+use board_common::mock::{MockBatteryReader, MockEncoder};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxError, VlxSensor, ZoneAlarm};
 use crate::{PamiBoard, PamiButtons, PamiMotors};
@@ -19,7 +19,7 @@ pub struct MockPamiBoard;
 pub type PamiDisplay = MockDisplay<BinaryColor>;
 
 impl PamiBoard for MockPamiBoard {
-    type BatteryLevel = MockBatteryLevel;
+    type BatteryReader = MockBatteryReader;
     type I2c = I2cMock;
     type Led = PinMock;
     type Display = PamiDisplay;
@@ -41,7 +41,7 @@ impl PamiBoard for MockPamiBoard {
         [0; 6]
     }
 
-    fn battery_level(&mut self) -> Option<Self::BatteryLevel> {
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader> {
         None
     }
 

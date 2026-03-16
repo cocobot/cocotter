@@ -5,10 +5,16 @@ pub mod mock;
 use std::time::{Duration, Instant};
 
 
+/// Battery level, read from board
+#[derive(Clone, Copy, Default)]
+pub struct BatteryLevel {
+    pub mv: u16,
+    pub percent: u8,
+}
+
 /// Read battery voltage
-pub trait BatteryLevel {
-    /// Read battery voltage, return value in mV and as percentage
-    fn read_vbatt(&mut self) -> (u16, u8);
+pub trait BatteryReader {
+    fn read_vbatt(&mut self) -> BatteryLevel;
 }
 
 /// Generic encoder, fetch a value of given type
