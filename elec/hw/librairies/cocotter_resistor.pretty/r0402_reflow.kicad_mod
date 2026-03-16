@@ -144,7 +144,7 @@
 		(uuid "1431a10a-609d-49f0-9ce0-1a9cade172b0")
 	)
 	(embedded_fonts no)
-	(model "3d/RC0603N_VIS.step"
+	(model "${KICAD_COCOTTER_HW_DIR}/librairies/cocotter_resistor.pretty/3d/RES_CRCW_0402_VIS.step"
 		(offset
 			(xyz 0 0 0)
 		)
@@ -152,7 +152,7 @@
 			(xyz 1 1 1)
 		)
 		(rotate
-			(xyz 0 0 0)
+			(xyz -0 -0 -0)
 		)
 	)
 )
