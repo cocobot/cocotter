@@ -7,7 +7,7 @@ use esp_idf_svc::{
             ADCU1,
             oneshot::{AdcChannelDriver, AdcDriver},
         },
-        can::CanDriver,
+        can::{CanDriver, config as can_config},
         gpio::{ADCPin, AnyIOPin, Gpio1, Output, PinDriver},
         i2c::{I2cConfig, I2cDriver},
         ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver},
@@ -164,13 +164,13 @@ impl BoardSabotter {
         //    &UartConfig::default().baudrate(Hertz(1_000_000)),
         //).ok();
 
-        //// Initialize CAN bus with correct pins (GPIO9/10)
-        //let can_bus = CanDriver::new(
-        //    peripherals.can,
-        //    peripherals.pins.gpio9,  // TX
-        //    peripherals.pins.gpio10,  // RX
-        //    &CanConfig::new(),
-        //).ok();
+        // Initialize CAN bus with correct pins (GPIO9/10) at 500kbps
+        let can_bus = CanDriver::new(
+            peripherals.can,
+            peripherals.pins.gpio9,   // TX
+            peripherals.pins.gpio10,  // RX
+            &can_config::Config::new().timing(can_config::Timing::B500K),
+        ).ok();
 
         // Initialize SPI for IMU SCH16T
         use esp_idf_svc::hal::spi::Dma;
@@ -218,7 +218,7 @@ impl BoardSabotter {
             motors,
             gpio_expander,
             motor_gpio_expander,
-            can_bus: None,
+            can_bus,
             uart_asserv,
             uart_lidar: None,
             battery_adc,

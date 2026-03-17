@@ -4,6 +4,7 @@ members = [
     "galipeur",
 
     "libs/asserv",
+    "libs/cancaner",
     "libs/ble",
     "libs/esp32_encoder",
     "libs/rome",

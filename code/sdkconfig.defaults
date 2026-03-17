@@ -1,3 +1,10 @@
+# Flash size 8MB
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+
+# Custom partition table with 3MB app partition
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
 # Rust often needs a bit of an extra main task stack size compared to C (the default is 3K)
 CONFIG_ESP_MAIN_TASK_STACK_SIZE=20000
 CONFIG_PTHREAD_TASK_STACK_SIZE_DEFAULT=8192

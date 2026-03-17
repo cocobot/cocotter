@@ -1,5 +1,7 @@
 mod movement;
 mod shared_gpio;
+mod can;
+mod meca;
 
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 
@@ -16,7 +18,7 @@ use sch16t::Sch16t;
 use asserv::holonomic::Asserv;
 use asserv::maths::XY;
 
-use crate::shared_gpio::SharedGpio;
+use crate::{meca::Meca, shared_gpio::SharedGpio};
 
 fn main() {
     let mut board = BoardSabotter::new();
@@ -47,38 +49,39 @@ fn main() {
     // Motor driver startup procedure
     // See DRV8243 §7.7.2.1 HW Variant
     //TODO heartbeat led follows expected nFAULT state
-    {
-        log::info!("Motor drivers init");
+   ///{
+   ///    log::info!("Motor drivers init");
 
-        motor_0_heartbeat.pin_set_high();
-        motor_1_heartbeat.pin_set_high();
-        motor_2_heartbeat.pin_set_high();
+   ///    motor_0_heartbeat.pin_set_high();
+   ///    motor_1_heartbeat.pin_set_high();
+   ///    motor_2_heartbeat.pin_set_high();
 
-        let expanders = [&motor_0_gpio_expander, &motor_1_gpio_expander, &motor_2_gpio_expander];
-        let mut mot_ena = board.mot_ena.take().unwrap();
+   ///    let expanders = [&motor_0_gpio_expander, &motor_1_gpio_expander, &motor_2_gpio_expander];
+   ///    let mut mot_ena = board.mot_ena.take().unwrap();
 
-        mot_ena.set_low().ok();
-        thread::sleep(Duration::from_millis(10));
+   ///    mot_ena.set_low().ok();
+   ///    thread::sleep(Duration::from_millis(10));
 
-        mot_ena.set_high().ok();
-        // Assert all expanders nFAULT low
-        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
-            thread::sleep(Duration::from_millis(10));
-        }
-        thread::sleep(Duration::from_millis(10));
+   ///    mot_ena.set_high().ok();
+   ///    // Assert all expanders nFAULT low
+   ///    while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
+   ///        thread::sleep(Duration::from_millis(10));
+   ///    }
+   ///    thread::sleep(Duration::from_millis(10));
 
-        mot_ena.set_low().ok();
-        // A short wait (between 5µs and 10µs) is required; don't replace with a `thread::sleep()`
-        unsafe { ets_delay_us(10); }
-        mot_ena.set_high().ok();
+   ///    mot_ena.set_low().ok();
+   ///    // A short wait (between 5µs and 10µs) is required; don't replace with a `thread::sleep()`
+   ///    unsafe { ets_delay_us(10); }
+   ///    mot_ena.set_high().ok();
 
-        // Assert all expanders nFAULT high
-        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
-            thread::sleep(Duration::from_millis(10));
-        }
+   ///    // Assert all expanders nFAULT high
+   ///    while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
+   ///        thread::sleep(Duration::from_millis(10));
+   ///    }
 
-        log::info!("Motor drivers initialized");
-    }
+   ///    log::info!("Motor drivers initialized");
+   ///}
+    log::info!("Board initialized");
 
     //configure low level hardware for asserv
     let asserv_hardware = MovementLowLevelHardware::new(
@@ -92,36 +95,59 @@ fn main() {
     );
     let movement = Arc::new(Mutex::new(Movement::new(asserv_hardware)));
 
+    let can_iface = can::CanInterface::new(board.can_bus.take().expect("CAN bus not initialized"));
+    can::setup_can_log(&can_iface);
+    let meca = meca::Meca::new(&can_iface);
     #[derive(Debug)]
     enum Order<'a> {
         GotoXy(f32, f32),
         GotoA(f32),
         GotoXyA(f32, f32, f32),
         RunPath(&'a [XY]),
+        MecaTake,
+        MecaDrop,
     }
 
     impl Order<'_> {
-        fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>) {
+        fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>, meca: &Meca) {
             match self {
                 Order::GotoXy(x, y) => asserv.goto_xy(*x, *y),
                 Order::GotoA(a) => asserv.goto_a(*a),
                 Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
                 Order::RunPath(path) => asserv.run_path(path),
+                Order::MecaTake => {
+                    meca.grab(0, 0);
+                    meca.grab(0, 1);     
+                    meca.grab(0, 2);     
+                    meca.grab(0, 3);                    
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(3));
+                }
+                Order::MecaDrop => {
+                    meca.release(0, 0);
+                    meca.release(0, 1);
+                    meca.release(0, 2);
+                    meca.release(0, 3);
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
             }
         }
     }
 
     let orders = [
-        Order::RunPath(&[
-            XY::new(0.0, 500.0),
-            XY::new(500.0, 500.0),
-        ]),
-        Order::GotoA(std::f32::consts::PI * 0.9),
-        Order::RunPath(&[
-            XY::new(500.0, 0.0),
-            XY::new(0.0, 0.0),
-        ]),
-        Order::GotoXyA(-200.0, 200.0, 0.0),
+        //Order::RunPath(&[
+        //    XY::new(0.0, 500.0),
+        //    XY::new(500.0, 500.0),
+        //]),
+        //Order::GotoA(std::f32::consts::PI * 0.9),
+        Order::MecaTake,
+        //Order::RunPath(&[
+        //    XY::new(500.0, 0.0),
+        //    XY::new(0.0, 0.0),
+        //]),
+        //Order::GotoXyA(-200.0, 200.0, 0.0),
+        Order::MecaDrop,
     ];
     let mut index = 0;
 
@@ -139,6 +165,11 @@ fn main() {
         motor_2_heartbeat.toggle();
         thread::sleep(Duration::from_millis(500));
 
+        {
+            let meca_state = meca.get_state();
+            log::info!("Meca state: {:?}", meca_state);
+        }
+
         let movement = movement.lock().unwrap();
         let asserv = movement.get_asserv();
         let mut asserv = asserv.lock().unwrap();
@@ -149,7 +180,7 @@ fn main() {
         if asserv.done_xy() && asserv.done_a() {
             let order = &orders[index];
             log::info!("Send new order: {:?}", order);
-            order.apply(&mut asserv);
+            order.apply(&mut asserv, &meca);
             index = (index + 1) % orders.len();
         }
     }
