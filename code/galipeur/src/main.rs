@@ -68,8 +68,15 @@ fn main() {
 
         mot_ena.set_high().ok();
         // Assert all expanders nFAULT low
-        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
-            thread::sleep(Duration::from_millis(10));
+        {
+            let deadline = std::time::Instant::now() + Duration::from_secs(3);
+            while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
+                if std::time::Instant::now() >= deadline {
+                    log::warn!("Timeout waiting for nFAULT low on motor expanders");
+                    break;
+                }
+                thread::sleep(Duration::from_millis(10));
+            }
         }
         thread::sleep(Duration::from_millis(10));
 
@@ -79,8 +86,15 @@ fn main() {
         mot_ena.set_high().ok();
 
         // Assert all expanders nFAULT high
-        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
-            thread::sleep(Duration::from_millis(10));
+        {
+            let deadline = std::time::Instant::now() + Duration::from_secs(3);
+            while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
+                if std::time::Instant::now() >= deadline {
+                    log::warn!("Timeout waiting for nFAULT high on motor expanders");
+                    break;
+                }
+                thread::sleep(Duration::from_millis(10));
+            }
         }
 
         log::info!("Motor drivers initialized");
