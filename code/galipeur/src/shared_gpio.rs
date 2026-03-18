@@ -71,18 +71,18 @@ impl SharedGpioPin {
 
     pub fn pin_is_low(&self) -> Result<bool, ()> {
         let mut device = self.handle.lock().unwrap();
-        Ok(device.pin_is_low(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
-            log::error!("Failed to get pin {}: {:?}", self.pin_number, e);
+        device.pin_is_low(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
+          //  log::error!("Failed to get pin {}: {:?}", self.pin_number, e);
             Err(())
-        }).unwrap())
+        })
     }
 
     pub fn pin_is_high(&self) -> Result<bool, ()> {
         let mut device = self.handle.lock().unwrap();
-        Ok(device.pin_is_high(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
-            log::error!("Failed to get pin {}: {:?}", self.pin_number, e);
+        device.pin_is_high(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
+          //  log::error!("Failed to get pin {}: {:?}", self.pin_number, e);
             Err(())
-        }).unwrap())
+        })
     }
 }
 

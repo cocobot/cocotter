@@ -29,17 +29,17 @@ impl Meca {
     // --- High-level algos ---
 
     pub fn lower_arm(&self, module: u8, arm: u8) {
-        self.proxy.set_arm(module, arm, 300, 500, false, false);
+        self.proxy.set_arm(module, arm, 400, 500, false, false);
     }
 
     pub fn raise_arm(&self, module: u8, arm: u8) {
-        self.proxy.set_arm(module, arm, 650, 500, false, false);
+        self.proxy.set_arm(module, arm, 500, 500, false, false);
     }
 
     /// Lower arm, enable pump, raise arm
     pub fn grab(&self, module: u8, arm: u8) {
         self.proxy.set_pump(module, arm, true);
-        self.lower_arm(module, arm);
+        self.proxy.set_valve(module, arm, false);
     }
 
     /// Open valve, disable pump

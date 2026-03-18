@@ -2,6 +2,7 @@ mod movement;
 mod shared_gpio;
 mod can;
 mod meca;
+//mod led;
 
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 
@@ -37,6 +38,9 @@ fn main() {
         board.motor_gpio_expander[2].take().unwrap(),
     );
 
+    //configure leds
+    ///let leds = Leds::new(board.leds.take().unwrap());
+
     //configure gyro
     let mut gyro = Sch16t::new(board.imu_spi.take().unwrap(), 0);
     gyro.init().unwrap();
@@ -49,38 +53,38 @@ fn main() {
     // Motor driver startup procedure
     // See DRV8243 §7.7.2.1 HW Variant
     //TODO heartbeat led follows expected nFAULT state
-   ///{
-   ///    log::info!("Motor drivers init");
+    {
+        log::info!("Motor drivers init");
 
-   ///    motor_0_heartbeat.pin_set_high();
-   ///    motor_1_heartbeat.pin_set_high();
-   ///    motor_2_heartbeat.pin_set_high();
+        motor_0_heartbeat.pin_set_high();
+        motor_1_heartbeat.pin_set_high();
+        motor_2_heartbeat.pin_set_high();
 
-   ///    let expanders = [&motor_0_gpio_expander, &motor_1_gpio_expander, &motor_2_gpio_expander];
-   ///    let mut mot_ena = board.mot_ena.take().unwrap();
+        let expanders = [&motor_0_gpio_expander, &motor_1_gpio_expander, &motor_2_gpio_expander];
+        let mut mot_ena = board.mot_ena.take().unwrap();
 
-   ///    mot_ena.set_low().ok();
-   ///    thread::sleep(Duration::from_millis(10));
+        mot_ena.set_low().ok();
+        thread::sleep(Duration::from_millis(10));
 
-   ///    mot_ena.set_high().ok();
-   ///    // Assert all expanders nFAULT low
-   ///    while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
-   ///        thread::sleep(Duration::from_millis(10));
-   ///    }
-   ///    thread::sleep(Duration::from_millis(10));
+        mot_ena.set_high().ok();
+        // Assert all expanders nFAULT low
+        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
+            thread::sleep(Duration::from_millis(10));
+        }
+        thread::sleep(Duration::from_millis(10));
 
-   ///    mot_ena.set_low().ok();
-   ///    // A short wait (between 5µs and 10µs) is required; don't replace with a `thread::sleep()`
-   ///    unsafe { ets_delay_us(10); }
-   ///    mot_ena.set_high().ok();
+        mot_ena.set_low().ok();
+        // A short wait (between 5µs and 10µs) is required; don't replace with a `thread::sleep()`
+        unsafe { ets_delay_us(10); }
+        mot_ena.set_high().ok();
 
-   ///    // Assert all expanders nFAULT high
-   ///    while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
-   ///        thread::sleep(Duration::from_millis(10));
-   ///    }
+        // Assert all expanders nFAULT high
+        while !expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
+            thread::sleep(Duration::from_millis(10));
+        }
 
-   ///    log::info!("Motor drivers initialized");
-   ///}
+        log::info!("Motor drivers initialized");
+    }
     log::info!("Board initialized");
 
     //configure low level hardware for asserv
@@ -116,18 +120,20 @@ fn main() {
                 Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
                 Order::RunPath(path) => asserv.run_path(path),
                 Order::MecaTake => {
-                    meca.grab(0, 0);
-                    meca.grab(0, 1);     
-                    meca.grab(0, 2);     
-                    meca.grab(0, 3);                    
+                    meca.lower_arm(0, 3);
+                    meca.lower_arm(0, 2);     
+                    meca.lower_arm(0, 1);     
+                    meca.lower_arm(0, 0);      
+                    meca.release(0, 0);              
                     log::info!("TODO wait with feedback from meca");
                     thread::sleep(Duration::from_secs(3));
                 }
                 Order::MecaDrop => {
-                    meca.release(0, 0);
-                    meca.release(0, 1);
-                    meca.release(0, 2);
-                    meca.release(0, 3);
+                    meca.raise_arm(0, 3);
+                    meca.raise_arm(0, 2);
+                    meca.raise_arm(0, 1);
+                    meca.raise_arm(0, 0);
+                    meca.grab(0, 0);              
                     log::info!("TODO wait with feedback from meca");
                     thread::sleep(Duration::from_secs(2));
                 }
@@ -136,17 +142,17 @@ fn main() {
     }
 
     let orders = [
-        //Order::RunPath(&[
-        //    XY::new(0.0, 500.0),
-        //    XY::new(500.0, 500.0),
-        //]),
-        //Order::GotoA(std::f32::consts::PI * 0.9),
+        Order::RunPath(&[
+            XY::new(0.0, 500.0),
+            XY::new(500.0, 500.0),
+        ]),
+        Order::GotoA(std::f32::consts::PI * 0.9),
         Order::MecaTake,
-        //Order::RunPath(&[
-        //    XY::new(500.0, 0.0),
-        //    XY::new(0.0, 0.0),
-        //]),
-        //Order::GotoXyA(-200.0, 200.0, 0.0),
+        Order::RunPath(&[
+            XY::new(500.0, 0.0),
+            XY::new(0.0, 0.0),
+        ]),
+        Order::GotoXyA(-200.0, 200.0, 0.0),
         Order::MecaDrop,
     ];
     let mut index = 0;
@@ -167,7 +173,11 @@ fn main() {
 
         {
             let meca_state = meca.get_state();
-            log::info!("Meca state: {:?}", meca_state);
+            log::info!("M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {}", 
+                meca_state.arms[0][0].position, 
+                meca_state.arms[0][1].position, 
+                meca_state.arms[0][2].position, 
+                meca_state.arms[0][3].position);
         }
 
         let movement = movement.lock().unwrap();
