@@ -2,6 +2,7 @@
 members = [
     "pami",
     "galipeur",
+    "picotter",
 
     "libs/asserv",
     "libs/ble",

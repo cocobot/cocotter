@@ -154,6 +154,10 @@ impl ArmTarget {
         module_match && arm_match
     }
 
+     pub fn match_module(&self, module: u8) -> bool {
+        self.module == 0xF || self.module == module
+    }
+
     /// Check if broadcast to all arms
     pub fn is_arm_broadcast(&self) -> bool {
         self.arm == 0xF
