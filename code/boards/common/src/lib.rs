@@ -129,12 +129,17 @@ pub struct Color {
 }
 
 impl Color {
+    pub const BLACK: Self = Self::new(0.0, 0.0, 0.0);
+    pub const WHITE: Self = Self::new(1.0, 1.0, 1.0);
+    pub const RED: Self = Self::new(1.0, 0.0, 0.0);
+    pub const GREEN: Self = Self::new(0.0, 1.0, 0.0);
+    pub const BLUE: Self = Self::new(0.0, 0.0, 1.0);
+    pub const CYAN: Self = Self::new(0.0, 1.0, 1.0);
+    pub const MAGENTA: Self = Self::new(1.0, 0.0, 1.0);
+    pub const YELLOW: Self = Self::new(1.0, 1.0, 0.0);
+
     pub const fn new(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b }
-    }
-
-    pub const fn off() -> Self {
-        Self::new(0.0, 0.0, 0.0)
     }
 
     pub const fn rgb8(r: u8, g: u8, b: u8) -> Self {

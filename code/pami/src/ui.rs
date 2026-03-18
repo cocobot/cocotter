@@ -97,7 +97,7 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
             trigger_sender,
         };
         instance.draw_init().unwrap();
-        instance.push_screen(Box::new(MainScreen::default())).unwrap();
+        instance.push_screen(Box::new(MessageScreen::new(&"\\_o<"))).unwrap();
         instance
     }
 
@@ -225,6 +225,14 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
                 self.draw_emergency_stop(*enabled)?;
                 Ok(true)
             }
+            UiEvent::ShowMessage(message) => {
+                self.push_top_screen(Box::new(MessageScreen::new(message)))?;
+                Ok(true)
+            }
+            UiEvent::ShowMatchConf(conf) => {
+                self.push_top_screen(Box::new(MatchConfScreen::new(conf.clone())))?;
+                Ok(true)
+            }
             UiEvent::KeypassNotif(key) => {
                 self.push_screen(Box::new(PasskeyScreen::new(*key)))?;
                 Ok(true)
@@ -240,6 +248,12 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
         self.screens.push(screen);
         self.display_is_dirty = true;
         Ok(())
+    }
+
+    /// Pop all screens then push a new top-level screen
+    fn push_top_screen(&mut self, screen: Box<dyn Screen<T>>) -> Result<(), T::Error> {
+        self.screens.clear();
+        self.push_screen(screen)
     }
 
     /// Pop a screen, switch to the new top element
@@ -304,26 +318,13 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
 }
 
 
-struct MainScreen {
-    team: Team,
-    start_delay: u8,
-    pami_role: PamiRole,
+/// Configuration of match
+struct MatchConfScreen {
+    conf: MatchConf,
     focused: Option<u8>,
 }
 
-impl Default for MainScreen {
-    fn default() -> Self {
-        Self {
-            team: Team::None,
-            start_delay: 0,
-            pami_role: PamiRole::None,
-            // Start unfocused, it smoother for the eye
-            focused: None,
-        }
-    }
-}
-
-impl MainScreen {
+impl MatchConfScreen {
     const COLS: u8 = 2;
     const ROWS: u8 = 3;
     const CELLS: u8 = 3;
@@ -351,8 +352,16 @@ impl MainScreen {
         .alignment(Alignment::Center)
         .build();
 
+    fn new(conf: MatchConf) -> Self {
+        Self {
+            conf,
+            // Start unfocused, it's smoother for the eye
+            focused: None,
+        }
+    }
+
     fn pami_role_label(&self) -> &'static str {
-        match self.pami_role {
+        match self.conf.role {
             PamiRole::None => "none",
             PamiRole::Granary => "GRENIER",
             PamiRole::Land => "TERRAIN",
@@ -362,7 +371,7 @@ impl MainScreen {
     fn press_cell_result(&mut self, index: u8) -> ScreenEventResult {
         match index {
             0 => {
-                let team = match self.team {
+                let team = match self.conf.team {
                     Team::None => Team::Left,
                     Team::Left => Team::Right,
                     Team::Right => Team::Left,
@@ -371,13 +380,13 @@ impl MainScreen {
             },
             1 => {
                 let delay =
-                    if self.start_delay < 10 { 10 }
-                    else if self.start_delay < 90 { 90 }
+                    if self.conf.start_delay < 10 { 10 }
+                    else if self.conf.start_delay < 90 { 90 }
                     else { 3 };
                 ScreenEventResult::Trigger(UiTrigger::ChangeStartDelay(delay))
             },
             2 => {
-                let role = match self.pami_role {
+                let role = match self.conf.role {
                     // Note: Cannot switch back to None
                     PamiRole::None => PamiRole::Land,
                     PamiRole::Granary => PamiRole::Land,
@@ -399,9 +408,9 @@ impl MainScreen {
         const { assert!(Self::CELLS <= Self::COLS * Self::ROWS); };
 
         // Note: allocation could be avoided
-        let delay_str = format!("{}s", self.start_delay);
+        let delay_str = format!("{}s", self.conf.start_delay);
         let box_labels: [&str; Self::CELLS as usize] = [
-            self.team.name_upper(),
+            self.conf.team.name_upper(),
             delay_str.as_str(),
             self.pami_role_label(),
         ];
@@ -447,7 +456,7 @@ impl MainScreen {
     }
 }
 
-impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MainScreen {
+impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MatchConfScreen {
     fn draw_init(&self, target: &mut T) -> Result<(), T::Error> {
         self.draw_boxes(target)
     }
@@ -501,17 +510,17 @@ impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MainScreen {
                 true
             }
             UiEvent::ChangeTeam(team) => {
-                self.team = *team;
+                self.conf.team = *team;
                 self.clear_box(target, 0)?;
                 true
             }
             UiEvent::ChangeStartDelay(delay) => {
-                self.start_delay = *delay;
+                self.conf.start_delay = *delay;
                 self.clear_box(target, 1)?;
                 true
             }
             UiEvent::ChangeRole(role) => {
-                self.pami_role = *role;
+                self.conf.role = *role;
                 self.clear_box(target, 2)?;
                 true
             }
@@ -528,16 +537,53 @@ impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MainScreen {
     fn on_event_inactive(&mut self, event: &UiEvent) {
         match event {
             UiEvent::ChangeTeam(team) => {
-                self.team = *team;
+                self.conf.team = *team;
             }
             UiEvent::ChangeStartDelay(delay) => {
-                self.start_delay = *delay;
+                self.conf.start_delay = *delay;
             }
             UiEvent::ChangeRole(role) => {
-                self.pami_role = *role;
+                self.conf.role = *role;
             }
             _ => {},
         }
+    }
+}
+
+
+/// Display a information message
+struct MessageScreen {
+    message: &'static str,
+}
+
+impl MessageScreen {
+    const CHARACTER_STYLE: MonoTextStyle<'static, BinaryColor> = MonoTextStyleBuilder::new()
+        .font(&ascii::FONT_10X20)
+        .text_color(BinaryColor::On)
+        .build();
+    const TEXT_STYLE: TextStyle = TextStyleBuilder::new()
+        .baseline(Baseline::Middle)
+        .alignment(Alignment::Center)
+        .build();
+
+    fn new(message: &'static str) -> Self {
+        Self { message }
+    }
+}
+
+impl<T: DrawTarget<Color = BinaryColor>> Screen<T> for MessageScreen {
+    fn draw_init(&self, target: &mut T) -> Result<(), T::Error> {
+        Text::with_text_style(
+            self.message,
+            Point::new(DISPLAY_WIDTH as i32 / 2, DISPLAY_HEIGHT as i32 / 2),
+            Self::CHARACTER_STYLE,
+            Self::TEXT_STYLE,
+        ).draw(target)?;
+        Ok(())
+    }
+
+    fn on_event_active(&mut self, _event: &UiEvent, _target: &mut T) -> Result<ScreenEventResult, T::Error> {
+        Ok(ScreenEventResult::None)
     }
 }
 

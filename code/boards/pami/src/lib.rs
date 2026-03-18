@@ -146,13 +146,13 @@ impl<I2C: I2c> PamiPwmController<I2C> {
         Ok(())
     }
 
-    pub fn set_battery_rgb(&mut self, color: Color) {
+    pub fn set_battery_rgb(&mut self, color: &Color) {
         self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[0], color.r);
         self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[1], color.g);
         self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[2], color.b);
     }
 
-    pub fn set_ground_rgb(&mut self, color: Color) {
+    pub fn set_ground_rgb(&mut self, color: &Color) {
         self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[0], color.r);
         self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[1], color.g);
         self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[2], color.b);
