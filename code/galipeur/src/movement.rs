@@ -102,12 +102,12 @@ pub struct MovementLowLevelHardware {
     gyro_is_in_error: bool,
 
     motor_reset: SharedGpioPin,
-    motors: [(Motor, SharedGpioPin); 3],
+    motors: [Motor; 3],
     last_encoder_value: Option<[i32; 3]>,
 }
 
 impl MovementLowLevelHardware {
-    pub fn new(gyro: Sch16t<ImuSpi>, motor_reset: SharedGpioPin, motors: [(Motor, SharedGpioPin); 3]) -> Self {
+    pub fn new(gyro: Sch16t<ImuSpi>, motor_reset: SharedGpioPin, motors: [Motor; 3]) -> Self {
         Self {
             gyro,
             gyro_last_angle: None,
@@ -129,21 +129,21 @@ impl AsservHardware for MovementLowLevelHardware {
 
         for i in 0..3 {
             if values[i] >= 0.0 {
-                self.motors[i].0.dir.set_duty(4095).ok();
+                self.motors[i].dir.set_duty(4095).ok();
             }    
             else {
-                self.motors[i].0.dir.set_duty(0).ok();
+                self.motors[i].dir.set_duty(0).ok();
             }
 
-            self.motors[i].0.pwm.set_duty(values[i].abs().clamp(0.0, 4095.0) as u32).ok();
+            self.motors[i].pwm.set_duty(values[i].abs().clamp(0.0, 4095.0) as u32).ok();
         }
     }
 
     fn get_motor_offsets(&mut self) -> [f32; 3] {
         let new_encoder_offsets = [
-            self.motors[0].0.encoder.get_value(),
-            self.motors[1].0.encoder.get_value(),
-            self.motors[2].0.encoder.get_value(),
+            self.motors[0].encoder.get_value(),
+            self.motors[1].encoder.get_value(),
+            self.motors[2].encoder.get_value(),
         ];
 
         let new_encoder_offsets = {

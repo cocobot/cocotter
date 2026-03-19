@@ -26,15 +26,9 @@ fn main() {
     let gpio_expander = SharedGpio::new(
         board.gpio_expander.take().unwrap(),
     );
-    let motor_0_gpio_expander = SharedGpio::new(
-        board.motor_gpio_expander[0].take().unwrap(),
-    );
-    let motor_1_gpio_expander = SharedGpio::new(
-        board.motor_gpio_expander[1].take().unwrap(),
-    );
-    let motor_2_gpio_expander = SharedGpio::new(
-        board.motor_gpio_expander[2].take().unwrap(),
-    );
+    let motor_0_gpio_expander = SharedGpio::new(board.motor_gpio_expander[0].take().unwrap());
+    let motor_1_gpio_expander = SharedGpio::new(board.motor_gpio_expander[1].take().unwrap());
+    let motor_2_gpio_expander = SharedGpio::new(board.motor_gpio_expander[2].take().unwrap());
 
     //configure gyro
     let mut gyro = Sch16t::new(board.imu_spi.take().unwrap(), 0);
@@ -86,9 +80,9 @@ fn main() {
         gyro,
         gpio_expander.get_pin(3),
         [
-            (board.motors[0].take().unwrap(), motor_0_gpio_expander.get_pin(4)),
-            (board.motors[1].take().unwrap(), motor_1_gpio_expander.get_pin(4)),
-            (board.motors[2].take().unwrap(), motor_2_gpio_expander.get_pin(4)),
+            board.motors[0].take().unwrap(),
+            board.motors[1].take().unwrap(),
+            board.motors[2].take().unwrap(),
         ],
     );
     let movement = Arc::new(Mutex::new(Movement::new(asserv_hardware)));
