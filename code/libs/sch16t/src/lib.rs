@@ -469,9 +469,10 @@ fn create_spi48bf(address: u8, register: Register, read: bool, data: u32) -> [u8
     frame_bytes
 }
 
+const CRC8: crc::Crc<u8> = crc::Crc::<u8>::new(&crc::CRC_8_OPENSAFETY);
+
 fn compute_crc8(frame: &[u8]) -> u8 {
-    let crc = crc::Crc::<u8>::new(&crc::CRC_8_OPENSAFETY);
-    let mut digest = crc.digest();
+    let mut digest = CRC8.digest();
     digest.update(&[0xff]);
     digest.update(&frame);
     digest.finalize()
