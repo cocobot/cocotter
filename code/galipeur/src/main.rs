@@ -12,6 +12,8 @@ use board_sabotter::BoardSabotter;
 #[cfg(not(target_os = "espidf"))]
 use board_simulator::BoardSabotter;
 pub use board_sabotter::{ImuSpi, SmartLeds, Motor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
+use ble::{BleBuilder, RomePeripheral};
+use cancaner::Color as CanColor;
 //use board_sabotter::pca9535::{expander::standard::StandardExpanderInterface, GPIOBank};
 use esp_idf_svc::sys::ets_delay_us;
 use movement::{Movement, MovementLowLevelHardware};
@@ -102,6 +104,10 @@ fn main() {
         log::info!("Motor drivers initialized");
     }
     log::info!("Board initialized");
+
+    let (ble_server, _ble_client) = BleBuilder::new(board.ble.take().unwrap()).run();
+    let rome = RomePeripheral::run(ble_server, "Galipeur".into());
+    let rome_tx = rome.sender;
 
     //configure low level hardware for asserv
     let asserv_hardware = MovementLowLevelHardware::new(
@@ -254,6 +260,35 @@ fn main() {
                 meca_state.arms[0][1].position, 
                 meca_state.arms[0][2].position, 
                 meca_state.arms[0][3].position);
+
+            for (i_module, module) in meca_state.arms.iter().enumerate() {
+                for (i_arm, arm) in module.iter().enumerate() {
+                    let _ = rome_tx.send(rome::Message::MecaArmTmState {
+                        module: i_module as u8,
+                        arm: i_arm as u8,
+                        position: arm.position,
+                        color: match arm.color {
+                            CanColor::Unknown => rome::params::MecaArmTmStateColor::Unknown,
+                            CanColor::Yellow => rome::params::MecaArmTmStateColor::Yellow,
+                            CanColor::Blue => rome::params::MecaArmTmStateColor::Blue,
+                        },
+                        pump: arm.pump,
+                        valve: arm.valve,
+                        servo_error: arm.error,
+                        torque_enabled: arm.flags.torque_enabled,
+                        moving: arm.flags.moving,
+                        // Note: position_reached == !moving
+                        pump_current: arm.pump_current,
+                    }.encode());
+                }
+            }
+            for (i_tr, translation) in meca_state.translations.iter().enumerate() {
+                let _ = rome_tx.send(rome::Message::MecaArmTmTranslation {
+                    module: i_tr as u8,
+                    position: translation.position,
+                    error: translation.error,
+                }.encode());
+            }
         }
 
         let movement = movement.lock().unwrap();

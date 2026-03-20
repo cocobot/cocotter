@@ -146,3 +146,22 @@
     tick_to_mm: f32
     tick_to_rad: f32
 
+# Galipeur meca
+60:
+  MecaArmTmState:
+    module: u8
+    arm: u8
+    position: u16
+    color: [unknown, yellow, blue]
+    pump: bool
+    valve: bool
+    servo_error: u8
+    torque_enabled: bool
+    moving: bool
+    pump_current: u8
+
+  MecaArmTmTranslation:
+    module: u8
+    position: u16
+    error: u8
+
