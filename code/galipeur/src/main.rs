@@ -2,7 +2,7 @@ mod movement;
 mod shared_gpio;
 mod can;
 mod meca;
-//mod led;
+mod led;
 
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 
@@ -11,15 +11,16 @@ use board_sabotter::BoardSabotter;
 
 #[cfg(not(target_os = "espidf"))]
 use board_simulator::BoardSabotter;
-pub use board_sabotter::{ImuSpi, Motor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
+pub use board_sabotter::{ImuSpi, SmartLeds, Motor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
 //use board_sabotter::pca9535::{expander::standard::StandardExpanderInterface, GPIOBank};
 use esp_idf_svc::sys::ets_delay_us;
 use movement::{Movement, MovementLowLevelHardware};
 use sch16t::Sch16t;
 use asserv::holonomic::Asserv;
 use asserv::maths::XY;
+use smart_leds::RGB8;
 
-use crate::{meca::Meca, shared_gpio::SharedGpio};
+use crate::{meca::Meca, shared_gpio::SharedGpio, led::Leds};
 
 fn main() {
     let mut board = BoardSabotter::new();
@@ -39,7 +40,8 @@ fn main() {
     );
 
     //configure leds
-    ///let leds = Leds::new(board.leds.take().unwrap());
+    let leds = Leds::new(board.leds.take().unwrap());
+    let led_sender = leds.sender();
 
     //configure gyro
     let mut gyro = Sch16t::new(board.imu_spi.take().unwrap(), 0);
@@ -178,11 +180,19 @@ fn main() {
         asserv.goto_xya(0., 0., 0.);
     }
 
+    let mut color = false;
     loop {
         led_heartbeat.toggle().ok();
         motor_0_heartbeat.toggle();
         motor_1_heartbeat.toggle();
         motor_2_heartbeat.toggle();
+        if color {
+            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
+            color = false;
+        } else {
+            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
+            color = true;
+        }
         thread::sleep(Duration::from_millis(500));
 
         {

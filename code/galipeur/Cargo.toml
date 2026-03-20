@@ -9,6 +9,7 @@ harness = false # do not use the built in cargo test harness -> resolve rust-ana
 
 [dependencies]
 log = "0.4"
+smart-leds = "0.4.0"
 asserv = { path = "../libs/asserv" }
 cancaner = { path = "../libs/cancaner" }
 board-sabotter = { path = "../boards/sabotter" }

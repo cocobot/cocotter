@@ -21,7 +21,11 @@ use esp_idf_svc::{
 use embedded_hal_bus::i2c::MutexDevice;
 use pca9535::Pca9535Immediate;
 use esp32_encoder::Encoder;
-use std::{rc::Rc, sync::Mutex};
+use std::{rc::Rc, sync::Mutex, time::Duration};
+use ws2812_esp32_rmt_driver::{LedPixelEsp32Rmt, RGB8};
+use ws2812_esp32_rmt_driver::driver::color::LedPixelColorRgb24;
+use ws2812_esp32_rmt_driver::driver::Ws2812Esp32RmtDriverBuilder;
+use esp_idf_svc::hal::rmt::{config::TxChannelConfig, TxChannelDriver};
 
 
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
@@ -58,6 +62,8 @@ pub struct Motor {
 // Bluetooth driver
 pub type Bt = BtDriver<'static, Ble>;
 
+// LED strip type
+pub type SmartLeds = LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorRgb24>;
 
 pub struct BoardSabotter {
     pub led_heartbeat: Option<LedHeartbeat>,
@@ -72,6 +78,7 @@ pub struct BoardSabotter {
     pub mot_ena: Option<PinDriver<'static, Output>>,
     pub lidar_pwm: Option<LedcDriver<'static>>,
     pub ble: Option<Bt>,
+    pub leds: Option<SmartLeds>,
 }
 
 impl BoardSabotter {
@@ -143,6 +150,28 @@ impl BoardSabotter {
         ) {
             motors[2] = Some(Motor { pwm, dir, encoder });
         }
+
+        // Initialize ws2812 leds
+        const WS2812_T0H_NS: Duration = Duration::from_nanos(350);
+        const WS2812_T0L_NS: Duration = Duration::from_nanos(1360);
+        const WS2812_T1H_NS: Duration = Duration::from_nanos(1360);
+        const WS2812_T1L_NS: Duration = Duration::from_nanos(350);
+        let led_driver_config = TxChannelConfig { resolution: Hertz(80_000_000), ..Default::default() };
+        let led_tx_driver = TxChannelDriver::new(peripherals.pins.gpio4, &led_driver_config).unwrap();
+        let ws2812_driver = Ws2812Esp32RmtDriverBuilder::new_with_rmt_driver(led_tx_driver)
+            .unwrap()
+            .encoder_duration(
+                &WS2812_T0H_NS,
+                &WS2812_T0L_NS,
+                &WS2812_T1H_NS,
+                &WS2812_T1L_NS,
+            )
+            .unwrap()
+            .build()
+            .unwrap();
+        let mut leds =
+            Some(LedPixelEsp32Rmt::<RGB8, LedPixelColorRgb24>::new_with_ws2812_driver(ws2812_driver)
+                .unwrap());
 
         // Initialize UART for asserv communication
         let uart_asserv = UartDriver::new(
@@ -226,6 +255,7 @@ impl BoardSabotter {
             mot_ena,
             lidar_pwm,
             ble,
+            leds,
         }
     }
 }
