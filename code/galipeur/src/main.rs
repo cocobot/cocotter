@@ -128,6 +128,59 @@ fn main() {
         MecaDrop,
     }
 
+    let mut robot_color = false;
+
+    enum RobotSide {
+        RobotSideLeft,
+        RobotSideRight,
+        RobotSideBack,
+    }
+    use RobotSide::*;
+
+    enum TableSide {
+        TableSideLeft,
+        TableSideRight,
+        TableSideUp,
+        TableSideDown,
+    }
+    use TableSide::*;
+
+    let RobotSideMain = if robot_color {RobotSideLeft}  else {RobotSideRight};
+    let RobotSideAux  = if robot_color {RobotSideRight} else {RobotSideLeft};
+    let TableSideMain = if robot_color {TableSideLeft}   else  {TableSideRight};
+    let TableSideAux  = if robot_color {TableSideRight}  else  {TableSideLeft};
+
+    //function to get angle to apply to Align Robot Face Along given Side of the Table
+    fn arfast(face: RobotSide, side: TableSide) -> f32 {
+        match face {
+            RobotSide::RobotSideLeft => {
+                match side {
+                    TableSide::TableSideLeft   => std::f32::consts::PI *  1.0/6.0,
+                    TableSide::TableSideRight  => std::f32::consts::PI * -5.0/6.0,
+                    TableSide::TableSideUp     => std::f32::consts::PI * -1.0/3.0,
+                    TableSide::TableSideDown   => std::f32::consts::PI *  2.0/3.0,
+                }
+            }
+            RobotSide::RobotSideRight => {
+                match side {
+                    TableSide::TableSideLeft   => std::f32::consts::PI *  5.0/6.0,
+                    TableSide::TableSideRight  => std::f32::consts::PI * -1.0/6.0,
+                    TableSide::TableSideUp     => std::f32::consts::PI *  1.0/3.0,
+                    TableSide::TableSideDown   => std::f32::consts::PI * -2.0/3.0,
+                }
+            }
+            RobotSide::RobotSideBack => {
+                match side {
+                    TableSide::TableSideLeft   => std::f32::consts::PI * -1.0/2.0,
+                    TableSide::TableSideRight  => std::f32::consts::PI *  1.0/2.0,
+                    TableSide::TableSideUp     => std::f32::consts::PI *  1.0,
+                    TableSide::TableSideDown   => std::f32::consts::PI *  0.0,
+                }
+            }
+        }
+    }
+
+
     impl Order<'_> {
         fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>, meca: &Meca) {
             match self {
@@ -162,13 +215,13 @@ fn main() {
             XY::new(0.0, 500.0),
             XY::new(500.0, 500.0),
         ]),
-        Order::GotoA(std::f32::consts::PI * 0.9),
+        Order::GotoA(arfast(RobotSideMain,TableSideMain)),
         Order::MecaTake,
         Order::RunPath(&[
             XY::new(500.0, 0.0),
             XY::new(0.0, 0.0),
         ]),
-        Order::GotoXyA(-200.0, 200.0, 0.0),
+        Order::GotoXyA(-200.0, 200.0, arfast(RobotSideBack,TableSideDown)),
         Order::MecaDrop,
     ];
     let mut index = 0;
@@ -180,18 +233,17 @@ fn main() {
         asserv.goto_xya(0., 0., 0.);
     }
 
-    let mut color = false;
     loop {
         led_heartbeat.toggle().ok();
         motor_0_heartbeat.toggle();
         motor_1_heartbeat.toggle();
         motor_2_heartbeat.toggle();
-        if color {
+        if robot_color {
             led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
-            color = false;
+            robot_color = false;
         } else {
             led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
-            color = true;
+            robot_color = true;
         }
         thread::sleep(Duration::from_millis(500));
 
