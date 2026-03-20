@@ -5,8 +5,10 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use asserv::holonomic::{Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
+use ble::{BleBuilder, RomePeripheral};
 use board_sabotter::{SabotterBoard, SabotterMotor};
 use cancaner::esp::CanInterface;
+use cancaner::Color as CanColor;
 use sch16t::Sch16t;
 use movement::{Movement, MovementLowLevelHardware};
 use meca::Meca;
@@ -28,6 +30,8 @@ fn main() {
     gyro.init().unwrap();
 
     let mut leds = board.leds().unwrap();
+
+    let (rome_tx, rome_rx) = board.rome("Galipeur".into()).unwrap();
 
     // Configure low level hardware for asserv
     let asserv_hardware = MovementLowLevelHardware::new(
@@ -166,7 +170,6 @@ fn main() {
     }
     */
 
-
     let can_iface = CanInterface::new(board.can().unwrap());
     can_iface.add_log_callback("picotter");
 
@@ -188,6 +191,36 @@ fn main() {
             log::info!("Send new order: {:?}", order);
             order.apply(&mut asserv, &meca);
             index = (index + 1) % orders.len();
+        }
+
+        let meca_state = meca.get_state();
+        for (i_module, module) in meca_state.arms.iter().enumerate() {
+            for (i_arm, arm) in module.iter().enumerate() {
+                let _ = rome_tx.send(rome::Message::MecaArmTmState {
+                    module: i_module as u8,
+                    arm: i_arm as u8,
+                    position: arm.position,
+                    color: match arm.color {
+                        CanColor::Unknown => rome::params::MecaArmTmStateColor::Unknown,
+                        CanColor::Yellow => rome::params::MecaArmTmStateColor::Yellow,
+                        CanColor::Blue => rome::params::MecaArmTmStateColor::Blue,
+                    },
+                    pump: arm.pump,
+                    valve: arm.valve,
+                    servo_error: arm.error,
+                    torque_enabled: arm.flags.torque_enabled,
+                    moving: arm.flags.moving,
+                    // Note: position_reached == !moving
+                    pump_current: arm.pump_current,
+                }.encode());
+            }
+        }
+        for (i_tr, translation) in meca_state.translations.iter().enumerate() {
+            let _ = rome_tx.send(rome::Message::MecaArmTmTranslation {
+                module: i_tr as u8,
+                position: translation.position,
+                error: translation.error,
+            }.encode());
         }
     }
 }

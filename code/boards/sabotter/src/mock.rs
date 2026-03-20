@@ -1,3 +1,4 @@
+use std::sync::mpsc::{Receiver, Sender};
 use embedded_can::blocking::Can;
 use embedded_can as can;
 use embedded_hal_mock::eh1::{
@@ -38,6 +39,10 @@ impl SabotterBoard for MockSabotterBoard {
     }
 
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]> {
+        None
+    }
+
+    fn rome(&mut self, _device_name: String) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
         None
     }
 }

@@ -13,6 +13,7 @@ pca9535 = { version = "2.0", features = ["std"] }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
+ble = { path = "../../libs/ble" }
 esp32_encoder = { path = "../../libs/esp32_encoder" }
 
 [target.'cfg(not(target_os = "espidf"))'.dependencies]

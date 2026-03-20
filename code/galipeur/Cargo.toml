@@ -9,9 +9,10 @@ harness = false # do not use the built in cargo test harness -> resolve rust-ana
 
 [dependencies]
 log = "0.4"
-asserv = { path = "../libs/asserv" }
+asserv = { path = "../libs/asserv", features = ["rome"] }
 board-sabotter = { path = "../boards/sabotter" }
 cancaner = { path = "../libs/cancaner" }
+rome = { path = "../libs/rome" }
 sch16t = { path = "../libs/sch16t" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]

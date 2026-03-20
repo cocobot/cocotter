@@ -3,6 +3,7 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
+use std::sync::mpsc::{Receiver, Sender};
 use embedded_can::blocking::Can;
 use embedded_hal::{
     digital::StatefulOutputPin,
@@ -37,6 +38,9 @@ pub trait SabotterBoard {
     fn imu_spi(&mut self) -> Option<Self::Spi>;
     fn can(&mut self) -> Option<Self::Can>;
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]>;
+
+    /// Configure and return ROME interface
+    fn rome(&mut self, device_name: String) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;
 }
 
 

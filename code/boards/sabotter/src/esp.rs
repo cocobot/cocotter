@@ -1,8 +1,10 @@
 use std::sync::{Arc, Mutex};
+use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
 use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
+    bt::{Ble, BtDriver},
     hal::{
         can::{CanConfig, CanDriver},
         gpio::{AnyOutputPin, Output, PinDriver},
@@ -15,6 +17,7 @@ use esp_idf_svc::{
     },
     nvs::EspDefaultNvsPartition,
 };
+use ble::{BleBuilder, RomePeripheral};
 use pca9535::{Pca9535Immediate, ExpanderError, GPIOBank, StandardExpanderInterface};
 use esp32_encoder::Encoder as EspEncoder;
 use crate::{SabotterBoard, SabotterLeds, SabotterMotor};
@@ -28,6 +31,7 @@ pub struct EspSabotterBoard {
     com_led: Option<EspOutputPin>,
     imu_spi: Option<SpiDeviceDriver<'static, SpiDriver<'static>>>,
     can: Option<CanDriver<'static>>,
+    ble: Option<BtDriver<'static, Ble>>,
     motors: Option<[SabotterMotor<EspEncoder<'static>, LedcDriver<'static>>; 3]>,
     motor_enable: Option<EspOutputPin>,
     gpio_expanders: GpioExpanders,
@@ -55,7 +59,7 @@ impl SabotterBoard for EspSabotterBoard {
     fn init() -> Self {
         esp_idf_svc::sys::link_patches();
         esp_idf_svc::log::EspLogger::initialize_default();
-        let _nvs = EspDefaultNvsPartition::take().unwrap();
+        let nvs = EspDefaultNvsPartition::take().unwrap();
 
         let peripherals = Peripherals::take().unwrap();
 
@@ -123,6 +127,8 @@ impl SabotterBoard for EspSabotterBoard {
         ];
         let motor_enable = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio7)).unwrap();
 
+        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
+
         /* Unused
         let motor_reset = gpio_expander.get_pin(3);
         */
@@ -157,14 +163,13 @@ impl SabotterBoard for EspSabotterBoard {
         let lidar_pwm = LedcTimerDriver::new(peripherals.ledc.timer1, &TimerConfig::default().frequency(1_000.Hz()))
             .and_then(|timer| LedcDriver::new(peripherals.ledc.channel6, timer, peripherals.pins.gpio42))
             .ok();
-
-        let ble = BtDriver::new(peripherals.modem, Some(nvs.clone())).ok();
         */
 
         Self {
             com_led: Some(com_led),
             imu_spi: Some(imu_spi),
             can: Some(can),
+            ble,
             motors: Some(motors),
             motor_enable: Some(motor_enable),
             gpio_expanders,
@@ -231,6 +236,16 @@ impl SabotterBoard for EspSabotterBoard {
         }
 
         self.motors.take()
+    }
+
+    fn rome(&mut self, device_name: String) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
+        let ble = self.ble.take()?;
+        // Note: for now, client is not used, so we can easily initialize both server and client
+        // and drop the client. But if the client (and `.with_scanner()`) are needed,
+        // another approach must be implemented. Maybe by changing the BLE API.
+        let (ble_server, _ble_client) = BleBuilder::new(ble).run();
+        let RomePeripheral { sender, receiver } = RomePeripheral::run(ble_server, device_name);
+        Some((sender, receiver))
     }
 }
 
