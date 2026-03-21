@@ -1,6 +1,5 @@
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
-use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::Mutex;
 use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
@@ -11,14 +10,11 @@ use esp_idf_svc::{
             attenuation,
             oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
         },
-        gpio::{AnyInputPin, AnyOutputPin, Input, InputPin, Output, PinDriver, Gpio1},
+        gpio::{AnyInputPin, AnyOutputPin, Input, Output, PinDriver, Gpio1},
         i2c::{I2cConfig, I2cDriver},
         ledc::{LedcDriver, LedcTimerDriver, Resolution, config::TimerConfig},
-        pcnt::{Pcnt, PcntChannel, PcntChannelConfig, PcntControlMode, PcntCountMode, PcntEvent, PcntEventType, PcntDriver, PinIndex},
-        peripheral::Peripheral,
-        prelude::Peripherals,
+        peripherals::Peripherals,
         units::Hertz,
-        sys::EspError,
     },
     nvs::EspDefaultNvsPartition,
 };
@@ -33,10 +29,11 @@ use ssd1306::{
     },
 };
 
+use board_common::esp::EspEncoder;
 use ble::{BleBuilder, RomePeripheral};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxI2cDriver, VlxError, VlxSensor, ZoneAlarm, l5::VL53L5CX};
-use crate::{BatteryLevel, BatteryReader, DpadState, Encoder, PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotor, PamiMotors, PamiPwmController};
+use crate::{BatteryLevel, BatteryReader, DpadState, PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotor, PamiMotors, PamiPwmController};
 
 
 pub type I2cType = MutexDevice<'static, I2cDriver<'static>>;
@@ -300,95 +297,6 @@ impl VlxSensor for PamiVlxSensor {
 
     fn set_alarms(&mut self, alarms: &[ZoneAlarm]) -> Result<(), VlxError> {
         self.sensor.set_alarms(alarms)
-    }
-}
-
-
-pub struct EspEncoder<'d> {
-    unit: PcntDriver<'d>,
-    approx_value: Arc<AtomicI32>,
-}
-
-impl<'d> EspEncoder<'d> {
-    pub fn new<PCNT: Pcnt>(
-        pcnt: impl Peripheral<P = PCNT> + 'd,
-        pin_a: impl Peripheral<P = impl InputPin> + 'd,
-        pin_b: impl Peripheral<P = impl InputPin> + 'd,
-    ) -> Result<Self, EspError> {
-        const LOW_LIMIT: i16 = -100;
-        const HIGH_LIMIT: i16 = 100;
-
-        let mut unit = PcntDriver::new(
-            pcnt,
-            Some(pin_a),
-            Some(pin_b),
-            Option::<AnyInputPin>::None,
-            Option::<AnyInputPin>::None,
-        )?;
-        unit.channel_config(
-            PcntChannel::Channel0,
-            PinIndex::Pin0,
-            PinIndex::Pin1,
-            &PcntChannelConfig {
-                lctrl_mode: PcntControlMode::Reverse,
-                hctrl_mode: PcntControlMode::Keep,
-                pos_mode: PcntCountMode::Decrement,
-                neg_mode: PcntCountMode::Increment,
-                counter_h_lim: HIGH_LIMIT,
-                counter_l_lim: LOW_LIMIT,
-            },
-        )?;
-        unit.channel_config(
-            PcntChannel::Channel1,
-            PinIndex::Pin1,
-            PinIndex::Pin0,
-            &PcntChannelConfig {
-                lctrl_mode: PcntControlMode::Reverse,
-                hctrl_mode: PcntControlMode::Keep,
-                pos_mode: PcntCountMode::Increment,
-                neg_mode: PcntCountMode::Decrement,
-                counter_h_lim: HIGH_LIMIT,
-                counter_l_lim: LOW_LIMIT,
-            },
-        )?;
-        unit.set_filter_value(1023)?;
-        unit.filter_enable()?;
-
-        //TODO Use "overflow" operations to avoid this value
-        let approx_value = Arc::new(AtomicI32::new(0));
-        // unsafe interrupt code to catch the upper and lower limits from the encoder
-        // and track the overflow in `value: Arc<AtomicI32>` - I plan to use this for
-        // a wheeled robot's odomerty
-        //TODO Remove `unsafe`
-        unsafe {
-            let approx_value = approx_value.clone();
-            unit.subscribe(move |status| {
-                let status = PcntEventType::from_repr_truncated(status);
-                if status.contains(PcntEvent::HighLimit) {
-                    approx_value.fetch_add(HIGH_LIMIT as i32, Ordering::SeqCst);
-                }
-                if status.contains(PcntEvent::LowLimit) {
-                    approx_value.fetch_add(LOW_LIMIT as i32, Ordering::SeqCst);
-                }
-            })?;
-        }
-        unit.event_enable(PcntEvent::HighLimit)?;
-        unit.event_enable(PcntEvent::LowLimit)?;
-        unit.counter_pause()?;
-        unit.counter_clear()?;
-        unit.counter_resume()?;
-
-        Ok(Self { unit, approx_value })
-    }
-}
-
-impl Encoder<i32> for EspEncoder<'_> {
-    type Error = EspError;
-
-    fn get_value(&self) -> Result<i32, EspError> {
-        //TODO check
-        let value = self.approx_value.load(Ordering::Relaxed) + self.unit.get_counter_value()? as i32;
-        Ok(value)
     }
 }
 

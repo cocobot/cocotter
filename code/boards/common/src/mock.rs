@@ -1,4 +1,4 @@
-use crate::{BatteryLevel, BatteryReader, Encoder};
+use crate::{BatteryLevel, hal::{BatteryReader, Encoder}};
 
 
 #[derive(Default)]

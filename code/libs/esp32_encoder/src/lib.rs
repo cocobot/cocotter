@@ -1,5 +1,4 @@
 use std::sync::{atomic::{AtomicI32, Ordering}, Arc};
-
 use esp_idf_svc::{
     hal::{
         gpio::{AnyInputPin, InputPin}, 
@@ -8,9 +7,6 @@ use esp_idf_svc::{
     }, 
     sys::EspError
 };
-
-const LOW_LIMIT: i16 = -10000;
-const HIGH_LIMIT: i16 = 10000;
 
 /// ESP32 Encoder driver using PCNT peripheral
 /// 
@@ -23,19 +19,15 @@ pub struct Encoder<'d> {
 
 impl<'d> Encoder<'d> {
     /// Create a new encoder instance
-    /// 
-    /// # Arguments
-    /// * `pcnt` - PCNT peripheral (pcnt0, pcnt1, pcnt2, pcnt3)
-    /// * `pin_a` - Encoder A signal pin
-    /// * `pin_b` - Encoder B signal pin
-    /// 
-    /// # Returns
-    /// * `Result<Self, EspError>` - The encoder instance or an error
     pub fn new<PCNT: Pcnt>(
         pcnt: impl Peripheral<P = PCNT> + 'd,
         pin_a: impl Peripheral<P = impl InputPin> + 'd,
         pin_b: impl Peripheral<P = impl InputPin> + 'd,
     ) -> Result<Self, EspError> {
+        const LOW_LIMIT: i16 = -10000;
+        const HIGH_LIMIT: i16 = 10000;
+        const FILTER_VALUE: u16 = 10;
+
         let mut unit = PcntDriver::new(
             pcnt,
             Some(pin_a),
@@ -75,7 +67,7 @@ impl<'d> Encoder<'d> {
         )?;
 
         // Set filter to reduce noise
-        unit.set_filter_value(10)?;
+        unit.set_filter_value(FILTER_VALUE)?;
         unit.filter_enable()?;
 
         let approx_value = Arc::new(AtomicI32::new(0));
@@ -109,18 +101,12 @@ impl<'d> Encoder<'d> {
     /// Get the current encoder value
     /// 
     /// This returns the full 32-bit signed value, accounting for overflows.
-    /// 
-    /// # Returns
-    /// * `Result<i32, EspError>` - The current encoder count
     pub fn get_value(&self) -> Result<i32, EspError> {
         let value = self.approx_value.load(Ordering::Relaxed) + self.unit.get_counter_value()? as i32;
         Ok(value)   
     }
     
     /// Reset the encoder count to zero
-    /// 
-    /// # Returns
-    /// * `Result<(), EspError>` - Success or error
     pub fn reset(&mut self) -> Result<(), EspError> {
         self.approx_value.store(0, Ordering::SeqCst);
         self.unit.counter_pause()?;

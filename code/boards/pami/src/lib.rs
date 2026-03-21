@@ -13,7 +13,8 @@ use embedded_graphics::{
     draw_target::DrawTarget,
     pixelcolor::BinaryColor,
 };
-pub use board_common::{BatteryLevel, BatteryReader, Color, Encoder};
+pub use board_common::{BatteryLevel, Color};
+pub use board_common::hal::{BatteryReader, Encoder};
 use pwm_pca9685::{self, Pca9685};
 use pwm_pca9685::{Channel as Pca9685Channel};
 use tca6408::TCA6408;

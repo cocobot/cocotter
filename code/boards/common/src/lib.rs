@@ -1,4 +1,7 @@
-///! Common elements shared by all boards
+//! Common elements shared by all boards
+pub mod hal;
+#[cfg(target_os = "espidf")]
+pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
@@ -10,19 +13,6 @@ use std::time::{Duration, Instant};
 pub struct BatteryLevel {
     pub mv: u16,
     pub percent: u8,
-}
-
-/// Read battery voltage
-pub trait BatteryReader {
-    fn read_vbatt(&mut self) -> BatteryLevel;
-}
-
-/// Generic encoder, fetch a value of given type
-pub trait Encoder<T> {
-    type Error: core::fmt::Debug;
-
-    /// Get encoded value
-    fn get_value(&self) -> Result<T, Self::Error>;
 }
 
 
