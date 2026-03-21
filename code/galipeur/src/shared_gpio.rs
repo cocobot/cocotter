@@ -1,5 +1,8 @@
 use std::sync::{Arc, Mutex};
-use crate::{GpioExpander, StandardExpanderInterface, GPIOBank};
+use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
+use board_sabotter::{GpioExpander, GpioExpanderError};
+use board_sabotter::pca9535::{GPIOBank, StandardExpanderInterface};
+
 
 type GpioExpanderHandle = Arc<Mutex<GpioExpander>>;
 
@@ -25,48 +28,59 @@ impl SharedGpioPin {
         self.pin_number % 8
     }
 
-    fn set_output(&mut self) -> Result<(), ()> {
+    fn set_output(&mut self) -> Result<(), GpioExpanderError> {
         let mut device = self.handle.lock().unwrap();
-        device.pin_into_output(self.get_bank(), self.get_pin_index_in_bank()).or(Err(()))?;
+        device.pin_into_output(self.get_bank(), self.get_pin_index_in_bank())?;
         self.is_output = true;
         Ok(())
     }
+}
 
-    pub fn pin_set_high(&mut self) -> Result<(), ()> {
+
+impl ErrorType for SharedGpioPin {
+    type Error = GpioExpanderError;
+}
+
+
+impl InputPin for SharedGpioPin {
+    fn is_low(&mut self) -> Result<bool, Self::Error> {
+        let mut device = self.handle.lock().unwrap();
+        device.pin_is_low(self.get_bank(), self.get_pin_index_in_bank())
+    }
+
+    fn is_high(&mut self) -> Result<bool, Self::Error> {
+        let mut device = self.handle.lock().unwrap();
+        device.pin_is_high(self.get_bank(), self.get_pin_index_in_bank())
+    }
+}
+
+impl OutputPin for SharedGpioPin {
+    fn set_high(&mut self) -> Result<(), Self::Error> {
         if !self.is_output {
             self.set_output()?;
         }
-
         let mut device = self.handle.lock().unwrap();
         self.last_written_value = true;
-        device.pin_set_high(self.get_bank(), self.get_pin_index_in_bank()).or(Err(()))
+        device.pin_set_high(self.get_bank(), self.get_pin_index_in_bank())
     }
 
-    pub fn pin_set_low(&mut self) -> Result<(), ()> {
+    fn set_low(&mut self) -> Result<(), Self::Error> {
         if !self.is_output {
             self.set_output()?;
         }
-
         let mut device = self.handle.lock().unwrap();
         self.last_written_value = false;
-        device.pin_set_low(self.get_bank(), self.get_pin_index_in_bank()).or(Err(()))
+        device.pin_set_low(self.get_bank(), self.get_pin_index_in_bank())
+    }
+}
+
+impl StatefulOutputPin for SharedGpioPin {
+    fn is_set_high(&mut self) -> Result<bool, Self::Error> {
+        Ok(self.last_written_value)
     }
 
-    pub fn toggle(&mut self) -> Result<(), ()> {
-        match self.last_written_value {
-            true => self.pin_set_low(),
-            false => self.pin_set_high(),
-        }
-    }
-
-    pub fn pin_is_low(&self) -> Result<bool, ()> {
-        let mut device = self.handle.lock().unwrap();
-        device.pin_is_low(self.get_bank(), self.get_pin_index_in_bank()).or(Err(()))
-    }
-
-    pub fn pin_is_high(&self) -> Result<bool, ()> {
-        let mut device = self.handle.lock().unwrap();
-        device.pin_is_high(self.get_bank(), self.get_pin_index_in_bank()).or(Err(()))
+    fn is_set_low(&mut self) -> Result<bool, Self::Error> {
+        Ok(!self.last_written_value)
     }
 }
 

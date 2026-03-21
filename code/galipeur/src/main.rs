@@ -2,8 +2,9 @@ mod movement;
 mod shared_gpio;
 
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
+use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use esp_idf_svc::sys::ets_delay_us;
-pub use board_sabotter::{ImuSpi, SabotterMotor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
+pub use board_sabotter::{ImuSpi, SabotterMotor, pca9535::{GPIOBank, StandardExpanderInterface}};
 use movement::{Movement, MovementLowLevelHardware};
 use sch16t::Sch16t;
 use asserv::holonomic::Asserv;
@@ -40,9 +41,9 @@ fn main() {
     {
         log::info!("Motor drivers init");
 
-        let _ = motor_0_heartbeat.pin_set_high();
-        let _ = motor_1_heartbeat.pin_set_high();
-        let _ = motor_2_heartbeat.pin_set_high();
+        let _ = motor_0_heartbeat.set_high();
+        let _ = motor_1_heartbeat.set_high();
+        let _ = motor_2_heartbeat.set_high();
 
         let mut mot_ena = board.mot_ena.take().unwrap();
 
@@ -51,7 +52,7 @@ fn main() {
 
         mot_ena.set_high().ok();
         // Assert all expanders nFAULT low
-        while !motor_gpio_expanders.iter().all(|ex| ex.get_pin(3).pin_is_low().unwrap_or(false)) {
+        while !motor_gpio_expanders.iter().all(|ex| ex.get_pin(3).is_low().unwrap_or(false)) {
             thread::sleep(Duration::from_millis(10));
         }
         thread::sleep(Duration::from_millis(10));
@@ -62,7 +63,7 @@ fn main() {
         mot_ena.set_high().ok();
 
         // Assert all expanders nFAULT high
-        while !motor_gpio_expanders.iter().all(|ex| ex.get_pin(3).pin_is_high().unwrap_or(false)) {
+        while !motor_gpio_expanders.iter().all(|ex| ex.get_pin(3).is_high().unwrap_or(false)) {
             thread::sleep(Duration::from_millis(10));
         }
 

@@ -4,7 +4,7 @@ use esp_idf_svc::{
     hal::{
         can::CanDriver,
         gpio::{Output, PinDriver, Gpio7, Gpio45},
-        i2c::{I2cConfig, I2cDriver},
+        i2c::{I2cConfig, I2cDriver, I2cError},
         ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},
         prelude::*,
         spi::{self, config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver},
@@ -23,6 +23,7 @@ pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type LedHeartbeat = PinDriver<'static, Gpio45, Output>;
 pub type MotorPwm = LedcDriver<'static>;
 pub type GpioExpander = Pca9535Immediate<I2CType>;
+pub type GpioExpanderError = pca9535::ExpanderError<I2cError>;
 pub type CanBus = CanDriver<'static>;
 pub type ImuSpi = SpiDeviceDriver<'static, SpiDriver<'static>>;
 
