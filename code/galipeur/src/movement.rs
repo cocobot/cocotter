@@ -4,7 +4,7 @@ use asserv::holonomic::Asserv;
 use sch16t::Sch16t;
 use crate::shared_gpio::SharedGpioPin;
 
-use super::{ImuSpi, Motor};
+use super::{ImuSpi, SabotterMotor};
 
 pub struct Movement {
     asserv: Arc<Mutex<Asserv<MovementLowLevelHardware>>>,
@@ -71,7 +71,7 @@ impl Movement {
                 ],
             }
         });
-        
+
         let asserv = Arc::new(Mutex::new(asserv));
 
         //start asserv thread
@@ -102,12 +102,12 @@ pub struct MovementLowLevelHardware {
     gyro_is_in_error: bool,
 
     motor_reset: SharedGpioPin,
-    motors: [Motor; 3],
-    last_encoder_value: Option<[i32; 3]>,
+    motors: [SabotterMotor; 3],
+    last_encoder_values: Option<[i32; 3]>,
 }
 
 impl MovementLowLevelHardware {
-    pub fn new(gyro: Sch16t<ImuSpi>, motor_reset: SharedGpioPin, motors: [Motor; 3]) -> Self {
+    pub fn new(gyro: Sch16t<ImuSpi>, motor_reset: SharedGpioPin, motors: [SabotterMotor; 3]) -> Self {
         Self {
             gyro,
             gyro_last_angle: None,
@@ -115,9 +115,9 @@ impl MovementLowLevelHardware {
 
             motor_reset,
             motors,
-            last_encoder_value: None,
+            last_encoder_values: None,
         }
-    }   
+    }
 }
 
 impl AsservHardware for MovementLowLevelHardware {
@@ -126,28 +126,24 @@ impl AsservHardware for MovementLowLevelHardware {
     }
 
     fn set_motor_consigns(&mut self, values: [f32; 3]) {
-
         for i in 0..3 {
             if values[i] >= 0.0 {
                 self.motors[i].dir.set_duty(4095).ok();
-            }    
-            else {
+            } else {
                 self.motors[i].dir.set_duty(0).ok();
             }
-
             self.motors[i].pwm.set_duty(values[i].abs().clamp(0.0, 4095.0) as u32).ok();
         }
     }
 
     fn get_motor_offsets(&mut self) -> [f32; 3] {
-        let new_encoder_offsets = [
-            self.motors[0].encoder.get_value(),
-            self.motors[1].encoder.get_value(),
-            self.motors[2].encoder.get_value(),
-        ];
-
-        let new_encoder_offsets = {
-            if let (Ok(v0), Ok(v1), Ok(v2)) = (new_encoder_offsets[0], new_encoder_offsets[1], new_encoder_offsets[2]) {
+        let new_offsets = {
+            let offsets = [
+                self.motors[0].encoder.get_value(),
+                self.motors[1].encoder.get_value(),
+                self.motors[2].encoder.get_value(),
+            ];
+            if let (Ok(v0), Ok(v1), Ok(v2)) = (offsets[0], offsets[1], offsets[2]) {
                 [v0, -v1, -v2]
             } else {
                 log::error!("Error reading encoder values");
@@ -155,18 +151,17 @@ impl AsservHardware for MovementLowLevelHardware {
             }
         };
 
-        let delta_offsets = if let Some(last_values) = &self.last_encoder_value {
+        let delta_offsets = if let Some(last_values) = &self.last_encoder_values {
             [
-                (new_encoder_offsets[0] - last_values[0]) as f32,
-                (new_encoder_offsets[1] - last_values[1]) as f32,
-                (new_encoder_offsets[2] - last_values[2]) as f32,
+                (new_offsets[0] - last_values[0]) as f32,
+                (new_offsets[1] - last_values[1]) as f32,
+                (new_offsets[2] - last_values[2]) as f32,
             ]
-        }
-        else {
+        } else {
             //first read
             [0.0, 0.0, 0.0]
         };
-        self.last_encoder_value = Some(new_encoder_offsets);
+        self.last_encoder_values = Some(new_offsets);
 
         delta_offsets
     }
@@ -177,7 +172,6 @@ impl AsservHardware for MovementLowLevelHardware {
                 log::error!("Error updating gyro angle: {:?}", e);
                 self.gyro_is_in_error = true;
             }
-
             return 0.0;
         }
 
@@ -188,14 +182,12 @@ impl AsservHardware for MovementLowLevelHardware {
             Some(last_angle) => {
                 let offset = new_angle - last_angle;
                 self.gyro_last_angle = Some(new_angle);
-
                 offset.to_radians()
             },
             None => {
                 self.gyro_last_angle = Some(new_angle);
-
                 0.0
             }
-        }        
+        }
     }
 }

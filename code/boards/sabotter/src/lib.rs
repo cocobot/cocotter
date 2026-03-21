@@ -1,44 +1,36 @@
-pub use pca9535;
-
-use esp_idf_svc::{bt::Ble, hal::{
-    adc::{oneshot::{AdcChannelDriver, AdcDriver}, ADC1}, can::{CanConfig, CanDriver}, gpio::*, i2c::{I2cConfig, I2cDriver}, ledc::{config::TimerConfig, LedcDriver, LedcTimerDriver}, prelude::*, spi::{config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver}, uart::{UartConfig, UartDriver}, units::Hertz
-}};
-use esp_idf_svc::{nvs::EspDefaultNvsPartition, bt::BtDriver};
+use std::sync::Mutex;
+use esp_idf_svc::{
+    bt::{Ble, BtDriver},
+    hal::{
+        can::CanDriver,
+        gpio::{Output, PinDriver, Gpio7, Gpio45},
+        i2c::{I2cConfig, I2cDriver},
+        ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},
+        prelude::*,
+        spi::{self, config::DriverConfig, SpiConfig, SpiDeviceDriver, SpiDriver},
+        units::Hertz
+    },
+    nvs::EspDefaultNvsPartition,
+};
+use board_common::esp::EspEncoder;
 use embedded_hal_bus::i2c::MutexDevice;
 use pca9535::Pca9535Immediate;
-use esp32_encoder::Encoder;
-use std::{rc::Rc, sync::Mutex};
+pub use pca9535;
 
-
-pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 
 // Type aliases
+pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
 pub type LedHeartbeat = PinDriver<'static, Gpio45, Output>;
-// Motor control types
 pub type MotorPwm = LedcDriver<'static>;
-
-// GPIO expander type
 pub type GpioExpander = Pca9535Immediate<I2CType>;
-
-// CAN bus type
 pub type CanBus = CanDriver<'static>;
-
-// UART types
-pub type UartAsserv = UartDriver<'static>;
-pub type UartLidar = UartDriver<'static>;
-
-// ADC type for battery monitoring
-pub type BatteryAdcPin = Gpio1;
-pub type BatteryAdc = AdcChannelDriver<'static, BatteryAdcPin, Rc<AdcDriver<'static, ADC1>>>;
-
-// SPI IMU driver
 pub type ImuSpi = SpiDeviceDriver<'static, SpiDriver<'static>>;
 
-// Motor structure with encoder
-pub struct Motor {
+
+pub struct SabotterMotor {
     pub pwm: MotorPwm,
     pub dir: MotorPwm,
-    pub encoder: Encoder<'static>,
+    pub encoder: EspEncoder<'static>,
 }
 
 // Bluetooth driver
@@ -47,16 +39,12 @@ pub type Bt = BtDriver<'static, Ble>;
 
 pub struct BoardSabotter {
     pub led_heartbeat: Option<LedHeartbeat>,
-    pub motors: [Option<Motor>; 3],
-    pub motor_gpio_expander: [Option<GpioExpander>; 3],
+    pub motors: Option<[SabotterMotor; 3]>,
+    pub motor_gpio_expanders: Option<[GpioExpander; 3]>,
     pub gpio_expander: Option<GpioExpander>,
     pub can_bus: Option<CanBus>,
-    pub uart_asserv: Option<UartAsserv>,
-    pub uart_lidar: Option<UartLidar>,
-    pub battery_adc: Option<BatteryAdc>,
     pub imu_spi: Option<ImuSpi>,
     pub mot_ena: Option<PinDriver<'static, Gpio7, Output>>,
-    pub lidar_pwm: Option<LedcDriver<'static>>,
     pub ble: Option<Bt>,
 }
 
@@ -73,63 +61,49 @@ impl BoardSabotter {
 
         // Initialize main I2C bus
         let config = I2cConfig::new().baudrate(Hertz(400_000));
-        let i2c_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c0, peripherals.pins.gpio40, peripherals.pins.gpio41, &config).unwrap());
+        let i2c_driver = Mutex::new(I2cDriver::new(peripherals.i2c0, peripherals.pins.gpio40, peripherals.pins.gpio41, &config).unwrap());
         let i2c_driver_static = Box::leak(Box::new(i2c_driver));
         let i2c_gpio_expander = MutexDevice::new(i2c_driver_static);
         let gpio_expander = Some(Pca9535Immediate::new(i2c_gpio_expander, 0b010_0100));
-    
+
         // Initialize ToF sensor I2C bus
         let config = I2cConfig::new().baudrate(Hertz(400_000));
-        let i2c_vlx_driver : Mutex<I2cDriver<'static>> = Mutex::new(I2cDriver::new(peripherals.i2c1, peripherals.pins.gpio21, peripherals.pins.gpio47, &config).unwrap());
+        let i2c_vlx_driver = Mutex::new(I2cDriver::new(peripherals.i2c1, peripherals.pins.gpio21, peripherals.pins.gpio47, &config).unwrap());
         let i2c_vlx_driver_static = Box::leak(Box::new(i2c_vlx_driver));
-        let _i2c_vlx_bus_vlx : MutexDevice<'static, I2cDriver<'static>> =  MutexDevice::new(i2c_vlx_driver_static);
-
 
         // Initialize LEDC timer for motors
-        let timer_pwm = LedcTimerDriver::new(
+        let motor_pwm = LedcTimerDriver::new(
             peripherals.ledc.timer0,
-            &TimerConfig::new().frequency(25.kHz().into()).resolution(esp_idf_svc::hal::ledc::Resolution::Bits10),
+            &TimerConfig::new().frequency(25_000.Hz()).resolution(ledc::Resolution::Bits10),
         ).unwrap();
 
         // Initialize motors with encoders
-        let mut motors: [Option<Motor>; 3] = [None, None, None];
-        let mut motor_gpio_expander: [Option<GpioExpander>; 3] = [None, None, None];
-        
-        // Motor 0
-        if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
-            LedcDriver::new(peripherals.ledc.channel0, &timer_pwm, peripherals.pins.gpio17),
-            LedcDriver::new(peripherals.ledc.channel1, &timer_pwm, peripherals.pins.gpio18),
-            Encoder::new(peripherals.pcnt0, peripherals.pins.gpio12, peripherals.pins.gpio11)
-        ) {
-            motors[0] = Some(Motor { pwm, dir, encoder });
-        }
+        let motors = [
+            SabotterMotor {
+                pwm: LedcDriver::new(peripherals.ledc.channel0, &motor_pwm, peripherals.pins.gpio17).unwrap(),
+                dir: LedcDriver::new(peripherals.ledc.channel1, &motor_pwm, peripherals.pins.gpio18).unwrap(),
+                encoder: EspEncoder::new(peripherals.pcnt0, peripherals.pins.gpio12, peripherals.pins.gpio11).unwrap(),
+            },
+            SabotterMotor {
+                pwm: LedcDriver::new(peripherals.ledc.channel2, &motor_pwm, peripherals.pins.gpio3).unwrap(),
+                dir: LedcDriver::new(peripherals.ledc.channel3, &motor_pwm, peripherals.pins.gpio8).unwrap(),
+                encoder: EspEncoder::new(peripherals.pcnt1, peripherals.pins.gpio16, peripherals.pins.gpio15).unwrap(),
+            },
+            SabotterMotor {
+                pwm: LedcDriver::new(peripherals.ledc.channel4, &motor_pwm, peripherals.pins.gpio35).unwrap(),
+                dir: LedcDriver::new(peripherals.ledc.channel5, &motor_pwm, peripherals.pins.gpio48).unwrap(),
+                encoder: EspEncoder::new(peripherals.pcnt2, peripherals.pins.gpio14, peripherals.pins.gpio13).unwrap(),
+            },
+        ];
+
         // Initialize main I2C bus
-        let i2c_gpio_expander_mot_0 = MutexDevice::new(i2c_vlx_driver_static);
-        motor_gpio_expander[0] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_0, 0b010_0000));
-        let i2c_gpio_expander_mot_1 = MutexDevice::new(i2c_vlx_driver_static);
-        motor_gpio_expander[1] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_1, 0b010_0001));
-        let i2c_gpio_expander_mot_2 = MutexDevice::new(i2c_vlx_driver_static);
-        motor_gpio_expander[2] = Some(Pca9535Immediate::new(i2c_gpio_expander_mot_2, 0b010_0010));
-    
+        let motor_gpio_expanders = [
+            Pca9535Immediate::new(MutexDevice::new(i2c_vlx_driver_static), 0b010_0000),
+            Pca9535Immediate::new(MutexDevice::new(i2c_vlx_driver_static), 0b010_0001),
+            Pca9535Immediate::new(MutexDevice::new(i2c_vlx_driver_static), 0b010_0010),
+        ];
 
-        // Motor 1  
-        if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
-            LedcDriver::new(peripherals.ledc.channel2, &timer_pwm, peripherals.pins.gpio3),
-            LedcDriver::new(peripherals.ledc.channel3, &timer_pwm, peripherals.pins.gpio8),
-            Encoder::new(peripherals.pcnt1, peripherals.pins.gpio16, peripherals.pins.gpio15)
-        ) {
-            motors[1] = Some(Motor { pwm, dir, encoder });
-        }
-
-        // Motor 2
-        if let (Ok(pwm), Ok(dir), Ok(encoder)) = (
-            LedcDriver::new(peripherals.ledc.channel4, &timer_pwm, peripherals.pins.gpio35),
-            LedcDriver::new(peripherals.ledc.channel5, &timer_pwm, peripherals.pins.gpio48),
-            Encoder::new(peripherals.pcnt2, peripherals.pins.gpio14, peripherals.pins.gpio13)
-        ) {
-            motors[2] = Some(Motor { pwm, dir, encoder });
-        }
-
+        /*
         // Initialize UART for asserv communication
         let uart_asserv = UartDriver::new(
             peripherals.uart1,
@@ -140,26 +114,26 @@ impl BoardSabotter {
             &UartConfig::default().baudrate(Hertz(115_200)),
         ).ok();
 
-        //// Initialize UART for lidar (RX only)
-        //let uart_lidar = UartDriver::new(
-        //    peripherals.uart2,
-        //    peripherals.pins.gpio0,   // TX (dummy pin)
-        //    peripherals.pins.gpio2,   // RX
-        //    Option::<AnyIOPin>::None, // CTS
-        //    Option::<AnyIOPin>::None, // RTS
-        //    &UartConfig::default().baudrate(Hertz(1_000_000)),
-        //).ok();
+        // Initialize UART for lidar (RX only)
+        let uart_lidar = UartDriver::new(
+            peripherals.uart2,
+            peripherals.pins.gpio0,   // TX (dummy pin)
+            peripherals.pins.gpio2,   // RX
+            Option::<AnyIOPin>::None, // CTS
+            Option::<AnyIOPin>::None, // RTS
+            &UartConfig::default().baudrate(Hertz(1_000_000)),
+        ).ok();
 
-        //// Initialize CAN bus with correct pins (GPIO9/10)
-        //let can_bus = CanDriver::new(
-        //    peripherals.can,
-        //    peripherals.pins.gpio9,  // TX
-        //    peripherals.pins.gpio10,  // RX
-        //    &CanConfig::new(),
-        //).ok();
+        // Initialize CAN bus with correct pins (GPIO9/10)
+        let can_bus = CanDriver::new(
+            peripherals.can,
+            peripherals.pins.gpio9,  // TX
+            peripherals.pins.gpio10,  // RX
+            &CanConfig::new(),
+        ).ok();
+        */
 
         // Initialize SPI for IMU SCH16T
-        use esp_idf_svc::hal::spi::Dma;
         let spi_config = SpiConfig::new()
             .baudrate(Hertz(100_000)); // Start with slower speed for debugging
 
@@ -168,7 +142,7 @@ impl BoardSabotter {
             peripherals.pins.gpio39,  // SCK
             peripherals.pins.gpio38,  // MOSI
             Some(peripherals.pins.gpio37),  // MISO
-            &DriverConfig::new().dma(Dma::Disabled),
+            &DriverConfig::new().dma(spi::Dma::Disabled),
         ).ok();
 
         let imu_spi = if let Some(spi) = spi_driver {
@@ -178,39 +152,26 @@ impl BoardSabotter {
             None
         };
 
-        // Initialize ADC for battery monitoring
-        // ADC initialization - simplified for now
-        let battery_adc = None;
-
         // Initialize interrupt pins
         let mot_ena = PinDriver::output(peripherals.pins.gpio7).ok();
 
+        /*
         // Initialize Lidar PWM
-        let lidar_timer = LedcTimerDriver::new(
-            peripherals.ledc.timer1,
-            &TimerConfig::default().frequency(1_000.Hz()),
-        ).ok();
-        
-        let lidar_pwm = if let Some(timer) = &lidar_timer {
-            LedcDriver::new(peripherals.ledc.channel6, timer, peripherals.pins.gpio42).ok()
-        } else {
-            None
-        };
+        let lidar_pwm = LedcTimerDriver::new(peripherals.ledc.timer1, &TimerConfig::default().frequency(1_000.Hz()))
+            .and_then(|timer| LedcDriver::new(peripherals.ledc.channel6, timer, peripherals.pins.gpio42))
+            .ok();
+        */
 
-        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
+        let ble = BtDriver::new(peripherals.modem, Some(nvs.clone())).ok();
 
         Self {
             led_heartbeat,
-            motors,
+            motors: Some(motors),
             gpio_expander,
-            motor_gpio_expander,
+            motor_gpio_expanders: Some(motor_gpio_expanders),
             can_bus: None,
-            uart_asserv,
-            uart_lidar: None,
-            battery_adc,
             imu_spi,
             mot_ena,
-            lidar_pwm,
             ble,
         }
     }
