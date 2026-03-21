@@ -1,14 +1,11 @@
 mod movement;
 mod shared_gpio;
-mod strat;
 
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 
 #[cfg(target_os = "espidf")]
 use board_sabotter::BoardSabotter;
 
-#[cfg(not(target_os = "espidf"))]
-use board_simulator::BoardSabotter;
 pub use board_sabotter::{ImuSpi, Motor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
 //use board_sabotter::pca9535::{expander::standard::StandardExpanderInterface, GPIOBank};
 use esp_idf_svc::sys::ets_delay_us;
