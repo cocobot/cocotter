@@ -1,80 +1,35 @@
 mod movement;
-mod shared_gpio;
 
-use std::{sync::{Arc, Mutex}, thread, time::Duration};
-use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
-use esp_idf_svc::sys::ets_delay_us;
-pub use board_sabotter::{ImuSpi, SabotterMotor, pca9535::{GPIOBank, StandardExpanderInterface}};
-use movement::{Movement, MovementLowLevelHardware};
-use sch16t::Sch16t;
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
 use asserv::holonomic::Asserv;
 use asserv::maths::XY;
+use board_sabotter::{SabotterBoard, SabotterMotor};
+use sch16t::Sch16t;
+use movement::{Movement, MovementLowLevelHardware};
 
 #[cfg(target_os = "espidf")]
-use board_sabotter::BoardSabotter;
+type SabotterBoardImpl = board_sabotter::EspSabotterBoard<'static>;
+#[cfg(not(target_os = "espidf"))]
+use board_sabotter::MockSabotterBoard as SabotterBoardImpl;
 
+type SabotterMotorImpl = SabotterMotor<<SabotterBoardImpl as SabotterBoard>::MotorEncoder, <SabotterBoardImpl as SabotterBoard>::MotorPwm>;
+type GyroImpl = Sch16t<<SabotterBoardImpl as SabotterBoard>::Spi>;
 
-use crate::shared_gpio::SharedGpio;
 
 fn main() {
-    let mut board = BoardSabotter::new();
+    let mut board = SabotterBoardImpl::init();
 
-    //configure io drivers
-    let gpio_expander = SharedGpio::new(board.gpio_expander.take().unwrap());
-    let motor_gpio_expanders = {
-        let [gpio0, gpio1, gpio2] = board.motor_gpio_expanders.take().unwrap();
-        [SharedGpio::new(gpio0), SharedGpio::new(gpio1), SharedGpio::new(gpio2)]
-    };
-
-    //configure gyro
-    let mut gyro = Sch16t::new(board.imu_spi.take().unwrap(), 0);
+    // Configure gyro
+    let mut gyro = GyroImpl::new(board.imu_spi().unwrap(), 0);
     gyro.init().unwrap();
 
-    let mut led_heartbeat = board.led_heartbeat.take().unwrap();
-    let mut motor_0_heartbeat = motor_gpio_expanders[0].get_pin(2);
-    let mut motor_1_heartbeat = motor_gpio_expanders[1].get_pin(2);
-    let mut motor_2_heartbeat = motor_gpio_expanders[2].get_pin(2);
+    let mut leds = board.leds().unwrap();
 
-    // Motor driver startup procedure
-    // See DRV8243 §7.7.2.1 HW Variant
-    //TODO heartbeat led follows expected nFAULT state
-    {
-        log::info!("Motor drivers init");
-
-        let _ = motor_0_heartbeat.set_high();
-        let _ = motor_1_heartbeat.set_high();
-        let _ = motor_2_heartbeat.set_high();
-
-        let mut mot_ena = board.mot_ena.take().unwrap();
-
-        mot_ena.set_low().ok();
-        thread::sleep(Duration::from_millis(10));
-
-        mot_ena.set_high().ok();
-        // Assert all expanders nFAULT low
-        while !motor_gpio_expanders.iter().all(|ex| ex.get_pin(3).is_low().unwrap_or(false)) {
-            thread::sleep(Duration::from_millis(10));
-        }
-        thread::sleep(Duration::from_millis(10));
-
-        mot_ena.set_low().ok();
-        // A short wait (between 5µs and 10µs) is required; don't replace with a `thread::sleep()`
-        unsafe { ets_delay_us(10); }
-        mot_ena.set_high().ok();
-
-        // Assert all expanders nFAULT high
-        while !motor_gpio_expanders.iter().all(|ex| ex.get_pin(3).is_high().unwrap_or(false)) {
-            thread::sleep(Duration::from_millis(10));
-        }
-
-        log::info!("Motor drivers initialized");
-    }
-
-    //configure low level hardware for asserv
+    // Configure low level hardware for asserv
     let asserv_hardware = MovementLowLevelHardware::new(
         gyro,
-        gpio_expander.get_pin(3),
-        board.motors.take().unwrap(),
+        board.motors().unwrap(),
     );
     let movement = Arc::new(Mutex::new(Movement::new(asserv_hardware)));
 
@@ -119,11 +74,8 @@ fn main() {
     }
 
     loop {
-        led_heartbeat.toggle().ok();
-        let _ = motor_0_heartbeat.toggle();
-        let _ = motor_1_heartbeat.toggle();
-        let _ = motor_2_heartbeat.toggle();
-        thread::sleep(Duration::from_millis(500));
+        let _ = leds.com.toggle();
+        std::thread::sleep(Duration::from_millis(500));
 
         let movement = movement.lock().unwrap();
         let asserv = movement.get_asserv();

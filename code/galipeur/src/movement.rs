@@ -1,10 +1,7 @@
 use std::{sync::{Arc, Mutex}, thread, time::Duration};
 use asserv::holonomic::conf::*;
 use asserv::holonomic::Asserv;
-use sch16t::Sch16t;
-use crate::shared_gpio::SharedGpioPin;
-
-use super::{ImuSpi, SabotterMotor};
+use crate::{GyroImpl, SabotterMotorImpl};
 
 pub struct Movement {
     asserv: Arc<Mutex<Asserv<MovementLowLevelHardware>>>,
@@ -12,7 +9,6 @@ pub struct Movement {
 
 impl Movement {
     pub fn new(asserv_low_level: MovementLowLevelHardware) -> Self {
-        //init asserv module
         let mut asserv = Asserv::new(asserv_low_level);
         asserv.set_conf(AsservConf {
             pid_x: PidConf {
@@ -97,23 +93,20 @@ impl Movement {
 
 
 pub struct MovementLowLevelHardware {
-    gyro: Sch16t<ImuSpi>,
+    gyro: GyroImpl,
     gyro_last_angle: Option<f32>,
     gyro_is_in_error: bool,
 
-    motor_reset: SharedGpioPin,
-    motors: [SabotterMotor; 3],
+    motors: [SabotterMotorImpl; 3],
     last_encoder_values: Option<[i32; 3]>,
 }
 
 impl MovementLowLevelHardware {
-    pub fn new(gyro: Sch16t<ImuSpi>, motor_reset: SharedGpioPin, motors: [SabotterMotor; 3]) -> Self {
+    pub fn new(gyro: GyroImpl, motors: [SabotterMotorImpl; 3]) -> Self {
         Self {
             gyro,
             gyro_last_angle: None,
             gyro_is_in_error: false,
-
-            motor_reset,
             motors,
             last_encoder_values: None,
         }

@@ -9,11 +9,11 @@ embedded-hal-bus = { version = "0.3", features = ["std"] }
 log = "0.4"
 board-common = { path = "../common" }
 pca9535 = { version = "2.0", features = ["std"] }
-tca6408 = { path = "../../libs/tca6408" }
-vlx = { path = "../../libs/vlx" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
+esp32_encoder = { path = "../../libs/esp32_encoder" }
 
-[build-dependencies]
-embuild = { version = "0.33", features = ["espidf"] }
+[target.'cfg(not(target_os = "espidf"))'.dependencies]
+embedded-hal-mock = { version = "0.11", features = ["eh1"] }
+
