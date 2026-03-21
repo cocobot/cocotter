@@ -131,10 +131,13 @@ fn main() {
         GotoXyA(f32, f32, f32),
         RunPath(&'a [XY]),
         MecaTake,
-        MecaDrop,
+        MecaRaiseGrab,
+        MecaRaiseDrop,
+        MecaIdlePosGrab,
+        MecaIdlePosDrop,
     }
 
-    let mut robot_color = false;
+    let mut robot_color = true;
 
     enum RobotSide {
         RobotSideLeft,
@@ -151,8 +154,8 @@ fn main() {
     }
     use TableSide::*;
 
-    let RobotSideMain = if robot_color {RobotSideLeft}  else {RobotSideRight};
-    let RobotSideAux  = if robot_color {RobotSideRight} else {RobotSideLeft};
+    let RobotSideMain = if robot_color {RobotSideRight} else {RobotSideLeft};
+    let RobotSideAux  = if robot_color {RobotSideLeft}  else {RobotSideRight};
     let TableSideMain = if robot_color {TableSideLeft}   else  {TableSideRight};
     let TableSideAux  = if robot_color {TableSideRight}  else  {TableSideLeft};
 
@@ -187,6 +190,7 @@ fn main() {
     }
 
 
+
     impl Order<'_> {
         fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>, meca: &Meca) {
             match self {
@@ -195,20 +199,44 @@ fn main() {
                 Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
                 Order::RunPath(path) => asserv.run_path(path),
                 Order::MecaTake => {
-                    meca.lower_arm(0, 3);
-                    meca.lower_arm(0, 2);     
-                    meca.lower_arm(0, 1);     
-                    meca.lower_arm(0, 0);      
-                    meca.release(0, 0);              
-                    log::info!("TODO wait with feedback from meca");
-                    thread::sleep(Duration::from_secs(3));
+                    meca.lower_arm_grab(0, 3);
+                    meca.lower_arm_grab(0, 2);
+                    meca.lower_arm_grab(0, 1);
+                    meca.lower_arm_grab(0, 0);
+                    log::info!("TO_DO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
                 }
-                Order::MecaDrop => {
-                    meca.raise_arm(0, 3);
-                    meca.raise_arm(0, 2);
-                    meca.raise_arm(0, 1);
-                    meca.raise_arm(0, 0);
-                    meca.grab(0, 0);              
+                Order::MecaRaiseGrab => {
+                    meca.grab(0, 0);
+                    meca.raise_arm_grab(0, 3);
+                    meca.raise_arm_grab(0, 2);
+                    meca.raise_arm_grab(0, 1);
+                    meca.raise_arm_grab(0, 0);
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
+                Order::MecaRaiseDrop => {
+                    meca.grab(0, 0);
+                    meca.raise_arm_release(0, 3);
+                    meca.raise_arm_release(0, 2);
+                    meca.raise_arm_release(0, 1);
+                    meca.raise_arm_release(0, 0);
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
+                Order::MecaIdlePosGrab => {
+                    meca.idle_arm_grab(0, 3);
+                    meca.idle_arm_grab(0, 2);
+                    meca.idle_arm_grab(0, 1);
+                    meca.idle_arm_grab(0, 0);
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
+                Order::MecaIdlePosDrop => {
+                    meca.idle_arm_release(0, 3);
+                    meca.idle_arm_release(0, 2);
+                    meca.idle_arm_release(0, 1);
+                    meca.idle_arm_release(0, 0);
                     log::info!("TODO wait with feedback from meca");
                     thread::sleep(Duration::from_secs(2));
                 }
@@ -217,18 +245,20 @@ fn main() {
     }
 
     let orders = [
-        Order::RunPath(&[
-            XY::new(0.0, 500.0),
-            XY::new(500.0, 500.0),
-        ]),
-        Order::GotoA(arfast(RobotSideMain,TableSideMain)),
+        //Order::RunPath(&[
+        //    XY::new(0.0, 500.0),
+        //    XY::new(500.0, 500.0),
+        //]),
+        Order::GotoXyA(0.0, 0.0, arfast(RobotSideBack,TableSideDown)),
+        Order::MecaIdlePosDrop,
         Order::MecaTake,
-        Order::RunPath(&[
-            XY::new(500.0, 0.0),
-            XY::new(0.0, 0.0),
-        ]),
-        Order::GotoXyA(-200.0, 200.0, arfast(RobotSideBack,TableSideDown)),
-        Order::MecaDrop,
+        //Order::RunPath(&[
+        //    XY::new(500.0, 0.0),
+        //    XY::new(0.0, 0.0),
+        //]),
+        Order::MecaRaiseGrab,
+        Order::GotoXyA(50.0, 0.0, arfast(RobotSideBack,TableSideDown)),
+        Order::MecaRaiseDrop,
     ];
     let mut index = 0;
 
@@ -239,18 +269,17 @@ fn main() {
         asserv.goto_xya(0., 0., 0.);
     }
 
+    if robot_color {
+       led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
+    } else {
+        led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
+    }
+
     loop {
         led_heartbeat.toggle().ok();
         motor_0_heartbeat.toggle();
         motor_1_heartbeat.toggle();
         motor_2_heartbeat.toggle();
-        if robot_color {
-            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
-            robot_color = false;
-        } else {
-            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
-            robot_color = true;
-        }
         thread::sleep(Duration::from_millis(500));
 
         {
