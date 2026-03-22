@@ -5,6 +5,7 @@ members = [
 
     "libs/asserv",
     "libs/ble",
+    "libs/cancaner",
     "libs/esp32_encoder",
     "libs/rome",
     "libs/tca6408",

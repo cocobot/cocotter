@@ -35,15 +35,7 @@ impl LogEncoder {
     ) -> LogFrameIterator<'a> {
         let seq = self.seq_counter;
         self.seq_counter = self.seq_counter.wrapping_add(1);
-
-        LogFrameIterator {
-            seq,
-            level,
-            message,
-            offset: 0,
-            sent_first: false,
-            done: false,
-        }
+        LogFrameIterator::new(seq, level, message)
     }
 }
 
@@ -59,71 +51,89 @@ pub struct LogFrameIterator<'a> {
     level: LogLevel,
     message: &'a [u8],
     offset: usize,
-    sent_first: bool,
-    done: bool,
+    state: LogFrameIteratorState,
 }
+
+impl<'a> LogFrameIterator<'a> {
+    fn new(seq: u8, level: LogLevel, message: &'a [u8]) -> Self {
+        Self {
+            seq,
+            level,
+            message,
+            offset: 0,
+            state: LogFrameIteratorState::Start,
+        }
+    }
+}
+
+enum LogFrameIteratorState {
+    Start,  // First frame not sent yet
+    Cont,  // Sending continuation frames
+    Done,  // End frame sent, nothing more to send
+}
+
 
 impl<'a> Iterator for LogFrameIterator<'a> {
     type Item = CanMessage;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.done {
+        if matches!(self.state, LogFrameIteratorState::Done) {
             return None;
         }
 
         let remaining = self.message.len() - self.offset;
 
-        if !self.sent_first {
+        if matches!(self.state, LogFrameIteratorState::Start) {
             // First frame: LOG_MSG
-            self.sent_first = true;
+            const { assert!(LOG_MSG_PAYLOAD_SIZE == LOG_END_PAYLOAD_SIZE) }
             let payload_len = remaining.min(LOG_MSG_PAYLOAD_SIZE);
-            let mut payload = [0u8; 6];
+            let mut payload = [0u8; LOG_MSG_PAYLOAD_SIZE];
             payload[..payload_len].copy_from_slice(&self.message[self.offset..self.offset + payload_len]);
             self.offset += payload_len;
 
             // If this is the only frame needed, mark as done and return LOG_END instead
             if self.offset >= self.message.len() {
-                self.done = true;
-                return Some(CanMessage::LogEnd {
+                self.state = LogFrameIteratorState::Done;
+                Some(CanMessage::LogEnd {
                     seq: self.seq,
                     total_len: self.message.len() as u8,
                     payload,
                     payload_len: payload_len as u8,
-                });
+                })
+            } else {
+                self.state = LogFrameIteratorState::Cont;
+                Some(CanMessage::LogMsg {
+                    seq: self.seq,
+                    level: self.level,
+                    payload,
+                    payload_len: payload_len as u8,
+                })
             }
-
-            return Some(CanMessage::LogMsg {
-                seq: self.seq,
-                level: self.level,
-                payload,
-                payload_len: payload_len as u8,
-            });
-        }
-
-        // Check if this is the last frame
-        if remaining <= LOG_END_PAYLOAD_SIZE {
-            self.done = true;
-            let mut payload = [0u8; 6];
+        } else if remaining <= LOG_END_PAYLOAD_SIZE {
+            // Check if this is the last frame
+            let mut payload = [0u8; LOG_END_PAYLOAD_SIZE];
             payload[..remaining].copy_from_slice(&self.message[self.offset..]);
-            return Some(CanMessage::LogEnd {
+
+            self.state = LogFrameIteratorState::Done;
+            Some(CanMessage::LogEnd {
                 seq: self.seq,
                 total_len: self.message.len() as u8,
                 payload,
                 payload_len: remaining as u8,
-            });
+            })
+        } else {
+            // Continuation frame: LOG_CONT
+            let payload_len = remaining.min(LOG_CONT_PAYLOAD_SIZE);
+            let mut payload = [0u8; LOG_CONT_PAYLOAD_SIZE];
+            payload[..payload_len].copy_from_slice(&self.message[self.offset..self.offset + payload_len]);
+            self.offset += payload_len;
+
+            Some(CanMessage::LogCont {
+                seq: self.seq,
+                payload,
+                payload_len: payload_len as u8,
+            })
         }
-
-        // Continuation frame: LOG_CONT
-        let payload_len = remaining.min(LOG_CONT_PAYLOAD_SIZE);
-        let mut payload = [0u8; 7];
-        payload[..payload_len].copy_from_slice(&self.message[self.offset..self.offset + payload_len]);
-        self.offset += payload_len;
-
-        Some(CanMessage::LogCont {
-            seq: self.seq,
-            payload,
-            payload_len: payload_len as u8,
-        })
     }
 }
 
@@ -155,9 +165,7 @@ impl LogDecoder {
     }
 
     /// Process a LOG_MSG frame
-    ///
-    /// Returns None (message started, wait for more frames)
-    pub fn process_msg(&mut self, seq: u8, level: LogLevel, payload: &[u8]) -> Option<()> {
+    pub fn process_msg(&mut self, seq: u8, level: LogLevel, payload: &[u8]) {
         self.reset();
         self.current_seq = Some(seq);
         self.current_level = level;
@@ -165,23 +173,19 @@ impl LogDecoder {
         let len = payload.len().min(self.buffer.len());
         self.buffer[..len].copy_from_slice(&payload[..len]);
         self.buffer_len = len;
-        None
     }
 
-    /// Process a LOG_CONT frame
-    ///
-    /// Returns None if successful, resets on sequence mismatch
-    pub fn process_cont(&mut self, seq: u8, payload: &[u8]) -> Option<()> {
+    /// Process a LOG_CONT frame, reset on sequence mismatch
+    pub fn process_cont(&mut self, seq: u8, payload: &[u8]) {
         if self.current_seq != Some(seq) {
             self.reset();
-            return None;
+            return;
         }
 
         let space_left = self.buffer.len() - self.buffer_len;
         let len = payload.len().min(space_left);
         self.buffer[self.buffer_len..self.buffer_len + len].copy_from_slice(&payload[..len]);
         self.buffer_len += len;
-        None
     }
 
     /// Process a LOG_END frame
@@ -192,9 +196,7 @@ impl LogDecoder {
         if self.current_seq.is_none() {
             self.current_seq = Some(seq);
             self.current_level = LogLevel::Info; // Will be overwritten by caller if needed
-        }
-
-        if self.current_seq != Some(seq) {
+        } else if self.current_seq != Some(seq) {
             self.reset();
             return None;
         }
@@ -204,8 +206,7 @@ impl LogDecoder {
         self.buffer[self.buffer_len..self.buffer_len + len].copy_from_slice(&payload[..len]);
         self.buffer_len += len;
 
-        let level = self.current_level;
-        Some((level, &self.buffer[..self.buffer_len]))
+        Some((self.current_level, &self.buffer[..self.buffer_len]))
     }
 
     /// Get the current level (for single-frame LOG_END messages)

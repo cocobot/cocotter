@@ -1,9 +1,7 @@
-[workspace]
-
 [package]
 name = "cancaner"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 description = "Shared CAN protocol for cocotter robots (picotter/sabotter)"
 
 [dependencies]
