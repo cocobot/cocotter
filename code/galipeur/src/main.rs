@@ -139,56 +139,46 @@ fn main() {
 
     let mut robot_color = true;
 
+    #[allow(dead_code)]
     enum RobotSide {
-        RobotSideLeft,
-        RobotSideRight,
-        RobotSideBack,
+        Left,
+        Right,
+        Back,
     }
-    use RobotSide::*;
-
+    #[allow(dead_code)]
     enum TableSide {
-        TableSideLeft,
-        TableSideRight,
-        TableSideUp,
-        TableSideDown,
+        Left,
+        Right,
+        Up,
+        Down,
     }
-    use TableSide::*;
 
-    let RobotSideMain = if robot_color {RobotSideRight} else {RobotSideLeft};
-    let RobotSideAux  = if robot_color {RobotSideLeft}  else {RobotSideRight};
-    let TableSideMain = if robot_color {TableSideLeft}   else  {TableSideRight};
-    let TableSideAux  = if robot_color {TableSideRight}  else  {TableSideLeft};
+    let robot_side_main = if robot_color { RobotSide::Right } else { RobotSide::Left };
+    let robot_side_aux  = if robot_color { RobotSide::Left } else { RobotSide::Right };
+    let table_side_main = if robot_color { TableSide::Left } else { TableSide::Right };
+    let table_side_aux  = if robot_color { TableSide::Right } else { TableSide::Left };
 
     //function to get angle to apply to Align Robot Face Along given Side of the Table
-    fn arfast(face: RobotSide, side: TableSide) -> f32 {
-        match face {
-            RobotSide::RobotSideLeft => {
-                match side {
-                    TableSide::TableSideLeft   => std::f32::consts::PI *  1.0/6.0,
-                    TableSide::TableSideRight  => std::f32::consts::PI * -5.0/6.0,
-                    TableSide::TableSideUp     => std::f32::consts::PI * -1.0/3.0,
-                    TableSide::TableSideDown   => std::f32::consts::PI *  2.0/3.0,
-                }
-            }
-            RobotSide::RobotSideRight => {
-                match side {
-                    TableSide::TableSideLeft   => std::f32::consts::PI *  5.0/6.0,
-                    TableSide::TableSideRight  => std::f32::consts::PI * -1.0/6.0,
-                    TableSide::TableSideUp     => std::f32::consts::PI *  1.0/3.0,
-                    TableSide::TableSideDown   => std::f32::consts::PI * -2.0/3.0,
-                }
-            }
-            RobotSide::RobotSideBack => {
-                match side {
-                    TableSide::TableSideLeft   => std::f32::consts::PI * -1.0/2.0,
-                    TableSide::TableSideRight  => std::f32::consts::PI *  1.0/2.0,
-                    TableSide::TableSideUp     => std::f32::consts::PI *  1.0,
-                    TableSide::TableSideDown   => std::f32::consts::PI *  0.0,
-                }
-            }
+    const fn arfast(face: RobotSide, side: TableSide) -> f32 {
+        match (face, side) {
+            (RobotSide::Left,  TableSide::Left)  => std::f32::consts::PI *  1.0/6.0,
+            (RobotSide::Left,  TableSide::Right) => std::f32::consts::PI * -5.0/6.0,
+            (RobotSide::Left,  TableSide::Up)    => std::f32::consts::PI * -1.0/3.0,
+            (RobotSide::Left,  TableSide::Down)  => std::f32::consts::PI *  2.0/3.0,
+            (RobotSide::Right, TableSide::Left)  => std::f32::consts::PI *  5.0/6.0,
+            (RobotSide::Right, TableSide::Right) => std::f32::consts::PI * -1.0/6.0,
+            (RobotSide::Right, TableSide::Up)    => std::f32::consts::PI *  1.0/3.0,
+            (RobotSide::Right, TableSide::Down)  => std::f32::consts::PI * -2.0/3.0,
+            (RobotSide::Back,  TableSide::Left)  => std::f32::consts::PI * -1.0/2.0,
+            (RobotSide::Back,  TableSide::Right) => std::f32::consts::PI *  1.0/2.0,
+            (RobotSide::Back,  TableSide::Up)    => std::f32::consts::PI *  1.0,
+            (RobotSide::Back,  TableSide::Down)  => std::f32::consts::PI *  0.0,
         }
     }
 
+    macro_rules! arfast {
+        ($face:ident, $side: ident) => { arfast(RobotSide::$face, TableSide::$side) }
+    }
 
 
     impl Order<'_> {
@@ -249,7 +239,7 @@ fn main() {
         //    XY::new(0.0, 500.0),
         //    XY::new(500.0, 500.0),
         //]),
-        Order::GotoXyA(0.0, 0.0, arfast(RobotSideBack,TableSideDown)),
+        Order::GotoXyA(0.0, 0.0, arfast!(Back, Down)),
         Order::MecaIdlePosDrop,
         Order::MecaTake,
         //Order::RunPath(&[
@@ -257,7 +247,7 @@ fn main() {
         //    XY::new(0.0, 0.0),
         //]),
         Order::MecaRaiseGrab,
-        Order::GotoXyA(50.0, 0.0, arfast(RobotSideBack,TableSideDown)),
+        Order::GotoXyA(50.0, 0.0, arfast(RobotSide::Back, TableSide::Down)),
         Order::MecaRaiseDrop,
     ];
     let mut index = 0;
