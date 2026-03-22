@@ -1,7 +1,7 @@
 (kicad_pcb
-	(version 20240108)
+	(version 20241229)
 	(generator "pcbnew")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(general
 		(thickness 1.6)
 		(legacy_teardrops no)
@@ -9,34 +9,34 @@
 	(paper "A4")
 	(layers
 		(0 "F.Cu" signal)
-		(31 "B.Cu" signal)
-		(32 "B.Adhes" user "B.Adhesive")
-		(33 "F.Adhes" user "F.Adhesive")
-		(34 "B.Paste" user)
-		(35 "F.Paste" user)
-		(36 "B.SilkS" user "B.Silkscreen")
-		(37 "F.SilkS" user "F.Silkscreen")
-		(38 "B.Mask" user)
-		(39 "F.Mask" user)
-		(40 "Dwgs.User" user "User.Drawings")
-		(41 "Cmts.User" user "User.Comments")
-		(42 "Eco1.User" user "User.Eco1")
-		(43 "Eco2.User" user "User.Eco2")
-		(44 "Edge.Cuts" user)
-		(45 "Margin" user)
-		(46 "B.CrtYd" user "B.Courtyard")
-		(47 "F.CrtYd" user "F.Courtyard")
-		(48 "B.Fab" user)
-		(49 "F.Fab" user)
-		(50 "User.1" user)
-		(51 "User.2" user)
-		(52 "User.3" user)
-		(53 "User.4" user)
-		(54 "User.5" user)
-		(55 "User.6" user)
-		(56 "User.7" user)
-		(57 "User.8" user)
-		(58 "User.9" user)
+		(2 "B.Cu" signal)
+		(9 "F.Adhes" user "F.Adhesive")
+		(11 "B.Adhes" user "B.Adhesive")
+		(13 "F.Paste" user)
+		(15 "B.Paste" user)
+		(5 "F.SilkS" user "F.Silkscreen")
+		(7 "B.SilkS" user "B.Silkscreen")
+		(1 "F.Mask" user)
+		(3 "B.Mask" user)
+		(17 "Dwgs.User" user "User.Drawings")
+		(19 "Cmts.User" user "User.Comments")
+		(21 "Eco1.User" user "User.Eco1")
+		(23 "Eco2.User" user "User.Eco2")
+		(25 "Edge.Cuts" user)
+		(27 "Margin" user)
+		(31 "F.CrtYd" user "F.Courtyard")
+		(29 "B.CrtYd" user "B.Courtyard")
+		(35 "F.Fab" user)
+		(33 "B.Fab" user)
+		(39 "User.1" user)
+		(41 "User.2" user)
+		(43 "User.3" user)
+		(45 "User.4" user)
+		(47 "User.5" user)
+		(49 "User.6" user)
+		(51 "User.7" user)
+		(53 "User.8" user)
+		(55 "User.9" user)
 	)
 	(setup
 		(stackup
@@ -83,9 +83,10 @@
 		)
 		(pad_to_mask_clearance 0)
 		(allow_soldermask_bridges_in_footprints no)
+		(tenting front back)
 		(pcbplotparams
-			(layerselection 0x00010fc_ffffffff)
-			(plot_on_all_layers_selection 0x0000000_00000000)
+			(layerselection 0x00000000_00000000_55555555_5755f5ff)
+			(plot_on_all_layers_selection 0x00000000_00000000_00000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
 			(usegerberattributes yes)
@@ -95,7 +96,6 @@
 			(dashed_line_gap_ratio 3.000000)
 			(svgprecision 4)
 			(plotframeref no)
-			(viasonmask no)
 			(mode 1)
 			(useauxorigin no)
 			(hpglpennumber 1)
@@ -103,16 +103,19 @@
 			(hpglpendiameter 15.000000)
 			(pdf_front_fp_property_popups yes)
 			(pdf_back_fp_property_popups yes)
+			(pdf_metadata yes)
+			(pdf_single_document no)
 			(dxfpolygonmode yes)
 			(dxfimperialunits yes)
 			(dxfusepcbnewfont yes)
 			(psnegative no)
 			(psa4output no)
-			(plotreference yes)
-			(plotvalue yes)
-			(plotfptext yes)
-			(plotinvisibletext no)
+			(plot_black_and_white yes)
 			(sketchpadsonfab no)
+			(plotpadnumbers no)
+			(hidednponfab no)
+			(sketchdnponfab yes)
+			(crossoutdnponfab yes)
 			(subtractmaskfromsilk no)
 			(outputformat 1)
 			(mirror no)
@@ -170,20 +173,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_others:MountingHole_2.5mm-slot_1mm"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "e5e74ba5-7355-43e4-b776-b953386dac89")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -211,7 +201,7 @@
 		)
 		(property ki_fp_filters "MountingHole*")
 		(path "/661173a3-465d-4f9a-b34b-edfbdf938eb8")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_line
@@ -313,9 +303,10 @@
 			(at 0 0)
 			(size 3.1 2.5)
 			(drill oval 3.1 2.5)
-			(layers "F&B.Cu" "*.Mask")
+			(layers "*.Cu" "*.Mask")
 			(uuid "a0c3e69b-acbf-4cf9-a480-ebf9443f6fa9")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "cocotter_ic:ST_VL53L1x"
 		(layer "F.Cu")
@@ -324,7 +315,7 @@
 		(descr "VL53L1x distance sensor")
 		(tags "VL53L1CXV0FY1 VL53L1x")
 		(property "Reference" "U3"
-			(at -2.7 -2.5 -90)
+			(at -2.7 -2.5 270)
 			(layer "F.SilkS")
 			(uuid "6096541b-d38d-4689-b017-7cbeb08b105a")
 			(effects
@@ -335,7 +326,7 @@
 			)
 		)
 		(property "Value" "VL53L1CXV0FY1"
-			(at -1.48 2.3 -90)
+			(at -1.48 2.3 270)
 			(layer "F.Fab")
 			(uuid "5e1f6039-323e-480a-8ba5-6678015dc307")
 			(effects
@@ -345,20 +336,8 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_ic:ST_VL53L1x"
-			(at 0 0 -90)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "0382305f-2fd4-4458-a9f3-c2c461cf3a8a")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
 		(property "Datasheet" "https://www.st.com/resource/en/datasheet/vl53l1x.pdf"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "e19b46d4-86aa-4f82-9a0d-94cb1d5aa860")
@@ -370,7 +349,7 @@
 			)
 		)
 		(property "Description" "4m distance ranging ToF sensor"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "6d566f62-fe4f-44a5-8215-e7e070ebad60")
@@ -382,7 +361,7 @@
 			)
 		)
 		(property "JLCPCB" "C190004"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -396,9 +375,9 @@
 		)
 		(property ki_fp_filters "ST*VL53L1x*")
 		(path "/a53cfd06-d663-44da-8b0c-ec4f75fbaee8")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start -4.03 1.35)
 			(end 1.07 1.35)
@@ -466,7 +445,7 @@
 				(width 0.1)
 				(type default)
 			)
-			(fill none)
+			(fill no)
 			(layer "Cmts.User")
 			(uuid "af3635a2-36d7-4e7f-b361-3b3bdbe0ba82")
 		)
@@ -561,7 +540,7 @@
 			(uuid "d3abd07f-c863-43eb-a712-0e251c43e8dd")
 		)
 		(fp_text user "${REFERENCE}"
-			(at -1.48 0 -90)
+			(at -1.48 0 270)
 			(layer "F.Fab")
 			(uuid "21e134f2-15c4-4e0b-9601-40eefe6dfd64")
 			(effects
@@ -574,7 +553,7 @@
 		(pad "1" smd roundrect
 			(at -3.22 -0.675 270)
 			(size 0.38 0.25)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 2 "+3.3V")
 			(pinfunction "AVDDVCSEL")
@@ -584,7 +563,7 @@
 		(pad "1" smd roundrect
 			(at -3.08 -0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 2 "+3.3V")
 			(pinfunction "AVDDVCSEL")
@@ -594,7 +573,7 @@
 		(pad "2" smd roundrect
 			(at -2.28 -0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 1 "GND")
 			(pinfunction "AVSSVCSEL")
@@ -604,7 +583,7 @@
 		(pad "3" smd roundrect
 			(at -1.48 -0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 1 "GND")
 			(pinfunction "GND")
@@ -614,7 +593,7 @@
 		(pad "4" smd roundrect
 			(at -0.68 -0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 1 "GND")
 			(pinfunction "GND")
@@ -624,7 +603,7 @@
 		(pad "5" smd roundrect
 			(at 0.12 -0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 3 "/enable_tof_3v3")
 			(pinfunction "XSHUT")
@@ -634,7 +613,7 @@
 		(pad "6" smd roundrect
 			(at 0.12 0 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 1 "GND")
 			(pinfunction "GND")
@@ -644,7 +623,7 @@
 		(pad "7" smd roundrect
 			(at 0.12 0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 7 "/VL53L1_irq_3v3")
 			(pinfunction "GPIO1")
@@ -654,7 +633,7 @@
 		(pad "8" smd roundrect
 			(at -0.68 0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 14 "unconnected-(U3-DNC-Pad8)")
 			(pinfunction "DNC")
@@ -664,7 +643,7 @@
 		(pad "9" smd roundrect
 			(at -1.48 0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 11 "/SDA_3v3")
 			(pinfunction "SDA")
@@ -674,7 +653,7 @@
 		(pad "10" smd roundrect
 			(at -2.28 0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 6 "/SCL_3v3")
 			(pinfunction "SCL")
@@ -684,7 +663,7 @@
 		(pad "11" smd roundrect
 			(at -3.08 0.8 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 2 "+3.3V")
 			(pinfunction "AVDD")
@@ -694,13 +673,14 @@
 		(pad "12" smd roundrect
 			(at -3.08 0 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
 			(net 1 "GND")
 			(pinfunction "GND")
 			(pintype "passive")
 			(uuid "79cb1345-8050-4bf5-8e2d-529a1366e2d1")
 		)
+		(embedded_fonts no)
 		(model "${KICAD6_3DMODEL_DIR}/Sensor_Distance.3dshapes/ST_VL53L1x.wrl"
 			(offset
 				(xyz -1.48 0 0)
@@ -731,7 +711,7 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 0 1 -90)
+			(at 0 1 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "871545a3-e321-4b98-8545-6f14f90aaad6")
@@ -742,21 +722,8 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 -90)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "f0c72658-4a8e-4f40-b155-40a8bb2363fe")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 -90)
+		(property "Datasheet" "~"
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -769,7 +736,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -820,9 +787,9 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/91747792-516f-4f03-854d-5de4b4b4e97c")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd dnp)
+		(attr smd)
 		(fp_line
 			(start -0.15 0.45)
 			(end 0.15 0.45)
@@ -884,7 +851,7 @@
 			(uuid "df36f5ea-52e7-471f-a5bf-0cc2d99fd139")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 2.5 -90)
+			(at 0 2.5 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "1acfd6ff-b447-4254-b8b2-7259aadb5b31")
@@ -898,7 +865,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 270)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 8 "/VL53L5_irq_3v3")
 			(pintype "passive")
@@ -908,13 +875,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 270)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 4 "enable_next_board_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "46532e80-148c-4261-964c-577df33ba29f")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -952,19 +920,6 @@
 			(effects
 				(font
 					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Footprint" "cocotter_ic:VL53L5CX"
-			(at 4 0 90)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "baf1f2f9-4f18-4b1d-87a7-9e679f029cc1")
-			(effects
-				(font
-					(size 1.27 1.27)
 					(thickness 0.15)
 				)
 			)
@@ -1010,9 +965,9 @@
 		)
 		(property ki_fp_filters "ST*VL53L1x*")
 		(path "/d31f95ed-97db-45a7-addb-b3f67ec7e1ca")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd dnp)
+		(attr smd)
 		(fp_line
 			(start -1.07 -1.815)
 			(end -0.17 -1.815)
@@ -1080,7 +1035,7 @@
 				(width 0.2)
 				(type default)
 			)
-			(fill none)
+			(fill no)
 			(layer "Dwgs.User")
 			(uuid "a049973a-76d6-4a02-8a87-fb2344a962e3")
 		)
@@ -1179,7 +1134,7 @@
 		(pad "A1" smd roundrect
 			(at 4.58 0.95 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 10 "/VL53L5_I2C_RST_3v3")
 			(pinfunction "I2C_RST")
@@ -1190,7 +1145,7 @@
 		(pad "A1" smd roundrect
 			(at 4.73 0.9 90)
 			(size 0.2 0.6)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 10 "/VL53L5_I2C_RST_3v3")
 			(pinfunction "I2C_RST")
@@ -1201,7 +1156,7 @@
 		(pad "A2" smd roundrect
 			(at 3.83 0.95 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "RSVD4")
@@ -1212,7 +1167,7 @@
 		(pad "A3" smd roundrect
 			(at 3.08 0.95 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 8 "/VL53L5_irq_3v3")
 			(pinfunction "INT")
@@ -1223,7 +1178,7 @@
 		(pad "A4" smd roundrect
 			(at 2.33 0.95 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pinfunction "IOVDD")
@@ -1234,7 +1189,7 @@
 		(pad "A5" smd roundrect
 			(at 1.58 0.95 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 3 "/enable_tof_3v3")
 			(pinfunction "LPn")
@@ -1245,7 +1200,7 @@
 		(pad "A6" smd roundrect
 			(at 0.83 0.95 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "RSVD1")
@@ -1256,7 +1211,7 @@
 		(pad "A7" smd roundrect
 			(at 0.08 0.95 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "RSVD2")
@@ -1267,7 +1222,7 @@
 		(pad "B1" smd roundrect
 			(at 4.98 -0.1 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pinfunction "AVDD")
@@ -1279,7 +1234,7 @@
 			(at 2.33 -0.1 90)
 			(size 2.316 1.2)
 			(property pad_prop_heatsink)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "THERM_PAD")
@@ -1290,7 +1245,7 @@
 		(pad "B7" smd roundrect
 			(at -0.32 -0.1 90)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pinfunction "AVDD")
@@ -1301,7 +1256,7 @@
 		(pad "C1" smd roundrect
 			(at 4.58 -1.15 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "GND")
@@ -1312,7 +1267,7 @@
 		(pad "C2" smd roundrect
 			(at 3.83 -1.15 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 9 "/VL53L5_RSVD6_3v3")
 			(pinfunction "RSVD6")
@@ -1323,7 +1278,7 @@
 		(pad "C3" smd roundrect
 			(at 3.08 -1.15 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 11 "/SDA_3v3")
 			(pinfunction "SDA")
@@ -1334,7 +1289,7 @@
 		(pad "C4" smd roundrect
 			(at 2.33 -1.15 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 6 "/SCL_3v3")
 			(pinfunction "SCL")
@@ -1345,7 +1300,7 @@
 		(pad "C5" smd roundrect
 			(at 1.58 -1.15 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 15 "unconnected-(U4-RSVD5-PadC5)")
 			(pinfunction "RSVD5")
@@ -1356,7 +1311,7 @@
 		(pad "C6" smd roundrect
 			(at 0.83 -1.15 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "RSVD3")
@@ -1367,7 +1322,7 @@
 		(pad "C7" smd roundrect
 			(at 0.08 -1.15 270)
 			(size 0.5 0.5)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "GND")
@@ -1375,6 +1330,7 @@
 			(thermal_bridge_angle 45)
 			(uuid "c3410392-9bf0-48d0-a6d5-deb54897be21")
 		)
+		(embedded_fonts no)
 		(model "3d/VL53L5 3D Model.step"
 			(offset
 				(xyz 1.8 0.1 0)
@@ -1416,20 +1372,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 90)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "46770661-ead2-49a1-a822-e28f6c72da73")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -1480,7 +1423,7 @@
 			)
 		)
 		(property "JLCPCB" "C431718"
-			(at -0.033 -0.13 -90)
+			(at -0.033 -0.13 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -1494,9 +1437,9 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/f0890f8c-ee25-4591-89d9-7aef6c0b3bf7")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start -0.15 -0.45)
 			(end 0.15 -0.45)
@@ -1572,7 +1515,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 90)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 7 "/VL53L1_irq_3v3")
 			(pintype "passive")
@@ -1582,13 +1525,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 90)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 5 "DETECT_IRQ_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "ab1ab281-4f3c-4ccf-91a1-fb83e9265bc7")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -1619,7 +1563,7 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 0 1 -90)
+			(at 0 1 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "8ce0de0a-671f-4b36-9ce3-49a7eae7059a")
@@ -1630,21 +1574,8 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 -90)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "93601270-d382-4405-9e72-2d09de072435")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 -90)
+		(property "Datasheet" "~"
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -1657,7 +1588,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -1708,7 +1639,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/ef075725-db16-41f6-ab78-4a9e8cb7b9c5")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd dnp)
 		(fp_line
@@ -1772,7 +1703,7 @@
 			(uuid "c41d1c2f-7dc0-49dc-ad76-1afed971e554")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 2.5 -90)
+			(at 0 2.5 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "73ac39e7-dc4c-475b-b14c-7da7467eb115")
@@ -1786,7 +1717,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 270)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 9 "/VL53L5_RSVD6_3v3")
 			(pintype "passive")
@@ -1796,13 +1727,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 270)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 4 "enable_next_board_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "422e4d4a-7682-4e9d-b513-1ff3e24fda23")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -1844,20 +1776,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 90)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "80e49b8b-8ff0-4034-9838-c1d006f8efc5")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -1908,7 +1827,7 @@
 			)
 		)
 		(property "JLCPCB" "C431718"
-			(at -0.033 -0.13 -90)
+			(at -0.033 -0.13 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -1922,9 +1841,9 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/30b065f5-dc3f-465d-b8e4-8617b09e20dc")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd dnp)
+		(attr smd)
 		(fp_line
 			(start -0.15 -0.45)
 			(end 0.15 -0.45)
@@ -2000,7 +1919,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 90)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 8 "/VL53L5_irq_3v3")
 			(pintype "passive")
@@ -2010,13 +1929,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 90)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 5 "DETECT_IRQ_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "af653f46-4db7-4c03-9848-1278634a12d2")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -2047,7 +1967,7 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 0 1 -90)
+			(at 0 1 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "cbe7066a-6e76-4a97-a652-cbf0398cd699")
@@ -2058,21 +1978,8 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 -90)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "4263413b-d681-4ff8-a6e0-851f8dda5643")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 -90)
+		(property "Datasheet" "~"
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -2085,7 +1992,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
@@ -2136,9 +2043,9 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/9bb02f11-8f15-4663-8b93-07f6f1a08a0c")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start -0.15 0.45)
 			(end 0.15 0.45)
@@ -2200,7 +2107,7 @@
 			(uuid "07f2ff17-7d4a-4eb4-99b7-0a0961e1c60a")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 2.5 -90)
+			(at 0 2.5 270)
 			(unlocked yes)
 			(layer "F.Fab")
 			(uuid "a08e8a59-28b2-4841-984a-110022b6f40a")
@@ -2214,7 +2121,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 270)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 7 "/VL53L1_irq_3v3")
 			(pintype "passive")
@@ -2224,13 +2131,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 270)
 			(size 0.8 0.8)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 4 "enable_next_board_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "76108d1e-e1b6-4c4c-b240-b62e1900fec7")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -2273,20 +2181,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_others:MountingHole_2.5mm-slot_1mm"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "3fea84f7-2326-46be-967a-36ddd913a9a0")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -2314,7 +2209,7 @@
 		)
 		(property ki_fp_filters "MountingHole*")
 		(path "/73e2bf4a-26ae-48ce-b7e2-facdf85f18f4")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_line
@@ -2416,9 +2311,10 @@
 			(at 0 0)
 			(size 3.1 2.5)
 			(drill oval 3.1 2.5)
-			(layers "F&B.Cu" "*.Mask")
+			(layers "*.Cu" "*.Mask")
 			(uuid "6569ee98-ce2a-4628-9932-c7a1f11cc8e5")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "cocotter_connectors:tof_sensor_female"
 		(layer "F.Cu")
@@ -2447,19 +2343,7 @@
 				)
 			)
 		)
-		(property "Footprint" "cocotter_connectors:tof_sensor_female"
-			(at 0 0 0)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "4c0a13ef-2864-4537-8f61-d1c4e756a1fd")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -2497,7 +2381,7 @@
 		)
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/4779b805-6df9-44a0-8914-b9608720eb50")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr through_hole exclude_from_bom)
 		(fp_line
@@ -2594,7 +2478,7 @@
 		(pad "1" smd roundrect
 			(at -8.89 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "GND")
@@ -2605,7 +2489,7 @@
 		(pad "1" smd roundrect
 			(at -8.89 0)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pinfunction "GND")
@@ -2627,7 +2511,7 @@
 		(pad "2" smd roundrect
 			(at -6.35 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pinfunction "P3V3")
@@ -2638,7 +2522,7 @@
 		(pad "2" smd roundrect
 			(at -6.35 0)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pinfunction "P3V3")
@@ -2649,7 +2533,7 @@
 		(pad "3" smd roundrect
 			(at -3.84 0 180)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 4 "enable_next_board_3v3")
 			(pinfunction "enable_next_board_3v3")
@@ -2671,7 +2555,7 @@
 		(pad "3" smd roundrect
 			(at -3.81 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 4 "enable_next_board_3v3")
 			(pinfunction "enable_next_board_3v3")
@@ -2693,7 +2577,7 @@
 		(pad "4" smd roundrect
 			(at -1.27 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 5 "DETECT_IRQ_3v3")
 			(pinfunction "detect_irq_3v3")
@@ -2704,7 +2588,7 @@
 		(pad "4" smd roundrect
 			(at -1.27 0 180)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 5 "DETECT_IRQ_3v3")
 			(pinfunction "detect_irq_3v3")
@@ -2726,7 +2610,7 @@
 		(pad "5" smd roundrect
 			(at 1.27 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 11 "/SDA_3v3")
 			(pinfunction "SDA")
@@ -2737,7 +2621,7 @@
 		(pad "5" smd roundrect
 			(at 1.27 0 180)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 11 "/SDA_3v3")
 			(pinfunction "SDA")
@@ -2759,7 +2643,7 @@
 		(pad "6" smd roundrect
 			(at 3.81 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 6 "/SCL_3v3")
 			(pinfunction "SCL_3V3")
@@ -2770,7 +2654,7 @@
 		(pad "6" smd roundrect
 			(at 3.81 0 180)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 6 "/SCL_3v3")
 			(pinfunction "SCL_3V3")
@@ -2792,7 +2676,7 @@
 		(pad "7" smd roundrect
 			(at 6.35 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 17 "/{slash}enable_tof_3v3")
 			(pinfunction "/enable_tof_3v3")
@@ -2803,7 +2687,7 @@
 		(pad "7" smd roundrect
 			(at 6.35 0 180)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 17 "/{slash}enable_tof_3v3")
 			(pinfunction "/enable_tof_3v3")
@@ -2825,7 +2709,7 @@
 		(pad "8" smd roundrect
 			(at 8.89 0)
 			(size 1.8 3)
-			(layers "F.Cu" "F.Paste" "F.Mask")
+			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.05)
 			(net 16 "/{slash}reset_tof_com_3v3")
 			(pinfunction "/reset_com_3v3")
@@ -2836,7 +2720,7 @@
 		(pad "8" smd roundrect
 			(at 8.89 0 180)
 			(size 1.8 3)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 16 "/{slash}reset_tof_com_3v3")
 			(pinfunction "/reset_com_3v3")
@@ -2844,13 +2728,14 @@
 			(thermal_bridge_angle 45)
 			(uuid "838d3102-c62d-4b86-acb2-2f6a29c35b9f")
 		)
+		(embedded_fonts no)
 	)
 	(footprint "cocotter_resistor:r0603_reflow"
 		(layer "B.Cu")
 		(uuid "0f6825ce-98c6-4fdc-a76f-9057f2a8c2be")
 		(at 36.6 172.1 -90)
 		(property "Reference" "R10"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(hide yes)
@@ -2876,21 +2761,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "5294bd24-6869-4d58-94c9-5ba69efee7dc")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -2945,7 +2816,7 @@
 			)
 		)
 		(property "JLCPCB" "C25804"
-			(at -0.13 -0.033 -90)
+			(at -0.13 -0.033 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -2960,7 +2831,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/d72a44ec-81e3-42a2-ad68-4ab04ffa300b")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd dnp)
 		(fp_line
@@ -3039,7 +2910,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -3049,13 +2920,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 6 "/SCL_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "466417d4-1637-434f-871b-30ee3d4fda9f")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -3099,21 +2971,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "6bf0a50f-10e8-4157-9bd1-64516a7eafdb")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -3185,7 +3043,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/e9ea605b-6f2a-4e57-9c76-0648a87320f2")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -3264,7 +3122,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 18 "Net-(Q4A-GN)")
 			(pintype "passive")
@@ -3274,13 +3132,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "dd585717-adda-429e-a5c0-ee9d164a406a")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -3324,20 +3183,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0805_2012Metric"
-			(at 0 0 90)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "729bf728-3736-4ac0-951b-054eb9096476")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -3392,7 +3238,7 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/e0a050f6-4405-4040-abda-e0015c3d5dd5")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -3510,7 +3356,7 @@
 		(pad "1" smd roundrect
 			(at -0.95 0 90)
 			(size 1 1.45)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -3519,12 +3365,13 @@
 		(pad "2" smd roundrect
 			(at 0.95 0 90)
 			(size 1 1.45)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
 			(uuid "daab018e-d975-4cb4-a060-65bf9f6c9e91")
 		)
+		(embedded_fonts no)
 		(model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl"
 			(offset
 				(xyz 0 0 0)
@@ -3568,20 +3415,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
-			(at 0 0 90)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "68fb6b3a-7593-4eea-ba5d-547d9677c1c1")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -3621,7 +3455,7 @@
 			)
 		)
 		(property "JLCPCB" "C14663"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -3636,7 +3470,7 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/73e3b82f-c2e0-4ca7-aac9-be77eed83ecd")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -3754,7 +3588,7 @@
 		(pad "1" smd roundrect
 			(at -0.775 0 270)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -3763,12 +3597,13 @@
 		(pad "2" smd roundrect
 			(at 0.775 0 270)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
 			(uuid "587736e2-7296-4e31-8870-8951e4a55190")
 		)
+		(embedded_fonts no)
 		(model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl"
 			(offset
 				(xyz 0 0 0)
@@ -3812,20 +3647,6 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_transistors:SOT-363_SC-70-6"
-			(at 0 0 90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "fcf77fd2-b5ae-43a6-97cc-4309387ac3b8")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
 		(property "Datasheet" "https://www.diodes.com/assets/Datasheets/ds30380.pdf"
 			(at 0 0 90)
 			(unlocked yes)
@@ -3856,7 +3677,7 @@
 		)
 		(property ki_fp_filters "TSOT?23*")
 		(path "/ab944eb1-466f-4f63-9f23-0511717f2504")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -3886,7 +3707,7 @@
 				(width 0.1)
 				(type solid)
 			)
-			(fill solid)
+			(fill yes)
 			(layer "B.SilkS")
 			(uuid "ba84ec0b-c54c-40cb-9277-69bd96b73684")
 		)
@@ -3995,7 +3816,7 @@
 		(pad "1" smd roundrect
 			(at -0.95 0.65 270)
 			(size 0.65 0.42)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0)
 			(chamfer_ratio 0.2)
 			(chamfer bottom_left)
@@ -4007,7 +3828,7 @@
 		(pad "2" smd roundrect
 			(at -0.95 0 270)
 			(size 0.65 0.42)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 18 "Net-(Q4A-GN)")
 			(pinfunction "GN")
@@ -4017,7 +3838,7 @@
 		(pad "3" smd roundrect
 			(at -0.95 -0.65 270)
 			(size 0.65 0.42)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 18 "Net-(Q4A-GN)")
 			(pinfunction "DP")
@@ -4027,7 +3848,7 @@
 		(pad "4" smd roundrect
 			(at 0.95 -0.65 270)
 			(size 0.65 0.42)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pinfunction "SP")
@@ -4037,7 +3858,7 @@
 		(pad "5" smd roundrect
 			(at 0.95 0 270)
 			(size 0.65 0.42)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 3 "/enable_tof_3v3")
 			(pinfunction "GP")
@@ -4047,13 +3868,14 @@
 		(pad "6" smd roundrect
 			(at 0.95 0.65 270)
 			(size 0.65 0.42)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 13 "Net-(Q4A-DN)")
 			(pinfunction "DN")
 			(pintype "passive")
 			(uuid "0e9655c5-f50e-4038-90d4-4daab9427874")
 		)
+		(embedded_fonts no)
 		(model "${KICAD8_3DMODEL_DIR}/Package_TO_SOT_SMD.3dshapes/SOT-363_SC-70-6.wrl"
 			(offset
 				(xyz 0 0 0)
@@ -4097,21 +3919,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 180)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "e9c25a9e-d3fc-4bf9-8c72-59e9b2be2537")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -4181,7 +3989,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/8e2725e5-6268-4684-85ac-4a904f7f301b")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -4260,7 +4068,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -4270,13 +4078,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 9 "/VL53L5_RSVD6_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "495af4e2-7bc7-4910-ba18-72a0820d1652")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -4320,21 +4129,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "180b5fab-9c9e-4d47-8b15-36835d307ee3")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -4404,7 +4199,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/6a9f52a5-77e7-47a5-97af-55a0db522fa5")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -4483,7 +4278,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 10 "/VL53L5_I2C_RST_3v3")
 			(pintype "passive")
@@ -4493,13 +4288,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "9c2f701f-1adc-4afa-9a48-a261bd74a5fc")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -4543,20 +4339,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
-			(at 0 0 90)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "ea58c68a-3420-4e7c-8db9-f3db3e12b430")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -4611,9 +4394,9 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/0ba15e6c-af62-42de-b43a-4207b17b192c")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start 0.14058 -0.51)
 			(end -0.14058 -0.51)
@@ -4729,7 +4512,7 @@
 		(pad "1" smd roundrect
 			(at -0.775 0 90)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
@@ -4738,12 +4521,13 @@
 		(pad "2" smd roundrect
 			(at 0.775 0 90)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
 			(uuid "ab865fc2-438e-4b01-a993-ed9dfd20ffd5")
 		)
+		(embedded_fonts no)
 		(model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl"
 			(offset
 				(xyz 0 0 0)
@@ -4787,20 +4571,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
-			(at 0 0 90)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "c95ba993-e72a-466f-9236-d4e8d8cd9066")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -4827,7 +4598,7 @@
 			)
 		)
 		(property "Specification" "2nF 50V X7R 0603 "
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -4841,7 +4612,7 @@
 			)
 		)
 		(property "JLCPCB" "C1588"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -4870,7 +4641,7 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3742fe5f-c4e5-41dd-9820-c4d5c95cb4aa")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -4988,7 +4759,7 @@
 		(pad "1" smd roundrect
 			(at -0.775 0 90)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 3 "/enable_tof_3v3")
 			(pintype "passive")
@@ -4997,12 +4768,13 @@
 		(pad "2" smd roundrect
 			(at 0.775 0 90)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
 			(uuid "cae0055a-51c8-4b3d-8299-7d16c63dd732")
 		)
+		(embedded_fonts no)
 		(model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl"
 			(offset
 				(xyz 0 0 0)
@@ -5046,20 +4818,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0805_2012Metric"
-			(at 0 0 90)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "12107cf8-0b1b-4f41-bdcc-0a554936bfcc")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(layer "B.Fab")
 			(hide yes)
@@ -5099,7 +4858,7 @@
 			)
 		)
 		(property "JLCPCB" "C15850"
-			(at 0.033 -0.13 -90)
+			(at 0.033 -0.13 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -5114,9 +4873,9 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/3b28565a-13af-4036-ae1f-3156343756af")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start 0.261252 0.735)
 			(end -0.261252 0.735)
@@ -5232,7 +4991,7 @@
 		(pad "1" smd roundrect
 			(at -0.95 0 270)
 			(size 1 1.45)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -5241,12 +5000,13 @@
 		(pad "2" smd roundrect
 			(at 0.95 0 270)
 			(size 1 1.45)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
 			(uuid "ef41beaf-5ebd-4276-9e0f-c01369f2d0c8")
 		)
+		(embedded_fonts no)
 		(model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0805_2012Metric.wrl"
 			(offset
 				(xyz 0 0 0)
@@ -5264,7 +5024,7 @@
 		(uuid "51b4fa21-4aa1-498c-9b2e-65a53fada471")
 		(at 40.05 171.1 90)
 		(property "Reference" "R15"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(hide yes)
@@ -5278,7 +5038,7 @@
 			)
 		)
 		(property "Value" "91k 1%"
-			(at 0 -1 -90)
+			(at 0 -1 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "5295f0ef-5d3b-4643-900a-f990f97974ec")
@@ -5290,22 +5050,8 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 -90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "d760f807-ec43-4ea2-8a14-6595e991f2d2")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 -90)
+		(property "Datasheet" "~"
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -5319,7 +5065,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -5333,7 +5079,7 @@
 			)
 		)
 		(property "Specification" "91k 0603 1% 100mW"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -5347,7 +5093,7 @@
 			)
 		)
 		(property "mouser" ""
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -5376,7 +5122,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/a16d630d-cb02-4c2e-aadd-9a97bff7d72d")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -5440,7 +5186,7 @@
 			(uuid "d89735f6-e7f7-412e-ac45-b96657b94d7b")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 -2.5 -90)
+			(at 0 -2.5 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "51a4d901-43f8-4149-8d8d-b2977ad64b95")
@@ -5455,7 +5201,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 90)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 13 "Net-(Q4A-DN)")
 			(pintype "passive")
@@ -5465,13 +5211,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 90)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 3 "/enable_tof_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "9489a4be-584b-4d82-a233-77cdaa851e74")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -5515,21 +5262,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "0ec19f57-7819-4c4d-9c53-d8123b077cc1")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5586,7 +5319,7 @@
 			)
 		)
 		(property "JLCPCB Part #" "C23265"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -5601,7 +5334,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/5bbecfdf-4a9e-4943-8228-e0201a7bb394")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -5680,7 +5413,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 13 "Net-(Q4A-DN)")
 			(pintype "passive")
@@ -5690,13 +5423,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 16 "/{slash}reset_tof_com_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "43bc3b03-53bf-467d-b6bf-2d70926ee760")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -5740,21 +5474,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "d44fc12a-5356-4d72-9b57-8542602cba0d")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -5826,9 +5546,9 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/bf166a08-2dd1-4db6-a2fb-691238f6e8c2")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start 0.15 0.45)
 			(end -0.15 0.45)
@@ -5905,7 +5625,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -5915,13 +5635,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 7 "/VL53L1_irq_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "71747cee-b3aa-4553-9790-f21158a64f9f")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -5965,21 +5686,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 180)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "b5fdc53e-bfa7-40f6-aca6-a1b8cf580708")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -6049,7 +5756,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/45117a5b-7d8b-4e5d-b309-c69bf493b0c5")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -6128,7 +5835,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -6138,13 +5845,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 9 "/VL53L5_RSVD6_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "85c6e928-914e-4756-8e1c-a33e390c3505")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -6162,7 +5870,7 @@
 		(uuid "c141563d-45ce-4441-821e-734d2c6ba3ec")
 		(at 28.2 173 90)
 		(property "Reference" "R25"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(hide yes)
@@ -6176,7 +5884,7 @@
 			)
 		)
 		(property "Value" "10k 1%"
-			(at 0 -1 -90)
+			(at 0 -1 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "e8f5987a-a0d8-4244-992a-2c6ea68ce78e")
@@ -6188,22 +5896,8 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 -90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "90e6dda1-2166-4093-afb5-ce3e6135b1d7")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 -90)
+		(property "Datasheet" "~"
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -6217,7 +5911,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -6257,7 +5951,7 @@
 			)
 		)
 		(property "JLCPCB" "C25804"
-			(at -0.033 -0.13 -90)
+			(at -0.033 -0.13 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -6272,9 +5966,9 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/dcb00e63-cfdf-4afc-8dd4-4c520f94d7f0")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start 0.15 -0.45)
 			(end -0.15 -0.45)
@@ -6336,7 +6030,7 @@
 			(uuid "d526787e-b03d-46e0-aca3-43584281ba62")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 -2.5 -90)
+			(at 0 -2.5 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(uuid "3f77e76d-54e5-498d-868f-4a30ecf5544d")
@@ -6351,7 +6045,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 90)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -6361,13 +6055,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 90)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 5 "DETECT_IRQ_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "60a4c324-e56b-473a-92de-22f8f78e4f40")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -6411,20 +6106,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_capacitors:C_0603_1608Metric"
-			(at 0 0 0)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "3b0716f0-7ee3-4c58-ad9c-1045f9d1a224")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(layer "B.Fab")
 			(hide yes)
@@ -6479,7 +6161,7 @@
 		)
 		(property ki_fp_filters "C_*")
 		(path "/71c23178-839c-4cdf-8492-c82a2b6ff0a9")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -6597,7 +6279,7 @@
 		(pad "1" smd roundrect
 			(at -0.775 0)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -6606,12 +6288,13 @@
 		(pad "2" smd roundrect
 			(at 0.775 0)
 			(size 0.9 0.95)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 1 "GND")
 			(pintype "passive")
 			(uuid "bdb1ce22-9940-4ab9-b826-c6e7eeaf26e1")
 		)
+		(embedded_fonts no)
 		(model "${KICAD6_3DMODEL_DIR}/Capacitor_SMD.3dshapes/C_0603_1608Metric.wrl"
 			(offset
 				(xyz 0 0 0)
@@ -6629,7 +6312,7 @@
 		(uuid "c2d02077-e5b6-4656-81c5-cfc69bbd360a")
 		(at 30.6 174.9 -90)
 		(property "Reference" "R7"
-			(at 0 0.1 -90)
+			(at 0 0.1 270)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(hide yes)
@@ -6655,21 +6338,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "04c45800-7ba0-4719-b5b4-6afbe2ae5d3b")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -6739,9 +6408,9 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/408d911a-b0d1-4fb7-81f8-adefe42bb894")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
-		(attr smd)
+		(attr smd dnp)
 		(fp_line
 			(start 0.15 0.45)
 			(end -0.15 0.45)
@@ -6818,7 +6487,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -6828,13 +6497,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 4 "enable_next_board_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "65bf8f36-de7e-47b3-98d5-8b593c759a4f")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -6878,21 +6548,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "7e1cfa2e-1ed2-4372-b3b2-82973015cb1c")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -6964,7 +6620,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/d83ecd39-ceeb-4f6e-81ec-f65936963a46")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -7043,7 +6699,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 12 "Net-(Q1-D)")
 			(pintype "passive")
@@ -7053,13 +6709,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 3 "/enable_tof_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "7ca01b96-ea8d-49aa-abf2-bfdc315a3e73")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -7077,7 +6734,7 @@
 		(uuid "d15ca98e-edf0-4512-976d-427153e9df93")
 		(at 35.1 172.1 -90)
 		(property "Reference" "R9"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.SilkS")
 			(hide yes)
@@ -7103,21 +6760,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "eb47da30-cb69-4947-8d61-a383dbb7862d")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -7172,7 +6815,7 @@
 			)
 		)
 		(property "JLCPCB" "C25804"
-			(at -0.13 -0.033 -90)
+			(at -0.13 -0.033 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -7187,7 +6830,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/b79df303-d7f9-4098-b1d5-de80440b2465")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd dnp)
 		(fp_line
@@ -7266,7 +6909,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -7276,13 +6919,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 270)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 11 "/SDA_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "7aa1ff1e-ccdd-4960-b2b6-e028c957515c")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -7325,22 +6969,8 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_transistors:SOT-23-3"
-			(at 0 0 -90)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "cd99d484-dca9-431b-a495-f5e895db0404")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
 		(property "Datasheet" "http://assets.nexperia.com/documents/data-sheet/BSS84.pdf"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -7354,7 +6984,7 @@
 			)
 		)
 		(property "Description" "-0.13A Id, -50V Vds, P-Channel MOSFET, SOT-23"
-			(at 0 0 -90)
+			(at 0 0 270)
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
@@ -7369,7 +6999,7 @@
 		)
 		(property ki_fp_filters "SOT?23*")
 		(path "/5c6aa599-aa66-494d-98f2-0e2899526594")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -7517,7 +7147,7 @@
 		(pad "1" smd roundrect
 			(at -1.1375 0.95 90)
 			(size 1.325 0.6)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.25)
 			(net 17 "/{slash}enable_tof_3v3")
 			(pinfunction "G")
@@ -7527,7 +7157,7 @@
 		(pad "2" smd roundrect
 			(at -1.1375 -0.95 90)
 			(size 1.325 0.6)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.25)
 			(net 16 "/{slash}reset_tof_com_3v3")
 			(pinfunction "S")
@@ -7537,13 +7167,14 @@
 		(pad "3" smd roundrect
 			(at 1.1375 0 90)
 			(size 1.325 0.6)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.25)
 			(net 12 "Net-(Q1-D)")
 			(pinfunction "D")
 			(pintype "passive")
 			(uuid "3fc60de6-1cf1-4d36-b0ee-ea4c0e8681b0")
 		)
+		(embedded_fonts no)
 		(model "3d/SOT-23-3.step"
 			(offset
 				(xyz 0 0 0)
@@ -7587,21 +7218,7 @@
 				(justify mirror)
 			)
 		)
-		(property "Footprint" "cocotter_resistor:r0603_reflow"
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "B.Fab")
-			(hide yes)
-			(uuid "b88c9dc2-da64-4e68-8e87-cfd5eaa660e9")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-				(justify mirror)
-			)
-		)
-		(property "Datasheet" ""
+		(property "Datasheet" "~"
 			(at 0 0 0)
 			(unlocked yes)
 			(layer "B.Fab")
@@ -7671,7 +7288,7 @@
 		)
 		(property ki_fp_filters "R_*")
 		(path "/64c67c8b-62f4-481d-9246-a89afdc86d58")
-		(sheetname "Racine")
+		(sheetname "/")
 		(sheetfile "pmi_tof_sensor.kicad_sch")
 		(attr smd)
 		(fp_line
@@ -7750,7 +7367,7 @@
 		(pad "1" smd roundrect
 			(at -0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 2 "+3.3V")
 			(pintype "passive")
@@ -7760,13 +7377,14 @@
 		(pad "2" smd roundrect
 			(at 0.75 0 180)
 			(size 0.8 0.8)
-			(layers "B.Cu" "B.Paste" "B.Mask")
+			(layers "B.Cu" "B.Mask" "B.Paste")
 			(roundrect_rratio 0.05)
 			(net 8 "/VL53L5_irq_3v3")
 			(pintype "passive")
 			(thermal_bridge_angle 45)
 			(uuid "71922f39-30fa-4381-97c2-fe14f9489edc")
 		)
+		(embedded_fonts no)
 		(model "3d/RC0603N_VIS.step"
 			(offset
 				(xyz 0 0 0)
@@ -7782,154 +7400,154 @@
 	(gr_line
 		(start 28 170)
 		(end 28 164)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "0239a857-4bcb-48ff-9696-83918776c095")
 	)
 	(gr_line
 		(start 30.5 170)
 		(end 31.85 173.35)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type dash)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "2b82e6b9-6dd4-4ddf-9821-ef9482770e4c")
 	)
 	(gr_line
 		(start 30 176)
 		(end 24 176)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "2d6866cd-5950-4f7a-9c77-4465580fa69a")
 	)
 	(gr_line
 		(start 30 164)
 		(end 30 170)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "2f8a284f-bf25-425d-ba03-286f25e0c77f")
 	)
 	(gr_line
 		(start 26 164)
 		(end 30 164)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "36469356-0fc0-4971-923a-b2ce678f1b47")
 	)
 	(gr_line
 		(start 26 176)
 		(end 26 170)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "76c7dab3-cf1a-4a6f-b8e2-0d2b97f68811")
 	)
 	(gr_line
 		(start 30 170)
 		(end 30 176)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "8162bc1e-0354-4314-980f-92e548405005")
 	)
 	(gr_line
 		(start 24 170)
 		(end 30 170)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "a152f2cb-b830-4995-bbcc-e077e68947ec")
 	)
 	(gr_line
 		(start 26 170)
 		(end 26 164)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "c0c67819-c729-4212-9772-9c26794f6030")
 	)
 	(gr_line
 		(start 31.85 173.35)
 		(end 38.55 173.35)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type dash)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "c82404cb-a6cb-4fe2-8e39-4a6fabeff6c7")
 	)
 	(gr_line
 		(start 24 176)
 		(end 24 170)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "ce48ff9b-c8ec-418e-9de5-904ad39729cf")
 	)
 	(gr_line
 		(start 28 176)
 		(end 28 170)
-		(locked yes)
 		(stroke
 			(width 0.15)
 			(type default)
 		)
+		(locked yes)
 		(layer "F.SilkS")
 		(uuid "f267ed90-f266-408e-b1a3-7176d56523ba")
 	)
 	(gr_line
 		(start 23.5 180)
 		(end 23.5 160.73)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "0b4d3c9b-01f5-4fe7-b7fd-5ff7db096aec")
 	)
 	(gr_line
 		(start 44.5 160.73)
 		(end 44.5 180)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "4140b970-b97d-466c-9602-89c3cca97623")
 	)
@@ -7937,22 +7555,22 @@
 		(start 43.85 159.8)
 		(mid 44.342066 160.148233)
 		(end 44.5 160.73)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "4e9e7947-3c27-4669-8bb6-319a4754bea2")
 	)
 	(gr_line
 		(start 23.5 180)
 		(end 44.5 180)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "6d79ae70-250b-4596-9243-ac49a3371294")
 	)
@@ -7960,11 +7578,11 @@
 		(start 33.7 156.3)
 		(mid 34 156.259825)
 		(end 34.3 156.3)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "712c7108-8cf9-4b38-bc4e-56d1bb7840b5")
 	)
@@ -7972,48 +7590,35 @@
 		(start 23.5 160.73)
 		(mid 23.688382 160.157525)
 		(end 24.166637 159.790798)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "b705e062-816e-4266-9c6a-ada752ec1303")
 	)
 	(gr_line
 		(start 24.166637 159.790798)
 		(end 33.7 156.3)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "ddfc4b54-87ae-4960-809e-04b0d37b5a6c")
 	)
 	(gr_line
 		(start 34.3 156.3)
 		(end 43.85 159.8)
-		(locked yes)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
+		(locked yes)
 		(layer "Edge.Cuts")
 		(uuid "de4d0674-385c-4c9b-bc55-c5b0b59e154b")
-	)
-	(gr_text "PMI_TOF_SENSOR"
-		(locked yes)
-		(at 25.55 163.7 90)
-		(layer "B.SilkS" knockout)
-		(uuid "374d9ab4-64cc-40a2-8248-5b426e0bec65")
-		(effects
-			(font
-				(size 1 1)
-				(thickness 0.15)
-			)
-			(justify left bottom mirror)
-		)
 	)
 	(gr_text "L1"
 		(locked yes)
@@ -8132,6 +7737,19 @@
 			(justify left bottom)
 		)
 	)
+	(gr_text "PMI_TOF_SENSOR"
+		(locked yes)
+		(at 25.55 163.7 90)
+		(layer "B.SilkS" knockout)
+		(uuid "374d9ab4-64cc-40a2-8248-5b426e0bec65")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
 	(dimension
 		(type orthogonal)
 		(layer "Cmts.User")
@@ -8141,17 +7759,6 @@
 		)
 		(height -5.1)
 		(orientation 1)
-		(gr_text "18,0000 mm"
-			(at 20.25 171 90)
-			(layer "Cmts.User")
-			(uuid "1ced2cef-e580-47f7-9b24-522c14209c6c")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(format
 			(prefix "")
 			(suffix "")
@@ -8163,8 +7770,22 @@
 			(thickness 0.15)
 			(arrow_length 1.27)
 			(text_position_mode 0)
+			(arrow_direction outward)
 			(extension_height 0.58642)
-			(extension_offset 0.5) keep_text_aligned)
+			(extension_offset 0.5)
+			(keep_text_aligned yes)
+		)
+		(gr_text "18.0000 mm"
+			(at 20.25 171 90)
+			(layer "Cmts.User")
+			(uuid "1ced2cef-e580-47f7-9b24-522c14209c6c")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 	)
 	(dimension
 		(type orthogonal)
@@ -8175,17 +7796,6 @@
 		)
 		(height 5.2)
 		(orientation 0)
-		(gr_text "21,0000 mm"
-			(at 33.775 186.45 0)
-			(layer "Cmts.User")
-			(uuid "3c62e507-c5bc-480a-8581-4a9ffb022334")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(format
 			(prefix "")
 			(suffix "")
@@ -8197,8 +7807,22 @@
 			(thickness 0.15)
 			(arrow_length 1.27)
 			(text_position_mode 2)
+			(arrow_direction outward)
 			(extension_height 0.58642)
-			(extension_offset 0.5) keep_text_aligned)
+			(extension_offset 0.5)
+			(keep_text_aligned yes)
+		)
+		(gr_text "21.0000 mm"
+			(at 33.775 186.45 0)
+			(layer "Cmts.User")
+			(uuid "3c62e507-c5bc-480a-8581-4a9ffb022334")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 	)
 	(dimension
 		(type orthogonal)
@@ -8209,7 +7833,23 @@
 		)
 		(height 3)
 		(orientation 0)
-		(gr_text "18,0000 mm"
+		(format
+			(prefix "")
+			(suffix "")
+			(units 3)
+			(units_format 1)
+			(precision 4)
+		)
+		(style
+			(thickness 0.15)
+			(arrow_length 1.27)
+			(text_position_mode 0)
+			(arrow_direction outward)
+			(extension_height 0.58642)
+			(extension_offset 0.5)
+			(keep_text_aligned yes)
+		)
+		(gr_text "18.0000 mm"
 			(at 32.5 181.85 0)
 			(layer "Cmts.User")
 			(uuid "aa3b089d-bb8a-43a1-be41-c280e3f1bfba")
@@ -8220,19 +7860,6 @@
 				)
 			)
 		)
-		(format
-			(prefix "")
-			(suffix "")
-			(units 3)
-			(units_format 1)
-			(precision 4)
-		)
-		(style
-			(thickness 0.15)
-			(arrow_length 1.27)
-			(text_position_mode 0)
-			(extension_height 0.58642)
-			(extension_offset 0.5) keep_text_aligned)
 	)
 	(dimension
 		(type orthogonal)
@@ -8243,17 +7870,6 @@
 		)
 		(height -5.41)
 		(orientation 1)
-		(gr_text "23,7631 mm"
-			(at 17.15 168.131547 90)
-			(layer "Cmts.User")
-			(uuid "b08dbad0-f0fe-4dc9-8d66-0c2f192d3825")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
 		(format
 			(prefix "")
 			(suffix "")
@@ -8265,8 +7881,22 @@
 			(thickness 0.15)
 			(arrow_length 1.27)
 			(text_position_mode 0)
+			(arrow_direction outward)
 			(extension_height 0.58642)
-			(extension_offset 0.5) keep_text_aligned)
+			(extension_offset 0.5)
+			(keep_text_aligned yes)
+		)
+		(gr_text "23.7631 mm"
+			(at 17.15 168.131547 90)
+			(layer "Cmts.User")
+			(uuid "b08dbad0-f0fe-4dc9-8d66-0c2f192d3825")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 	)
 	(dimension
 		(type orthogonal)
@@ -8277,7 +7907,23 @@
 		)
 		(height 3)
 		(orientation 0)
-		(gr_text "3,0000 mm"
+		(format
+			(prefix "")
+			(suffix "")
+			(units 3)
+			(units_format 1)
+			(precision 4)
+		)
+		(style
+			(thickness 0.15)
+			(arrow_length 1.27)
+			(text_position_mode 2)
+			(arrow_direction outward)
+			(extension_height 0.58642)
+			(extension_offset 0.5)
+			(keep_text_aligned yes)
+		)
+		(gr_text "3.0000 mm"
 			(at 22.775 182.9 0)
 			(layer "Cmts.User")
 			(uuid "dc50e035-f47e-4d3a-a920-cfbb1af094ad")
@@ -8289,19 +7935,6 @@
 				(justify right)
 			)
 		)
-		(format
-			(prefix "")
-			(suffix "")
-			(units 3)
-			(units_format 1)
-			(precision 4)
-		)
-		(style
-			(thickness 0.15)
-			(arrow_length 1.27)
-			(text_position_mode 2)
-			(extension_height 0.58642)
-			(extension_offset 0.5) keep_text_aligned)
 	)
 	(segment
 		(start 32.85 164.42)
@@ -11267,7 +10900,7 @@
 	(zone
 		(net 1)
 		(net_name "GND")
-		(layers "F&B.Cu")
+		(layers "F.Cu" "B.Cu")
 		(uuid "3abd69aa-e911-4981-8614-6f050e45a69b")
 		(hatch edge 0.5)
 		(connect_pads yes
@@ -12308,4 +11941,5 @@
 			"ff5b7dd5-e697-48ba-8756-9be1ddc6c5c4" "ffb631b4-4c43-4321-ac39-cbdc348258e1"
 		)
 	)
+	(embedded_fonts no)
 )
