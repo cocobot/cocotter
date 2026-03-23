@@ -19,6 +19,8 @@ use esp_idf_svc::sys::ets_delay_us;
 use movement::{Movement, MovementLowLevelHardware};
 use sch16t::Sch16t;
 use asserv::holonomic::Asserv;
+use asserv::holonomic::RobotSide;
+use asserv::holonomic::TableSide;
 use asserv::maths::XY;
 use smart_leds::RGB8;
 
@@ -138,20 +140,6 @@ fn main() {
     }
 
     let mut robot_color = true;
-
-    #[allow(dead_code)]
-    enum RobotSide {
-        Left,
-        Right,
-        Back,
-    }
-    #[allow(dead_code)]
-    enum TableSide {
-        Left,
-        Right,
-        Up,
-        Down,
-    }
 
     let robot_side_main = if robot_color { RobotSide::Right } else { RobotSide::Left };
     let robot_side_aux  = if robot_color { RobotSide::Left } else { RobotSide::Right };
