@@ -1,3 +1,5 @@
+use embedded_can::blocking::Can;
+use embedded_can as can;
 use embedded_hal_mock::eh1::{
     digital::{Mock as PinMock},
     i2c::{Mock as I2cMock},
@@ -10,13 +12,12 @@ use crate::{SabotterBoard, SabotterLeds, SabotterMotor};
 
 pub struct MockSabotterBoard;
 
-pub type SabotterDisplay = MockDisplay<BinaryColor>;
-
 impl SabotterBoard for MockSabotterBoard {
     type I2c = I2cMock;
     type OutputPin = PinMock;
     type ExOutputPin = PinMock;
-    type Spi = SpiMock;
+    type Can = MockCan;
+    type Spi = SpiMock<u8>;
     type MotorEncoder = MockEncoder<i32>;
     type MotorPwm = SetDutyCycleMock;
 
@@ -40,3 +41,63 @@ impl SabotterBoard for MockSabotterBoard {
         None
     }
 }
+
+pub struct MockCan;
+
+impl Can for MockCan {
+    type Frame = MockCanFrame;
+    type Error = MockCanError;
+
+    fn transmit(&mut self, _frame: &Self::Frame) -> Result<(), Self::Error> {
+        Ok(())
+    }
+
+    fn receive(&mut self) -> Result<Self::Frame, Self::Error> {
+        Err(Self::Error::default())
+    }
+}
+
+pub struct MockCanFrame {
+    pub id: can::Id,
+    pub data: Vec<u8>,
+}
+
+impl can::Frame for MockCanFrame {
+    fn new(_id: impl Into<can::Id>, _data: &[u8]) -> Option<Self> {
+        None
+    }
+
+    fn new_remote(_id: impl Into<can::Id>, _dlc: usize) -> Option<Self> {
+        None
+    }
+
+    fn is_extended(&self) -> bool {
+        false 
+    }
+
+    fn is_remote_frame(&self) -> bool {
+        false
+    }
+
+    fn id(&self) -> can::Id {
+        can::Id::Standard(can::StandardId::ZERO)
+    }
+
+    fn dlc(&self) -> usize {
+        0
+    }
+
+    fn data(&self) -> &[u8] {
+        &[]
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct MockCanError;
+
+impl can::Error for MockCanError {
+    fn kind(&self) -> can::ErrorKind {
+        can::ErrorKind::Other
+    }
+}
+

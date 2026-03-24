@@ -11,7 +11,7 @@ use embedded_graphics::{
 use board_common::mock::{MockBatteryReader, MockEncoder};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxError, VlxSensor, ZoneAlarm};
-use crate::{PamiBoard, PamiButtons, PamiMotors};
+use crate::{PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotors, PamiPwmController};
 
 
 pub struct MockPamiBoard;
@@ -23,7 +23,7 @@ impl PamiBoard for MockPamiBoard {
     type I2c = I2cMock;
     type Led = PinMock;
     type Display = PamiDisplay;
-    type Buttons = MockPamiButtons,
+    type Buttons = MockPamiButtons;
     type Vlx = MockVlxSensor;
     type MotorEncoder = MockEncoder<i32>;
     type MotorPwm = SetDutyCycleMock;
@@ -105,8 +105,8 @@ impl VlxSensor for MockVlxSensor {
 
 pub struct MockPamiButtons;
 
-impl<I2C: I2c> PamiButtons for EspPamiButtons<I2C> {
-    pub fn read_state(&mut self) -> PamiButtonsState {
+impl PamiButtons for MockPamiButtons {
+    fn read_state(&mut self) -> PamiButtonsState {
         PamiButtonsState::default()
     }
 }
