@@ -40,7 +40,7 @@ pub type I2cType = MutexDevice<'static, I2cDriver<'static>>;
 pub type PamiDisplay = Ssd1306<DisplayI2CInterface<I2cType>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
 
 
-pub struct EspPamiBoard<'d> {
+pub struct EspPamiBoard {
     battery_reader: Option<PamiBatteryReader>,
     emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
     starting_cord: Option<PinDriver<'static, AnyInputPin, Input>>,
@@ -50,18 +50,18 @@ pub struct EspPamiBoard<'d> {
     leds: Option<PamiLeds<PinDriver<'static, AnyOutputPin, Output>>>,
     line_sensor: Option<TCA6408<I2cType>>,
     vlx_sensor: Option<PamiVlxSensor>,
-    motors: Option<PamiMotors<EspEncoder<'d>, LedcDriver<'static>>>,
+    motors: Option<PamiMotors<EspEncoder<'static>, LedcDriver<'static>>>,
     pwm_controller: Option<PamiPwmController<I2cType>>,
 }
 
-impl<'d> PamiBoard for EspPamiBoard<'d> {
+impl PamiBoard for EspPamiBoard {
     type BatteryReader = PamiBatteryReader;
     type I2c = I2cType;
     type Led = PinDriver<'static, AnyOutputPin, Output>;
     type Display = PamiDisplay;
     type Buttons = EspPamiButtons;
     type Vlx = PamiVlxSensor;
-    type MotorEncoder = EspEncoder<'d>;
+    type MotorEncoder = EspEncoder<'static>;
     type MotorPwm = LedcDriver<'static>;
 
     fn init() -> Self {

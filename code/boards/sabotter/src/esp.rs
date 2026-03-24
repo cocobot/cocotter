@@ -23,15 +23,15 @@ type EspI2c = MutexDevice<'static, I2cDriver<'static>>;
 type EspOutputPin = PinDriver<'static, AnyOutputPin, Output>;
 
 
-pub struct EspSabotterBoard<'d> {
+pub struct EspSabotterBoard {
     com_led: Option<EspOutputPin>,
     imu_spi: Option<SpiDeviceDriver<'static, SpiDriver<'static>>>,
-    motors: Option<[SabotterMotor<EspEncoder<'d>, LedcDriver<'static>>; 3]>,
+    motors: Option<[SabotterMotor<EspEncoder<'static>, LedcDriver<'static>>; 3]>,
     motor_enable: Option<EspOutputPin>,
     gpio_expanders: GpioExpanders,
 }
 
-impl<'d> EspSabotterBoard<'d> {
+impl EspSabotterBoard {
     fn motor_leds(&self) -> [SharedGpioPin; 3] {
         [
             self.gpio_expanders.motors[0].get_pin(2),
@@ -41,12 +41,12 @@ impl<'d> EspSabotterBoard<'d> {
     }
 }
 
-impl<'d> SabotterBoard for EspSabotterBoard<'d> {
+impl SabotterBoard for EspSabotterBoard {
     type I2c = EspI2c;
     type OutputPin = EspOutputPin;
     type ExOutputPin = SharedGpioPin;
     type Spi = SpiDeviceDriver<'static, SpiDriver<'static>>;
-    type MotorEncoder = EspEncoder<'d>;
+    type MotorEncoder = EspEncoder<'static>;
     type MotorPwm = LedcDriver<'static>;
 
     fn init() -> Self {

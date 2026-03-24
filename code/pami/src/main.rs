@@ -8,7 +8,7 @@ use pami::routines::PamiRoutines;
 use pami::ui::Ui;
 
 #[cfg(target_os = "espidf")]
-type PamiBoardImpl = board_pami::EspPamiBoard<'static>;
+type PamiBoardImpl = board_pami::EspPamiBoard;
 #[cfg(not(target_os = "espidf"))]
 use board_pami::MockPamiBoard as PamiBoardImpl;
 

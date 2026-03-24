@@ -9,7 +9,7 @@ use sch16t::Sch16t;
 use movement::{Movement, MovementLowLevelHardware};
 
 #[cfg(target_os = "espidf")]
-type SabotterBoardImpl = board_sabotter::EspSabotterBoard<'static>;
+type SabotterBoardImpl = board_sabotter::EspSabotterBoard;
 #[cfg(not(target_os = "espidf"))]
 use board_sabotter::MockSabotterBoard as SabotterBoardImpl;
 
