@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies] 
 embedded-hal = "1.0"
 embedded-hal-bus = { version = "0.3", features = ["std"] }
+embedded-can = { version = "0.4" }
 log = "0.4"
 board-common = { path = "../common" }
 pca9535 = { version = "2.0", features = ["std"] }

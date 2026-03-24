@@ -221,11 +221,8 @@ impl Default for LogDecoder {
     }
 }
 
-// Tests require std for Vec - run with: cargo test -p cancaner --features std
-#[cfg(all(test, feature = "std"))]
+#[cfg(test)]
 mod tests {
-    extern crate std;
-    use std::vec::Vec;
     use super::*;
 
     #[test]

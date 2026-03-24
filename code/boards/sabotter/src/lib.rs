@@ -3,6 +3,7 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
+use embedded_can::blocking::Can;
 use embedded_hal::{
     digital::StatefulOutputPin,
     i2c::I2c,
@@ -23,6 +24,7 @@ pub trait SabotterBoard {
     type OutputPin: StatefulOutputPin;
     type ExOutputPin: StatefulOutputPin;
     type Spi: SpiDevice;
+    type Can: Can;
     type MotorEncoder: Encoder<i32>;  //TODO exact type
     type MotorPwm: SetDutyCycle;
 
@@ -33,6 +35,7 @@ pub trait SabotterBoard {
 
     fn leds(&mut self) -> Option<SabotterLeds<Self::OutputPin, Self::ExOutputPin>>;
     fn imu_spi(&mut self) -> Option<Self::Spi>;
+    fn can(&mut self) -> Option<Self::Can>;
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]>;
 }
 

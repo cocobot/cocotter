@@ -25,13 +25,16 @@
 //!
 //! See PROTOCOL.md for full protocol documentation.
 
-#![no_std]
-
+#[cfg(target_os = "espidf")]
+pub mod esp;
 mod message;
 mod protocol;
 mod types;
 pub mod log;
 pub mod ota;
+
+#[cfg(target_os = "espidf")]
+pub use esp::CanInterface;
 
 pub use message::{ping_response, CanMessage, EncodedMessage};
 pub use protocol::*;

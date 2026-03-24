@@ -4,6 +4,7 @@ use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
     hal::{
+        can::{CanConfig, CanDriver},
         gpio::{AnyOutputPin, Output, PinDriver},
         i2c::{I2cConfig, I2cDriver, I2cError},
         ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},
@@ -26,6 +27,7 @@ type EspOutputPin = PinDriver<'static, AnyOutputPin, Output>;
 pub struct EspSabotterBoard {
     com_led: Option<EspOutputPin>,
     imu_spi: Option<SpiDeviceDriver<'static, SpiDriver<'static>>>,
+    can: Option<CanDriver<'static>>,
     motors: Option<[SabotterMotor<EspEncoder<'static>, LedcDriver<'static>>; 3]>,
     motor_enable: Option<EspOutputPin>,
     gpio_expanders: GpioExpanders,
@@ -45,6 +47,7 @@ impl SabotterBoard for EspSabotterBoard {
     type I2c = EspI2c;
     type OutputPin = EspOutputPin;
     type ExOutputPin = SharedGpioPin;
+    type Can = CanDriver<'static>;
     type Spi = SpiDeviceDriver<'static, SpiDriver<'static>>;
     type MotorEncoder = EspEncoder<'static>;
     type MotorPwm = LedcDriver<'static>;
@@ -144,15 +147,10 @@ impl SabotterBoard for EspSabotterBoard {
             Option::<AnyIOPin>::None, // RTS
             &UartConfig::default().baudrate(Hertz(1_000_000)),
         ).ok();
+        */
 
         // Initialize CAN bus with correct pins (GPIO9/10)
-        let can_bus = CanDriver::new(
-            peripherals.can,
-            peripherals.pins.gpio9,  // TX
-            peripherals.pins.gpio10,  // RX
-            &CanConfig::new(),
-        ).ok();
-        */
+        let can = CanDriver::new(peripherals.can, peripherals.pins.gpio9, peripherals.pins.gpio10, &CanConfig::new()).unwrap();
 
         /*
         // Initialize Lidar PWM
@@ -166,6 +164,7 @@ impl SabotterBoard for EspSabotterBoard {
         Self {
             com_led: Some(com_led),
             imu_spi: Some(imu_spi),
+            can: Some(can),
             motors: Some(motors),
             motor_enable: Some(motor_enable),
             gpio_expanders,
@@ -181,6 +180,10 @@ impl SabotterBoard for EspSabotterBoard {
 
     fn imu_spi(&mut self) -> Option<Self::Spi> {
         self.imu_spi.take()
+    }
+
+    fn can(&mut self) -> Option<Self::Can> {
+        self.can.take()
     }
 
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]> {

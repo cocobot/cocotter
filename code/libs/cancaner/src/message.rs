@@ -10,6 +10,7 @@ use embedded_can::{Frame, Id, StandardId};
 use crate::protocol::{LOG_MSG_PAYLOAD_SIZE, LOG_CONT_PAYLOAD_SIZE, LOG_END_PAYLOAD_SIZE, MAX_DATA_LEN, OTA_CHUNK_SIZE};
 use crate::types::*;
 
+
 /// Encoded CAN message ready to be wrapped in a frame
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct EncodedMessage {
@@ -17,6 +18,14 @@ pub struct EncodedMessage {
     pub data: [u8; MAX_DATA_LEN],
     pub len: usize,
 }
+
+impl EncodedMessage {
+    pub fn to_frame<F: Frame>(&self) -> F {
+        // `self.len < 8` so `unwrap()` is safe
+        F::new(self.id, &self.data[..self.len]).unwrap()
+    }
+}
+
 
 /// Parsed CAN message organized by domain
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -886,14 +895,6 @@ impl CanMessage {
             | CanMessage::SetValve { target, .. } => Some(*target),
             _ => None,
         }
-    }
-}
-
-
-impl<F: Frame> Into<F> for EncodedMessage {
-    fn into(self) -> F {
-        // `self.len < 8` so `unwrap()` is safe
-        F::new(self.id, &self.data[..self.len]).unwrap()
     }
 }
 

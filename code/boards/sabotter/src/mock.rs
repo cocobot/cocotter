@@ -32,6 +32,10 @@ impl SabotterBoard for MockSabotterBoard {
         None
     }
 
+    fn can(&mut self) -> Option<Self::Can> {
+        None
+    }
+
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]> {
         None
     }
