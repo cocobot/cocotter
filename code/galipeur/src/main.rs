@@ -3,7 +3,7 @@ mod movement;
 
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use asserv::holonomic::Asserv;
+use asserv::holonomic::{Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
 use board_sabotter::{SabotterBoard, SabotterMotor};
 use cancaner::esp::CanInterface;
@@ -48,6 +48,36 @@ fn main() {
         MecaIdlePosGrab,
         MecaIdlePosDrop,
     }
+
+    let mut robot_color = true;
+
+    let robot_side_main = if robot_color { RobotSide::Right } else { RobotSide::Left };
+    let robot_side_aux  = if robot_color { RobotSide::Left } else { RobotSide::Right };
+    let table_side_main = if robot_color { TableSide::Left } else { TableSide::Right };
+    let table_side_aux  = if robot_color { TableSide::Right } else { TableSide::Left };
+
+    //function to get angle to apply to Align Robot Face Along given Side of the Table
+    fn arfast(face: RobotSide, side: TableSide) -> f32 {
+        match (face, side) {
+            (RobotSide::Left,  TableSide::Left)  => std::f32::consts::PI *  1.0/6.0,
+            (RobotSide::Left,  TableSide::Right) => std::f32::consts::PI * -5.0/6.0,
+            (RobotSide::Left,  TableSide::Up)    => std::f32::consts::PI * -1.0/3.0,
+            (RobotSide::Left,  TableSide::Down)  => std::f32::consts::PI *  2.0/3.0,
+            (RobotSide::Right, TableSide::Left)  => std::f32::consts::PI *  5.0/6.0,
+            (RobotSide::Right, TableSide::Right) => std::f32::consts::PI * -1.0/6.0,
+            (RobotSide::Right, TableSide::Up)    => std::f32::consts::PI *  1.0/3.0,
+            (RobotSide::Right, TableSide::Down)  => std::f32::consts::PI * -2.0/3.0,
+            (RobotSide::Back,  TableSide::Left)  => std::f32::consts::PI * -1.0/2.0,
+            (RobotSide::Back,  TableSide::Right) => std::f32::consts::PI *  1.0/2.0,
+            (RobotSide::Back,  TableSide::Up)    => std::f32::consts::PI *  1.0,
+            (RobotSide::Back,  TableSide::Down)  => std::f32::consts::PI *  0.0,
+        }
+    }
+
+    macro_rules! arfast {
+        ($face:ident, $side: ident) => { arfast(RobotSide::$face, TableSide::$side) }
+    }
+
 
     impl Order<'_> {
         fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>, meca: &Meca) {
@@ -104,16 +134,20 @@ fn main() {
     }
 
     let orders = [
-        Order::RunPath(&[
-            XY::new(0.0, 500.0),
-            XY::new(500.0, 500.0),
-        ]),
-        Order::GotoA(std::f32::consts::PI * 0.9),
-        Order::RunPath(&[
-            XY::new(500.0, 0.0),
-            XY::new(0.0, 0.0),
-        ]),
-        Order::GotoXyA(-200.0, 200.0, 0.0),
+        //Order::RunPath(&[
+        //    XY::new(0.0, 500.0),
+        //    XY::new(500.0, 500.0),
+        //]),
+        Order::GotoXyA(0.0, 0.0, arfast!(Back, Down)),
+        Order::MecaIdlePosDrop,
+        Order::MecaTake,
+        //Order::RunPath(&[
+        //    XY::new(500.0, 0.0),
+        //    XY::new(0.0, 0.0),
+        //]),
+        Order::MecaRaiseGrab,
+        Order::GotoXyA(50.0, 0.0, arfast(RobotSide::Back, TableSide::Down)),
+        Order::MecaRaiseDrop,
     ];
     let mut index = 0;
 
@@ -123,6 +157,15 @@ fn main() {
         let mut asserv = asserv.lock().unwrap();
         asserv.goto_xya(0., 0., 0.);
     }
+
+    /*TODO
+    if robot_color {
+        led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
+    } else {
+        led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
+    }
+    */
+
 
     let can_iface = CanInterface::new(board.can().unwrap());
     can_iface.add_log_callback("picotter");
