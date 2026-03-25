@@ -6,7 +6,7 @@
 //! - 1 valve (via IO expander)
 //! - 1 color sensor
 
-use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage, Color};
+use cancaner::{ArmFlags, ArmTarget, CanMessage, Color};
 
 /// Arm state
 #[derive(Debug, Clone, Default)]

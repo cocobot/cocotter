@@ -1,7 +1,7 @@
 //! Color sensor driver (placeholder)
 
+use cancaner::Color;
 use crate::arm::ArmError;
-use crate::can_protocol::Color;
 use crate::module::ColorSensor;
 
 /// Dummy color sensor that always returns Unknown

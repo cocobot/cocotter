@@ -231,6 +231,11 @@ impl CanMessage {
         }
     }
 
+    /// Convert to an `embedded_can` frame
+    pub fn to_frame<F: Frame>(&self) -> F {
+        self.encode().to_frame()
+    }
+
     fn parse_system(cmd: u8, data: &[u8]) -> Option<Self> {
         match SystemCmd::from_u8(cmd)? {
             SystemCmd::Ping => {

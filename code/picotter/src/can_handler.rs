@@ -12,9 +12,9 @@ use embassy_time::Timer;
 use embedded_can::Id;
 use rtt_target::rprintln;
 use cortex_m::peripheral::SCB;
+use cancaner::CanMessage;
 
 use crate::can_logger::{self, LOG_CHANNEL_CAPACITY};
-use crate::can_protocol::{CanMessage, CanMessageFrameExt};
 
 /// Channel capacity for CAN messages (increased from 8 to 32)
 /// Buffers messages during bus errors/BusWarning and prevents message loss

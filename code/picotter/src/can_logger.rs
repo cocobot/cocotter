@@ -7,10 +7,10 @@ use core::cell::UnsafeCell;
 use core::sync::atomic::{AtomicU8, Ordering};
 use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_sync::channel::Sender;
+use cancaner::{CanMessage, LogEncoder, LogLevel};
 
 use cortex_m::interrupt::Mutex;
 
-use crate::can_protocol::{CanMessage, LogEncoder, LogLevel};
 
 /// Maximum log message length
 const MAX_LOG_LEN: usize = 128;
@@ -70,10 +70,6 @@ struct StaticLogger;
 struct CanLoggerGlobal {
     sender: Sender<'static, CriticalSectionRawMutex, CanMessage, LOG_CHANNEL_CAPACITY>,
 }
-
-// Safety: CanLoggerGlobal contains a Sender which is Send+Sync
-unsafe impl Send for CanLoggerGlobal {}
-unsafe impl Sync for CanLoggerGlobal {}
 
 impl log::Log for StaticLogger {
     fn enabled(&self, metadata: &log::Metadata) -> bool {
@@ -151,15 +147,12 @@ fn format_log_record(record: &log::Record, buffer: &mut [u8]) -> usize {
 
 /// Initialize the CAN logger as the global logger
 ///
-/// # Safety
 /// Must only be called once, at the start of the program.
-pub unsafe fn init(
-    sender: Sender<'static, CriticalSectionRawMutex, CanMessage, LOG_CHANNEL_CAPACITY>,
-) {
+pub fn init(sender: Sender<'static, CriticalSectionRawMutex, CanMessage, LOG_CHANNEL_CAPACITY>) {
     cortex_m::interrupt::free(|cs| {
         let logger_cell = GLOBAL_LOGGER.borrow(cs);
         // Safety: we're in a critical section
-        *logger_cell.get() = Some(CanLoggerGlobal { sender });
+        unsafe { *logger_cell.get() = Some(CanLoggerGlobal { sender }) };
     });
 
     let _ = log::set_logger(&LOGGER_REF);

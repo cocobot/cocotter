@@ -5,7 +5,6 @@
 mod arm;
 mod can_handler;
 mod can_logger;
-mod can_protocol;
 mod color_sensor;
 mod ground_sensors;
 mod i2c_devices;
@@ -31,9 +30,9 @@ use log::{info, warn};
 use panic_rtt_target as _;
 use rtt_target::rprintln;
 use rtt_target::rtt_init_print;
+use cancaner::{ArmTarget, CanMessage, Domain, ServoBus};
 
 use can_handler::{cmd_receiver, log_sender, status_sender};
-use can_protocol::{ArmTarget, CanMessage, Domain, ServoBus};
 use color_sensor::DummyColorSensor;
 use i2c_devices::I2cDevices;
 use module::Module;
@@ -107,11 +106,11 @@ async fn led_status_task(
             m0.update_ground_sensor().await.ok();
         }
         {
-            let mut m1 = module1.lock().await;
+            let _m1 = module1.lock().await;
             //m1.update_ground_sensor().await.ok();
         }
         {
-            let mut m2 = module2.lock().await;
+            let _m2 = module2.lock().await;
             //m2.update_ground_sensor().await.ok();
         }
 
@@ -389,7 +388,7 @@ async fn main(spawner: Spawner) {
 
 
     // Initialize CAN logger
-    unsafe { can_logger::init(log_sender()) };
+    can_logger::init(log_sender());
     rprintln!("CAN logger initialized");
 
     let mut led = Output::new(p.PD11, Level::Low, Speed::Low);

@@ -11,13 +11,12 @@
 //! - Bank 1, pins 0-3: Pumps 0-3
 
 use crate::arm::{ArmCommand, ArmError, ArmState};
-use crate::can_protocol::{ArmTarget, CanMessage, Color};
 use crate::i2c_devices::{GPIOBank, I2cDevices};
 use crate::scs0009::{Scs0009, ScsError};
 use embedded_hal_async::i2c::I2c;
 use embedded_io_async::{Read, Write};
-use log::{debug, info};
 use rtt_target::rprintln;
+use cancaner::{ArmTarget, CanMessage, Color};
 
 /// Number of arms per module
 pub const ARMS_PER_MODULE: usize = 4;
@@ -133,10 +132,10 @@ where
 
     /// Initialize IO expander pins and ground sensor
     pub async fn init(&mut self) -> Result<(), ArmError> {
-        debug!("Module {}: Scanning servos", self.id);
+        log::debug!("Module {}: Scanning servos", self.id);
         self.scan_servos().await;
 
-        debug!("Module {}: Initializing I2C devices", self.id);
+        log::debug!("Module {}: Initializing I2C devices", self.id);
         self.i2c_devices
             .init()
             .await

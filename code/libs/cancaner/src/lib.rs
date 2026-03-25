@@ -25,7 +25,9 @@
 //!
 //! See PROTOCOL.md for full protocol documentation.
 
-#[cfg(target_os = "espidf")]
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(all(target_os = "espidf", feature = "std"))]
 pub mod esp;
 mod message;
 mod protocol;
