@@ -11,6 +11,7 @@ harness = false # do not use the built in cargo test harness -> resolve rust-ana
 log = "0.4"
 asserv = { path = "../libs/asserv", features = ["rome"] }
 board-sabotter = { path = "../boards/sabotter" }
+embedded-hal = "1.0"
 cancaner = { path = "../libs/cancaner" }
 rome = { path = "../libs/rome" }
 sch16t = { path = "../libs/sch16t" }

@@ -1,32 +1,25 @@
-mod meca;
-mod movement;
-
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use asserv::holonomic::{Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
-use ble::{BleBuilder, RomePeripheral};
-use board_sabotter::{SabotterBoard, SabotterMotor};
+use board_sabotter::SabotterBoard;
 use cancaner::esp::CanInterface;
 use cancaner::Color as CanColor;
 use sch16t::Sch16t;
-use movement::{Movement, MovementLowLevelHardware};
-use meca::Meca;
+use galipeur::meca::Meca;
+use galipeur::movement::{Movement, MovementLowLevelHardware};
 
 #[cfg(target_os = "espidf")]
 type SabotterBoardImpl = board_sabotter::EspSabotterBoard;
 #[cfg(not(target_os = "espidf"))]
 use board_sabotter::MockSabotterBoard as SabotterBoardImpl;
 
-type SabotterMotorImpl = SabotterMotor<<SabotterBoardImpl as SabotterBoard>::MotorEncoder, <SabotterBoardImpl as SabotterBoard>::MotorPwm>;
-type GyroImpl = Sch16t<<SabotterBoardImpl as SabotterBoard>::Spi>;
-
 
 fn main() {
     let mut board = SabotterBoardImpl::init();
 
     // Configure gyro
-    let mut gyro = GyroImpl::new(board.imu_spi().unwrap(), 0);
+    let mut gyro = Sch16t::new(board.imu_spi().unwrap(), 0);
     gyro.init().unwrap();
 
     let mut leds = board.leds().unwrap();
@@ -84,7 +77,7 @@ fn main() {
 
 
     impl Order<'_> {
-        fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>, meca: &Meca) {
+        fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware<SabotterBoardImpl>>, meca: &Meca) {
             match self {
                 Order::GotoXy(x, y) => asserv.goto_xy(*x, *y),
                 Order::GotoA(a) => asserv.goto_a(*a),
@@ -173,7 +166,7 @@ fn main() {
     let can_iface = CanInterface::new(board.can().unwrap());
     can_iface.add_log_callback("picotter");
 
-    let meca = meca::Meca::new(&can_iface);
+    let meca = Meca::new(&can_iface);
 
     loop {
         let _ = leds.com.toggle();

@@ -24,10 +24,10 @@ pub trait SabotterBoard {
     type I2c: I2c;
     type OutputPin: StatefulOutputPin;
     type ExOutputPin: StatefulOutputPin;
-    type Spi: SpiDevice;
+    type Spi: SpiDevice + Send;
     type Can: Can;
-    type MotorEncoder: Encoder<i32>;  //TODO exact type
-    type MotorPwm: SetDutyCycle;
+    type MotorEncoder: Encoder<i32> + Send;  //TODO exact type
+    type MotorPwm: SetDutyCycle + Send;
 
     /// Initialize the board and return its instance
     ///
