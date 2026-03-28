@@ -1,5 +1,5 @@
 use std::{sync::mpsc::{self, Receiver, Sender}, thread, time::Duration};
-use smart_leds::{RGB8, hsv::{self, Hsv, hsv2rgb}};
+use smart_leds::{RGB8, hsv::{Hsv, hsv2rgb}};
 use smart_leds::SmartLedsWrite;
 use super::SmartLeds;
 

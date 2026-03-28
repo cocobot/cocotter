@@ -1,13 +1,13 @@
 use std::sync::{Arc, Mutex};
 
-use cancaner::{ArmFlags, ArmTarget, CanMessage, Color, ARMS_PER_MODULE};
+use cancaner::{ArmFlags, ArmTarget, CanMessage, ARMS_PER_MODULE};
 
 use crate::can::CanInterface;
 
 #[derive(Clone, Default, Debug)]
 pub struct ArmState {
     pub position: u16,
-    pub color: Color,
+    pub color: u8,
     pub pump: bool,
     pub valve: bool,
     pub error: u8,
@@ -154,5 +154,41 @@ impl MecaProxy {
             target: ArmTarget::new(module, arm),
             enable,
         });
+    }
+
+    pub fn set_color_config(
+        &self,
+        module: u8,
+        arm: u8,
+        color_id: u8,
+        channel: u8,
+        min: u16,
+        max: u16,
+    ) {
+        self.can.send(&CanMessage::SetColorConfig {
+            target: ArmTarget::new(module, arm),
+            color_id,
+            channel,
+            min,
+            max,
+        });
+    }
+
+    pub fn set_color_sensor_config(&self, module: u8, arm: u8, integration_time: u8, gain: u8) {
+        self.can.send(&CanMessage::SetColorSensorConfig {
+            target: ArmTarget::new(module, arm),
+            integration_time,
+            gain,
+        });
+    }
+
+    pub fn request_color_sensor_raw(&self, module: u8, arm: u8) {
+        self.can.send(&CanMessage::RequestColorSensorRaw {
+            target: ArmTarget::new(module, arm),
+        });
+    }
+
+    pub fn set_color_led_pwm(&self, duty: u8) {
+        self.can.send(&CanMessage::SetColorLedPwm { duty });
     }
 }

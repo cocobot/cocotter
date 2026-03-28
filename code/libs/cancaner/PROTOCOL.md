@@ -193,6 +193,10 @@ Décodage : `module = target / 4`, `arm = target % 4`.
 | 0x5 | SetValve | `ArmCmd::SetValve` |
 | 0x6 | SetTranslation | `ArmCmd::SetTranslation` |
 | 0x7 | TranslationStatus | `ArmCmd::TranslationStatus` |
+| 0x8 | SetColorConfig | `ArmCmd::SetColorConfig` |
+| 0x9 | SetColorSensorConfig | `ArmCmd::SetColorSensorConfig` |
+| 0xA | ColorSensorRaw | `ArmCmd::ColorSensorRaw` |
+| 0xB | SetColorLedPwm | `ArmCmd::SetColorLedPwm` |
 
 ### 0x10T - SET_ARM
 
@@ -226,7 +230,7 @@ Longueur: 8 octets
 Direction: S→P
 
 Data[0-1]: Position servo actuelle (0-1023), little-endian
-Data[2]:   Couleur détectée (Color: 0=Inconnu, 1=Jaune, 2=Bleu)
+Data[2]:   Identifiant couleur (u8, 0=aucune couleur, 255=config incomplète, 1-254=color_id)
 Data[3]:   État pompe (0=OFF, 1=ON)
 Data[4]:   État électrovanne (0=OFF, 1=ON)
 Data[5]:   Code erreur servo (0=OK, voir codes ci-dessous)
@@ -330,6 +334,89 @@ Direction: S→P
 
 Data[0-1]: Position actuelle (0-1023), little-endian
 Data[2]:   Code erreur (0=OK)
+```
+
+### 0x18T - SET_COLOR_CONFIG
+
+Configure une plage de valeurs pour un canal d'un color_id donné.
+4 messages sont nécessaires pour configurer une couleur complète (un par canal).
+
+Chaque bras possède une table de décodage (max 8 couleurs). Pour qu'une couleur soit
+détectée, les 4 canaux (C, R, G, B) doivent être dans leur plage respective.
+
+```
+ID: 0x18[target]
+Longueur: 6 octets
+Direction: P→S
+
+Data[0]: Color ID (1-254 = configurer, 0 = effacer toute la table)
+Data[1]: Canal (0=Clear, 1=Red, 2=Green, 3=Blue)
+Data[2-3]: Valeur minimum (u16, LE)
+Data[4-5]: Valeur maximum (u16, LE)
+```
+
+**Valeurs de retour couleur (dans ARM_STATUS):**
+| Valeur | Signification |
+|--------|---------------|
+| 255 | Config incomplète (capteur ou table non configuré) |
+| 0 | Aucune couleur ne matche |
+| 1-254 | Color ID détecté |
+
+### 0x19T - SET_COLOR_SENSOR_CONFIG
+
+Configure les paramètres du capteur TCS3472 (integration time + gain).
+Un capteur par bras, accessible via mux I2C TCA9548A.
+
+```
+ID: 0x19[target]
+Longueur: 2 octets
+Direction: P→S
+
+Data[0]: Integration time (registre ATIME brut)
+         - 0xFF = 2.4ms
+         - 0xD5 = ~101ms
+         - 0xC0 = ~154ms
+         - 0x00 = ~614ms
+         Formule: temps_ms = (256 - ATIME) × 2.4
+Data[1]: Gain
+         - 0 = 1x
+         - 1 = 4x
+         - 2 = 16x
+         - 3 = 60x
+```
+
+### 0x1AT - COLOR_SENSOR_RAW
+
+Lecture des valeurs brutes du capteur TCS3472 (debug).
+
+**Requête (P→S):**
+```
+ID: 0x1A[target]
+Longueur: 0 octet
+```
+
+**Réponse (S→P):**
+```
+ID: 0x1A[target]
+Longueur: 8 octets
+
+Data[0-1]: Clear (u16, LE)
+Data[2-3]: Red (u16, LE)
+Data[4-5]: Green (u16, LE)
+Data[6-7]: Blue (u16, LE)
+```
+
+### 0x1B0 - SET_COLOR_LED_PWM
+
+Configure le duty cycle de la PWM pour les LEDs des capteurs de couleur TCS3472.
+Une seule PWM (TIM8_CH3, PC8) contrôle toutes les LEDs.
+
+```
+ID: 0x1B0
+Longueur: 1 octet
+Direction: P→S
+
+Data[0]: Duty cycle (0=OFF, 255=pleine puissance)
 ```
 
 ---

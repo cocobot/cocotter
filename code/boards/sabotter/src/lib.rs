@@ -169,7 +169,7 @@ impl BoardSabotter {
             .unwrap()
             .build()
             .unwrap();
-        let mut leds =
+        let leds =
             Some(LedPixelEsp32Rmt::<RGB8, LedPixelColorRgb24>::new_with_ws2812_driver(ws2812_driver)
                 .unwrap());
 

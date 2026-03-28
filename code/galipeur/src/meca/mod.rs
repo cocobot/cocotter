@@ -1,6 +1,6 @@
 mod proxy;
 
-pub use proxy::{ArmState, MecaProxy, MecaState, TranslationState};
+pub use proxy::{MecaProxy, MecaState};
 
 use crate::can::CanInterface;
 
@@ -27,6 +27,30 @@ impl Meca {
     }
 
     // --- High-level algos ---
+    pub fn no_torque_on_all(&self) {
+        for module in 0..4 {
+            for arm in 0..2 {
+                self.proxy.set_torque(module, arm, false);
+            }
+        }
+    }
+
+    pub fn init(&self) {
+        for module in 0..4 {
+            for arm in 0..2 {
+                self.proxy.set_torque(module, arm, true);
+                self.lower_arm(module, arm);
+            }
+        }
+
+        std::thread::sleep(std::time::Duration::from_secs(1));
+
+        for module in 0..4 {
+            for arm in 0..2 {
+                self.raise_arm(module, arm);
+            }
+        }
+    }   
 
     pub fn lower_arm(&self, module: u8, arm: u8) {
         self.proxy.set_arm(module, arm, 400, 500, false, false);

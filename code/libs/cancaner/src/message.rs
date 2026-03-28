@@ -71,7 +71,7 @@ pub enum CanMessage {
     ArmStatus {
         target: ArmTarget,
         position: u16,
-        color: Color,
+        color: u8,
         pump: bool,
         valve: bool,
         error: u8,
@@ -105,6 +105,38 @@ pub enum CanMessage {
         position: u16,
         error: u8,
     },
+
+    /// Set color decoding range for one channel (ID: 0x18T)
+    /// color_id=0 clears all color config for that target
+    SetColorConfig {
+        target: ArmTarget,
+        color_id: u8,
+        channel: u8,
+        min: u16,
+        max: u16,
+    },
+
+    /// Set TCS3472 sensor parameters (ID: 0x19T)
+    SetColorSensorConfig {
+        target: ArmTarget,
+        integration_time: u8,
+        gain: u8,
+    },
+
+    /// Request raw CRGB values (ID: 0x1AT, 0 bytes)
+    RequestColorSensorRaw { target: ArmTarget },
+
+    /// Raw CRGB response (ID: 0x1AT, 8 bytes)
+    ColorSensorRaw {
+        target: ArmTarget,
+        clear: u16,
+        red: u16,
+        green: u16,
+        blue: u16,
+    },
+
+    /// Set color sensor LED PWM duty cycle (ID: 0x1B0, global)
+    SetColorLedPwm { duty: u8 },
 
     // ==================== GROUND Domain (0x2) ====================
     /// Ground sensors detection status (ID: 0x20S)
@@ -297,7 +329,7 @@ impl CanMessage {
                     Some(CanMessage::ArmStatus {
                         target,
                         position: u16::from_le_bytes([data[0], data[1]]),
-                        color: Color::from_u8(data[2]),
+                        color: data[2],
                         pump: data[3] != 0,
                         valve: data[4] != 0,
                         error: data[5],
@@ -359,6 +391,50 @@ impl CanMessage {
                         position: u16::from_le_bytes([data[0], data[1]]),
                         error: data[2],
                     })
+                } else {
+                    None
+                }
+            }
+            ArmCmd::SetColorConfig => {
+                if data.len() >= 6 {
+                    Some(CanMessage::SetColorConfig {
+                        target,
+                        color_id: data[0],
+                        channel: data[1],
+                        min: u16::from_le_bytes([data[2], data[3]]),
+                        max: u16::from_le_bytes([data[4], data[5]]),
+                    })
+                } else {
+                    None
+                }
+            }
+            ArmCmd::SetColorSensorConfig => {
+                if data.len() >= 2 {
+                    Some(CanMessage::SetColorSensorConfig {
+                        target,
+                        integration_time: data[0],
+                        gain: data[1],
+                    })
+                } else {
+                    None
+                }
+            }
+            ArmCmd::ColorSensorRaw => {
+                if data.len() >= 8 {
+                    Some(CanMessage::ColorSensorRaw {
+                        target,
+                        clear: u16::from_le_bytes([data[0], data[1]]),
+                        red: u16::from_le_bytes([data[2], data[3]]),
+                        green: u16::from_le_bytes([data[4], data[5]]),
+                        blue: u16::from_le_bytes([data[6], data[7]]),
+                    })
+                } else {
+                    Some(CanMessage::RequestColorSensorRaw { target })
+                }
+            }
+            ArmCmd::SetColorLedPwm => {
+                if !data.is_empty() {
+                    Some(CanMessage::SetColorLedPwm { duty: data[0] })
                 } else {
                     None
                 }
@@ -607,7 +683,7 @@ impl CanMessage {
                 let id = Self::build_id(Domain::Arm, ArmCmd::Status as u8, target.to_u8());
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0..2].copy_from_slice(&position.to_le_bytes());
-                data[2] = *color as u8;
+                data[2] = *color;
                 data[3] = *pump as u8;
                 data[4] = *valve as u8;
                 data[5] = *error;
@@ -654,6 +730,45 @@ impl CanMessage {
                 data[0..2].copy_from_slice(&position.to_le_bytes());
                 data[2] = *error;
                 EncodedMessage { id, data, len: 3 }
+            }
+            CanMessage::SetColorConfig { target, color_id, channel, min, max } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetColorConfig as u8, target.to_u8());
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0] = *color_id;
+                data[1] = *channel;
+                data[2..4].copy_from_slice(&min.to_le_bytes());
+                data[4..6].copy_from_slice(&max.to_le_bytes());
+                EncodedMessage { id, data, len: 6 }
+            }
+            CanMessage::SetColorSensorConfig { target, integration_time, gain } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetColorSensorConfig as u8, target.to_u8());
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0] = *integration_time;
+                data[1] = *gain;
+                EncodedMessage { id, data, len: 2 }
+            }
+            CanMessage::RequestColorSensorRaw { target } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::ColorSensorRaw as u8, target.to_u8());
+                EncodedMessage {
+                    id,
+                    data: [0u8; MAX_DATA_LEN],
+                    len: 0,
+                }
+            }
+            CanMessage::ColorSensorRaw { target, clear, red, green, blue } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::ColorSensorRaw as u8, target.to_u8());
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0..2].copy_from_slice(&clear.to_le_bytes());
+                data[2..4].copy_from_slice(&red.to_le_bytes());
+                data[4..6].copy_from_slice(&green.to_le_bytes());
+                data[6..8].copy_from_slice(&blue.to_le_bytes());
+                EncodedMessage { id, data, len: 8 }
+            }
+            CanMessage::SetColorLedPwm { duty } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetColorLedPwm as u8, 0);
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0] = *duty;
+                EncodedMessage { id, data, len: 1 }
             }
 
             // ==================== GROUND ====================
@@ -844,7 +959,12 @@ impl CanMessage {
             | CanMessage::SetPump { .. }
             | CanMessage::SetValve { .. }
             | CanMessage::SetTranslation { .. }
-            | CanMessage::TranslationStatus { .. } => Domain::Arm,
+            | CanMessage::TranslationStatus { .. }
+            | CanMessage::SetColorConfig { .. }
+            | CanMessage::SetColorSensorConfig { .. }
+            | CanMessage::RequestColorSensorRaw { .. }
+            | CanMessage::ColorSensorRaw { .. }
+            | CanMessage::SetColorLedPwm { .. } => Domain::Arm,
 
             CanMessage::GroundStatus { .. }
             | CanMessage::GroundValue { .. }
@@ -875,7 +995,11 @@ impl CanMessage {
             | CanMessage::RequestArmStatus { target }
             | CanMessage::SetTorque { target, .. }
             | CanMessage::SetPump { target, .. }
-            | CanMessage::SetValve { target, .. } => Some(*target),
+            | CanMessage::SetValve { target, .. }
+            | CanMessage::SetColorConfig { target, .. }
+            | CanMessage::SetColorSensorConfig { target, .. }
+            | CanMessage::RequestColorSensorRaw { target }
+            | CanMessage::ColorSensorRaw { target, .. } => Some(*target),
             _ => None,
         }
     }
@@ -975,7 +1099,7 @@ mod tests {
         roundtrip(&CanMessage::ArmStatus {
             target: ArmTarget::new(2, 3),
             position: 1024,
-            color: Color::Yellow,
+            color: 1,
             pump: false,
             valve: true,
             error: 0,
@@ -1049,6 +1173,52 @@ mod tests {
                 error: 0,
             });
         }
+    }
+
+    #[test]
+    fn roundtrip_set_color_config() {
+        roundtrip(&CanMessage::SetColorConfig {
+            target: ArmTarget::new(1, 2),
+            color_id: 3,
+            channel: 1,
+            min: 100,
+            max: 500,
+        });
+        // Clear all config
+        roundtrip(&CanMessage::SetColorConfig {
+            target: ArmTarget::BROADCAST_ALL,
+            color_id: 0,
+            channel: 0,
+            min: 0,
+            max: 0,
+        });
+    }
+
+    #[test]
+    fn roundtrip_set_color_sensor_config() {
+        roundtrip(&CanMessage::SetColorSensorConfig {
+            target: ArmTarget::new(0, 1),
+            integration_time: 0xD5,
+            gain: 2,
+        });
+    }
+
+    #[test]
+    fn roundtrip_color_sensor_raw() {
+        roundtrip(&CanMessage::ColorSensorRaw {
+            target: ArmTarget::new(2, 0),
+            clear: 1234,
+            red: 567,
+            green: 890,
+            blue: 42,
+        });
+    }
+
+    #[test]
+    fn roundtrip_set_color_led_pwm() {
+        roundtrip(&CanMessage::SetColorLedPwm { duty: 0 });
+        roundtrip(&CanMessage::SetColorLedPwm { duty: 128 });
+        roundtrip(&CanMessage::SetColorLedPwm { duty: 255 });
     }
 
     // ==================== GROUND ====================

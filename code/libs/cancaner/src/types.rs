@@ -24,26 +24,6 @@ impl Domain {
     }
 }
 
-/// Color detected by sensor
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-#[repr(u8)]
-pub enum Color {
-    #[default]
-    Unknown = 0,
-    Yellow = 1,
-    Blue = 2,
-}
-
-impl Color {
-    pub fn from_u8(val: u8) -> Self {
-        match val {
-            1 => Color::Yellow,
-            2 => Color::Blue,
-            _ => Color::Unknown,
-        }
-    }
-}
-
 /// Error types for system ERROR message
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -317,6 +297,10 @@ pub enum ArmCmd {
     SetValve = 0x5,
     SetTranslation = 0x6,
     TranslationStatus = 0x7,
+    SetColorConfig = 0x8,
+    SetColorSensorConfig = 0x9,
+    ColorSensorRaw = 0xA,
+    SetColorLedPwm = 0xB,
 }
 
 impl ArmCmd {
@@ -330,6 +314,10 @@ impl ArmCmd {
             0x5 => Some(ArmCmd::SetValve),
             0x6 => Some(ArmCmd::SetTranslation),
             0x7 => Some(ArmCmd::TranslationStatus),
+            0x8 => Some(ArmCmd::SetColorConfig),
+            0x9 => Some(ArmCmd::SetColorSensorConfig),
+            0xA => Some(ArmCmd::ColorSensorRaw),
+            0xB => Some(ArmCmd::SetColorLedPwm),
             _ => None,
         }
     }

@@ -28,33 +28,33 @@ impl SharedGpioPin {
     fn set_output(&mut self) -> Result<(), ()> {
         let mut device = self.handle.lock().unwrap();
         self.is_output = true;
-        device.pin_into_output(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
+        device.pin_into_output(self.get_bank(), self.get_pin_index_in_bank()).or_else(|_e| {
             Err(())
         })
     }
 
     pub fn pin_set_high(&mut self) -> Result<(), ()> {
         if !self.is_output {
-            self.set_output();
+            self.set_output()?;
         }
 
         let mut device = self.handle.lock().unwrap();
         self.last_written_value = true;
 
-        device.pin_set_high(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
+        device.pin_set_high(self.get_bank(), self.get_pin_index_in_bank()).or_else(|_e| {
             Err(())
         })
     }
 
     pub fn pin_set_low(&mut self) -> Result<(), ()> {
         if !self.is_output {
-            self.set_output();
+            self.set_output()?;
         }
 
         let mut device = self.handle.lock().unwrap();
         self.last_written_value = false;
 
-        device.pin_set_low(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
+        device.pin_set_low(self.get_bank(), self.get_pin_index_in_bank()).or_else(|_e| {
             Err(())
         })
     }
@@ -68,7 +68,7 @@ impl SharedGpioPin {
 
     pub fn pin_is_low(&self) -> Result<bool, ()> {
         let mut device = self.handle.lock().unwrap();
-        device.pin_is_low(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
+        device.pin_is_low(self.get_bank(), self.get_pin_index_in_bank()).or_else(|_e| {
           //  log::error!("Failed to get pin {}: {:?}", self.pin_number, e);
             Err(())
         })
@@ -76,7 +76,7 @@ impl SharedGpioPin {
 
     pub fn pin_is_high(&self) -> Result<bool, ()> {
         let mut device = self.handle.lock().unwrap();
-        device.pin_is_high(self.get_bank(), self.get_pin_index_in_bank()).or_else(|e| {
+        device.pin_is_high(self.get_bank(), self.get_pin_index_in_bank()).or_else(|_e| {
           //  log::error!("Failed to get pin {}: {:?}", self.pin_number, e);
             Err(())
         })

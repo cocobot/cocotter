@@ -52,15 +52,19 @@ fn main() {
     let mut motor_1_heartbeat = motor_1_gpio_expander.get_pin(2);
     let mut motor_2_heartbeat = motor_2_gpio_expander.get_pin(2);
 
+
+    let color_selector = gpio_expander.get_pin(6);
+    let starter = gpio_expander.get_pin(7);
+
     // Motor driver startup procedure
     // See DRV8243 §7.7.2.1 HW Variant
     //TODO heartbeat led follows expected nFAULT state
     {
         log::info!("Motor drivers init");
 
-        motor_0_heartbeat.pin_set_high();
-        motor_1_heartbeat.pin_set_high();
-        motor_2_heartbeat.pin_set_high();
+        motor_0_heartbeat.pin_set_high().ok();
+        motor_1_heartbeat.pin_set_high().ok();
+        motor_2_heartbeat.pin_set_high().ok();
 
         let expanders = [&motor_0_gpio_expander, &motor_1_gpio_expander, &motor_2_gpio_expander];
         let mut mot_ena = board.mot_ena.take().unwrap();
@@ -128,8 +132,6 @@ fn main() {
         MecaDrop,
     }
 
-    let mut robot_color = false;
-
     enum RobotSide {
         RobotSideLeft,
         RobotSideRight,
@@ -144,6 +146,53 @@ fn main() {
         TableSideDown,
     }
     use TableSide::*;
+
+    let mut robot_color = false;
+    let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
+    meca.no_torque_on_all();
+    while starter.pin_is_high().unwrap_or(true) {
+        if color_selector.pin_is_high().unwrap_or(false) {
+            robot_color = true;
+        } else {
+            robot_color = false;
+        }
+        led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
+        thread::sleep(Duration::from_millis(100));
+        
+        //print all servo positions for debug
+        let state = meca.get_state();
+        log::info!("M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {}", 
+            state.arms[0][0].position, 
+            state.arms[0][1].position, 
+            state.arms[0][2].position, 
+            state.arms[0][3].position);
+        log::info!("M1A0 : {} M1A1 : {} M1A2 : {} M1A3 : {}", 
+            state.arms[1][0].position, 
+            state.arms[1][1].position, 
+            state.arms[1][2].position, 
+            state.arms[1][3].position);
+        log::info!("M2A0 : {} M2A1 : {} M2A2 : {} M2A3 : {}", 
+            state.arms[2][0].position, 
+            state.arms[2][1].position, 
+            state.arms[2][2].position, 
+            state.arms[2][3].position);      
+    }
+    meca.init();
+
+    let mut color_off = false;
+    while starter.pin_is_low().unwrap_or(true) {
+        if color_off {
+            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 0 }}).ok();
+            color_off = false;
+        } else {
+            led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
+            color_off = true;
+        }
+        //wait for starter button press
+        thread::sleep(Duration::from_millis(100));
+    }
+    led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
+
 
     let RobotSideMain = if robot_color {RobotSideLeft}  else {RobotSideRight};
     let RobotSideAux  = if robot_color {RobotSideRight} else {RobotSideLeft};
@@ -235,9 +284,9 @@ fn main() {
 
     loop {
         led_heartbeat.toggle().ok();
-        motor_0_heartbeat.toggle();
-        motor_1_heartbeat.toggle();
-        motor_2_heartbeat.toggle();
+        motor_0_heartbeat.toggle().ok();
+        motor_1_heartbeat.toggle().ok();
+        motor_2_heartbeat.toggle().ok();
         if robot_color {
             led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
             robot_color = false;
