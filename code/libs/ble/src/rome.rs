@@ -113,7 +113,7 @@ impl RomePeripheral {
         instance.server.gatts.register_app(APP_ID).unwrap();
 
         // Enable secure connections
-        instance.server.enable_security().unwrap();
+        //instance.server.enable_security().unwrap();
 
         log::info!("Spawning ROME peripheral thread");
         std::thread::spawn(move || {

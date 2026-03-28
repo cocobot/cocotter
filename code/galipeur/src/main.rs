@@ -12,11 +12,15 @@ use board_sabotter::BoardSabotter;
 #[cfg(not(target_os = "espidf"))]
 use board_simulator::BoardSabotter;
 pub use board_sabotter::{ImuSpi, SmartLeds, Motor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
+use ble::{BleBuilder, RomePeripheral};
+use cancaner::Color as CanColor;
 //use board_sabotter::pca9535::{expander::standard::StandardExpanderInterface, GPIOBank};
 use esp_idf_svc::sys::ets_delay_us;
 use movement::{Movement, MovementLowLevelHardware};
 use sch16t::Sch16t;
 use asserv::holonomic::Asserv;
+use asserv::holonomic::RobotSide;
+use asserv::holonomic::TableSide;
 use asserv::maths::XY;
 use smart_leds::RGB8;
 
@@ -107,6 +111,10 @@ fn main() {
     }
     log::info!("Board initialized");
 
+    let (ble_server, _ble_client) = BleBuilder::new(board.ble.take().unwrap()).run();
+    let rome = RomePeripheral::run(ble_server, "Galipeur".into());
+    let rome_tx = rome.sender;
+
     //configure low level hardware for asserv
     let asserv_hardware = MovementLowLevelHardware::new(
         gyro,
@@ -129,104 +137,39 @@ fn main() {
         GotoXyA(f32, f32, f32),
         RunPath(&'a [XY]),
         MecaTake,
-        MecaDrop,
+        MecaRaiseGrab,
+        MecaRaiseDrop,
+        MecaIdlePosGrab,
+        MecaIdlePosDrop,
     }
 
-    enum RobotSide {
-        RobotSideLeft,
-        RobotSideRight,
-        RobotSideBack,
-    }
-    use RobotSide::*;
+    let mut robot_color = true;
 
-    enum TableSide {
-        TableSideLeft,
-        TableSideRight,
-        TableSideUp,
-        TableSideDown,
-    }
-    use TableSide::*;
-
-    let mut robot_color = false;
-    let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
-    meca.no_torque_on_all();
-    while starter.pin_is_high().unwrap_or(true) {
-        if color_selector.pin_is_high().unwrap_or(false) {
-            robot_color = true;
-        } else {
-            robot_color = false;
-        }
-        led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
-        thread::sleep(Duration::from_millis(100));
-        
-        //print all servo positions for debug
-        let state = meca.get_state();
-        log::info!("M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {}", 
-            state.arms[0][0].position, 
-            state.arms[0][1].position, 
-            state.arms[0][2].position, 
-            state.arms[0][3].position);
-        log::info!("M1A0 : {} M1A1 : {} M1A2 : {} M1A3 : {}", 
-            state.arms[1][0].position, 
-            state.arms[1][1].position, 
-            state.arms[1][2].position, 
-            state.arms[1][3].position);
-        log::info!("M2A0 : {} M2A1 : {} M2A2 : {} M2A3 : {}", 
-            state.arms[2][0].position, 
-            state.arms[2][1].position, 
-            state.arms[2][2].position, 
-            state.arms[2][3].position);      
-    }
-    meca.init();
-
-    let mut color_off = false;
-    while starter.pin_is_low().unwrap_or(true) {
-        if color_off {
-            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 0 }}).ok();
-            color_off = false;
-        } else {
-            led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
-            color_off = true;
-        }
-        //wait for starter button press
-        thread::sleep(Duration::from_millis(100));
-    }
-    led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
-
-
-    let RobotSideMain = if robot_color {RobotSideLeft}  else {RobotSideRight};
-    let RobotSideAux  = if robot_color {RobotSideRight} else {RobotSideLeft};
-    let TableSideMain = if robot_color {TableSideLeft}   else  {TableSideRight};
-    let TableSideAux  = if robot_color {TableSideRight}  else  {TableSideLeft};
+    let robot_side_main = if robot_color { RobotSide::Right } else { RobotSide::Left };
+    let robot_side_aux  = if robot_color { RobotSide::Left } else { RobotSide::Right };
+    let table_side_main = if robot_color { TableSide::Left } else { TableSide::Right };
+    let table_side_aux  = if robot_color { TableSide::Right } else { TableSide::Left };
 
     //function to get angle to apply to Align Robot Face Along given Side of the Table
-    fn arfast(face: RobotSide, side: TableSide) -> f32 {
-        match face {
-            RobotSide::RobotSideLeft => {
-                match side {
-                    TableSide::TableSideLeft   => std::f32::consts::PI *  1.0/6.0,
-                    TableSide::TableSideRight  => std::f32::consts::PI * -5.0/6.0,
-                    TableSide::TableSideUp     => std::f32::consts::PI * -1.0/3.0,
-                    TableSide::TableSideDown   => std::f32::consts::PI *  2.0/3.0,
-                }
-            }
-            RobotSide::RobotSideRight => {
-                match side {
-                    TableSide::TableSideLeft   => std::f32::consts::PI *  5.0/6.0,
-                    TableSide::TableSideRight  => std::f32::consts::PI * -1.0/6.0,
-                    TableSide::TableSideUp     => std::f32::consts::PI *  1.0/3.0,
-                    TableSide::TableSideDown   => std::f32::consts::PI * -2.0/3.0,
-                }
-            }
-            RobotSide::RobotSideBack => {
-                match side {
-                    TableSide::TableSideLeft   => std::f32::consts::PI * -1.0/2.0,
-                    TableSide::TableSideRight  => std::f32::consts::PI *  1.0/2.0,
-                    TableSide::TableSideUp     => std::f32::consts::PI *  1.0,
-                    TableSide::TableSideDown   => std::f32::consts::PI *  0.0,
-                }
-            }
+    const fn arfast(face: RobotSide, side: TableSide) -> f32 {
+        match (face, side) {
+            (RobotSide::Left,  TableSide::Left)  => std::f32::consts::PI *  1.0/6.0,
+            (RobotSide::Left,  TableSide::Right) => std::f32::consts::PI * -5.0/6.0,
+            (RobotSide::Left,  TableSide::Up)    => std::f32::consts::PI * -1.0/3.0,
+            (RobotSide::Left,  TableSide::Down)  => std::f32::consts::PI *  2.0/3.0,
+            (RobotSide::Right, TableSide::Left)  => std::f32::consts::PI *  5.0/6.0,
+            (RobotSide::Right, TableSide::Right) => std::f32::consts::PI * -1.0/6.0,
+            (RobotSide::Right, TableSide::Up)    => std::f32::consts::PI *  1.0/3.0,
+            (RobotSide::Right, TableSide::Down)  => std::f32::consts::PI * -2.0/3.0,
+            (RobotSide::Back,  TableSide::Left)  => std::f32::consts::PI * -1.0/2.0,
+            (RobotSide::Back,  TableSide::Right) => std::f32::consts::PI *  1.0/2.0,
+            (RobotSide::Back,  TableSide::Up)    => std::f32::consts::PI *  1.0,
+            (RobotSide::Back,  TableSide::Down)  => std::f32::consts::PI *  0.0,
         }
+    }
+
+    macro_rules! arfast {
+        ($face:ident, $side: ident) => { arfast(RobotSide::$face, TableSide::$side) }
     }
 
 
@@ -238,20 +181,44 @@ fn main() {
                 Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
                 Order::RunPath(path) => asserv.run_path(path),
                 Order::MecaTake => {
-                    meca.lower_arm(0, 3);
-                    meca.lower_arm(0, 2);     
-                    meca.lower_arm(0, 1);     
-                    meca.lower_arm(0, 0);      
-                    meca.release(0, 0);              
-                    log::info!("TODO wait with feedback from meca");
-                    thread::sleep(Duration::from_secs(3));
+                    meca.lower_arm_grab(0, 3);
+                    meca.lower_arm_grab(0, 2);
+                    meca.lower_arm_grab(0, 1);
+                    meca.lower_arm_grab(0, 0);
+                    log::info!("TO_DO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
                 }
-                Order::MecaDrop => {
-                    meca.raise_arm(0, 3);
-                    meca.raise_arm(0, 2);
-                    meca.raise_arm(0, 1);
-                    meca.raise_arm(0, 0);
-                    meca.grab(0, 0);              
+                Order::MecaRaiseGrab => {
+                    meca.grab(0, 0);
+                    meca.raise_arm_grab(0, 3);
+                    meca.raise_arm_grab(0, 2);
+                    meca.raise_arm_grab(0, 1);
+                    meca.raise_arm_grab(0, 0);
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
+                Order::MecaRaiseDrop => {
+                    meca.grab(0, 0);
+                    meca.raise_arm_release(0, 3);
+                    meca.raise_arm_release(0, 2);
+                    meca.raise_arm_release(0, 1);
+                    meca.raise_arm_release(0, 0);
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
+                Order::MecaIdlePosGrab => {
+                    meca.idle_arm_grab(0, 3);
+                    meca.idle_arm_grab(0, 2);
+                    meca.idle_arm_grab(0, 1);
+                    meca.idle_arm_grab(0, 0);
+                    log::info!("TODO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
+                Order::MecaIdlePosDrop => {
+                    meca.idle_arm_release(0, 3);
+                    meca.idle_arm_release(0, 2);
+                    meca.idle_arm_release(0, 1);
+                    meca.idle_arm_release(0, 0);
                     log::info!("TODO wait with feedback from meca");
                     thread::sleep(Duration::from_secs(2));
                 }
@@ -260,18 +227,20 @@ fn main() {
     }
 
     let orders = [
-        Order::RunPath(&[
-            XY::new(0.0, 500.0),
-            XY::new(500.0, 500.0),
-        ]),
-        Order::GotoA(arfast(RobotSideMain,TableSideMain)),
+        //Order::RunPath(&[
+        //    XY::new(0.0, 500.0),
+        //    XY::new(500.0, 500.0),
+        //]),
+        Order::GotoXyA(0.0, 0.0, arfast!(Back, Down)),
+        Order::MecaIdlePosDrop,
         Order::MecaTake,
-        Order::RunPath(&[
-            XY::new(500.0, 0.0),
-            XY::new(0.0, 0.0),
-        ]),
-        Order::GotoXyA(-200.0, 200.0, arfast(RobotSideBack,TableSideDown)),
-        Order::MecaDrop,
+        //Order::RunPath(&[
+        //    XY::new(500.0, 0.0),
+        //    XY::new(0.0, 0.0),
+        //]),
+        Order::MecaRaiseGrab,
+        Order::GotoXyA(50.0, 0.0, arfast(RobotSide::Back, TableSide::Down)),
+        Order::MecaRaiseDrop,
     ];
     let mut index = 0;
 
@@ -280,6 +249,12 @@ fn main() {
         let asserv = movement.get_asserv();
         let mut asserv = asserv.lock().unwrap();
         asserv.goto_xya(0., 0., 0.);
+    }
+
+    if robot_color {
+       led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
+    } else {
+        led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
     }
 
     loop {
@@ -303,6 +278,35 @@ fn main() {
                 meca_state.arms[0][1].position, 
                 meca_state.arms[0][2].position, 
                 meca_state.arms[0][3].position);
+
+            for (i_module, module) in meca_state.arms.iter().enumerate() {
+                for (i_arm, arm) in module.iter().enumerate() {
+                    let _ = rome_tx.send(rome::Message::MecaArmTmState {
+                        module: i_module as u8,
+                        arm: i_arm as u8,
+                        position: arm.position,
+                        color: match arm.color {
+                            CanColor::Unknown => rome::params::MecaArmTmStateColor::Unknown,
+                            CanColor::Yellow => rome::params::MecaArmTmStateColor::Yellow,
+                            CanColor::Blue => rome::params::MecaArmTmStateColor::Blue,
+                        },
+                        pump: arm.pump,
+                        valve: arm.valve,
+                        servo_error: arm.error,
+                        torque_enabled: arm.flags.torque_enabled,
+                        moving: arm.flags.moving,
+                        // Note: position_reached == !moving
+                        pump_current: arm.pump_current,
+                    }.encode());
+                }
+            }
+            for (i_tr, translation) in meca_state.translations.iter().enumerate() {
+                let _ = rome_tx.send(rome::Message::MecaArmTmTranslation {
+                    module: i_tr as u8,
+                    position: translation.position,
+                    error: translation.error,
+                }.encode());
+            }
         }
 
         let movement = movement.lock().unwrap();
