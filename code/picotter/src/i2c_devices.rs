@@ -4,6 +4,7 @@
 //! on the same I2C bus. Access is sequential (no concurrent I2C operations).
 
 use embedded_hal_async::i2c::I2c;
+use tcs3472::Tcs3472;
 
 use crate::ground_sensors::GroundSensorState;
 
@@ -21,6 +22,7 @@ pub enum GPIOBank {
 const PCA9535_ADDR: u8 = 0x20;
 const VCNL4040_ADDR: u8 = 0x60;
 const TLA2528_ADDR: u8 = 0x13;
+const TCA9548_ADDR: u8 = 0x70;
 
 // VCNL4040 registers
 const REG_PS_CONF1_2: u8 = 0x03;
@@ -67,6 +69,9 @@ impl<I2C: I2c> I2cDevices<I2C> {
 
         // Init TLA2528 ADC
         self.tla_init().await?;
+
+        // Init TCS3472 color sensors (via TCA9548A mux)
+        self.tcs_init_all().await.ok();
 
         Ok(())
     }
@@ -292,5 +297,68 @@ impl<I2C: I2c> I2cDevices<I2C> {
         self.i2c
             .write(TLA2528_ADDR, &[TLA_OPCODE_WRITE | reg, value])
             .await
+    }
+
+    // ==================== TCA9548A mux + TCS3472 color sensor methods ====================
+
+    /// Select a channel on the TCA9548A I2C mux (0-3 for arms)
+    async fn tca_select_channel(&mut self, channel: u8) -> Result<(), I2C::Error> {
+        self.i2c
+            .write(TCA9548_ADDR, &[1u8 << channel])
+            .await
+    }
+
+    /// Initialize all 4 TCS3472 sensors (one per arm via mux)
+    pub async fn tcs_init_all(&mut self) -> Result<(), I2C::Error> {
+        for arm in 0..4u8 {
+            self.tca_select_channel(arm).await?;
+            let mut tcs = Tcs3472::new(&mut self.i2c);
+            tcs.enable().await.map_err(tcs_unwrap_i2c)?;
+            tcs.set_integration_cycles(64).await.map_err(tcs_unwrap_i2c)?;
+            tcs.set_rgbc_gain(tcs3472::RgbCGain::_4x).await.map_err(tcs_unwrap_i2c)?;
+        }
+        Ok(())
+    }
+
+    /// Set TCS3472 config for a specific arm (via mux)
+    pub async fn tcs_set_config(
+        &mut self,
+        arm: u8,
+        integration_time: u16,
+        gain: u8,
+    ) -> Result<(), I2C::Error> {
+        self.tca_select_channel(arm).await?;
+        let mut tcs = Tcs3472::new(&mut self.i2c);
+        tcs.set_integration_cycles(integration_time).await.map_err(tcs_unwrap_i2c)?;
+        let gain = match gain {
+            0 => tcs3472::RgbCGain::_1x,
+            1 => tcs3472::RgbCGain::_4x,
+            2 => tcs3472::RgbCGain::_16x,
+            _ => tcs3472::RgbCGain::_60x,
+        };
+        tcs.set_rgbc_gain(gain).await.map_err(tcs_unwrap_i2c)?;
+        Ok(())
+    }
+
+    /// Read all 4 channels from TCS3472 for a specific arm (via mux)
+    /// Returns [clear, red, green, blue]
+    pub async fn tcs_read_all(&mut self, arm: u8) -> Result<[u16; 4], I2C::Error> {
+        self.tca_select_channel(arm).await?;
+        let mut tcs = Tcs3472::new(&mut self.i2c);
+        let measurement = tcs.read_all_channels().await.map_err(tcs_unwrap_i2c)?;
+        Ok([
+            measurement.clear,
+            measurement.red,
+            measurement.green,
+            measurement.blue,
+        ])
+    }
+}
+
+/// Extract I2C error from tcs3472::Error (panics on InvalidInputData which shouldn't happen)
+fn tcs_unwrap_i2c<E>(e: tcs3472::Error<E>) -> E {
+    match e {
+        tcs3472::Error::I2C(e) => e,
+        tcs3472::Error::InvalidInputData => panic!("TCS3472: invalid input data"),
     }
 }

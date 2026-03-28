@@ -6,7 +6,7 @@
 //! - 1 valve (via IO expander)
 //! - 1 color sensor
 
-use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage, Color};
+use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage};
 
 /// Arm state
 #[derive(Debug, Clone, Default)]
@@ -15,8 +15,8 @@ pub struct ArmState {
     pub position: u16,
     /// Target servo position
     pub target_position: u16,
-    /// Detected color
-    pub color: Color,
+    /// Detected color (0=no match, 255=config incomplete, 1-254=color_id)
+    pub color: u8,
     /// Pump state
     pub pump: bool,
     /// Valve state

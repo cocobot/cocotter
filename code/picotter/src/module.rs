@@ -11,12 +11,13 @@
 //! - Bank 1, pins 0-3: Pumps 0-3
 
 use crate::arm::{ArmCommand, ArmError, ArmState};
-use crate::can_protocol::{ArmTarget, CanMessage, Color};
+use crate::can_protocol::{ArmTarget, CanMessage};
+use crate::color_sensor::ColorTable;
 use crate::i2c_devices::{GPIOBank, I2cDevices};
 use crate::scs0009::{Scs0009, ScsError};
 use embedded_hal_async::i2c::I2c;
 use embedded_io_async::{Read, Write};
-use log::{debug, info};
+use log::debug;
 use rtt_target::rprintln;
 
 /// Number of arms per module
@@ -61,57 +62,53 @@ impl ModuleState {
     }
 }
 
-/// Color sensor interface
-pub trait ColorSensor {
-    /// Read color for specified arm
-    async fn read_color(&mut self, arm: u8) -> Result<Color, ArmError>;
-}
-
 /// Module controller
-/// Manages 4 arms with shared UART (servos) and I2C (IO expander, ground sensor)
-pub struct Module<TX, RX, I2C, CS>
+/// Manages 4 arms with shared UART (servos) and I2C (IO expander, ground sensor, color sensors)
+pub struct Module<TX, RX, I2C>
 where
     TX: Write,
     RX: Read,
     I2C: I2c,
-    CS: ColorSensor,
 {
     /// Module ID (0-2)
     pub id: u8,
     /// Servo controller (shared for all 4 servos)
     servo: Scs0009<TX, RX>,
-    /// I2C devices (PCA9535 + VCNL4040 + TLA2528)
+    /// I2C devices (PCA9535 + VCNL4040 + TLA2528 + TCA9548A/TCS3472)
     i2c_devices: I2cDevices<I2C>,
-    /// Color sensor
-    color_sensor: CS,
     /// State of all 4 arms
     state: ModuleState,
     /// Servo IDs for each arm (configurable)
     servo_ids: [u8; ARMS_PER_MODULE],
+    /// Per-arm color decoding tables
+    color_tables: [ColorTable; ARMS_PER_MODULE],
 }
 
-impl<TX, RX, I2C, CS> Module<TX, RX, I2C, CS>
+impl<TX, RX, I2C> Module<TX, RX, I2C>
 where
     TX: Write,
     RX: Read,
     I2C: I2c,
-    CS: ColorSensor,
 {
     /// Create new module
     pub fn new(
         id: u8,
         servo: Scs0009<TX, RX>,
         i2c_devices: I2cDevices<I2C>,
-        color_sensor: CS,
         servo_ids: [u8; ARMS_PER_MODULE],
     ) -> Self {
         Self {
             id,
             servo,
             i2c_devices,
-            color_sensor,
             state: ModuleState::new(id),
             servo_ids,
+            color_tables: [
+                ColorTable::new(),
+                ColorTable::new(),
+                ColorTable::new(),
+                ColorTable::new(),
+            ],
         }
     }
 
@@ -361,10 +358,10 @@ where
             }
         }
 
-        // Read color
-        match self.color_sensor.read_color(arm).await {
-            Ok(color) => arm_state.color = color,
-            Err(_) => arm_state.color = Color::Unknown,
+        // Read color from TCS3472 via mux, match against table
+        match self.i2c_devices.tcs_read_all(arm).await {
+            Ok(crgb) => arm_state.color = self.color_tables[arm as usize].match_color(&crgb),
+            Err(_) => arm_state.color = 255,
         }
 
         Ok(())
@@ -454,6 +451,33 @@ where
                     self.update_arm_state(target.arm).await
                 }
             }
+            CanMessage::SetColorConfig {
+                color_id,
+                channel,
+                min,
+                max,
+                ..
+            } => {
+                if target.is_arm_broadcast() {
+                    self.set_color_config_broadcast(*color_id, *channel, *min, *max);
+                } else {
+                    self.set_color_config(target.arm, *color_id, *channel, *min, *max);
+                }
+                Ok(())
+            }
+            CanMessage::SetColorSensorConfig {
+                integration_time,
+                gain,
+                ..
+            } => {
+                if target.is_arm_broadcast() {
+                    self.set_color_sensor_config_broadcast(*integration_time, *gain)
+                        .await
+                } else {
+                    self.set_color_sensor_config(target.arm, *integration_time, *gain)
+                        .await
+                }
+            }
             _ => return None,
         };
 
@@ -463,6 +487,73 @@ where
     /// Get status messages for target
     pub fn get_status_messages(&self, target: ArmTarget) -> impl Iterator<Item = CanMessage> + '_ {
         self.state.status_messages(target)
+    }
+
+    // ==================== Color sensor methods ====================
+
+    /// Set color config for a specific arm
+    pub fn set_color_config(&mut self, arm: u8, color_id: u8, channel: u8, min: u16, max: u16) {
+        if (arm as usize) < ARMS_PER_MODULE {
+            self.color_tables[arm as usize].set_range(color_id, channel, min, max);
+        }
+    }
+
+    /// Set color config for all arms (broadcast)
+    pub fn set_color_config_broadcast(&mut self, color_id: u8, channel: u8, min: u16, max: u16) {
+        for table in &mut self.color_tables {
+            table.set_range(color_id, channel, min, max);
+        }
+    }
+
+    /// Set TCS3472 sensor config and mark as configured
+    pub async fn set_color_sensor_config(
+        &mut self,
+        arm: u8,
+        integration_time: u8,
+        gain: u8,
+    ) -> Result<(), ArmError> {
+        if (arm as usize) < ARMS_PER_MODULE {
+            self.i2c_devices
+                .tcs_set_config(arm, integration_time as u16, gain)
+                .await
+                .map_err(|_| ArmError::ColorSensorError)?;
+            self.color_tables[arm as usize].sensor_configured = true;
+        }
+        Ok(())
+    }
+
+    /// Set TCS3472 sensor config for all arms (broadcast)
+    pub async fn set_color_sensor_config_broadcast(
+        &mut self,
+        integration_time: u8,
+        gain: u8,
+    ) -> Result<(), ArmError> {
+        for arm in 0..ARMS_PER_MODULE as u8 {
+            self.i2c_devices
+                .tcs_set_config(arm, integration_time as u16, gain)
+                .await
+                .map_err(|_| ArmError::ColorSensorError)?;
+            self.color_tables[arm as usize].sensor_configured = true;
+        }
+        Ok(())
+    }
+
+    /// Read raw TCS3472 values for a specific arm
+    pub async fn read_color_sensor_raw(&mut self, arm: u8) -> Option<CanMessage> {
+        if (arm as usize) >= ARMS_PER_MODULE {
+            return None;
+        }
+        if let Ok(crgb) = self.i2c_devices.tcs_read_all(arm).await {
+            Some(CanMessage::ColorSensorRaw {
+                target: ArmTarget::new(self.id, arm),
+                clear: crgb[0],
+                red: crgb[1],
+                green: crgb[2],
+                blue: crgb[3],
+            })
+        } else {
+            None
+        }
     }
 }
 

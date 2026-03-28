@@ -9,6 +9,7 @@ mod can_protocol;
 mod color_sensor;
 mod ground_sensors;
 mod i2c_devices;
+mod lidar;
 mod module;
 mod ota_handler;
 mod scs0009;
@@ -34,7 +35,6 @@ use rtt_target::rtt_init_print;
 
 use can_handler::{cmd_receiver, log_sender, status_sender};
 use can_protocol::{ArmTarget, CanMessage, Domain, ServoBus};
-use color_sensor::DummyColorSensor;
 use i2c_devices::I2cDevices;
 use module::Module;
 use scs0009::Scs0009;
@@ -52,6 +52,13 @@ bind_interrupts!(struct Irqs {
     UART5 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART5>;
     USART6 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART6>;
     USART1 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART1>;
+    // Lidar UARTs (19200 baud, full-duplex)
+    USART3 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART3>;
+    USART2 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART2>;
+    UART7 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART7>;
+    UART4 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART4>;
+    USART10 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART10>;
+    UART9 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART9>;
     // CAN
     FDCAN1_IT0 => embassy_stm32::can::IT0InterruptHandler<peripherals::FDCAN1>;
     FDCAN1_IT1 => embassy_stm32::can::IT1InterruptHandler<peripherals::FDCAN1>;
@@ -71,7 +78,6 @@ type ModuleType = Module<
     BufferedUartTx<'static>,
     BufferedUartRx<'static>,
     I2cType,
-    DummyColorSensor,
 >;
 type TranslationBusType = Scs0009<BufferedUartTx<'static>, BufferedUartRx<'static>>;
 
@@ -107,11 +113,11 @@ async fn led_status_task(
             m0.update_ground_sensor().await.ok();
         }
         {
-            let mut m1 = module1.lock().await;
+            //let mut m1 = module1.lock().await;
             //m1.update_ground_sensor().await.ok();
         }
         {
-            let mut m2 = module2.lock().await;
+            //let mut m2 = module2.lock().await;
             //m2.update_ground_sensor().await.ok();
         }
 
@@ -326,6 +332,29 @@ async fn cmd_task(
             _ => {}
         }
 
+        // Handle color sensor raw request (needs response via status channel)
+        if let CanMessage::RequestColorSensorRaw { target } = &msg {
+            if target.match_module(0) || target.is_module_broadcast() {
+                let mut m0 = module0.lock().await;
+                if let Some(resp) = m0.read_color_sensor_raw(target.arm).await {
+                    status_tx.try_send(resp).ok();
+                }
+            }
+            if target.match_module(1) || target.is_module_broadcast() {
+                let mut m1 = module1.lock().await;
+                if let Some(resp) = m1.read_color_sensor_raw(target.arm).await {
+                    status_tx.try_send(resp).ok();
+                }
+            }
+            if target.match_module(2) || target.is_module_broadcast() {
+                let mut m2 = module2.lock().await;
+                if let Some(resp) = m2.read_color_sensor_raw(target.arm).await {
+                    status_tx.try_send(resp).ok();
+                }
+            }
+            continue;
+        }
+
         // Handle arm-targeted messages
         if let Some(target) = msg.arm_target() {
             if target.match_module(0) || target.is_module_broadcast() {
@@ -424,7 +453,7 @@ async fn main(spawner: Spawner) {
         I2cConfig::default(),
     );
 
-    let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), DummyColorSensor::new(), MODULE0_SERVO_IDS);
+    let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), MODULE0_SERVO_IDS);
     info!("Module 0 init: {:?}", module0.init().await);
     let module0 = MODULE0.init(Mutex::new(module0));
 
@@ -450,14 +479,14 @@ async fn main(spawner: Spawner) {
     let i2c2 = I2c::new(
         p.I2C2,
         p.PB10,
-        p.PB11,
+        p.PB12,
         Irqs,
         p.GPDMA1_CH2,
         p.GPDMA1_CH3,
         I2cConfig::default(),
     );
 
-    let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), DummyColorSensor::new(), MODULE1_SERVO_IDS);
+    let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), MODULE1_SERVO_IDS);
     module1.init().await.ok();
     let module1 = MODULE1.init(Mutex::new(module1));
 
@@ -490,7 +519,7 @@ async fn main(spawner: Spawner) {
         I2cConfig::default(),
     );
 
-    let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), DummyColorSensor::new(), MODULE2_SERVO_IDS);
+    let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), MODULE2_SERVO_IDS);
     module2.init().await.ok();
     let module2 = MODULE2.init(Mutex::new(module2));
 
@@ -513,6 +542,95 @@ async fn main(spawner: Spawner) {
     .unwrap();
     let (tx_trans, rx_trans) = uart_trans.split();
     let translation_bus = TRANSLATION_BUS.init(Mutex::new(Scs0009::new(tx_trans, rx_trans)));
+
+    // =========================================================================
+    // Lidars M703A (6x, 19200 baud full-duplex, nCTRL=PA4, PWR_EN=PB1)
+    // =========================================================================
+    let lidar_nctrl = Output::new(p.PA4, Level::High, Speed::Low);
+    let lidar_pwr_en = Output::new(p.PB1, Level::High, Speed::Low);
+
+    let mut lidar_uart_config = UartConfig::default();
+    lidar_uart_config.baudrate = 19200;
+
+    // Lidar 0 (module 0.0): USART3 TX=PD8 RX=PD9
+    static LIDAR0_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR0_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar0_uart = BufferedUart::new(
+        p.USART3, p.PD9, p.PD8,
+        LIDAR0_TX_BUF.init([0u8; 32]),
+        LIDAR0_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar0_tx, lidar0_rx) = lidar0_uart.split();
+
+    // Lidar 1 (module 0.1): USART2 TX=PA2 RX=PA3
+    static LIDAR1_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR1_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar1_uart = BufferedUart::new(
+        p.USART2, p.PA3, p.PA2,
+        LIDAR1_TX_BUF.init([0u8; 32]),
+        LIDAR1_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar1_tx, lidar1_rx) = lidar1_uart.split();
+
+    // Lidar 2 (module 1.0): UART7 TX=PE8 RX=PE7
+    static LIDAR2_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR2_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar2_uart = BufferedUart::new(
+        p.UART7, p.PE7, p.PE8,
+        LIDAR2_TX_BUF.init([0u8; 32]),
+        LIDAR2_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar2_tx, lidar2_rx) = lidar2_uart.split();
+
+    // Lidar 3 (module 1.1): UART4 TX=PA0 RX=PA1
+    static LIDAR3_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR3_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar3_uart = BufferedUart::new(
+        p.UART4, p.PA1, p.PA0,
+        LIDAR3_TX_BUF.init([0u8; 32]),
+        LIDAR3_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar3_tx, lidar3_rx) = lidar3_uart.split();
+
+    // Lidar 4 (module 2.0): USART10 TX=PE3 RX=PE2
+    static LIDAR4_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR4_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar4_uart = BufferedUart::new(
+        p.USART10, p.PE2, p.PE3,
+        LIDAR4_TX_BUF.init([0u8; 32]),
+        LIDAR4_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar4_tx, lidar4_rx) = lidar4_uart.split();
+
+    // Lidar 5 (module 2.1): UART9 TX=PD15 RX=PD14
+    static LIDAR5_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR5_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar5_uart = BufferedUart::new(
+        p.UART9, p.PD14, p.PD15,
+        LIDAR5_TX_BUF.init([0u8; 32]),
+        LIDAR5_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar5_tx, lidar5_rx) = lidar5_uart.split();
+
+    lidar::init_and_spawn(
+        &spawner,
+        lidar_nctrl,
+        lidar_pwr_en,
+        [
+            lidar::m703a::M703a::new(0, lidar0_tx, lidar0_rx),
+            lidar::m703a::M703a::new(1, lidar1_tx, lidar1_rx),
+            lidar::m703a::M703a::new(2, lidar2_tx, lidar2_rx),
+            lidar::m703a::M703a::new(3, lidar3_tx, lidar3_rx),
+            lidar::m703a::M703a::new(4, lidar4_tx, lidar4_rx),
+            lidar::m703a::M703a::new(5, lidar5_tx, lidar5_rx),
+        ],
+    );
 
     // =========================================================================
     // Startup
