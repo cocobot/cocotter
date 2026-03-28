@@ -1,4 +1,4 @@
-use std::sync::mpsc::{self, Receiver, Sender, TryRecvError};
+use flume::{self, Receiver, Sender, TryRecvError};
 use std::net::TcpStream;
 use std::io::{Read, Write};
 use std::thread;
@@ -14,8 +14,8 @@ pub fn run_ble(_bt: FakeBle) -> BleServer { BleServer }
 
 impl RomePeripheral {
     pub fn run(_server: BleServer, name: String) -> (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) {
-        let (rome_tx, rome_tx_receiver): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) = mpsc::channel();
-        let (rome_rx_sender, rome_rx): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) = mpsc::channel();
+        let (rome_tx, rome_tx_receiver): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) = flume::unbounded();
+        let (rome_rx_sender, rome_rx): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) = flume::unbounded();
 
         // Get Rome server address from environment variable or use default
         let rome_addr = std::env::var("ROME_SERVER")

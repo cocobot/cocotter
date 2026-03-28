@@ -1,4 +1,5 @@
-use std::{sync::mpsc::{self, Receiver, Sender}, thread, time::Duration};
+use std::time::Duration;
+use flume::{Receiver, Sender};
 use smart_leds::{RGB8, hsv::{Hsv, hsv2rgb}};
 use smart_leds::SmartLedsWrite;
 use super::SmartLeds;
@@ -14,12 +15,12 @@ pub struct Leds {
 
 impl Leds {
     pub fn new(leds: SmartLeds) -> Self {
-        let (tx, rx) = mpsc::channel();
+        let (tx, rx) = flume::unbounded();
 
         let mut internal = LedsInternal::new(leds, rx);
 
         //start led thread
-        thread::spawn(move || {
+        std::thread::spawn(move || {
             internal.run();
         });
 
@@ -51,11 +52,6 @@ impl LedsInternal {
     }
 
     fn run(&mut self) {
-       //loop {
-       //    log::info!("LED heartbeat");
-       //    thread::sleep(Duration::from_millis(100));
-       //}
-
         loop {
             // Process all pending messages
             while let Ok(msg) = self.rx.try_recv() {
@@ -108,7 +104,7 @@ impl LedsInternal {
 
             self.leds.write(pixels).unwrap();
 
-            thread::sleep(Duration::from_millis(10));
+            std::thread::sleep(Duration::from_millis(10));
         }
     }
 }

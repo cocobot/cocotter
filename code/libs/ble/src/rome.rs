@@ -1,5 +1,5 @@
 use std::sync::{Arc, Mutex};
-use std::sync::mpsc::{self, Receiver, Sender};
+use flume::{self, Receiver, Sender};
 use std::time::Duration;
 use esp_idf_svc::{
     bt::{
@@ -81,8 +81,8 @@ pub struct RomePeripheral {
 
 impl RomePeripheral {
     pub fn run(server: BleServer, name: String) -> Self {
-        let (rome_rx, rome_receiver) = mpsc::channel();
-        let (rome_sender, rome_tx) = mpsc::channel::<Box<[u8]>>();
+        let (rome_rx, rome_receiver) = flume::unbounded();
+        let (rome_sender, rome_tx) = flume::unbounded::<Box<[u8]>>();
 
         let state = Arc::new(Mutex::new(PeripheralState {
             name,

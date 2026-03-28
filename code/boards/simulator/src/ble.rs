@@ -1,4 +1,4 @@
-use std::sync::mpsc::{self, Receiver, Sender};
+use flume::{self, Receiver, Sender};
 
 pub struct BleComm;
 
@@ -6,8 +6,8 @@ impl BleComm {
     pub fn run(_ble: super::FakeBle, name: String) -> (Sender<Box<[u8]>>, Receiver<Box<[u8]>>) {
         log::info!("Starting simulated BLE with name: {}", name);
 
-        let (tx_to_ble, rx_from_app) = mpsc::channel::<Box<[u8]>>();
-        let (tx_to_app, rx_from_ble) = mpsc::channel::<Box<[u8]>>();
+        let (tx_to_ble, rx_from_app) = flume::unbounded::<Box<[u8]>>();
+        let (tx_to_app, rx_from_ble) = flume::unbounded::<Box<[u8]>>();
 
         std::thread::spawn(move || {
             log::info!("Simulated BLE thread started");

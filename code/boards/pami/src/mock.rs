@@ -1,4 +1,4 @@
-use std::sync::mpsc::{Receiver, Sender};
+use flume::{Receiver, Sender};
 use embedded_hal_mock::eh1::{
     digital::{Mock as PinMock},
     i2c::{Mock as I2cMock},

@@ -3,7 +3,7 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
-use std::sync::mpsc::{Receiver, Sender};
+use flume::{Receiver, Sender};
 use embedded_hal::{
     digital::StatefulOutputPin,
     i2c::I2c,

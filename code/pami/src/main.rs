@@ -1,4 +1,4 @@
-use std::sync::mpsc::Sender;
+use flume::Sender;
 use std::time::{Duration, Instant};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};

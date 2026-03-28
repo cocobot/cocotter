@@ -8,6 +8,7 @@ name = "galipeur"
 harness = false # do not use the built in cargo test harness -> resolve rust-analyzer errors
 
 [dependencies]
+flume = { version = "0.11", default-features = false }
 log = "0.4"
 smart-leds = "0.4.0"
 asserv = { path = "../libs/asserv", features = ["rome"] }
