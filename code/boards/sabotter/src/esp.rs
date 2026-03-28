@@ -1,5 +1,4 @@
 use std::sync::{Arc, Mutex};
-use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
 use embedded_can::blocking::Can;
 use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
@@ -19,6 +18,7 @@ use esp_idf_svc::{
     },
     nvs::EspDefaultNvsPartition,
 };
+use flume::{Receiver, Sender};
 use ble::{BleBuilder, RomePeripheral};
 use cancaner::CanInterface;
 use pca9535::{Pca9535Immediate, ExpanderError, GPIOBank, StandardExpanderInterface};

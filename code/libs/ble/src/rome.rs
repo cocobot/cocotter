@@ -1,5 +1,4 @@
 use std::sync::{Arc, Mutex};
-use std::sync::mpsc::{self, Receiver, Sender};
 use std::time::Duration;
 use esp_idf_svc::{
     bt::{
@@ -15,6 +14,7 @@ use esp_idf_svc::{
 };
 use esp_idf_svc::sys::{EspError, ESP_FAIL};
 use enumset::enum_set;
+use flume::{self, Receiver, Sender};
 use crate::BleServer;
 
 const SERVICE_ROME_UUID: BtUuid = BtUuid::uuid128(0x8187_0000_ffa549699ab4e777ca411f95);
@@ -81,8 +81,8 @@ pub struct RomePeripheral {
 
 impl RomePeripheral {
     pub fn run(server: BleServer, name: String) -> Self {
-        let (rome_rx, rome_receiver) = mpsc::channel();
-        let (rome_sender, rome_tx) = mpsc::channel::<Box<[u8]>>();
+        let (rome_rx, rome_receiver) = flume::unbounded();
+        let (rome_sender, rome_tx) = flume::unbounded::<Box<[u8]>>();
 
         let state = Arc::new(Mutex::new(PeripheralState {
             name,

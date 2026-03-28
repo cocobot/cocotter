@@ -7,6 +7,7 @@ edition = "2024"
 embedded-hal = "1.0"
 embedded-hal-bus = { version = "0.3", features = ["std"] }
 embedded-can = { version = "0.4" }
+flume = { version = "0.11", default-features = false }
 log = "0.4"
 board-common = { path = "../common" }
 cancaner = { path = "../../libs/cancaner" }

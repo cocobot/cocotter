@@ -1,4 +1,3 @@
-use std::sync::mpsc::{Receiver, Sender};
 use std::time::{Duration, Instant};
 use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
@@ -6,6 +5,7 @@ use board_common::Periodicity;
 use board_sabotter::{SabotterBoard, SabotterLeds};
 use cancaner::Color as CanColor;
 use embedded_hal::digital::StatefulOutputPin;
+use flume::{Receiver, Sender};
 use sch16t::Sch16t;
 use crate::movement::MovementLowLevelHardware;
 use crate::meca::Meca;

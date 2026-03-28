@@ -1,6 +1,6 @@
 use std::rc::Rc;
 use std::sync::Mutex;
-use std::sync::mpsc::{Receiver, Sender};
+use flume::{Receiver, Sender};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
     bt::{Ble, BtDriver},

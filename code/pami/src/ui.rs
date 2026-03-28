@@ -1,4 +1,3 @@
-use std::sync::mpsc::{self, Receiver, Sender};
 use std::time::{Duration, Instant};
 use embedded_graphics::{
     draw_target::DrawTarget,
@@ -9,6 +8,7 @@ use embedded_graphics::{
     prelude::*,
     text::{Alignment, Baseline, Text, TextStyle, TextStyleBuilder},
 };
+use flume::{Receiver, Sender};
 use board_common::Team;
 use board_pami::DpadState;
 use crate::events::*;
@@ -64,8 +64,8 @@ trait Screen<T: DrawTarget<Color = BinaryColor>> {
 impl<T: DrawTarget<Color = BinaryColor> + Send + 'static> Ui<T> where T::Error: std::fmt::Debug {
     /// Create and run UI in a dedicated thread, return queues to send events and receive triggers
     pub fn run_thread<F: Fn(&mut T) + Send + 'static>(name: &'static str, target: T, flush: F) -> (Sender<UiEvent>, Receiver<UiTrigger>) {
-        let (event_sender, event_receiver) = mpsc::channel::<UiEvent>();
-        let (trigger_sender, trigger_receiver) = mpsc::channel::<UiTrigger>();
+        let (event_sender, event_receiver) = flume::unbounded::<UiEvent>();
+        let (trigger_sender, trigger_receiver) = flume::unbounded::<UiTrigger>();
         //TODO Tweak stack size?
         std::thread::Builder::new().stack_size(16 * 8192).name("UI".to_string()).spawn(move || {
             let mut instance = Self::new(name, target, event_receiver, trigger_sender);
@@ -113,8 +113,8 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
         let event = if let Some(delay) = self.step_delay() {
             match self.event_receiver.recv_timeout(delay) {
                 Ok(event) => Some(event),
-                Err(mpsc::RecvTimeoutError::Timeout) => None,
-                Err(mpsc::RecvTimeoutError::Disconnected) => {
+                Err(flume::RecvTimeoutError::Timeout) => None,
+                Err(flume::RecvTimeoutError::Disconnected) => {
                     return None;
                 }
             }

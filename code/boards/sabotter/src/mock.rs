@@ -1,4 +1,3 @@
-use std::sync::mpsc::{Receiver, Sender};
 use embedded_can::blocking::Can;
 use embedded_can as can;
 use embedded_hal_mock::eh1::{
@@ -7,6 +6,7 @@ use embedded_hal_mock::eh1::{
     pwm::{Mock as SetDutyCycleMock},
     spi::{Mock as SpiMock},
 };
+use flume::{Receiver, Sender};
 use board_common::mock::MockEncoder;
 use crate::{SabotterBoard, SabotterLeds, SabotterMotor};
 

@@ -3,7 +3,6 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
-use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal::{
     digital::StatefulOutputPin,
     i2c::I2c,
@@ -13,6 +12,7 @@ use embedded_graphics::{
     draw_target::DrawTarget,
     pixelcolor::BinaryColor,
 };
+use flume::{Receiver, Sender};
 pub use board_common::{BatteryLevel, Color};
 pub use board_common::hal::{BatteryReader, Encoder};
 use pwm_pca9685::{self, Pca9685};

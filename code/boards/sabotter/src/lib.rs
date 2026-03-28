@@ -3,13 +3,13 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
-use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal::{
     digital::StatefulOutputPin,
     i2c::I2c,
     pwm::SetDutyCycle,
     spi::SpiDevice,
 };
+use flume::{Receiver, Sender};
 use cancaner::CanInterface;
 pub use board_common::{BatteryLevel, Color};
 pub use board_common::hal::{BatteryReader, Encoder};

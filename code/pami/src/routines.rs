@@ -1,10 +1,10 @@
-use std::sync::mpsc::{Receiver, Sender};
 use std::time::{Duration, Instant};
 use asserv::differential::{conf::*, Asserv, rome::AsservDiffRome};
 use asserv::rome::AsservRome;
 use board_common::{Color, Periodicity};
 use board_pami::{BatteryLevel, BatteryReader, PamiBoard, PamiButtons, PamiLeds, PamiPwmController};
 use embedded_hal::digital::StatefulOutputPin;
+use flume::{Receiver, Sender};
 use vlx::VlxSensor;
 use crate::pami_asserv::{ASSERV_PERIOD, PamiAsservHardware};
 use crate::events::*;

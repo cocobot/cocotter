@@ -1,4 +1,3 @@
-use std::sync::mpsc::{Receiver, Sender};
 use embedded_hal_mock::eh1::{
     digital::{Mock as PinMock},
     i2c::{Mock as I2cMock},
@@ -8,6 +7,7 @@ use embedded_graphics::{
     pixelcolor::BinaryColor,
     mock_display::MockDisplay,
 };
+use flume::{Receiver, Sender};
 use board_common::mock::{MockBatteryReader, MockEncoder};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxError, VlxSensor, ZoneAlarm};

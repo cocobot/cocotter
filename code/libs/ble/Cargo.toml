@@ -7,3 +7,4 @@ edition = "2024"
 esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
 log = "0.4"
 enumset = "1.1"
+flume = { version = "0.11", default-features = false }

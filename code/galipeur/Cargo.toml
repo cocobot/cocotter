@@ -14,6 +14,7 @@ board-common = { path = "../boards/common" }
 board-sabotter = { path = "../boards/sabotter" }
 embedded-can = "0.4"
 embedded-hal = "1.0"
+flume = { version = "0.11", default-features = false }
 cancaner = { path = "../libs/cancaner" }
 rome = { path = "../libs/rome" }
 sch16t = { path = "../libs/sch16t" }
