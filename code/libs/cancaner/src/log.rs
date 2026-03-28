@@ -209,9 +209,58 @@ impl LogDecoder {
         Some((self.current_level, &self.buffer[..self.buffer_len]))
     }
 
+    /// Process a message, if it's a log message
+    ///
+    /// If message is a LOG_END message, process it and return the complete log message.
+    /// If it's another log message, return `Some(None)`.
+    /// Otherwise, return `None`.
+    pub fn process_message(&mut self, message: &CanMessage) -> Option<Option<(LogLevel, &[u8])>> {
+        match message {
+            CanMessage::LogMsg { seq, level, payload, payload_len } => {
+                self.process_msg(*seq, *level, &payload[..*payload_len as usize]);
+                Some(None)
+            }
+            CanMessage::LogCont { seq, payload, payload_len } => {
+                self.process_cont(*seq, &payload[..*payload_len as usize]);
+                Some(None)
+            }
+            CanMessage::LogEnd { seq, total_len, payload, payload_len } => {
+                Some(self.process_end(*seq, *total_len, &payload[..*payload_len as usize]))
+            }
+            _ => None
+        }
+    }
+
+    /// Process a message, log with `log_processed_message()` if it's a log message
+    ///
+    /// Return `true` if message has been processed, `false` otherwise.
+    pub fn process_and_log(&mut self, target: &'static str, message: &CanMessage) -> bool {
+        match self.process_message(message) {
+            Some(Some((level, data))) => {
+                Self::log_processed_message(target, level, data);
+                true
+            }
+            Some(None) => true,
+            None => false,
+        }
+    }
+
     /// Get the current level (for single-frame LOG_END messages)
     pub fn set_level(&mut self, level: LogLevel) {
         self.current_level = level;
+    }
+
+    /// Log a message as returned by `process_message()`
+    pub fn log_processed_message(target: &'static str, level: LogLevel, data: &[u8]) {
+        let s = str::from_utf8(data).unwrap_or("<utf8 error>");
+        match level {
+            LogLevel::Error => log::error!(target: target, "{s}"),
+            LogLevel::Warn => log::warn!(target: target, "{s}"),
+            LogLevel::Info => log::info!(target: target, "{s}"),
+            LogLevel::Debug => log::debug!(target: target, "{s}"),
+            LogLevel::Trace => log::trace!(target: target, "{s}"),
+            LogLevel::Off => {}
+        }
     }
 }
 

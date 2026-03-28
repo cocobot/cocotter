@@ -9,6 +9,7 @@ embedded-hal-bus = { version = "0.3", features = ["std"] }
 embedded-can = { version = "0.4" }
 log = "0.4"
 board-common = { path = "../common" }
+cancaner = { path = "../../libs/cancaner" }
 pca9535 = { version = "2.0", features = ["std"] }
 
 [target.'cfg(target_os = "espidf")'.dependencies]

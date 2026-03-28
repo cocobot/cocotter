@@ -27,22 +27,16 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[cfg(all(target_os = "espidf", feature = "std"))]
-pub mod esp;
+mod interface;
 mod message;
 mod protocol;
 mod types;
 pub mod log;
 pub mod ota;
 
-#[cfg(target_os = "espidf")]
-pub use esp::CanInterface;
-
+pub use interface::CanInterface;
 pub use message::{ping_response, CanMessage, EncodedMessage};
 pub use protocol::*;
 pub use types::*;
 pub use log::{LogEncoder, LogDecoder};
 pub use ota::{OtaSender, OtaSenderState, OtaReceiver, OtaReceiverState, OtaStorage};
-
-// Re-export embedded-can types for convenience
-pub use embedded_can::StandardId;

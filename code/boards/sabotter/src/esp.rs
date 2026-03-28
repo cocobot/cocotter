@@ -1,23 +1,26 @@
 use std::sync::{Arc, Mutex};
 use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
+use embedded_can::blocking::Can;
 use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
     bt::{Ble, BtDriver},
     hal::{
         can::{CanConfig, CanDriver},
+        delay::BLOCK,
         gpio::{AnyOutputPin, Output, PinDriver},
         i2c::{I2cConfig, I2cDriver, I2cError},
         ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},
         prelude::Peripherals,
         spi::{self, SpiConfig, SpiDeviceDriver, SpiDriver},
         units::Hertz,
-        sys::ets_delay_us,
+        sys::{self, ets_delay_us},
     },
     nvs::EspDefaultNvsPartition,
 };
 use ble::{BleBuilder, RomePeripheral};
+use cancaner::CanInterface;
 use pca9535::{Pca9535Immediate, ExpanderError, GPIOBank, StandardExpanderInterface};
 use esp32_encoder::Encoder as EspEncoder;
 use crate::{SabotterBoard, SabotterLeds, SabotterMotor};
@@ -51,7 +54,7 @@ impl SabotterBoard for EspSabotterBoard {
     type I2c = EspI2c;
     type OutputPin = EspOutputPin;
     type ExOutputPin = SharedGpioPin;
-    type Can = CanDriver<'static>;
+    type Can = EspCanInterface;
     type Spi = SpiDeviceDriver<'static, SpiDriver<'static>>;
     type MotorEncoder = EspEncoder<'static>;
     type MotorPwm = LedcDriver<'static>;
@@ -188,7 +191,8 @@ impl SabotterBoard for EspSabotterBoard {
     }
 
     fn can(&mut self) -> Option<Self::Can> {
-        self.can.take()
+        let can = self.can.take()?;
+        Some(EspCanInterface::new(can))
     }
 
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]> {
@@ -353,5 +357,154 @@ impl SharedGpio {
             last_written_value: false,
             is_output: false,
         }
+    }
+}
+
+
+/// CAN interface with alert handling and auto-recovering
+///
+/// `init()` will start a thread that will run forever.
+/// This thread will stop if the driver is uninstalled, which should never because the driver is leaked.
+///
+/// The `driver` must be static for the `EspCanInterface` to be `Sync + Send`, which is required
+/// to then call `can_receive()` from a separate thread.
+#[derive(Clone)]
+pub struct EspCanInterface {
+    driver: &'static CanDriver<'static>,
+}
+
+// SAFETY: We only use `driver.transmit()` and `driver.receive()`.
+// Both are safe and don't actually use the instance directly.
+unsafe impl Send for EspCanInterface {}
+unsafe impl Sync for EspCanInterface {}
+
+impl EspCanInterface {
+    /// Create and initialize the interface, setup alert monitoring
+    pub fn new(mut driver: CanDriver<'static>) -> Self {
+        driver.start().expect("TWAI start failed");
+
+        // Note: the `CanDriver` object will concurrently with raw twai calls
+
+        // Enable error alerts for monitoring + auto-recovery
+        let alerts_to_enable = sys::TWAI_ALERT_BUS_ERROR
+            | sys::TWAI_ALERT_TX_FAILED
+            | sys::TWAI_ALERT_RX_QUEUE_FULL
+            | sys::TWAI_ALERT_BUS_OFF
+            | sys::TWAI_ALERT_ABOVE_ERR_WARN
+            | sys::TWAI_ALERT_ERR_PASS
+            | sys::TWAI_ALERT_ARB_LOST
+            | sys::TWAI_ALERT_BUS_RECOVERED
+            | sys::TWAI_ALERT_RX_FIFO_OVERRUN;
+
+        let ret = unsafe { sys::twai_reconfigure_alerts(alerts_to_enable, core::ptr::null_mut()) };
+        if ret != 0 {
+            log::error!("CAN: failed to configure alerts (err={ret})");
+        }
+
+        // Monitor thread: watches for CAN alerts, logs errors, auto-recovers on bus-off
+        std::thread::Builder::new()
+            .name("can-mon".into())
+            .stack_size(4096)
+            .spawn(move || loop {
+                let mut alerts: u32 = 0;
+                match unsafe { sys::twai_read_alerts(&mut alerts, BLOCK) } {
+                    0 => {}
+                    sys::ESP_ERR_INVALID_STATE => { return; }
+                    _ => { continue; }
+                }
+
+                if alerts & sys::TWAI_ALERT_BUS_ERROR != 0 {
+                    log::warn!("CAN: bus error detected");
+                }
+                if alerts & sys::TWAI_ALERT_TX_FAILED != 0 {
+                    log::warn!("CAN: TX failed");
+                }
+                if alerts & sys::TWAI_ALERT_ARB_LOST != 0 {
+                    log::warn!("CAN: arbitration lost");
+                }
+                if alerts & sys::TWAI_ALERT_RX_QUEUE_FULL != 0 {
+                    log::warn!("CAN: RX queue full, messages lost");
+                }
+                if alerts & sys::TWAI_ALERT_RX_FIFO_OVERRUN != 0 {
+                    log::warn!("CAN: RX FIFO overrun");
+                }
+                if alerts & sys::TWAI_ALERT_ABOVE_ERR_WARN != 0 {
+                    log::warn!("CAN: error counter above warning threshold");
+                }
+                if alerts & sys::TWAI_ALERT_ERR_PASS != 0 {
+                    log::error!("CAN: entered error passive state");
+                }
+
+                // Auto-recovery: bus-off → initiate recovery
+                if alerts & sys::TWAI_ALERT_BUS_OFF != 0 {
+                    log::error!("CAN: bus off! initiating recovery...");
+                    let ret = unsafe { sys::twai_initiate_recovery() };
+                    if ret != 0 {
+                        log::error!("CAN: recovery initiation failed (err={ret})");
+                    }
+                }
+
+                // After recovery completes, driver is in STOPPED state → restart
+                if alerts & sys::TWAI_ALERT_BUS_RECOVERED != 0 {
+                    log::info!("CAN: bus recovered, restarting...");
+                    let ret = unsafe { sys::twai_start() };
+                    if ret != 0 {
+                        log::error!("CAN: restart after recovery failed (err={ret})");
+                    } else {
+                        log::info!("CAN: restarted successfully");
+                    }
+                }
+
+                // Log detailed status on serious errors
+                if alerts
+                    & (sys::TWAI_ALERT_BUS_ERROR
+                        | sys::TWAI_ALERT_ERR_PASS
+                        | sys::TWAI_ALERT_BUS_OFF
+                        | sys::TWAI_ALERT_BUS_RECOVERED)
+                    != 0
+                {
+                    Self::log_status();
+                }
+            })
+            .expect("spawn can-mon");
+
+        // Leak the driver to get a static reference
+        // SAFETY: the `CanDriver` object will always be valid; not dropping it will just not uninstall it
+        let driver = Box::leak(Box::new(driver));
+        Self { driver }
+    }
+
+    fn log_status() {
+        let mut status: sys::twai_status_info_t = Default::default();
+        if unsafe { sys::twai_get_status_info(&mut status) } == 0 {
+            let state_str = match status.state {
+                0 => &"STOPPED",
+                1 => &"RUNNING",
+                2 => &"BUS_OFF",
+                3 => &"RECOVERING",
+                _ => &"UNKNOWN",
+            };
+            log::warn!(
+                "CAN status: state={state_str}, tx_err={}, rx_err={}, tx_failed={}, rx_missed={}, bus_err={}",
+                status.tx_error_counter,
+                status.rx_error_counter,
+                status.tx_failed_count,
+                status.rx_missed_count,
+                status.bus_error_count,
+            );
+        }
+    }
+}
+
+impl CanInterface for EspCanInterface {
+    type Frame = <CanDriver<'static> as Can>::Frame;
+    type Error = <CanDriver<'static> as Can>::Error;
+
+    fn can_transmit(&self, frame: &Self::Frame) -> Result<(), Self::Error> {
+        Ok(self.driver.transmit(frame, BLOCK)?)
+    }
+
+    fn can_receive(&self) -> Result<Self::Frame, Self::Error> {
+        Ok(self.driver.receive(BLOCK)?)
     }
 }

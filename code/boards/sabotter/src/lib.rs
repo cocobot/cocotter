@@ -4,13 +4,13 @@ pub mod esp;
 pub mod mock;
 
 use std::sync::mpsc::{Receiver, Sender};
-use embedded_can::blocking::Can;
 use embedded_hal::{
     digital::StatefulOutputPin,
     i2c::I2c,
     pwm::SetDutyCycle,
     spi::SpiDevice,
 };
+use cancaner::CanInterface;
 pub use board_common::{BatteryLevel, Color};
 pub use board_common::hal::{BatteryReader, Encoder};
 
@@ -25,7 +25,7 @@ pub trait SabotterBoard {
     type OutputPin: StatefulOutputPin;
     type ExOutputPin: StatefulOutputPin;
     type Spi: SpiDevice + Send;
-    type Can: Can;
+    type Can: CanInterface + 'static;
     type MotorEncoder: Encoder<i32> + Send;  //TODO exact type
     type MotorPwm: SetDutyCycle + Send;
 
