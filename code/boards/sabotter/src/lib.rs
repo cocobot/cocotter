@@ -1,7 +1,6 @@
 pub use pca9535;
 
 use esp_idf_svc::{
-    bt::{Ble, BtDriver},
     hal::{
         adc::{
             ADCU1,
@@ -59,9 +58,6 @@ pub struct Motor {
     pub encoder: Encoder<'static>,
 }
 
-// Bluetooth driver
-pub type Bt = BtDriver<'static, Ble>;
-
 // LED strip type
 pub type SmartLeds = LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorRgb24>;
 
@@ -77,7 +73,6 @@ pub struct BoardSabotter {
     pub imu_spi: Option<ImuSpi>,
     pub mot_ena: Option<PinDriver<'static, Output>>,
     pub lidar_pwm: Option<LedcDriver<'static>>,
-    pub ble: Option<Bt>,
     pub leds: Option<SmartLeds>,
 }
 
@@ -240,7 +235,7 @@ impl BoardSabotter {
             None
         };
 
-        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
+        let _modem = peripherals.modem; // consumed to prevent reuse (Nimble will use it outside rust code)
 
         Self {
             led_heartbeat,
@@ -254,7 +249,6 @@ impl BoardSabotter {
             imu_spi,
             mot_ena,
             lidar_pwm,
-            ble,
             leds,
         }
     }

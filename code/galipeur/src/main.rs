@@ -13,7 +13,6 @@ use board_sabotter::BoardSabotter;
 use board_simulator::BoardSabotter;
 pub use board_sabotter::{ImuSpi, SmartLeds, Motor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
 use ble::{BleBuilder, RomePeripheral};
-use cancaner::Color as CanColor;
 //use board_sabotter::pca9535::{expander::standard::StandardExpanderInterface, GPIOBank};
 use esp_idf_svc::sys::ets_delay_us;
 use movement::{Movement, MovementLowLevelHardware};
@@ -111,7 +110,7 @@ fn main() {
     }
     log::info!("Board initialized");
 
-    let (ble_server, _ble_client) = BleBuilder::new(board.ble.take().unwrap()).run();
+    let (ble_server, _ble_client) = BleBuilder::new().run();
     let rome = RomePeripheral::run(ble_server, "Galipeur".into());
     let rome_tx = rome.sender;
 
@@ -286,9 +285,9 @@ fn main() {
                         arm: i_arm as u8,
                         position: arm.position,
                         color: match arm.color {
-                            CanColor::Unknown => rome::params::MecaArmTmStateColor::Unknown,
-                            CanColor::Yellow => rome::params::MecaArmTmStateColor::Yellow,
-                            CanColor::Blue => rome::params::MecaArmTmStateColor::Blue,
+                            1 => rome::params::MecaArmTmStateColor::Yellow,
+                            2 => rome::params::MecaArmTmStateColor::Blue,
+                            _ => rome::params::MecaArmTmStateColor::Unknown,
                         },
                         pump: arm.pump,
                         valve: arm.valve,

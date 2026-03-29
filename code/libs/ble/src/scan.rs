@@ -1,25 +1,17 @@
-use esp_idf_svc::bt::BdAddr;
-use esp_idf_svc::bt::ble::gap::GapSearchResult;
+/// Scan result from BLE discovery
+pub struct BleScanResult {
+    pub addr: [u8; 6],
+    pub addr_type: u8,
+    pub rssi: i8,
+    pub data: Vec<u8>,
+}
 
-
-/// Scan result passed to BleClient scan handler
-///
-/// Wrap the underlying esp-idf-svc structure to provide helpers.
-/// It does not expose all data but can be extended if needed.
-pub struct BleScanResult<'a>(pub GapSearchResult<'a>);
-
-impl BleScanResult<'_> {
-    pub fn addr(&self) -> BdAddr {
-        self.0.bda
-    }
-
+impl BleScanResult {
     pub fn adv_data(&self) -> &[u8] {
-        self.0.ble_adv.unwrap_or(&[])
+        &self.data
     }
 
     /// Iterate on advertisement data structures
-    ///
-    /// Return slices for each structure, without length but with AD type
     pub fn iter_ad(&self) -> AdvDataIter<'_> {
         AdvDataIter { data: self.adv_data() }
     }
@@ -46,7 +38,7 @@ pub enum AdData<'a> {
     ShortenedLocalName(&'a str),
     CompleteLocalName(&'a str),
     Empty,
-    Unknown(u8, &'a [u8]), 
+    Unknown(u8, &'a [u8]),
     Invalid(u8, &'a [u8]),
 }
 
@@ -93,4 +85,3 @@ impl<'a> Iterator for AdvDataIter<'a> {
         }
     }
 }
-

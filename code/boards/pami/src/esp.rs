@@ -3,7 +3,6 @@ use std::sync::Mutex;
 use flume::{Receiver, Sender};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
-    bt::{Ble, BtDriver},
     hal::{
         adc::{
             ADCU1,
@@ -45,7 +44,6 @@ pub struct EspPamiBoard<'d> {
     battery_level: Option<PamiBatteryLevel>,
     emergency_stop: Option<PinDriver<'static, Input>>,
     starting_cord: Option<PinDriver<'static, Input>>,
-    ble: Option<BtDriver<'static, Ble>>,
     buttons: Option<EspPamiButtons>,
     display: Option<PamiDisplay>,
     leds: Option<PamiLeds<PinDriver<'static, Output>>>,
@@ -101,7 +99,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         ).unwrap();
         let battery_level = PamiBatteryLevel(adc_vbatt);
 
-        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
+        let _modem = peripherals.modem; // consumed to prevent reuse (Nimble will use it outside rust code)
 
         let line_sensor = TCA6408::new(MutexDevice::new(i2c_driver_static), 0b010_0000);
         let buttons = EspPamiButtons {
@@ -146,7 +144,6 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
             emergency_stop: Some(emergency_stop),
             starting_cord: Some(starting_cord),
             leds: Some(leds),
-            ble,
             line_sensor: Some(line_sensor),
             buttons: Some(buttons),
             display: Some(display),
@@ -212,13 +209,9 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         self.pwm_controller.take()
     }
 
-    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
-        let ble = self.ble.take()?;
-        // Note: for now, client is not used, so we can easily initialize both server and client
-        // and drop the client. But if the client (and `.with_scanner()`) are needed,
-        // another approach must be implemented. Maybe by changing the BLE API.
-        let (ble_server, _ble_client) = BleBuilder::new(ble)
-            .with_passkey_notifier(move |addr, key| { passkey_notifier(addr.into(), key) })
+    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {       
+        let (ble_server, _ble_client) = BleBuilder::new()
+            .with_passkey_notifier(passkey_notifier)
             .run();
         let RomePeripheral { sender, receiver } = RomePeripheral::run(ble_server, device_name);
         Some((sender, receiver))
