@@ -39,7 +39,7 @@ impl Meca {
         for module in 0..4 {
             for arm in 0..2 {
                 self.proxy.set_torque(module, arm, true);
-                self.lower_arm(module, arm);
+                self.idle_arm_release(module, arm);
             }
         }
 
@@ -47,7 +47,7 @@ impl Meca {
 
         for module in 0..4 {
             for arm in 0..2 {
-                self.raise_arm(module, arm);
+                self.raise_arm_release(module, arm);
             }
         }
     }   
