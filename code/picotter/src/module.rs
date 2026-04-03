@@ -11,10 +11,11 @@
 //! - Bank 1, pins 0-3: Pumps 0-3
 
 use crate::arm::{ArmCommand, ArmError, ArmState};
-use crate::can_protocol::{ArmTarget, CanMessage};
+use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage, Stage2Target};
 use crate::color_sensor::ColorTable;
 use crate::i2c_devices::{GPIOBank, I2cDevices};
 use crate::scs0009::{Scs0009, ScsError};
+use embassy_time::Timer;
 use embedded_hal_async::i2c::I2c;
 use embedded_io_async::{Read, Write};
 use log::debug;
@@ -22,6 +23,9 @@ use rtt_target::rprintln;
 
 /// Number of arms per module
 pub const ARMS_PER_MODULE: usize = 4;
+
+/// Number of stage2 servos per module
+pub const STAGE2_SERVOS_PER_MODULE: usize = 2;
 
 /// Pin assignments for valves (Bank 0, pins 0-3)
 const VALVE_BANK: GPIOBank = GPIOBank::Bank0;
@@ -35,9 +39,54 @@ const LED_PIN: u8 = 7;
 const PUMP_BANK: GPIOBank = GPIOBank::Bank1;
 const PUMP_PINS: [u8; 4] = [0, 1, 2, 3];
 
+/// Stage2 servo state
+#[derive(Debug, Clone, Default)]
+pub struct Stage2ServoState {
+    pub position: u16,
+    pub target_position: u16,
+    pub servo_error: u8,
+    pub torque_enabled: bool,
+    pub moving: bool,
+    pub position_reached: bool,
+}
+
+impl Stage2ServoState {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn flags(&self) -> ArmFlags {
+        ArmFlags {
+            torque_enabled: self.torque_enabled,
+            moving: self.moving,
+            position_reached: self.position_reached,
+        }
+    }
+
+    pub fn to_status_message(&self, module: u8, servo: u8) -> CanMessage {
+        CanMessage::Stage2Status {
+            target: Stage2Target::new(module, servo),
+            position: self.position,
+            error: self.servo_error,
+            flags: self.flags(),
+        }
+    }
+
+    pub fn check_position_reached(&mut self, tolerance: u16) {
+        let diff = if self.position > self.target_position {
+            self.position - self.target_position
+        } else {
+            self.target_position - self.position
+        };
+        self.position_reached = diff <= tolerance;
+        self.moving = !self.position_reached;
+    }
+}
+
 /// Module state containing all 4 arms
 pub struct ModuleState {
     pub arms: [ArmState; ARMS_PER_MODULE],
+    pub stage2: [Stage2ServoState; STAGE2_SERVOS_PER_MODULE],
     pub module_id: u8,
 }
 
@@ -50,6 +99,7 @@ impl ModuleState {
                 ArmState::new(),
                 ArmState::new(),
             ],
+            stage2: [Stage2ServoState::new(), Stage2ServoState::new()],
             module_id,
         }
     }
@@ -59,6 +109,18 @@ impl ModuleState {
         (0..ARMS_PER_MODULE as u8)
             .filter(move |&arm| target.matches(self.module_id, arm))
             .map(move |arm| self.arms[arm as usize].to_status_message(self.module_id, arm))
+    }
+
+    /// Build stage2 status messages for specified target
+    pub fn stage2_status_messages(
+        &self,
+        target: Stage2Target,
+    ) -> impl Iterator<Item = CanMessage> + '_ {
+        (0..STAGE2_SERVOS_PER_MODULE as u8)
+            .filter(move |&servo| target.matches(self.module_id, servo))
+            .map(move |servo| {
+                self.stage2[servo as usize].to_status_message(self.module_id, servo)
+            })
     }
 }
 
@@ -80,6 +142,8 @@ where
     state: ModuleState,
     /// Servo IDs for each arm (configurable)
     servo_ids: [u8; ARMS_PER_MODULE],
+    /// Servo IDs for stage2 servos (configurable)
+    stage2_servo_ids: [u8; STAGE2_SERVOS_PER_MODULE],
     /// Per-arm color decoding tables
     color_tables: [ColorTable; ARMS_PER_MODULE],
 }
@@ -96,6 +160,7 @@ where
         servo: Scs0009<TX, RX>,
         i2c_devices: I2cDevices<I2C>,
         servo_ids: [u8; ARMS_PER_MODULE],
+        stage2_servo_ids: [u8; STAGE2_SERVOS_PER_MODULE],
     ) -> Self {
         Self {
             id,
@@ -103,6 +168,7 @@ where
             i2c_devices,
             state: ModuleState::new(id),
             servo_ids,
+            stage2_servo_ids,
             color_tables: [
                 ColorTable::new(),
                 ColorTable::new(),
@@ -130,8 +196,33 @@ where
 
     /// Initialize IO expander pins and ground sensor
     pub async fn init(&mut self) -> Result<(), ArmError> {
-        debug!("Module {}: Scanning servos", self.id);
-        self.scan_servos().await;
+        //debug!("Module {}: Scanning servos", self.id);
+        //self.scan_servos().await;
+
+        //let from = 1;
+        //let target = 21;
+        // if self.servo.unlock_eeprom(from).await.is_err() {
+        //    }
+        //    Timer::after_millis(50).await;
+//
+        //    if self.servo.modify_id(from, target).await.is_err() {
+        //    }
+        //    Timer::after_millis(50).await;
+//
+        //    if self.servo.lock_eeprom(target).await.is_err() {
+        //    }
+        //    Timer::after_millis(50).await;
+//
+        //    match self.servo.ping(target).await {
+        //        Ok(true) => {
+        //            rprintln!("Servo ID set to {} successfully", target);
+        //            
+        //        }
+        //        _ => {
+        //            rprintln!("Failed to verify servo ID {}", target);
+        //            
+        //        }
+        //    };
 
         debug!("Module {}: Initializing I2C devices", self.id);
         self.i2c_devices
@@ -487,6 +578,143 @@ where
     /// Get status messages for target
     pub fn get_status_messages(&self, target: ArmTarget) -> impl Iterator<Item = CanMessage> + '_ {
         self.state.status_messages(target)
+    }
+
+    /// Get stage2 status messages for target
+    pub fn get_stage2_status_messages(
+        &self,
+        target: Stage2Target,
+    ) -> impl Iterator<Item = CanMessage> + '_ {
+        self.state.stage2_status_messages(target)
+    }
+
+    // ==================== Stage2 servo methods ====================
+
+    /// Set stage2 servo position
+    pub async fn set_stage2_position(
+        &mut self,
+        servo: u8,
+        position: u16,
+        time_ms: u16,
+    ) -> Result<(), ArmError> {
+        if servo as usize >= STAGE2_SERVOS_PER_MODULE {
+            return Err(ArmError::ServoError(0xFF));
+        }
+        let servo_id = self.stage2_servo_ids[servo as usize];
+        let state = &mut self.state.stage2[servo as usize];
+        match self.servo.set_position(servo_id, position, time_ms, 0).await {
+            Ok(()) => {
+                state.target_position = position;
+                state.servo_error = 0;
+                state.moving = true;
+                state.position_reached = false;
+                Ok(())
+            }
+            Err(e) => {
+                state.servo_error = scs_error_to_code(&e);
+                self.servo.set_torque(servo_id, true).await.ok();
+                Err(scs_error_to_arm_error(e))
+            }
+        }
+    }
+
+    /// Set stage2 servo torque
+    pub async fn set_stage2_torque(
+        &mut self,
+        servo: u8,
+        enable: bool,
+    ) -> Result<(), ArmError> {
+        if servo as usize >= STAGE2_SERVOS_PER_MODULE {
+            return Err(ArmError::ServoError(0xFF));
+        }
+        let servo_id = self.stage2_servo_ids[servo as usize];
+        let state = &mut self.state.stage2[servo as usize];
+        match self.servo.set_torque(servo_id, enable).await {
+            Ok(()) => {
+                state.torque_enabled = enable;
+                state.servo_error = 0;
+                Ok(())
+            }
+            Err(e) => {
+                state.servo_error = scs_error_to_code(&e);
+                Err(scs_error_to_arm_error(e))
+            }
+        }
+    }
+
+    /// Update stage2 servo state from hardware
+    pub async fn update_stage2_state(&mut self, servo: u8) -> Result<(), ArmError> {
+        if servo as usize >= STAGE2_SERVOS_PER_MODULE {
+            return Err(ArmError::ServoError(0xFF));
+        }
+        let servo_id = self.stage2_servo_ids[servo as usize];
+        let state = &mut self.state.stage2[servo as usize];
+        match self.servo.read_position(servo_id).await {
+            Ok((pos, servo_error)) => {
+                state.position = pos;
+                state.servo_error = servo_error;
+                state.check_position_reached(10);
+            }
+            Err(e) => {
+                state.servo_error = scs_error_to_code(&e);
+            }
+        }
+        Ok(())
+    }
+
+    /// Update all stage2 servo states
+    pub async fn update_all_stage2_states(&mut self) -> Result<(), ArmError> {
+        for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
+            let _ = self.update_stage2_state(servo).await;
+        }
+        Ok(())
+    }
+
+    /// Handle stage2 CAN message if it targets this module
+    pub async fn handle_stage2_message(&mut self, msg: &CanMessage) -> Option<Result<(), ArmError>> {
+        let target = msg.stage2_target()?;
+
+        if target.module != self.id && !target.is_module_broadcast() {
+            return None;
+        }
+
+        let result = match msg {
+            CanMessage::SetStage2 {
+                position, time_ms, ..
+            } => {
+                let mut last_error = None;
+                for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
+                    if target.matches(self.id, servo) {
+                        if let Err(e) = self.set_stage2_position(servo, *position, *time_ms).await {
+                            last_error = Some(e);
+                        }
+                    }
+                }
+                last_error.map_or(Ok(()), Err)
+            }
+            CanMessage::SetStage2Torque { enable, .. } => {
+                let mut last_error = None;
+                for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
+                    if target.matches(self.id, servo) {
+                        if let Err(e) = self.set_stage2_torque(servo, *enable).await {
+                            last_error = Some(e);
+                        }
+                    }
+                }
+                last_error.map_or(Ok(()), Err)
+            }
+            CanMessage::RequestStage2Status { .. } => {
+                for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
+                    if target.matches(self.id, servo) {
+                        let _ = self.update_stage2_state(servo).await;
+                    }
+                }
+                Ok(())
+            }
+            _ => return None,
+        };
+
+        Some(result)
     }
 
     // ==================== Color sensor methods ====================

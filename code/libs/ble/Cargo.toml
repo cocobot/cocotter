@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+crc32fast = "1"
 esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }
 flume = { version = "0.11", default-features = false }
 log = "0.4"

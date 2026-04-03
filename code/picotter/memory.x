@@ -1,0 +1,5 @@
+MEMORY
+{
+    FLASH : ORIGIN = 0x08010000, LENGTH = 960K
+    RAM   : ORIGIN = 0x20000000, LENGTH = 0x9FF00  /* 640K - 256 bytes (shared region at 0x2009FF00) */
+}

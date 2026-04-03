@@ -1,10 +1,11 @@
 mod movement;
 mod shared_gpio;
 mod can;
+mod can_ota_relay;
 mod meca;
 mod led;
 
-use std::{sync::{Arc, Mutex}, thread, time::Duration};
+use std::{sync::{Arc, Mutex}, thread::{self, Thread}, time::Duration};
 
 #[cfg(target_os = "espidf")]
 use board_sabotter::BoardSabotter;
@@ -12,7 +13,7 @@ use board_sabotter::BoardSabotter;
 #[cfg(not(target_os = "espidf"))]
 use board_simulator::BoardSabotter;
 pub use board_sabotter::{ImuSpi, SmartLeds, Motor, GpioExpander, pca9535::{GPIOBank, StandardExpanderInterface}};
-use ble::{BleBuilder, RomePeripheral};
+use ble::{BleBuilder, EspSelfOtaHandler};
 //use board_sabotter::pca9535::{expander::standard::StandardExpanderInterface, GPIOBank};
 use esp_idf_svc::sys::ets_delay_us;
 use movement::{Movement, MovementLowLevelHardware};
@@ -22,7 +23,6 @@ use asserv::holonomic::RobotSide;
 use asserv::holonomic::TableSide;
 use asserv::maths::XY;
 use smart_leds::RGB8;
-
 use crate::{meca::Meca, shared_gpio::SharedGpio, led::Leds};
 
 fn main() {
@@ -110,9 +110,31 @@ fn main() {
     }
     log::info!("Board initialized");
 
+    // Init CAN before BLE (OTA relay needs CAN)
+    let can_iface = can::CanInterface::new(board.can_bus.take().expect("CAN bus not initialized"));
+    can::setup_can_log(&can_iface);
+
     let (ble_server, _ble_client) = BleBuilder::new().run();
-    let rome = RomePeripheral::run(ble_server, "Galipeur".into());
+
+    // Register GATT services (must happen before host start)
+    let rome_reg = ble::rome::register_gatt();
+    let ota_reg = ble::ota::register_gatt(2); // target 0 = self, target 1 = picotter
+
+    // Start NimBLE host
+    ble_server.start_host();
+
+    // Finalize services
+    let rome = rome_reg.start();
+    let picotter_ota = can_ota_relay::CanOtaRelayHandler::new(&can_iface);
+    let _ota = ota_reg.start(vec![
+        Box::new(EspSelfOtaHandler::new()),
+        Box::new(picotter_ota),
+    ]);
     let rome_tx = rome.sender;
+
+    // Setup and start advertising
+    ble_server.setup_advertising("Galipeur", &ble::rome::SERVICE_UUID_BYTES).unwrap();
+    ble_server.start_advertising().unwrap();
 
     //configure low level hardware for asserv
     let asserv_hardware = MovementLowLevelHardware::new(
@@ -125,9 +147,6 @@ fn main() {
         ],
     );
     let movement = Arc::new(Mutex::new(Movement::new(asserv_hardware)));
-
-    let can_iface = can::CanInterface::new(board.can_bus.take().expect("CAN bus not initialized"));
-    can::setup_can_log(&can_iface);
     let meca = meca::Meca::new(&can_iface);
     #[derive(Debug)]
     enum Order<'a> {
@@ -142,7 +161,49 @@ fn main() {
         MecaIdlePosDrop,
     }
 
-    let mut robot_color = true;
+    let mut robot_color = false;
+    let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
+    meca.no_torque_on_all();
+    while starter.pin_is_high().unwrap_or(true) {
+        if color_selector.pin_is_high().unwrap_or(false) {
+            robot_color = true;
+        } else {
+            robot_color = false;
+        }
+        led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
+        thread::sleep(Duration::from_millis(100));
+        
+        //print all servo positions for debug
+        let state = meca.get_state();
+        log::info!("T0: {} M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {} M0S20 : {} M0S21 : {}", 
+            state.translations[0].position,
+            state.arms[0][0].position, 
+            state.arms[0][1].position, 
+            state.arms[0][2].position, 
+            state.arms[0][3].position,
+            state.stage2[0][0].position,
+            state.stage2[0][1].position,
+        
+        );    
+    }
+    meca.init();
+
+    let mut color_off = false;
+    while starter.pin_is_low().unwrap_or(true) {
+        if color_off {
+            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 0 }}).ok();
+            color_off = false;
+        } else {
+            led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
+            color_off = true;
+        }
+        //wait for starter button press
+        thread::sleep(Duration::from_millis(100));
+    }
+    led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
+
+
+
 
     let robot_side_main = if robot_color { RobotSide::Right } else { RobotSide::Left };
     let robot_side_aux  = if robot_color { RobotSide::Left } else { RobotSide::Right };
@@ -255,6 +316,10 @@ fn main() {
     } else {
         led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
     }
+
+     loop { 
+        thread::sleep(Duration::from_millis(100));
+     }
 
     loop {
         led_heartbeat.toggle().ok();

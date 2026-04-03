@@ -149,6 +149,75 @@ impl ArmTarget {
     }
 }
 
+/// Target specification for stage2 servos (module/servo with broadcast support)
+///
+/// Encoded as a flat index in the 4-bit CAN ID target field:
+/// - target = module * STAGE2_SERVOS_PER_MODULE + servo (0-5 for 3 modules × 2 servos)
+/// - target = 0xF for broadcast to all
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Stage2Target {
+    /// Module index: 0-2 or 0xF for broadcast
+    pub module: u8,
+    /// Servo index: 0-1 or 0xF for broadcast
+    pub servo: u8,
+}
+
+impl Stage2Target {
+    const SERVOS_PER_MODULE: u8 = crate::protocol::STAGE2_SERVOS_PER_MODULE as u8;
+
+    /// Broadcast to all modules and servos
+    pub const BROADCAST_ALL: Self = Self {
+        module: 0xF,
+        servo: 0xF,
+    };
+
+    pub fn new(module: u8, servo: u8) -> Self {
+        Self { module, servo }
+    }
+
+    /// Encode to 4-bit CAN ID target field (flat index)
+    pub fn to_u8(self) -> u8 {
+        if self.module == 0xF || self.servo == 0xF {
+            0xF
+        } else {
+            self.module * Self::SERVOS_PER_MODULE + self.servo
+        }
+    }
+
+    /// Decode from 4-bit CAN ID target field (flat index)
+    pub fn from_u8(val: u8) -> Self {
+        if val == 0xF {
+            Self::BROADCAST_ALL
+        } else {
+            Self {
+                module: val / Self::SERVOS_PER_MODULE,
+                servo: val % Self::SERVOS_PER_MODULE,
+            }
+        }
+    }
+
+    /// Check if this target matches a specific module/servo
+    pub fn matches(&self, module: u8, servo: u8) -> bool {
+        let module_match = self.module == 0xF || self.module == module;
+        let servo_match = self.servo == 0xF || self.servo == servo;
+        module_match && servo_match
+    }
+
+    pub fn match_module(&self, module: u8) -> bool {
+        self.module == 0xF || self.module == module
+    }
+
+    /// Check if broadcast to all servos
+    pub fn is_servo_broadcast(&self) -> bool {
+        self.servo == 0xF
+    }
+
+    /// Check if broadcast to all modules
+    pub fn is_module_broadcast(&self) -> bool {
+        self.module == 0xF
+    }
+}
+
 /// Log level (matches Rust log crate levels)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(u8)]
@@ -301,6 +370,10 @@ pub enum ArmCmd {
     SetColorSensorConfig = 0x9,
     ColorSensorRaw = 0xA,
     SetColorLedPwm = 0xB,
+    RequestTranslationStatus = 0xC,
+    SetStage2 = 0xD,
+    SetStage2Torque = 0xE,
+    Stage2Status = 0xF,
 }
 
 impl ArmCmd {
@@ -318,6 +391,10 @@ impl ArmCmd {
             0x9 => Some(ArmCmd::SetColorSensorConfig),
             0xA => Some(ArmCmd::ColorSensorRaw),
             0xB => Some(ArmCmd::SetColorLedPwm),
+            0xC => Some(ArmCmd::RequestTranslationStatus),
+            0xD => Some(ArmCmd::SetStage2),
+            0xE => Some(ArmCmd::SetStage2Torque),
+            0xF => Some(ArmCmd::Stage2Status),
             _ => None,
         }
     }

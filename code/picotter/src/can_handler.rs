@@ -60,6 +60,7 @@ pub async fn can_rx_task(mut can_rx: CanRx<'static>) {
     let mut dropped_count: u32 = 0;
 
     loop {
+        rprintln!("Waiting for CAN frame...");
         match can_rx.read().await {
             Ok(envelope) => {
                 if consecutive_errors > 0 {

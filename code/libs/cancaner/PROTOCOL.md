@@ -197,6 +197,10 @@ Décodage : `module = target / 4`, `arm = target % 4`.
 | 0x9 | SetColorSensorConfig | `ArmCmd::SetColorSensorConfig` |
 | 0xA | ColorSensorRaw | `ArmCmd::ColorSensorRaw` |
 | 0xB | SetColorLedPwm | `ArmCmd::SetColorLedPwm` |
+| 0xC | RequestTranslationStatus | `ArmCmd::RequestTranslationStatus` |
+| 0xD | SetStage2 | `ArmCmd::SetStage2` |
+| 0xE | SetStage2Torque | `ArmCmd::SetStage2Torque` |
+| 0xF | Stage2Status | `ArmCmd::Stage2Status` |
 
 ### 0x10T - SET_ARM
 
@@ -334,6 +338,73 @@ Direction: S→P
 
 Data[0-1]: Position actuelle (0-1023), little-endian
 Data[2]:   Code erreur (0=OK)
+```
+
+### 0x1CM - REQUEST_TRANSLATION_STATUS
+
+Force l'envoi immédiat du status de translation.
+
+```
+ID: 0x1C[module]
+Longueur: 0 octet
+Direction: P→S
+
+Réponse: Message 0x17M correspondant
+```
+
+### 0x1DT - SET_STAGE2
+
+Commande le servo du 2ème étage.
+Chaque module possède 2 servos de 2ème étage sur le même bus UART que les bras.
+
+Le target utilise un encodage plat : `module * 2 + servo` (0-5), 0xF = broadcast.
+
+```
+ID: 0x1D[target]
+Longueur: 4 octets
+Direction: P→S
+
+Data[0-1]: Position servo (0-1023), little-endian
+Data[2-3]: Temps de mouvement (ms), little-endian (0 = vitesse max)
+```
+
+**Servo IDs de 2ème étage (configurables, par défaut):**
+| Module | Servo 0 | Servo 1 |
+|--------|---------|---------|
+| 0 | 20 | 21 |
+| 1 | 20 | 21 |
+| 2 | 20 | 21 |
+
+### 0x1ET - SET_STAGE2_TORQUE
+
+Active ou désactive le couple d'un servo du 2ème étage.
+
+```
+ID: 0x1E[target]
+Longueur: 1 octet
+Direction: P→S
+
+Data[0]: 0=OFF, 1=ON
+```
+
+### 0x1FT - STAGE2_STATUS
+
+Status d'un servo du 2ème étage. Envoyé périodiquement ou en réponse à une requête.
+
+Requête (P→S) : 0 octet de données.
+Réponse (S→P) : 4 octets.
+
+```
+ID: 0x1F[target]
+Longueur: 0 octets (requête) ou 4 octets (status)
+Direction: P→S (requête) / S→P (status)
+
+Data[0-1]: Position servo actuelle (0-1023), little-endian
+Data[2]:   Code erreur servo (0=OK)
+Data[3]:   Flags (ArmFlags)
+           - bit 0: Torque enabled
+           - bit 1: En mouvement
+           - bit 2: Position atteinte
 ```
 
 ### 0x18T - SET_COLOR_CONFIG

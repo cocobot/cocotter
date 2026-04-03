@@ -3,6 +3,7 @@ members = [
     "pami",
     "galipeur",
     "picotter",
+    "picotter-bootloader",
 
     "libs/asserv",
     "libs/cancaner",

@@ -11,14 +11,15 @@ mod ground_sensors;
 mod i2c_devices;
 mod lidar;
 mod module;
-mod ota_handler;
 mod scs0009;
 
 use embassy_executor::Spawner;
 use embassy_stm32::can::CanConfigurator;
 use embassy_stm32::can::OperatingMode;
-use embassy_stm32::gpio::{Level, Output, Speed};
+use embassy_stm32::gpio::{Level, Output, OutputType, Speed};
 use embassy_stm32::i2c::{self, Config as I2cConfig, I2c};
+use embassy_stm32::timer::simple_pwm::{PwmPin, SimplePwm, SimplePwmChannel};
+use embassy_stm32::timer::low_level::{CountingMode, OutputPolarity};
 use embassy_stm32::mode::Async;
 use embassy_stm32::time::Hertz;
 use embassy_stm32::usart::{
@@ -33,8 +34,68 @@ use panic_rtt_target as _;
 use rtt_target::rprintln;
 use rtt_target::rtt_init_print;
 
+// Shared no-init region at end of RAM (256 bytes, matches bootloader)
+// Layout: [panic_magic:4][panic_len:4][panic_msg:240][bootloader_magic:4][pad:4]
+const SHARED_BASE: u32 = 0x2009_FF00;
+const PANIC_MAGIC_ADDR: *mut u32 = SHARED_BASE as *mut u32;
+const PANIC_LEN_ADDR: *mut u32 = (SHARED_BASE + 4) as *mut u32;
+const PANIC_MSG_ADDR: *mut u8 = (SHARED_BASE + 8) as *mut u8;
+const PANIC_MSG_MAX: usize = 240;
+const BOOTLOADER_MAGIC_ADDR: *mut u32 = (SHARED_BASE + 248) as *mut u32;
+const PANIC_MAGIC: u32 = 0xDEAD_BEEF;
+const BOOTLOADER_MAGIC: u32 = 0xB007_10AD;
+
+/// Fixed-size buffer writer for formatting panic messages without alloc
+struct PanicBuf {
+    pos: usize,
+}
+
+impl PanicBuf {
+    const fn new() -> Self {
+        Self { pos: 0 }
+    }
+}
+
+impl core::fmt::Write for PanicBuf {
+    fn write_str(&mut self, s: &str) -> core::fmt::Result {
+        let bytes = s.as_bytes();
+        let remaining = PANIC_MSG_MAX - self.pos;
+        let to_write = bytes.len().min(remaining);
+        if to_write > 0 {
+            unsafe {
+                core::ptr::copy_nonoverlapping(
+                    bytes.as_ptr(),
+                    PANIC_MSG_ADDR.add(self.pos),
+                    to_write,
+                );
+            }
+            self.pos += to_write;
+        }
+        Ok(())
+    }
+}
+
+////// Panic handler: log to RTT, store message in shared RAM for bootloader, and reset
+///#[panic_handler]
+///fn panic(info: &core::panic::PanicInfo) -> ! {
+///    // Print to RTT (best effort)
+///    rprintln!("PANIC: {}", info);
+///
+///    // Write panic message to shared no-init RAM
+///    let mut buf = PanicBuf::new();
+///    let _ = core::fmt::write(&mut buf, format_args!("{}", info));
+///
+///    unsafe {
+///        core::ptr::write_volatile(PANIC_LEN_ADDR, buf.pos as u32);
+///        core::ptr::write_volatile(PANIC_MAGIC_ADDR, PANIC_MAGIC);
+///        core::ptr::write_volatile(BOOTLOADER_MAGIC_ADDR, BOOTLOADER_MAGIC);
+///    }
+///
+///    cortex_m::peripheral::SCB::sys_reset();
+///}
+
 use can_handler::{cmd_receiver, log_sender, status_sender};
-use can_protocol::{ArmTarget, CanMessage, Domain, ServoBus};
+use can_protocol::{ArmTarget, CanMessage, Domain, ServoBus, Stage2Target};
 use i2c_devices::I2cDevices;
 use module::Module;
 use scs0009::Scs0009;
@@ -65,12 +126,17 @@ bind_interrupts!(struct Irqs {
 });
 
 // Servo IDs for each module (4 servos per module)
-const MODULE0_SERVO_IDS: [u8; 4] = [10, 11, 12, 1];
+const MODULE0_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 const MODULE1_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 const MODULE2_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 
+// Stage2 servo IDs (2 per module, on same bus as arm servos)
+const MODULE0_STAGE2_IDS: [u8; 2] = [20, 21];
+const MODULE1_STAGE2_IDS: [u8; 2] = [20, 21];
+const MODULE2_STAGE2_IDS: [u8; 2] = [20, 21];
+
 // Translation servo IDs (one per module, on shared bus)
-const TRANSLATION_SERVO_IDS: [u8; 3] = [10, 11, 12];
+const TRANSLATION_SERVO_IDS: [u8; 3] = [30, 31, 32];
 
 // Concrete types
 type I2cType = I2c<'static, Async, i2c::Master>;
@@ -98,6 +164,7 @@ async fn led_status_task(
     module0: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module1: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
+    translation_bus: &'static Mutex<CriticalSectionRawMutex, TranslationBusType>,
 ) {
     let status_tx = status_sender();
     let mut led_state = false;
@@ -172,6 +239,49 @@ async fn led_status_task(
             //        status_tx.try_send(status).ok();
             //    }
             //}
+
+            // Periodic stage2 status for all modules
+            let s2_target = Stage2Target::BROADCAST_ALL;
+            {
+                let mut m0 = module0.lock().await;
+                m0.update_all_stage2_states().await.ok();
+                for status in m0.get_stage2_status_messages(s2_target) {
+                    status_tx.try_send(status).ok();
+                }
+            }
+            //{
+            //    let mut m1 = module1.lock().await;
+            //    m1.update_all_stage2_states().await.ok();
+            //    for status in m1.get_stage2_status_messages(s2_target) {
+            //        status_tx.try_send(status).ok();
+            //    }
+            //}
+            //{
+            //    let mut m2 = module2.lock().await;
+            //    m2.update_all_stage2_states().await.ok();
+            //    for status in m2.get_stage2_status_messages(s2_target) {
+            //        status_tx.try_send(status).ok();
+            //    }
+            //}
+
+            // Periodic translation status
+            {
+                let mut bus = translation_bus.lock().await;
+                for module in 0..3u8 {
+                    let servo_id = TRANSLATION_SERVO_IDS[module as usize];
+                    let (position, error) = match bus.read_position(servo_id).await {
+                        Ok((pos, err)) => (pos, err),
+                        Err(_) => (0, 0xFF),
+                    };
+                    status_tx
+                        .try_send(CanMessage::TranslationStatus {
+                            module,
+                            position,
+                            error,
+                        })
+                        .ok();
+                }
+            }
         }
 
         cycle_count = cycle_count.wrapping_add(1);
@@ -218,23 +328,31 @@ async fn cmd_task(
     module1: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     translation_bus: &'static Mutex<CriticalSectionRawMutex, TranslationBusType>,
+    mut color_led_pwm: SimplePwmChannel<'static, peripherals::TIM8>,
 ) {
     let cmd_rx = cmd_receiver();
     let status_tx = status_sender();
-    let mut ota_handler = ota_handler::OtaHandler::new();
 
     loop {
         let msg = cmd_rx.receive().await;
 
-        // Handle OTA messages first
+        // Handle Reboot command
+        if let CanMessage::Reboot { mode } = &msg {
+            match mode {
+                cancaner::RebootMode::Bootloader => {
+                    info!("Rebooting to bootloader...");
+                    unsafe { core::ptr::write_volatile(BOOTLOADER_MAGIC_ADDR, BOOTLOADER_MAGIC) };
+                    cortex_m::peripheral::SCB::sys_reset();
+                }
+                cancaner::RebootMode::Normal => {
+                    info!("Rebooting...");
+                    cortex_m::peripheral::SCB::sys_reset();
+                }
+            }
+        }
+
+        // OTA messages are handled by the bootloader, ignore here
         if msg.domain() == Domain::Ota {
-            if let Some(response) = ota_handler.handle_message(&msg) {
-                status_tx.try_send(response).ok();
-            }
-            if matches!(msg, CanMessage::OtaReboot) {
-                info!("OTA reboot requested");
-                cortex_m::peripheral::SCB::sys_reset();
-            }
             continue;
         }
 
@@ -285,6 +403,29 @@ async fn cmd_task(
             continue;
         }
 
+        // Handle RequestTranslationStatus
+        if let CanMessage::RequestTranslationStatus { module } = &msg {
+            if (*module as usize) < 3 {
+                let servo_id = TRANSLATION_SERVO_IDS[*module as usize];
+                let mut bus = translation_bus.lock().await;
+                let (position, error) = match bus.read_position(servo_id).await {
+                    Ok((pos, err)) => (pos, err),
+                    Err(e) => {
+                        warn!("Translation servo {} read error: {:?}", module, e);
+                        (0, 0xFF)
+                    }
+                };
+                status_tx
+                    .try_send(CanMessage::TranslationStatus {
+                        module: *module,
+                        position,
+                        error,
+                    })
+                    .ok();
+            }
+            continue;
+        }
+
         // Handle ground sensor commands
         match &msg {
             CanMessage::SetGroundThreshold { sensor, threshold } => {
@@ -330,6 +471,12 @@ async fn cmd_task(
                 continue;
             }
             _ => {}
+        }
+
+        // Handle color LED PWM
+        if let CanMessage::SetColorLedPwm { duty } = &msg {
+            color_led_pwm.set_duty_cycle_fraction(*duty as u16, 255);
+            continue;
         }
 
         // Handle color sensor raw request (needs response via status channel)
@@ -386,6 +533,39 @@ async fn cmd_task(
                     }
                 }
             }
+            continue;
+        }
+
+        // Handle stage2-targeted messages
+        if let Some(target) = msg.stage2_target() {
+            if target.match_module(0) || target.is_module_broadcast() {
+                let mut m0 = module0.lock().await;
+                if let Some(Err(e)) = m0.handle_stage2_message(&msg).await {
+                    warn!("Module 0 stage2 error: {:?}", e);
+                }
+            }
+            if target.match_module(1) || target.is_module_broadcast() {
+                let mut m1 = module1.lock().await;
+                if let Some(Err(e)) = m1.handle_stage2_message(&msg).await {
+                    warn!("Module 1 stage2 error: {:?}", e);
+                }
+            }
+            if target.match_module(2) || target.is_module_broadcast() {
+                let mut m2 = module2.lock().await;
+                if let Some(Err(e)) = m2.handle_stage2_message(&msg).await {
+                    warn!("Module 2 stage2 error: {:?}", e);
+                }
+            }
+
+            // Send status after SetStage2 or RequestStage2Status
+            if matches!(msg, CanMessage::SetStage2 { .. } | CanMessage::RequestStage2Status { .. }) {
+                for module in [module0, module1, module2] {
+                    let m = module.lock().await;
+                    for status in m.get_stage2_status_messages(target) {
+                        status_tx.try_send(status).ok();
+                    }
+                }
+            }
         }
     }
 }
@@ -393,6 +573,13 @@ async fn cmd_task(
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     rtt_init_print!();
+
+    // Clear interrupt masks that bootloader may have left set
+    unsafe {
+        core::arch::asm!("cpsie i");
+        core::arch::asm!("cpsie f");
+        core::arch::asm!("msr BASEPRI, {}", in(reg) 0u32);
+    }
 
     let mut config = embassy_stm32::Config::default();
     {
@@ -453,7 +640,7 @@ async fn main(spawner: Spawner) {
         I2cConfig::default(),
     );
 
-    let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), MODULE0_SERVO_IDS);
+    let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), MODULE0_SERVO_IDS, MODULE0_STAGE2_IDS);
     info!("Module 0 init: {:?}", module0.init().await);
     let module0 = MODULE0.init(Mutex::new(module0));
 
@@ -486,7 +673,7 @@ async fn main(spawner: Spawner) {
         I2cConfig::default(),
     );
 
-    let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), MODULE1_SERVO_IDS);
+    let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), MODULE1_SERVO_IDS, MODULE1_STAGE2_IDS);
     module1.init().await.ok();
     let module1 = MODULE1.init(Mutex::new(module1));
 
@@ -519,7 +706,7 @@ async fn main(spawner: Spawner) {
         I2cConfig::default(),
     );
 
-    let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), MODULE2_SERVO_IDS);
+    let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), MODULE2_SERVO_IDS, MODULE2_STAGE2_IDS);
     module2.init().await.ok();
     let module2 = MODULE2.init(Mutex::new(module2));
 
@@ -546,91 +733,109 @@ async fn main(spawner: Spawner) {
     // =========================================================================
     // Lidars M703A (6x, 19200 baud full-duplex, nCTRL=PA4, PWR_EN=PB1)
     // =========================================================================
-    let lidar_nctrl = Output::new(p.PA4, Level::High, Speed::Low);
-    let lidar_pwr_en = Output::new(p.PB1, Level::High, Speed::Low);
+    ///let lidar_nctrl = Output::new(p.PA4, Level::High, Speed::Low);
+    ///let lidar_pwr_en = Output::new(p.PB1, Level::High, Speed::Low);
+///
+    ///let mut lidar_uart_config = UartConfig::default();
+    ///lidar_uart_config.baudrate = 19200;
+///
+    ///// Lidar 0 (module 0.0): USART3 TX=PD8 RX=PD9
+    ///static LIDAR0_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    ///static LIDAR0_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    ///let lidar0_uart = BufferedUart::new(
+    ///    p.USART3, p.PD9, p.PD8,
+    ///    LIDAR0_TX_BUF.init([0u8; 32]),
+    ///    LIDAR0_RX_BUF.init([0u8; 64]),
+    ///    Irqs, lidar_uart_config,
+    ///).unwrap();
+    ///let (lidar0_tx, lidar0_rx) = lidar0_uart.split();
+///
+    ///// Lidar 1 (module 0.1): USART2 TX=PA2 RX=PA3
+    ///static LIDAR1_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    ///static LIDAR1_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    ///let lidar1_uart = BufferedUart::new(
+    ///    p.USART2, p.PA3, p.PA2,
+    ///    LIDAR1_TX_BUF.init([0u8; 32]),
+    ///    LIDAR1_RX_BUF.init([0u8; 64]),
+    ///    Irqs, lidar_uart_config,
+    ///).unwrap();
+    ///let (lidar1_tx, lidar1_rx) = lidar1_uart.split();
+///
+    ///// Lidar 2 (module 1.0): UART7 TX=PE8 RX=PE7
+    ///static LIDAR2_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    ///static LIDAR2_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    ///let lidar2_uart = BufferedUart::new(
+    ///    p.UART7, p.PE7, p.PE8,
+    ///    LIDAR2_TX_BUF.init([0u8; 32]),
+    ///    LIDAR2_RX_BUF.init([0u8; 64]),
+    ///    Irqs, lidar_uart_config,
+    ///).unwrap();
+    ///let (lidar2_tx, lidar2_rx) = lidar2_uart.split();
+///
+    ///// Lidar 3 (module 1.1): UART4 TX=PA0 RX=PA1
+    ///static LIDAR3_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    ///static LIDAR3_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    ///let lidar3_uart = BufferedUart::new(
+    ///    p.UART4, p.PA1, p.PA0,
+    ///    LIDAR3_TX_BUF.init([0u8; 32]),
+    ///    LIDAR3_RX_BUF.init([0u8; 64]),
+    ///    Irqs, lidar_uart_config,
+    ///).unwrap();
+    ///let (lidar3_tx, lidar3_rx) = lidar3_uart.split();
+///
+    ///// Lidar 4 (module 2.0): USART10 TX=PE3 RX=PE2
+    ///static LIDAR4_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    ///static LIDAR4_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    ///let lidar4_uart = BufferedUart::new(
+    ///    p.USART10, p.PE2, p.PE3,
+    ///    LIDAR4_TX_BUF.init([0u8; 32]),
+    ///    LIDAR4_RX_BUF.init([0u8; 64]),
+    ///    Irqs, lidar_uart_config,
+    ///).unwrap();
+    ///let (lidar4_tx, lidar4_rx) = lidar4_uart.split();
+///
+    ///// Lidar 5 (module 2.1): UART9 TX=PD15 RX=PD14
+    ///static LIDAR5_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    ///static LIDAR5_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    ///let lidar5_uart = BufferedUart::new(
+    ///    p.UART9, p.PD14, p.PD15,
+    ///    LIDAR5_TX_BUF.init([0u8; 32]),
+    ///    LIDAR5_RX_BUF.init([0u8; 64]),
+    ///    Irqs, lidar_uart_config,
+    ///).unwrap();
+    ///let (lidar5_tx, lidar5_rx) = lidar5_uart.split();
 
-    let mut lidar_uart_config = UartConfig::default();
-    lidar_uart_config.baudrate = 19200;
+    //lidar::init_and_spawn(
+    //    &spawner,
+    //    lidar_nctrl,
+    //    lidar_pwr_en,
+    //    [
+    //        lidar::m703a::M703a::new(0, lidar0_tx, lidar0_rx),
+    //        lidar::m703a::M703a::new(1, lidar1_tx, lidar1_rx),
+    //        lidar::m703a::M703a::new(2, lidar2_tx, lidar2_rx),
+    //        lidar::m703a::M703a::new(3, lidar3_tx, lidar3_rx),
+    //        lidar::m703a::M703a::new(4, lidar4_tx, lidar4_rx),
+    //        lidar::m703a::M703a::new(5, lidar5_tx, lidar5_rx),
+    //    ],
+    //);
 
-    // Lidar 0 (module 0.0): USART3 TX=PD8 RX=PD9
-    static LIDAR0_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    static LIDAR0_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    let lidar0_uart = BufferedUart::new(
-        p.USART3, p.PD9, p.PD8,
-        LIDAR0_TX_BUF.init([0u8; 32]),
-        LIDAR0_RX_BUF.init([0u8; 64]),
-        Irqs, lidar_uart_config,
-    ).unwrap();
-    let (lidar0_tx, lidar0_rx) = lidar0_uart.split();
-
-    // Lidar 1 (module 0.1): USART2 TX=PA2 RX=PA3
-    static LIDAR1_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    static LIDAR1_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    let lidar1_uart = BufferedUart::new(
-        p.USART2, p.PA3, p.PA2,
-        LIDAR1_TX_BUF.init([0u8; 32]),
-        LIDAR1_RX_BUF.init([0u8; 64]),
-        Irqs, lidar_uart_config,
-    ).unwrap();
-    let (lidar1_tx, lidar1_rx) = lidar1_uart.split();
-
-    // Lidar 2 (module 1.0): UART7 TX=PE8 RX=PE7
-    static LIDAR2_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    static LIDAR2_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    let lidar2_uart = BufferedUart::new(
-        p.UART7, p.PE7, p.PE8,
-        LIDAR2_TX_BUF.init([0u8; 32]),
-        LIDAR2_RX_BUF.init([0u8; 64]),
-        Irqs, lidar_uart_config,
-    ).unwrap();
-    let (lidar2_tx, lidar2_rx) = lidar2_uart.split();
-
-    // Lidar 3 (module 1.1): UART4 TX=PA0 RX=PA1
-    static LIDAR3_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    static LIDAR3_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    let lidar3_uart = BufferedUart::new(
-        p.UART4, p.PA1, p.PA0,
-        LIDAR3_TX_BUF.init([0u8; 32]),
-        LIDAR3_RX_BUF.init([0u8; 64]),
-        Irqs, lidar_uart_config,
-    ).unwrap();
-    let (lidar3_tx, lidar3_rx) = lidar3_uart.split();
-
-    // Lidar 4 (module 2.0): USART10 TX=PE3 RX=PE2
-    static LIDAR4_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    static LIDAR4_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    let lidar4_uart = BufferedUart::new(
-        p.USART10, p.PE2, p.PE3,
-        LIDAR4_TX_BUF.init([0u8; 32]),
-        LIDAR4_RX_BUF.init([0u8; 64]),
-        Irqs, lidar_uart_config,
-    ).unwrap();
-    let (lidar4_tx, lidar4_rx) = lidar4_uart.split();
-
-    // Lidar 5 (module 2.1): UART9 TX=PD15 RX=PD14
-    static LIDAR5_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    static LIDAR5_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    let lidar5_uart = BufferedUart::new(
-        p.UART9, p.PD14, p.PD15,
-        LIDAR5_TX_BUF.init([0u8; 32]),
-        LIDAR5_RX_BUF.init([0u8; 64]),
-        Irqs, lidar_uart_config,
-    ).unwrap();
-    let (lidar5_tx, lidar5_rx) = lidar5_uart.split();
-
-    lidar::init_and_spawn(
-        &spawner,
-        lidar_nctrl,
-        lidar_pwr_en,
-        [
-            lidar::m703a::M703a::new(0, lidar0_tx, lidar0_rx),
-            lidar::m703a::M703a::new(1, lidar1_tx, lidar1_rx),
-            lidar::m703a::M703a::new(2, lidar2_tx, lidar2_rx),
-            lidar::m703a::M703a::new(3, lidar3_tx, lidar3_rx),
-            lidar::m703a::M703a::new(4, lidar4_tx, lidar4_rx),
-            lidar::m703a::M703a::new(5, lidar5_tx, lidar5_rx),
-        ],
+    // =========================================================================
+    // Color sensor LED PWM (TIM8_CH3 on PC8)
+    // =========================================================================
+    let color_led_pwm = SimplePwm::new(
+        p.TIM8,
+        None,
+        None,
+        Some(PwmPin::new(p.PC8, OutputType::PushPull)),
+        None,
+        Hertz(1_000),
+        CountingMode::EdgeAlignedUp,
     );
+    let mut color_led_ch3 = color_led_pwm.split().ch3;
+    color_led_ch3.set_polarity(OutputPolarity::ActiveLow);
+    color_led_ch3.set_duty_cycle(0);
+    color_led_ch3.enable();
+
 
     // =========================================================================
     // Startup
@@ -640,18 +845,16 @@ async fn main(spawner: Spawner) {
         Timer::after_millis(100).await;
     }
 
-    rprintln!("Picotter ready");
-
     spawner
-        .spawn(led_status_task(led, module0, module1, module2))
+        .spawn(led_status_task(led, module0, module1, module2, translation_bus))
         .unwrap();
     spawner
-        .spawn(cmd_task(module0, module1, module2, translation_bus))
+        .spawn(cmd_task(module0, module1, module2, translation_bus, color_led_ch3))
         .unwrap();
 
     // Main task idles
     loop {
         Timer::after_millis(1000).await;
-        info!("Picotter alive !");
+        info!("Picotter blive 3!");
     }
 }

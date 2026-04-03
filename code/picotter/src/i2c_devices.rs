@@ -4,6 +4,7 @@
 //! on the same I2C bus. Access is sequential (no concurrent I2C operations).
 
 use embedded_hal_async::i2c::I2c;
+use rtt_target::rprintln;
 use tcs3472::Tcs3472;
 
 use crate::ground_sensors::GroundSensorState;
@@ -311,12 +312,20 @@ impl<I2C: I2c> I2cDevices<I2C> {
     /// Initialize all 4 TCS3472 sensors (one per arm via mux)
     pub async fn tcs_init_all(&mut self) -> Result<(), I2C::Error> {
         for arm in 0..4u8 {
-            self.tca_select_channel(arm).await?;
-            let mut tcs = Tcs3472::new(&mut self.i2c);
-            tcs.enable().await.map_err(tcs_unwrap_i2c)?;
-            tcs.set_integration_cycles(64).await.map_err(tcs_unwrap_i2c)?;
-            tcs.set_rgbc_gain(tcs3472::RgbCGain::_4x).await.map_err(tcs_unwrap_i2c)?;
+            if let Err(_) = self.tcs_init_one(arm).await {
+                rprintln!("TCS3472 arm {}: init failed", arm);
+            }
         }
+        Ok(())
+    }
+
+    async fn tcs_init_one(&mut self, arm: u8) -> Result<(), I2C::Error> {
+        self.tca_select_channel(arm).await?;
+        let mut tcs = Tcs3472::new(&mut self.i2c);
+        tcs.enable().await.map_err(tcs_unwrap_i2c)?;
+        tcs.enable_rgbc().await.map_err(tcs_unwrap_i2c)?;
+        tcs.set_integration_cycles(64).await.map_err(tcs_unwrap_i2c)?;
+        tcs.set_rgbc_gain(tcs3472::RgbCGain::_4x).await.map_err(tcs_unwrap_i2c)?;
         Ok(())
     }
 
@@ -329,6 +338,8 @@ impl<I2C: I2c> I2cDevices<I2C> {
     ) -> Result<(), I2C::Error> {
         self.tca_select_channel(arm).await?;
         let mut tcs = Tcs3472::new(&mut self.i2c);
+        tcs.enable().await.map_err(tcs_unwrap_i2c)?;
+        tcs.enable_rgbc().await.map_err(tcs_unwrap_i2c)?;
         tcs.set_integration_cycles(integration_time).await.map_err(tcs_unwrap_i2c)?;
         let gain = match gain {
             0 => tcs3472::RgbCGain::_1x,

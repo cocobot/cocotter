@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use cancaner::{ArmFlags, ArmTarget, CanMessage, ARMS_PER_MODULE};
+use cancaner::{ArmFlags, ArmTarget, CanMessage, Stage2Target, ARMS_PER_MODULE, STAGE2_SERVOS_PER_MODULE};
 
 use crate::can::CanInterface;
 
@@ -22,9 +22,17 @@ pub struct TranslationState {
 }
 
 #[derive(Clone, Default, Debug)]
+pub struct Stage2State {
+    pub position: u16,
+    pub error: u8,
+    pub flags: ArmFlags,
+}
+
+#[derive(Clone, Default, Debug)]
 pub struct MecaState {
     pub arms: [[ArmState; ARMS_PER_MODULE]; 3],
     pub translations: [TranslationState; 3],
+    pub stage2: [[Stage2State; STAGE2_SERVOS_PER_MODULE]; 3],
 }
 
 /// Low-level proxy: read CAN-updated state + send direct commands
@@ -76,6 +84,23 @@ impl MecaProxy {
                     t.error = *error;
                 }
             }
+            CanMessage::Stage2Status {
+                target,
+                position,
+                error,
+                flags,
+            } => {
+                let mut st = s.lock().unwrap();
+                if let Some(servo) = st
+                    .stage2
+                    .get_mut(target.module as usize)
+                    .and_then(|m| m.get_mut(target.servo as usize))
+                {
+                    servo.position = *position;
+                    servo.error = *error;
+                    servo.flags = *flags;
+                }
+            }
             _ => {}
         });
 
@@ -107,6 +132,16 @@ impl MecaProxy {
             .unwrap()
             .translations
             .get(module as usize)
+            .cloned()
+    }
+
+    pub fn stage2_state(&self, module: u8, servo: u8) -> Option<Stage2State> {
+        self.state
+            .lock()
+            .unwrap()
+            .stage2
+            .get(module as usize)
+            .and_then(|m| m.get(servo as usize))
             .cloned()
     }
 
@@ -190,5 +225,20 @@ impl MecaProxy {
 
     pub fn set_color_led_pwm(&self, duty: u8) {
         self.can.send(&CanMessage::SetColorLedPwm { duty });
+    }
+
+    pub fn set_stage2(&self, module: u8, servo: u8, position: u16, time_ms: u16) {
+        self.can.send(&CanMessage::SetStage2 {
+            target: Stage2Target::new(module, servo),
+            position,
+            time_ms,
+        });
+    }
+
+    pub fn set_stage2_torque(&self, module: u8, servo: u8, enable: bool) {
+        self.can.send(&CanMessage::SetStage2Torque {
+            target: Stage2Target::new(module, servo),
+            enable,
+        });
     }
 }

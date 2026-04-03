@@ -6,13 +6,13 @@ use std::time::Duration;
 use esp_idf_svc::sys;
 use flume::{Receiver, Sender};
 
-use crate::{uuid128_le, BleServer};
+use crate::uuid128_le;
 
 // ---------------------------------------------------------------------------
 // Rome service UUIDs (little-endian for NimBLE)
 // ---------------------------------------------------------------------------
 
-const SERVICE_UUID_BYTES: [u8; 16] = uuid128_le(0x8187_0000_ffa549699ab4e777ca411f95);
+pub const SERVICE_UUID_BYTES: [u8; 16] = uuid128_le(0x8187_0000_ffa549699ab4e777ca411f95);
 const CHAR_TELEMETRY_UUID_BYTES: [u8; 16] = uuid128_le(0x8187_0001_ffa549699ab4e777ca411f95);
 const CHAR_ORDERS_UUID_BYTES: [u8; 16] = uuid128_le(0x8187_0002_ffa549699ab4e777ca411f95);
 const CHAR_LOGS_UUID_BYTES: [u8; 16] = uuid128_le(0x8187_0003_ffa549699ab4e777ca411f95);
@@ -213,6 +213,51 @@ extern "C" fn gatt_access_cb(
 }
 
 // ---------------------------------------------------------------------------
+// RomeRegistration (pre-host-start)
+// ---------------------------------------------------------------------------
+
+/// Intermediate state after GATT registration, before host start.
+/// Call `start()` after `server.start_host()` to finalize.
+pub struct RomeRegistration {
+    rome_receiver: Receiver<Box<[u8]>>,
+    rome_sender: Sender<Box<[u8]>>,
+    rome_tx_receiver: Receiver<Box<[u8]>>,
+}
+
+/// Register Rome GATT service. Must be called before `server.start_host()`.
+pub fn register_gatt() -> RomeRegistration {
+    let (rome_rx_sender, rome_receiver) = flume::unbounded();
+    let (rome_sender, rome_tx_receiver) = flume::unbounded::<Box<[u8]>>();
+
+    // Store the orders channel sender globally for the GATT callback
+    ROME_RX_SENDER
+        .set(rome_rx_sender)
+        .ok()
+        .expect("ROME_RX_SENDER already set");
+
+    // Build and register GATT service table
+    let svcs = build_gatt_svcs();
+    unsafe {
+        let rc = sys::ble_gatts_count_cfg(svcs.as_ptr());
+        if rc != 0 {
+            panic!("ble_gatts_count_cfg failed: {rc}");
+        }
+        let rc = sys::ble_gatts_add_svcs(svcs.as_ptr());
+        if rc != 0 {
+            panic!("ble_gatts_add_svcs failed: {rc}");
+        }
+    }
+
+    log::info!("Rome GATT service registered");
+
+    RomeRegistration {
+        rome_receiver,
+        rome_sender,
+        rome_tx_receiver,
+    }
+}
+
+// ---------------------------------------------------------------------------
 // RomePeripheral
 // ---------------------------------------------------------------------------
 
@@ -221,41 +266,15 @@ pub struct RomePeripheral {
     pub receiver: Receiver<Box<[u8]>>,
 }
 
-impl RomePeripheral {
-    pub fn run(server: BleServer, name: String) -> Self {
-        let (rome_rx_sender, rome_receiver) = flume::unbounded();
-        let (rome_sender, rome_tx_receiver) = flume::unbounded::<Box<[u8]>>();
-
-        // Store the orders channel sender globally for the GATT callback
-        ROME_RX_SENDER
-            .set(rome_rx_sender)
-            .ok()
-            .expect("ROME_RX_SENDER already set");
-
-        // Build and register GATT service table
-        let svcs = build_gatt_svcs();
-        unsafe {
-            let rc = sys::ble_gatts_count_cfg(svcs.as_ptr());
-            if rc != 0 {
-                panic!("ble_gatts_count_cfg failed: {rc}");
-            }
-            let rc = sys::ble_gatts_add_svcs(svcs.as_ptr());
-            if rc != 0 {
-                panic!("ble_gatts_add_svcs failed: {rc}");
-            }
-        }
-
-        // Start NimBLE host task (GATT is now registered)
-        server.start_host();
-
+impl RomeRegistration {
+    /// Finalize Rome service after host has started.
+    /// Copies GATT handles and spawns the notification thread.
+    pub fn start(self) -> RomePeripheral {
         // Copy handles now that the host has started and assigned them
         copy_handles();
 
-        // Setup and start advertising
-        server.setup_advertising(&name, &SERVICE_UUID_BYTES).unwrap();
-        server.start_advertising().unwrap();
-
         // Spawn notification thread
+        let rome_tx_receiver = self.rome_tx_receiver;
         std::thread::spawn(move || {
             loop {
                 if let Ok(data) = rome_tx_receiver.recv() {
@@ -308,9 +327,9 @@ impl RomePeripheral {
 
         log::info!("ROME peripheral running");
 
-        Self {
-            sender: rome_sender,
-            receiver: rome_receiver,
+        RomePeripheral {
+            sender: self.rome_sender,
+            receiver: self.rome_receiver,
         }
     }
 }

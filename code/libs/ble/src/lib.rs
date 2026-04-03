@@ -1,3 +1,5 @@
+pub mod ota;
+pub mod ota_esp;
 pub mod rome;
 pub mod scan;
 
@@ -10,7 +12,9 @@ use esp_idf_svc::sys::{self, EspError, ESP_FAIL};
 /// Extended advertising instance ID
 const EXT_ADV_INSTANCE: u8 = 0;
 
-pub use rome::RomePeripheral;
+pub use ota::{OtaHandler, OtaService};
+pub use ota_esp::EspSelfOtaHandler;
+pub use rome::{RomePeripheral, RomeRegistration};
 pub use scan::BleScanResult;
 
 // ---------------------------------------------------------------------------
@@ -62,7 +66,7 @@ fn own_addr_type() -> u8 {
 // ---------------------------------------------------------------------------
 
 /// Convert a u128 UUID to NimBLE's little-endian byte format
-pub(crate) const fn uuid128_le(uuid: u128) -> [u8; 16] {
+pub const fn uuid128_le(uuid: u128) -> [u8; 16] {
     uuid.to_le_bytes()
 }
 
@@ -78,7 +82,7 @@ pub struct BleServer {
 
 impl BleServer {
     /// Start the NimBLE host task. Must be called after GATT services are registered.
-    pub(crate) fn start_host(&self) {
+    pub fn start_host(&self) {
         if self.host_started.swap(true, Ordering::SeqCst) {
             log::warn!("NimBLE host already started");
             return;
@@ -340,6 +344,11 @@ impl BleBuilder {
         unsafe {
             sys::ble_svc_gap_init();
             sys::ble_svc_gatt_init();
+            // Request max ATT MTU for OTA throughput
+            let rc = sys::ble_att_set_preferred_mtu(512);
+            if rc != 0 {
+                log::warn!("ble_att_set_preferred_mtu failed: {rc}");
+            }
         }
 
         // Store global state
@@ -423,6 +432,28 @@ extern "C" fn gap_event_handler(event: *mut sys::ble_gap_event, _arg: *mut c_voi
             let connect = unsafe { &ev.__bindgen_anon_1.connect };
             if connect.status == 0 {
                 log::info!("Connected, handle: {}", connect.conn_handle);
+                // Request max Data Length Extension (251 octets, 2120 us)
+                let rc = unsafe {
+                    sys::ble_hs_hci_util_set_data_len(connect.conn_handle, 251, 2120)
+                };
+                if rc != 0 {
+                    log::warn!("DLE request failed: {rc}");
+                }
+                // Request fast connection interval (7.5ms–15ms) for OTA throughput
+                let conn_params = sys::ble_gap_upd_params {
+                    itvl_min: 6,   // 6 × 1.25ms = 7.5ms
+                    itvl_max: 12,  // 12 × 1.25ms = 15ms
+                    latency: 0,
+                    supervision_timeout: 200, // 200 × 10ms = 2s
+                    min_ce_len: 0,
+                    max_ce_len: 0,
+                };
+                let rc = unsafe {
+                    sys::ble_gap_update_params(connect.conn_handle, &conn_params)
+                };
+                if rc != 0 {
+                    log::warn!("Connection param update failed: {rc}");
+                }
                 let mut conns = state.connections.lock().unwrap();
                 if conns.len() < MAX_CONNECTIONS {
                     conns.push(Connection::new(connect.conn_handle));

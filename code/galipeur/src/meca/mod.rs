@@ -28,28 +28,33 @@ impl Meca {
 
     // --- High-level algos ---
     pub fn no_torque_on_all(&self) {
-        for module in 0..4 {
-            for arm in 0..2 {
+        for module in 0..3 {
+            for arm in 0..4 {
                 self.proxy.set_torque(module, arm, false);
             }
         }
     }
 
     pub fn init(&self) {
-        for module in 0..4 {
-            for arm in 0..2 {
+        self.proxy.set_color_led_pwm(127);
+
+        for module in 0..3 {
+            for arm in 0..4 {
                 self.proxy.set_torque(module, arm, true);
                 self.idle_arm_release(module, arm);
             }
         }
+        self.proxy.set_stage2_torque(0, 0, true);
+        self.proxy.set_stage2(0, 0, 150, 500);
 
         std::thread::sleep(std::time::Duration::from_secs(1));
 
-        for module in 0..4 {
-            for arm in 0..2 {
+        for module in 0..3 {
+            for arm in 0..4 {
                 self.raise_arm_release(module, arm);
             }
         }
+        self.proxy.set_stage2(0, 0, 90, 500);
     }   
 
     //lower arm, activate pump, disable valve
@@ -58,8 +63,8 @@ impl Meca {
         let position = match arm {
             0 => 340,
             1 => 225,
-            2 => 5,
-            3 => 780,
+            2 => 340,
+            3 => 340,
             _ => 50,
         };
         self.proxy.set_arm(module, arm, position, 500, true, false);
@@ -70,8 +75,8 @@ impl Meca {
         let position = match arm {
             0 => 430,
             1 => 301,
-            2 => 83,
-            3 => 851,
+            2 => 430,
+            3 => 430,
             _ => 50,
         };
         self.proxy.set_arm(module, arm, position, 500, false, true);
@@ -82,8 +87,8 @@ impl Meca {
         let position = match arm {
             0 => 430,
             1 => 301,
-            2 => 83,
-            3 => 851,
+            2 => 430,
+            3 => 430,
             _ => 50,
         };
         self.proxy.set_arm(module, arm, position, 500, true, false);
@@ -94,8 +99,8 @@ impl Meca {
         let position = match arm {
             0 => 736,
             1 => 602,
-            2 => 367,
-            3 => 927,
+            2 => 736,
+            3 => 736,
             _ => 50,
         };
         self.proxy.set_arm(module, arm, position, 500, true, false);
@@ -106,8 +111,8 @@ impl Meca {
         let position = match arm {
             0 => 736,
             1 => 602,
-            2 => 367,
-            3 => 927,
+            2 => 736,
+            3 => 736,
             _ => 50,
         };
         self.proxy.set_arm(module, arm, position, 500, false, true);

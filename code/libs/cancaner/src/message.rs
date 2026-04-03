@@ -99,11 +99,38 @@ pub enum CanMessage {
         time_ms: u16,
     },
 
+    /// Request translation status (ID: 0x1CM)
+    RequestTranslationStatus { module: u8 },
+
     /// Translation status report (ID: 0x17M)
     TranslationStatus {
         module: u8,
         position: u16,
         error: u8,
+    },
+
+    /// Set stage2 servo position (ID: 0x1DT)
+    SetStage2 {
+        target: Stage2Target,
+        position: u16,
+        time_ms: u16,
+    },
+
+    /// Set stage2 servo torque (ID: 0x1ET)
+    SetStage2Torque {
+        target: Stage2Target,
+        enable: bool,
+    },
+
+    /// Request stage2 status (ID: 0x1FT, 0 bytes) or stage2 status report (ID: 0x1FT, 4 bytes)
+    RequestStage2Status { target: Stage2Target },
+
+    /// Stage2 status report (ID: 0x1FT)
+    Stage2Status {
+        target: Stage2Target,
+        position: u16,
+        error: u8,
+        flags: ArmFlags,
     },
 
     /// Set color decoding range for one channel (ID: 0x18T)
@@ -439,6 +466,45 @@ impl CanMessage {
                     None
                 }
             }
+            ArmCmd::RequestTranslationStatus => {
+                Some(CanMessage::RequestTranslationStatus { module: raw_target })
+            }
+            ArmCmd::SetStage2 => {
+                let s2_target = Stage2Target::from_u8(raw_target);
+                if data.len() >= 4 {
+                    Some(CanMessage::SetStage2 {
+                        target: s2_target,
+                        position: u16::from_le_bytes([data[0], data[1]]),
+                        time_ms: u16::from_le_bytes([data[2], data[3]]),
+                    })
+                } else {
+                    None
+                }
+            }
+            ArmCmd::SetStage2Torque => {
+                let s2_target = Stage2Target::from_u8(raw_target);
+                if !data.is_empty() {
+                    Some(CanMessage::SetStage2Torque {
+                        target: s2_target,
+                        enable: data[0] != 0,
+                    })
+                } else {
+                    None
+                }
+            }
+            ArmCmd::Stage2Status => {
+                let s2_target = Stage2Target::from_u8(raw_target);
+                if data.len() >= 4 {
+                    Some(CanMessage::Stage2Status {
+                        target: s2_target,
+                        position: u16::from_le_bytes([data[0], data[1]]),
+                        error: data[2],
+                        flags: ArmFlags::from_u8(data[3]),
+                    })
+                } else {
+                    Some(CanMessage::RequestStage2Status { target: s2_target })
+                }
+            }
         }
     }
 
@@ -724,6 +790,10 @@ impl CanMessage {
                 data[2..4].copy_from_slice(&time_ms.to_le_bytes());
                 EncodedMessage { id, data, len: 4 }
             }
+            CanMessage::RequestTranslationStatus { module } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::RequestTranslationStatus as u8, *module);
+                EncodedMessage { id, data: [0u8; MAX_DATA_LEN], len: 0 }
+            }
             CanMessage::TranslationStatus { module, position, error } => {
                 let id = Self::build_id(Domain::Arm, ArmCmd::TranslationStatus as u8, *module);
                 let mut data = [0u8; MAX_DATA_LEN];
@@ -769,6 +839,31 @@ impl CanMessage {
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0] = *duty;
                 EncodedMessage { id, data, len: 1 }
+            }
+            CanMessage::SetStage2 { target, position, time_ms } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetStage2 as u8, target.to_u8());
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0..2].copy_from_slice(&position.to_le_bytes());
+                data[2..4].copy_from_slice(&time_ms.to_le_bytes());
+                EncodedMessage { id, data, len: 4 }
+            }
+            CanMessage::SetStage2Torque { target, enable } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetStage2Torque as u8, target.to_u8());
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0] = *enable as u8;
+                EncodedMessage { id, data, len: 1 }
+            }
+            CanMessage::RequestStage2Status { target } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::Stage2Status as u8, target.to_u8());
+                EncodedMessage { id, data: [0u8; MAX_DATA_LEN], len: 0 }
+            }
+            CanMessage::Stage2Status { target, position, error, flags } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::Stage2Status as u8, target.to_u8());
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0..2].copy_from_slice(&position.to_le_bytes());
+                data[2] = *error;
+                data[3] = flags.to_u8();
+                EncodedMessage { id, data, len: 4 }
             }
 
             // ==================== GROUND ====================
@@ -959,7 +1054,12 @@ impl CanMessage {
             | CanMessage::SetPump { .. }
             | CanMessage::SetValve { .. }
             | CanMessage::SetTranslation { .. }
+            | CanMessage::RequestTranslationStatus { .. }
             | CanMessage::TranslationStatus { .. }
+            | CanMessage::SetStage2 { .. }
+            | CanMessage::SetStage2Torque { .. }
+            | CanMessage::RequestStage2Status { .. }
+            | CanMessage::Stage2Status { .. }
             | CanMessage::SetColorConfig { .. }
             | CanMessage::SetColorSensorConfig { .. }
             | CanMessage::RequestColorSensorRaw { .. }
@@ -1000,6 +1100,17 @@ impl CanMessage {
             | CanMessage::SetColorSensorConfig { target, .. }
             | CanMessage::RequestColorSensorRaw { target }
             | CanMessage::ColorSensorRaw { target, .. } => Some(*target),
+            _ => None,
+        }
+    }
+
+    /// Get stage2 target if applicable
+    pub fn stage2_target(&self) -> Option<Stage2Target> {
+        match self {
+            CanMessage::SetStage2 { target, .. }
+            | CanMessage::SetStage2Torque { target, .. }
+            | CanMessage::RequestStage2Status { target }
+            | CanMessage::Stage2Status { target, .. } => Some(*target),
             _ => None,
         }
     }
@@ -1167,11 +1278,66 @@ mod tests {
                 position: 2048,
                 time_ms: 500,
             });
+            roundtrip(&CanMessage::RequestTranslationStatus { module });
             roundtrip(&CanMessage::TranslationStatus {
                 module,
                 position: 4000,
                 error: 0,
             });
+        }
+    }
+
+    #[test]
+    fn roundtrip_stage2_all_modules() {
+        for module in 0..3u8 {
+            for servo in 0..2u8 {
+                let target = Stage2Target::new(module, servo);
+                roundtrip(&CanMessage::SetStage2 {
+                    target,
+                    position: 512,
+                    time_ms: 300,
+                });
+                roundtrip(&CanMessage::SetStage2Torque {
+                    target,
+                    enable: true,
+                });
+                roundtrip(&CanMessage::RequestStage2Status { target });
+                roundtrip(&CanMessage::Stage2Status {
+                    target,
+                    position: 500,
+                    error: 0,
+                    flags: ArmFlags { torque_enabled: true, moving: false, position_reached: true },
+                });
+            }
+        }
+        // Broadcast
+        roundtrip(&CanMessage::SetStage2 {
+            target: Stage2Target::BROADCAST_ALL,
+            position: 0,
+            time_ms: 0,
+        });
+        roundtrip(&CanMessage::SetStage2Torque {
+            target: Stage2Target::BROADCAST_ALL,
+            enable: false,
+        });
+    }
+
+    #[test]
+    fn stage2_target_flat_encoding() {
+        assert_eq!(Stage2Target::new(0, 0).to_u8(), 0);
+        assert_eq!(Stage2Target::new(0, 1).to_u8(), 1);
+        assert_eq!(Stage2Target::new(1, 0).to_u8(), 2);
+        assert_eq!(Stage2Target::new(1, 1).to_u8(), 3);
+        assert_eq!(Stage2Target::new(2, 0).to_u8(), 4);
+        assert_eq!(Stage2Target::new(2, 1).to_u8(), 5);
+        assert_eq!(Stage2Target::BROADCAST_ALL.to_u8(), 0xF);
+
+        for module in 0..3u8 {
+            for servo in 0..2u8 {
+                let t = Stage2Target::new(module, servo);
+                let decoded = Stage2Target::from_u8(t.to_u8());
+                assert_eq!(decoded, t);
+            }
         }
     }
 

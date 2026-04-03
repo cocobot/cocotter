@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Custom cargo subcommand: `cargo blerun [device] [--debug]`
+# Run from galipeur/, pami/, or picotter/ directory.
+# Builds, converts ELF to app image, flashes via BLE OTA.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT="$(basename "$(pwd)")"
+PROFILE=release
+
+# Parse args
+DEVICE=""
+for arg in "$@"; do
+    case "$arg" in
+        --debug) PROFILE=debug ;;
+        -*) ;;
+        *) DEVICE="$arg" ;;
+    esac
+done
+
+case "$PROJECT" in
+    galipeur)
+        TARGET=xtensa-esp32s3-espidf
+        CHIP=esp32s3
+        DEVICE="${DEVICE:-galipeur}"
+        ;;
+    pami)
+        TARGET=xtensa-esp32s3-espidf
+        CHIP=esp32s3
+        DEVICE="${DEVICE:-pami}"
+        ;;
+    picotter)
+        TARGET=thumbv8m.main-none-eabihf
+        CHIP=""
+        DEVICE="${DEVICE:-picotter}"
+        ;;
+    *)
+        echo "error: run from galipeur/, pami/, or picotter/ (got: $PROJECT)" >&2
+        exit 1
+        ;;
+esac
+
+ELF="../target/$TARGET/$PROFILE/$PROJECT"
+BIN="/tmp/${PROJECT}-ota.bin"
+PROFILE_FLAG=""
+[ "$PROFILE" = "release" ] && PROFILE_FLAG="--release"
+
+echo "==> Building $PROJECT ($PROFILE)..."
+cargo build $PROFILE_FLAG
+
+if [ -n "$CHIP" ]; then
+    echo "==> Converting to app image..."
+    espflash save-image --chip "$CHIP" "$ELF" "$BIN"
+else
+    echo "==> Converting to raw binary..."
+    arm-none-eabi-objcopy -O binary "$ELF" "$BIN"
+fi
+
+SIZE=$(stat -c%s "$BIN" 2>/dev/null || stat -f%z "$BIN")
+echo "==> $BIN ($SIZE bytes)"
+
+echo "==> Flashing $DEVICE via BLE..."
+cargo run --manifest-path "$SCRIPT_DIR/bleflash/Cargo.toml" \
+    --target x86_64-unknown-linux-gnu --release \
+    -- "$DEVICE" "$BIN"
