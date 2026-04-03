@@ -1,0 +1,16 @@
+[package]
+name = "picotter-bootloader"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+cancaner = { path = "../libs/cancaner" }
+embassy-executor = { version = "0.9", features = ["arch-cortex-m", "executor-thread"] }
+embassy-futures = "0.1"
+embassy-stm32 = { version = "0.4", features = ["stm32h562vg", "time-driver-any"] }
+embassy-time = "0.5"
+embedded-can = "0.4"
+cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
+cortex-m-rt = "0.7"
+rtt-target = "0.6"
+panic-rtt-target = "0.2"
