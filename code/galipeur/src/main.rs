@@ -25,6 +25,8 @@ use asserv::maths::XY;
 use smart_leds::RGB8;
 use crate::{meca::Meca, shared_gpio::SharedGpio, led::Leds};
 
+
+
 fn main() {
     let mut board = BoardSabotter::new();
 
@@ -163,7 +165,8 @@ fn main() {
 
     let mut robot_color = false;
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
-    meca.no_torque_on_all();
+    meca.pre_init();
+    //meca.calibrate_color_sensors(200, 0xC0, 1);
     while starter.pin_is_high().unwrap_or(true) {
         if color_selector.pin_is_high().unwrap_or(false) {
             robot_color = true;

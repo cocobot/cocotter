@@ -29,10 +29,19 @@ pub struct Stage2State {
 }
 
 #[derive(Clone, Default, Debug)]
+pub struct ColorSensorRawState {
+    pub clear: u16,
+    pub red: u16,
+    pub green: u16,
+    pub blue: u16,
+}
+
+#[derive(Clone, Default, Debug)]
 pub struct MecaState {
     pub arms: [[ArmState; ARMS_PER_MODULE]; 3],
     pub translations: [TranslationState; 3],
     pub stage2: [[Stage2State; STAGE2_SERVOS_PER_MODULE]; 3],
+    pub color_raw: [[ColorSensorRawState; ARMS_PER_MODULE]; 3],
 }
 
 /// Low-level proxy: read CAN-updated state + send direct commands
@@ -99,6 +108,25 @@ impl MecaProxy {
                     servo.position = *position;
                     servo.error = *error;
                     servo.flags = *flags;
+                }
+            }
+            CanMessage::ColorSensorRaw {
+                target,
+                clear,
+                red,
+                green,
+                blue,
+            } => {
+                let mut st = s.lock().unwrap();
+                if let Some(raw) = st
+                    .color_raw
+                    .get_mut(target.module as usize)
+                    .and_then(|m| m.get_mut(target.arm as usize))
+                {
+                    raw.clear = *clear;
+                    raw.red = *red;
+                    raw.green = *green;
+                    raw.blue = *blue;
                 }
             }
             _ => {}
