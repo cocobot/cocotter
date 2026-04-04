@@ -132,11 +132,11 @@ impl Meca {
     pub fn lower_arm_grab(&self, module: u8, arm: u8) {
         self.proxy.set_torque(module,arm,true);
         let position = match arm {
-            0 => 340,
+            0 => 310,
             1 => 225,
             2 => 340,
-            3 => 340,
-            _ => 50,
+            3 => 320,
+            _ => 300,
         };
         self.proxy.set_arm(module, arm, position, 500, true, false);
     }
@@ -144,11 +144,11 @@ impl Meca {
     pub fn idle_arm_release(&self, module: u8, arm: u8) {
         self.proxy.set_torque(module,arm,false);
         let position = match arm {
-            0 => 430,
-            1 => 301,
-            2 => 430,
-            3 => 430,
-            _ => 50,
+            0 => 350,
+            1 => 240,
+            2 => 350,
+            3 => 350,
+            _ => 300,
         };
         self.proxy.set_arm(module, arm, position, 500, false, true);
     }
@@ -156,11 +156,11 @@ impl Meca {
     pub fn idle_arm_grab(&self, module: u8, arm: u8) {
         self.proxy.set_torque(module,arm,false);
         let position = match arm {
-            0 => 430,
-            1 => 301,
-            2 => 430,
-            3 => 430,
-            _ => 50,
+            0 => 350,
+            1 => 240,
+            2 => 350,
+            3 => 350,
+            _ => 300,
         };
         self.proxy.set_arm(module, arm, position, 500, true, false);
     }
@@ -168,11 +168,11 @@ impl Meca {
     pub fn raise_arm_grab(&self, module: u8, arm: u8) {
         self.proxy.set_torque(module,arm,false);
         let position = match arm {
-            0 => 736,
-            1 => 602,
-            2 => 736,
-            3 => 736,
-            _ => 50,
+            0 => 690,
+            1 => 535,
+            2 => 665,
+            3 => 660,
+            _ => 300,
         };
         self.proxy.set_arm(module, arm, position, 500, true, false);
     }
@@ -180,11 +180,11 @@ impl Meca {
     pub fn raise_arm_release(&self, module: u8, arm: u8) {
         self.proxy.set_torque(module,arm,false);
         let position = match arm {
-            0 => 736,
-            1 => 602,
-            2 => 736,
-            3 => 736,
-            _ => 50,
+            0 => 690,
+            1 => 535,
+            2 => 665,
+            3 => 660,
+            _ => 300,
         };
         self.proxy.set_arm(module, arm, position, 500, false, true);
     }

@@ -167,6 +167,7 @@ fn main() {
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
     meca.pre_init();
     //meca.calibrate_color_sensors(200, 0xC0, 1);
+    log::info!("Wait for starting cord to select color");
     while starter.pin_is_high().unwrap_or(true) {
         if color_selector.pin_is_high().unwrap_or(false) {
             robot_color = true;
@@ -175,7 +176,7 @@ fn main() {
         }
         led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
         thread::sleep(Duration::from_millis(100));
-        
+
         //print all servo positions for debug
         let state = meca.get_state();
         log::info!("T0: {} M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {} M0S20 : {} M0S21 : {}", 
@@ -186,9 +187,14 @@ fn main() {
             state.arms[0][3].position,
             state.stage2[0][0].position,
             state.stage2[0][1].position,
-        
         );    
     }
+    if robot_color {
+        log::info!("Starting cord plugged, we are YELLOW");
+    } else {
+        log::info!("Starting cord plugged, we are BLUE");
+    }
+
     meca.init();
 
     let mut color_off = false;
@@ -204,9 +210,7 @@ fn main() {
         thread::sleep(Duration::from_millis(100));
     }
     led_sender.send(led::LedMessage::GameColor { color: color_from_bool(robot_color) }).ok();
-
-
-
+    log::info!("Starting cord unplugged, here we go!");
 
     let robot_side_main = if robot_color { RobotSide::Right } else { RobotSide::Left };
     let robot_side_aux  = if robot_color { RobotSide::Left } else { RobotSide::Right };
@@ -290,20 +294,23 @@ fn main() {
     }
 
     let orders = [
-        //Order::RunPath(&[
-        //    XY::new(0.0, 500.0),
-        //    XY::new(500.0, 500.0),
-        //]),
-        Order::GotoXyA(0.0, 0.0, arfast!(Back, Down)),
-        Order::MecaIdlePosDrop,
-        Order::MecaTake,
-        //Order::RunPath(&[
-        //    XY::new(500.0, 0.0),
-        //    XY::new(0.0, 0.0),
-        //]),
-        Order::MecaRaiseGrab,
-        Order::GotoXyA(50.0, 0.0, arfast(RobotSide::Back, TableSide::Down)),
         Order::MecaRaiseDrop,
+        Order::GotoXyA(230.0, 200.0, arfast!(Left, Left)),
+        Order::MecaIdlePosDrop,
+        Order::RunPath(&[
+            XY::new(230.0, 200.0),
+            XY::new(200.0, 440.0),
+            XY::new(130.0, 440.0),
+        ]),
+        Order::MecaTake,
+        Order::MecaRaiseGrab,
+        Order::GotoA(arfast(RobotSide::Left, TableSide::Down)),
+        Order::RunPath(&[
+            XY::new(100.0, 200.0),
+            XY::new(0.0, 0.0),
+        ]),
+        Order::MecaRaiseDrop,
+        Order::GotoXyA(0.0, 100.0, arfast(RobotSide::Left, TableSide::Down)),
     ];
     let mut index = 0;
 
@@ -320,22 +327,14 @@ fn main() {
         led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
     }
 
-     loop { 
-        thread::sleep(Duration::from_millis(100));
-     }
+    while false { //index < orders.len() {
+        index = index % orders.len();
 
-    loop {
         led_heartbeat.toggle().ok();
         motor_0_heartbeat.toggle().ok();
         motor_1_heartbeat.toggle().ok();
         motor_2_heartbeat.toggle().ok();
-        if robot_color {
-            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
-            robot_color = false;
-        } else {
-            led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
-            robot_color = true;
-        }
+
         thread::sleep(Duration::from_millis(500));
 
         {
@@ -387,7 +386,15 @@ fn main() {
             let order = &orders[index];
             log::info!("Send new order: {:?}", order);
             order.apply(&mut asserv, &meca);
-            index = (index + 1) % orders.len();
+            index = (index + 1);
         }
+        //pause between orders
+        //thread::sleep(Duration::from_secs(2));
+
+    }
+    log::info!("Job done!");
+
+    loop {
+        thread::sleep(Duration::from_millis(100));
     }
 }
