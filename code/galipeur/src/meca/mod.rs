@@ -64,21 +64,16 @@ impl Meca {
     }
 
     pub fn init(&self) {
-        for module in 0..3 {
-            for arm in 0..4 {
-                self.proxy.set_torque(module, arm, true);
-                self.idle_arm_release(module, arm);
-            }
+        for module in 0..=2 {
+                self.idle_arm_release(module);
         }
         self.proxy.set_stage2_torque(0, 0, true);
         self.proxy.set_stage2(0, 0, 150, 500);
 
         std::thread::sleep(std::time::Duration::from_secs(1));
 
-        for module in 0..3 {
-            for arm in 0..4 {
-                self.raise_arm_release(module, arm);
-            }
+        for module in 0..=2 {
+                self.raise_arm_release(module);
         }
         self.proxy.set_stage2(0, 0, 90, 500);
     }   
@@ -128,76 +123,94 @@ impl Meca {
         }
     }
 
-    //lower arm, activate pump, disable valve
-    pub fn lower_arm_grab(&self, module: u8, arm: u8) {
-        self.proxy.set_torque(module,arm,true);
-        let position = match arm {
-            0 => 340,
-            1 => 225,
-            2 => 340,
-            3 => 340,
-            _ => 50,
-        };
-        self.proxy.set_arm(module, arm, position, 500, true, false);
+    //lower arms, activate pump, disable valve
+    pub fn lower_arm_grab(&self, module: u8) {
+        for arm in 0..=3 {
+            self.proxy.set_torque(module,arm,true);
+            let position = match arm {
+                0 => 310,
+                1 => 225,
+                2 => 340,
+                3 => 320,
+                _ => 300,
+            };
+            self.proxy.set_arm(module, arm, position, 500, true, false);
+        }
     }
 
-    pub fn idle_arm_release(&self, module: u8, arm: u8) {
-        self.proxy.set_torque(module,arm,false);
-        let position = match arm {
-            0 => 430,
-            1 => 301,
-            2 => 430,
-            3 => 430,
-            _ => 50,
-        };
-        self.proxy.set_arm(module, arm, position, 500, false, true);
+    pub fn idle_arm_release(&self, module: u8) {
+        for arm in 0..=3 {
+            self.proxy.set_torque(module,arm,true);
+            let position = match arm {
+                0 => 350,
+                1 => 240,
+                2 => 350,
+                3 => 350,
+                _ => 300,
+            };
+            self.proxy.set_arm(module, arm, position, 500, false, true);
+        }
     }
 
-    pub fn idle_arm_grab(&self, module: u8, arm: u8) {
-        self.proxy.set_torque(module,arm,false);
-        let position = match arm {
-            0 => 430,
-            1 => 301,
-            2 => 430,
-            3 => 430,
-            _ => 50,
-        };
-        self.proxy.set_arm(module, arm, position, 500, true, false);
+    pub fn idle_arm_grab(&self, module: u8) {
+        for arm in 0..=3 {
+            self.proxy.set_torque(module,arm,true);
+            let position = match arm {
+                0 => 350,
+                1 => 240,
+                2 => 350,
+                3 => 350,
+                _ => 300,
+            };
+            self.proxy.set_arm(module, arm, position, 500, true, false);
+        }
     }
 
-    pub fn raise_arm_grab(&self, module: u8, arm: u8) {
-        self.proxy.set_torque(module,arm,false);
-        let position = match arm {
-            0 => 736,
-            1 => 602,
-            2 => 736,
-            3 => 736,
-            _ => 50,
-        };
-        self.proxy.set_arm(module, arm, position, 500, true, false);
+    pub fn raise_arm_grab(&self, module: u8) {
+        for arm in 0..=3 {
+            self.proxy.set_torque(module,arm,true);
+            let position = match arm {
+                0 => 690,
+                1 => 535,
+                2 => 665,
+                3 => 660,
+                _ => 300,
+            };
+            self.proxy.set_arm(module, arm, position, 500, true, false);
+        }
     }
 
-    pub fn raise_arm_release(&self, module: u8, arm: u8) {
-        self.proxy.set_torque(module,arm,false);
-        let position = match arm {
-            0 => 736,
-            1 => 602,
-            2 => 736,
-            3 => 736,
+    pub fn raise_arm_release(&self, module: u8) {
+        for arm in 0..=3 {
+            self.proxy.set_torque(module,arm,true);
+            let position = match arm {
+                0 => 690,
+                1 => 535,
+                2 => 665,
+                3 => 660,
             _ => 50,
-        };
-        self.proxy.set_arm(module, arm, position, 500, false, true);
+            };
+            self.proxy.set_arm(module, arm, position, 500, false, true);
+        }
+    }
+
+    pub fn request_color(&self, module:u8, arm:u8) {
+        self.proxy.request_color_sensor_raw(module,arm);
     }
 
     /// Lower arm, enable pump, raise arm
-    pub fn grab(&self, module: u8, arm: u8) {
-        self.proxy.set_pump(module, arm, true);
-        self.proxy.set_valve(module, arm, false);
+    pub fn grab(&self, module: u8) {
+        for arm in 0..=3 {
+            self.proxy.set_pump(module, arm, true);
+            self.proxy.set_valve(module, arm, false);
+        }
     }
 
     /// Open valve, disable pump
-    pub fn release(&self, module: u8, arm: u8) {
-        self.proxy.set_valve(module, arm, true);
-        self.proxy.set_pump(module, arm, false);
+    pub fn release(&self, module: u8) {
+        for arm in 0..=3 {
+            self.proxy.set_valve(module, arm, true);
+            self.proxy.set_pump(module, arm, false);
+        }
     }
 }
