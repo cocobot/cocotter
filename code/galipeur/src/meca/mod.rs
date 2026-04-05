@@ -200,4 +200,23 @@ impl Meca {
         self.proxy.set_valve(module, arm, true);
         self.proxy.set_pump(module, arm, false);
     }
+
+    pub fn auto_grab(&self, module:u8){
+        self.proxy.set_color_led_pwm(127);
+        for arm in 0..=3 {
+            self.idle_arm_release(module,arm);
+            self.proxy.request_color_sensor_raw(module, arm);
+        }
+        // Wait for responses
+        thread::sleep(Duration::from_millis(200));
+        let state = self.get_state();
+        for arm in 0..=3 {
+            let m = module as usize;
+            let a = arm as usize;
+            if (state.arms[m][a].color != 0 &&
+                state.arms[m][a].color != 255 ){
+                self.lower_arm_grab(module,arm);
+            }
+        }
+    }
 }

@@ -166,8 +166,7 @@ fn main() {
     let mut robot_color = false;
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
     meca.pre_init();
-    meca.idle_arm_release(0);
-    meca.calibrate_color_sensors(127, 0xC0, 1);
+    //meca.calibrate_color_sensors(127, 0xC0, 1);
     log::info!("Wait for starting cord to select color");
     while starter.pin_is_high().unwrap_or(true) {
         if color_selector.pin_is_high().unwrap_or(false) {
@@ -249,10 +248,7 @@ fn main() {
                 Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
                 Order::RunPath(path) => asserv.run_path(path),
                 Order::MecaTake => {
-                    meca.lower_arm_grab(0, 3);
-                    meca.lower_arm_grab(0, 2);
-                    meca.lower_arm_grab(0, 1);
-                    meca.lower_arm_grab(0, 0);
+                    meca.auto_grab(0);
                     log::info!("TO_DO wait with feedback from meca");
                     thread::sleep(Duration::from_secs(2));
                 }
@@ -328,7 +324,7 @@ fn main() {
         led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
     }
 
-    while false { //index < orders.len() {
+    while index < orders.len() {
         index = index % orders.len();
 
         led_heartbeat.toggle().ok();
@@ -387,7 +383,7 @@ fn main() {
             let order = &orders[index];
             log::info!("Send new order: {:?}", order);
             order.apply(&mut asserv, &meca);
-            index = (index + 1);
+            index = index + 1;
         }
         //pause between orders
         //thread::sleep(Duration::from_secs(2));
