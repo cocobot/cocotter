@@ -41,24 +41,24 @@ impl Meca {
 
         for module in 0..3 {
             for arm in 0..4 {
-                // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
-                self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
-
                 // Clear existing color table (color_id=0 clears all)
                 self.proxy.set_color_config(module, arm, 0, 0, 0, 0);
 
                 // Color 1 = Blue — dummy CRGB thresholds
                 // channel 0=Clear, 1=Red, 2=Green, 3=Blue
-                self.proxy.set_color_config(module, arm, 1, 0, 100, 500);   // Clear
-                self.proxy.set_color_config(module, arm, 1, 1, 20, 150);    // Red (low)
-                self.proxy.set_color_config(module, arm, 1, 2, 50, 250);    // Green
-                self.proxy.set_color_config(module, arm, 1, 3, 200, 600);   // Blue (high)
+                self.proxy.set_color_config(module, arm, 1, 0, 2000, 5000);   // Clear
+                self.proxy.set_color_config(module, arm, 1, 1, 200, 1000);    // Red (low)
+                self.proxy.set_color_config(module, arm, 1, 2, 500, 1000);    // Green
+                self.proxy.set_color_config(module, arm, 1, 3, 800, 2000);   // Blue (high)
 
                 // Color 2 = Yellow — dummy CRGB thresholds
-                self.proxy.set_color_config(module, arm, 2, 0, 200, 800);   // Clear (bright)
-                self.proxy.set_color_config(module, arm, 2, 1, 150, 500);   // Red (high)
-                self.proxy.set_color_config(module, arm, 2, 2, 150, 500);   // Green (high)
-                self.proxy.set_color_config(module, arm, 2, 3, 20, 150);    // Blue (low)
+                self.proxy.set_color_config(module, arm, 2, 0, 10000, 20000);   // Clear (bright)
+                self.proxy.set_color_config(module, arm, 2, 1, 5000, 10000);   // Red (high)
+                self.proxy.set_color_config(module, arm, 2, 2, 3000, 10000);   // Green (high)
+                self.proxy.set_color_config(module, arm, 2, 3, 1000, 3000);    // Blue (low)
+
+                // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
+                self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
             }
         }
     }

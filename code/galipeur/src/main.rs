@@ -166,7 +166,8 @@ fn main() {
     let mut robot_color = false;
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
     meca.pre_init();
-    //meca.calibrate_color_sensors(200, 0xC0, 1);
+    meca.idle_arm_release(0);
+    meca.calibrate_color_sensors(127, 0xC0, 1);
     log::info!("Wait for starting cord to select color");
     while starter.pin_is_high().unwrap_or(true) {
         if color_selector.pin_is_high().unwrap_or(false) {
