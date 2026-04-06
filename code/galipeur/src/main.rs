@@ -149,7 +149,7 @@ fn main() {
         ],
     );
     let movement = Arc::new(Mutex::new(Movement::new(asserv_hardware)));
-    let meca = meca::Meca::new(&can_iface);
+    let mut meca = meca::Meca::new(&can_iface);
     #[derive(Debug)]
     enum Order<'a> {
         GotoXy(f32, f32),
@@ -157,6 +157,7 @@ fn main() {
         GotoXyA(f32, f32, f32),
         RunPath(&'a [XY]),
         MecaTake,
+        MecaRelease,
         MecaRaiseGrab,
         MecaRaiseDrop,
         MecaIdlePosGrab,
@@ -165,8 +166,10 @@ fn main() {
 
     let mut robot_color = false;
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
+    //wait for meca init
+    thread::sleep(Duration::from_secs(5));
     meca.pre_init();
-    //meca.calibrate_color_sensors(127, 0xC0, 1);
+    //meca.calibrate_color_sensors(200, 0xC0, 1);
     log::info!("Wait for starting cord to select color");
     while starter.pin_is_high().unwrap_or(true) {
         if color_selector.pin_is_high().unwrap_or(false) {
@@ -196,6 +199,7 @@ fn main() {
     }
 
     meca.init();
+    meca.set_robot_color(robot_color);
 
     let mut color_off = false;
     while starter.pin_is_low().unwrap_or(true) {
@@ -241,7 +245,7 @@ fn main() {
 
 
     impl Order<'_> {
-        fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>, meca: &Meca) {
+        fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware>, meca: &mut Meca) {
             match self {
                 Order::GotoXy(x, y) => asserv.goto_xy(*x, *y),
                 Order::GotoA(a) => asserv.goto_a(*a),
@@ -249,6 +253,11 @@ fn main() {
                 Order::RunPath(path) => asserv.run_path(path),
                 Order::MecaTake => {
                     meca.auto_grab(0);
+                    log::info!("TO_DO wait with feedback from meca");
+                    thread::sleep(Duration::from_secs(2));
+                }
+                Order::MecaRelease => {
+                    meca.auto_release(0);
                     log::info!("TO_DO wait with feedback from meca");
                     thread::sleep(Duration::from_secs(2));
                 }
@@ -262,7 +271,7 @@ fn main() {
                     thread::sleep(Duration::from_secs(2));
                 }
                 Order::MecaRaiseDrop => {
-                    meca.grab(0, 0);
+                    meca.release(0, 0);
                     meca.raise_arm_release(0, 3);
                     meca.raise_arm_release(0, 2);
                     meca.raise_arm_release(0, 1);
@@ -293,20 +302,18 @@ fn main() {
     let orders = [
         Order::MecaRaiseDrop,
         Order::GotoXyA(230.0, 200.0, arfast!(Left, Left)),
-        Order::MecaIdlePosDrop,
         Order::RunPath(&[
             XY::new(230.0, 200.0),
             XY::new(200.0, 440.0),
             XY::new(130.0, 440.0),
         ]),
         Order::MecaTake,
-        Order::MecaRaiseGrab,
         Order::GotoA(arfast(RobotSide::Left, TableSide::Down)),
         Order::RunPath(&[
             XY::new(100.0, 200.0),
             XY::new(0.0, 0.0),
         ]),
-        Order::MecaRaiseDrop,
+        Order::MecaRelease,
         Order::GotoXyA(0.0, 100.0, arfast(RobotSide::Left, TableSide::Down)),
     ];
     let mut index = 0;
@@ -382,7 +389,7 @@ fn main() {
         if asserv.done_xy() && asserv.done_a() {
             let order = &orders[index];
             log::info!("Send new order: {:?}", order);
-            order.apply(&mut asserv, &meca);
+            order.apply(&mut asserv, &mut meca);
             index = index + 1;
         }
         //pause between orders

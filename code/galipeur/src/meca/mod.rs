@@ -11,12 +11,16 @@ use crate::can::CanInterface;
 #[derive(Clone)]
 pub struct Meca {
     proxy: MecaProxy,
+    robot_color:u8,
+    stored_colors:[u8;4],
 }
 
 impl Meca {
     pub fn new(can: &CanInterface) -> Self {
         Self {
             proxy: MecaProxy::new(can),
+            robot_color: 0,
+            stored_colors: [0,0,0,0],
         }
     }
 
@@ -29,33 +33,48 @@ impl Meca {
         self.proxy.get_state()
     }
 
+    pub fn set_robot_color(&mut self, color:bool) {
+        self.robot_color = if color { 2 }  else  { 1 };
+    }
+
+
     // --- High-level algos ---
     pub fn pre_init(&self) {
         for module in 0..3 {
             for arm in 0..4 {
                 self.proxy.set_torque(module, arm, false);
+                std::thread::sleep(std::time::Duration::from_millis(10));
             }
         }
 
-        self.proxy.set_color_led_pwm(127);
+        self.proxy.set_color_led_pwm(200);
 
-        for module in 0..3 {
+        for module in 0..1 {
             for arm in 0..4 {
                 // Clear existing color table (color_id=0 clears all)
                 self.proxy.set_color_config(module, arm, 0, 0, 0, 0);
+                std::thread::sleep(std::time::Duration::from_millis(50));
 
                 // Color 1 = Blue — dummy CRGB thresholds
                 // channel 0=Clear, 1=Red, 2=Green, 3=Blue
-                self.proxy.set_color_config(module, arm, 1, 0, 2000, 5000);   // Clear
-                self.proxy.set_color_config(module, arm, 1, 1, 200, 1000);    // Red (low)
-                self.proxy.set_color_config(module, arm, 1, 2, 500, 1000);    // Green
-                self.proxy.set_color_config(module, arm, 1, 3, 800, 2000);   // Blue (high)
+                self.proxy.set_color_config(module, arm, 1, 0, 2000, 9000);   // Clear
+                std::thread::sleep(std::time::Duration::from_millis(50));
+                self.proxy.set_color_config(module, arm, 1, 1, 200, 2000);    // Red (low)
+                std::thread::sleep(std::time::Duration::from_millis(50));
+                self.proxy.set_color_config(module, arm, 1, 2, 500, 3000);    // Green
+                std::thread::sleep(std::time::Duration::from_millis(50));
+                self.proxy.set_color_config(module, arm, 1, 3, 800, 5000);   // Blue (high)
+                std::thread::sleep(std::time::Duration::from_millis(50));
 
                 // Color 2 = Yellow — dummy CRGB thresholds
-                self.proxy.set_color_config(module, arm, 2, 0, 10000, 20000);   // Clear (bright)
-                self.proxy.set_color_config(module, arm, 2, 1, 5000, 10000);   // Red (high)
-                self.proxy.set_color_config(module, arm, 2, 2, 3000, 10000);   // Green (high)
-                self.proxy.set_color_config(module, arm, 2, 3, 1000, 3000);    // Blue (low)
+                self.proxy.set_color_config(module, arm, 2, 0, 10000, 30000);   // Clear (bright)
+                std::thread::sleep(std::time::Duration::from_millis(50));
+                self.proxy.set_color_config(module, arm, 2, 1, 3000, 20000);   // Red (high)
+                std::thread::sleep(std::time::Duration::from_millis(50));
+                self.proxy.set_color_config(module, arm, 2, 2, 3000, 20000);   // Green (high)
+                std::thread::sleep(std::time::Duration::from_millis(50));
+                self.proxy.set_color_config(module, arm, 2, 3, 1000, 6000);    // Blue (low)
+                std::thread::sleep(std::time::Duration::from_millis(50));
 
                 // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
                 self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
@@ -67,6 +86,7 @@ impl Meca {
         for module in 0..3 {
             for arm in 0..4 {
                 self.proxy.set_torque(module, arm, true);
+                std::thread::sleep(std::time::Duration::from_millis(10));
                 self.idle_arm_release(module, arm);
             }
         }
@@ -78,6 +98,7 @@ impl Meca {
         for module in 0..3 {
             for arm in 0..4 {
                 self.raise_arm_release(module, arm);
+                std::thread::sleep(std::time::Duration::from_millis(10));
             }
         }
         self.proxy.set_stage2(0, 0, 90, 500);
@@ -96,6 +117,9 @@ impl Meca {
         for module in 0..3u8 {
             for arm in 0..4u8 {
                 self.proxy.set_color_sensor_config(module, arm, integration_time, gain);
+                std::thread::sleep(std::time::Duration::from_millis(10));
+                self.idle_arm_release(module, arm);
+                std::thread::sleep(std::time::Duration::from_millis(10));
             }
         }
 
@@ -104,6 +128,7 @@ impl Meca {
             for module in 0..3u8 {
                 for arm in 0..4u8 {
                     self.proxy.request_color_sensor_raw(module, arm);
+                    std::thread::sleep(std::time::Duration::from_millis(10));
                 }
             }
 
@@ -201,22 +226,66 @@ impl Meca {
         self.proxy.set_pump(module, arm, false);
     }
 
-    pub fn auto_grab(&self, module:u8){
-        self.proxy.set_color_led_pwm(127);
+    pub fn auto_grab(&mut self, module:u8){
+        self.proxy.set_color_led_pwm(200);
         for arm in 0..=3 {
             self.idle_arm_release(module,arm);
-            self.proxy.request_color_sensor_raw(module, arm);
+            std::thread::sleep(std::time::Duration::from_millis(10));
         }
-        // Wait for responses
-        thread::sleep(Duration::from_millis(200));
+        log::info!("Search for crates ...");
+        //wait for arms low and scan for crates
+        std::thread::sleep(std::time::Duration::from_secs(2));
+        let mut state = self.get_state();
+        log::info!("Colors : R:{} 0:{} 1:{}: 2:{} 3:{}",
+                    self.robot_color,
+                    state.arms[module as usize][0].color,
+                    state.arms[module as usize][1].color,
+                    state.arms[module as usize][2].color,
+                    state.arms[module as usize][3].color,);
+        for arm in 0..=3 {
+            if state.arms[module as usize][arm as usize].color !=0 &&
+               state.arms[module as usize][arm as usize].color !=255 {
+                log::info!("Yeeee !!!!");
+                self.lower_arm_grab(module,arm);
+                self.stored_colors[arm as usize] = state.arms[module as usize][arm as usize].color;
+            } else {
+                log::info!("OOOOOhhhh");
+            }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+        //wait for present crates to be sucked in
+        std::thread::sleep(std::time::Duration::from_millis(200));
+        for arm in 0..=3 {
+            if self.stored_colors[arm as usize] !=0 &&
+               self.stored_colors[arm as usize] !=255 {
+                self.raise_arm_grab(module,arm);
+            } else {
+                self.idle_arm_release(module,arm);
+            }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+        self.proxy.set_color_led_pwm(0);
+    }
+
+    pub fn auto_release(&mut self, module:u8){
         let state = self.get_state();
         for arm in 0..=3 {
             let m = module as usize;
             let a = arm as usize;
-            if (state.arms[m][a].color != 0 &&
-                state.arms[m][a].color != 255 ){
-                self.lower_arm_grab(module,arm);
+            if self.stored_colors[arm as usize] == self.robot_color {
+                log::info!("Same color");
+                self.idle_arm_grab(module,arm);
+                self.stored_colors[arm as usize] = 0;
             }
+            std::thread::sleep(std::time::Duration::from_millis(10));
+        }
+        //wait for arm movements
+        std::thread::sleep(std::time::Duration::from_millis(500));
+        for arm in 0..=3 {
+            self.release(module,arm);
+            std::thread::sleep(std::time::Duration::from_millis(100));
+            self.raise_arm_release(module,arm);
+            std::thread::sleep(std::time::Duration::from_millis(10));
         }
     }
 }
