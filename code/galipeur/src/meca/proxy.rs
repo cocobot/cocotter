@@ -278,6 +278,14 @@ impl MecaProxy {
         });
     }
 
+    pub fn set_servo_id(&self, bus: cancaner::ServoBus, origin_id: u8, new_id: u8) {
+        self.can.send(&CanMessage::SetServoId { bus, origin_id, new_id });
+    }
+
+    pub fn scan_bus(&self, bus: cancaner::ServoBus) {
+        self.can.send(&CanMessage::ScanBus { bus });
+    }
+
     /// Send a ping and wait for the response (value + 1), with timeout.
     /// Returns true if pong received, false on timeout.
     pub fn ping(&self, timeout: Duration) -> bool {    

@@ -166,7 +166,7 @@ fn main() {
     let mut robot_color = false;
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
     meca.pre_init();
-    meca.calibrate_color_sensors();
+    //meca.calibrate_color_sensors();
     while starter.pin_is_high().unwrap_or(true) || true {
         if color_selector.pin_is_high().unwrap_or(false) {
             robot_color = true;
@@ -319,10 +319,6 @@ fn main() {
     } else {
         led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
     }
-
-     loop { 
-        thread::sleep(Duration::from_millis(100));
-     }
 
     loop {
         led_heartbeat.toggle().ok();

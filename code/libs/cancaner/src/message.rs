@@ -44,17 +44,25 @@ pub enum CanMessage {
     Reboot { mode: RebootMode },
 
     /// Set servo ID command (ID: 0x020)
-    /// Broadcasts on the specified bus to set servo ID
+    /// Changes a servo's ID on the specified bus
     SetServoId {
         bus: ServoBus,
+        origin_id: u8,
         new_id: u8,
     },
 
     /// Set servo ID result (ID: 0x021)
     SetServoIdResult {
         bus: ServoBus,
+        origin_id: u8,
         new_id: u8,
         success: bool,
+    },
+
+    /// Scan bus command (ID: 0x030)
+    /// Scans for servos on the specified bus, results via log::info
+    ScanBus {
+        bus: ServoBus,
     },
 
     // ==================== ARM Domain (0x1) ====================
@@ -305,20 +313,30 @@ impl CanMessage {
                 }
             }
             SystemCmd::SetServoId => {
-                if data.len() >= 2 {
+                if data.len() >= 3 {
                     let bus = ServoBus::from_u8(data[0])?;
-                    if data.len() >= 3 {
+                    if data.len() >= 4 {
                         Some(CanMessage::SetServoIdResult {
                             bus,
-                            new_id: data[1],
-                            success: data[2] != 0,
+                            origin_id: data[1],
+                            new_id: data[2],
+                            success: data[3] != 0,
                         })
                     } else {
                         Some(CanMessage::SetServoId {
                             bus,
-                            new_id: data[1],
+                            origin_id: data[1],
+                            new_id: data[2],
                         })
                     }
+                } else {
+                    None
+                }
+            }
+            SystemCmd::ScanBus => {
+                if !data.is_empty() {
+                    let bus = ServoBus::from_u8(data[0])?;
+                    Some(CanMessage::ScanBus { bus })
                 } else {
                     None
                 }
@@ -704,20 +722,28 @@ impl CanMessage {
                 data[0] = *mode as u8;
                 EncodedMessage { id, data, len: 1 }
             }
-            CanMessage::SetServoId { bus, new_id } => {
+            CanMessage::SetServoId { bus, origin_id, new_id } => {
                 let id = Self::build_id(Domain::System, SystemCmd::SetServoId as u8, 0);
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0] = *bus as u8;
-                data[1] = *new_id;
-                EncodedMessage { id, data, len: 2 }
+                data[1] = *origin_id;
+                data[2] = *new_id;
+                EncodedMessage { id, data, len: 3 }
             }
-            CanMessage::SetServoIdResult { bus, new_id, success } => {
+            CanMessage::SetServoIdResult { bus, origin_id, new_id, success } => {
                 let id = Self::build_id(Domain::System, SystemCmd::SetServoId as u8, 1);
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0] = *bus as u8;
-                data[1] = *new_id;
-                data[2] = *success as u8;
-                EncodedMessage { id, data, len: 3 }
+                data[1] = *origin_id;
+                data[2] = *new_id;
+                data[3] = *success as u8;
+                EncodedMessage { id, data, len: 4 }
+            }
+            CanMessage::ScanBus { bus } => {
+                let id = Self::build_id(Domain::System, SystemCmd::ScanBus as u8, 0);
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0] = *bus as u8;
+                EncodedMessage { id, data, len: 1 }
             }
 
             // ==================== ARM ====================
@@ -1045,7 +1071,8 @@ impl CanMessage {
             | CanMessage::SystemError { .. }
             | CanMessage::Reboot { .. }
             | CanMessage::SetServoId { .. }
-            | CanMessage::SetServoIdResult { .. } => Domain::System,
+            | CanMessage::SetServoIdResult { .. }
+            | CanMessage::ScanBus { .. } => Domain::System,
 
             CanMessage::SetArm { .. }
             | CanMessage::ArmStatus { .. }
@@ -1178,12 +1205,21 @@ mod tests {
     fn roundtrip_set_servo_id() {
         roundtrip(&CanMessage::SetServoId {
             bus: ServoBus::Module0,
+            origin_id: 1,
             new_id: 5,
         });
         roundtrip(&CanMessage::SetServoIdResult {
             bus: ServoBus::Translation,
+            origin_id: 1,
             new_id: 3,
             success: true,
+        });
+    }
+
+    #[test]
+    fn roundtrip_scan_bus() {
+        roundtrip(&CanMessage::ScanBus {
+            bus: ServoBus::Module0,
         });
     }
 

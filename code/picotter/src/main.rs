@@ -299,17 +299,18 @@ async fn led_status_task(
     }
 }
 
-/// Helper to set servo ID via broadcast on any servo bus
+/// Helper to set servo ID on any servo bus
 async fn set_servo_id_on_bus<TX: embedded_io_async::Write, RX: embedded_io_async::Read>(
     servo: &mut Scs0009<TX, RX>,
+    origin_id: u8,
     new_id: u8,
 ) -> bool {
-    if servo.unlock_eeprom(0xFE).await.is_err() {
+    if servo.unlock_eeprom(origin_id).await.is_err() {
         return false;
     }
     Timer::after_millis(50).await;
 
-    if servo.set_id(new_id).await.is_err() {
+    if servo.change_id(origin_id, new_id).await.is_err() {
         return false;
     }
     Timer::after_millis(50).await;
@@ -321,13 +322,30 @@ async fn set_servo_id_on_bus<TX: embedded_io_async::Write, RX: embedded_io_async
 
     match servo.ping(new_id).await {
         Ok(true) => {
-            info!("Servo ID set to {} successfully", new_id);
+            info!("Servo ID changed {} -> {} successfully", origin_id, new_id);
             true
         }
         _ => {
-            warn!("Failed to verify servo ID {}", new_id);
+            warn!("Failed to verify servo ID {} -> {}", origin_id, new_id);
             false
         }
+    }
+}
+
+/// Helper to scan a servo bus
+async fn scan_servo_bus<TX: embedded_io_async::Write, RX: embedded_io_async::Read>(
+    servo: &mut Scs0009<TX, RX>,
+    bus_name: &str,
+) {
+    info!("Scanning bus {}...", bus_name);
+    let (found, count) = servo.scan::<32>(1, 253).await;
+    if count == 0 {
+        info!("Bus {}: no servos found", bus_name);
+    } else {
+        for i in 0..count {
+            info!("Bus {}: found servo ID {}", bus_name, found[i]);
+        }
+        info!("Bus {}: {} servo(s) found", bus_name, count);
     }
 }
 
@@ -375,32 +393,56 @@ async fn cmd_task(
         }
 
         // Handle SetServoId
-        if let CanMessage::SetServoId { bus, new_id } = &msg {
+        if let CanMessage::SetServoId { bus, origin_id, new_id } = &msg {
             let success = match bus {
                 ServoBus::Module0 => {
                     let mut m0 = module0.lock().await;
-                    set_servo_id_on_bus(m0.servo_bus_mut(), *new_id).await
+                    set_servo_id_on_bus(m0.servo_bus_mut(), *origin_id, *new_id).await
                 }
                 ServoBus::Module1 => {
                     let mut m1 = module1.lock().await;
-                    set_servo_id_on_bus(m1.servo_bus_mut(), *new_id).await
+                    set_servo_id_on_bus(m1.servo_bus_mut(), *origin_id, *new_id).await
                 }
                 ServoBus::Module2 => {
                     let mut m2 = module2.lock().await;
-                    set_servo_id_on_bus(m2.servo_bus_mut(), *new_id).await
+                    set_servo_id_on_bus(m2.servo_bus_mut(), *origin_id, *new_id).await
                 }
                 ServoBus::Translation => {
                     let mut bus = translation_bus.lock().await;
-                    set_servo_id_on_bus(&mut *bus, *new_id).await
+                    set_servo_id_on_bus(&mut *bus, *origin_id, *new_id).await
                 }
             };
             status_tx
                 .try_send(CanMessage::SetServoIdResult {
                     bus: *bus,
+                    origin_id: *origin_id,
                     new_id: *new_id,
                     success,
                 })
                 .ok();
+            continue;
+        }
+
+        // Handle ScanBus
+        if let CanMessage::ScanBus { bus } = &msg {
+            match bus {
+                ServoBus::Module0 => {
+                    let mut m0 = module0.lock().await;
+                    scan_servo_bus(m0.servo_bus_mut(), "module0").await;
+                }
+                ServoBus::Module1 => {
+                    let mut m1 = module1.lock().await;
+                    scan_servo_bus(m1.servo_bus_mut(), "module1").await;
+                }
+                ServoBus::Module2 => {
+                    let mut m2 = module2.lock().await;
+                    scan_servo_bus(m2.servo_bus_mut(), "module2").await;
+                }
+                ServoBus::Translation => {
+                    let mut bus = translation_bus.lock().await;
+                    scan_servo_bus(&mut *bus, "translation").await;
+                }
+            }
             continue;
         }
 

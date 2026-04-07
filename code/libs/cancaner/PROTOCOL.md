@@ -42,6 +42,7 @@ Messages système généraux. Target = 0 sauf pour les réponses (target = 1).
 | 0x0 | Ping | `SystemCmd::Ping` |
 | 0x1 | BoardInfo | `SystemCmd::BoardInfo` |
 | 0x2 | SetServoId | `SystemCmd::SetServoId` |
+| 0x3 | ScanBus | `SystemCmd::ScanBus` |
 | 0xE | Error | `SystemCmd::Error` |
 | 0xF | Reboot | `SystemCmd::Reboot` |
 
@@ -85,12 +86,12 @@ Data[4-7]: Uptime en ms (u32, LE)
 
 ### 0x020 - SET_SERVO_ID
 
-Configure l'ID d'un servo par broadcast sur un bus spécifique.
-⚠️ **Important:** Un seul servo doit être connecté sur le bus lors de l'exécution.
+Change l'ID d'un servo sur un bus spécifique. Cible le servo par son ID d'origine.
+Pour un broadcast (tous les servos du bus), utiliser `origin_id = 0xFE`.
 
 ```
 ID: 0x020 (target=0)
-Longueur: 2 octets
+Longueur: 3 octets
 Direction: P→S
 
 Data[0]: Bus cible (ServoBus)
@@ -98,7 +99,8 @@ Data[0]: Bus cible (ServoBus)
          - 1 = Module 1 (4 servos bras)
          - 2 = Module 2 (4 servos bras)
          - 3 = Translation (3 servos)
-Data[1]: Nouvel ID servo (1-253)
+Data[1]: ID d'origine du servo (1-253, ou 0xFE pour broadcast)
+Data[2]: Nouvel ID servo (1-253)
 ```
 
 ### 0x021 - SET_SERVO_ID_RESULT
@@ -107,12 +109,30 @@ Résultat de la commande SET_SERVO_ID.
 
 ```
 ID: 0x021 (target=1)
-Longueur: 3 octets
+Longueur: 4 octets
 Direction: S→P
 
 Data[0]: Bus utilisé (0-3)
-Data[1]: ID configuré
-Data[2]: Résultat (0=échec, 1=succès)
+Data[1]: ID d'origine
+Data[2]: ID configuré
+Data[3]: Résultat (0=échec, 1=succès)
+```
+
+### 0x030 - SCAN_BUS
+
+Lance un scan sur un bus pour découvrir les servos présents (IDs 1-253).
+Les résultats sont envoyés via `log::info` et relayés par le domaine LOG.
+
+```
+ID: 0x030 (target=0)
+Longueur: 1 octet
+Direction: P→S
+
+Data[0]: Bus cible (ServoBus)
+         - 0 = Module 0
+         - 1 = Module 1
+         - 2 = Module 2
+         - 3 = Translation
 ```
 
 ### 0x0E0 - ERROR

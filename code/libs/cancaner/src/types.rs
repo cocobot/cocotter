@@ -337,6 +337,7 @@ pub enum SystemCmd {
     Ping = 0x0,
     BoardInfo = 0x1,
     SetServoId = 0x2,
+    ScanBus = 0x3,
     Error = 0xE,
     Reboot = 0xF,
 }
@@ -347,6 +348,7 @@ impl SystemCmd {
             0x0 => Some(SystemCmd::Ping),
             0x1 => Some(SystemCmd::BoardInfo),
             0x2 => Some(SystemCmd::SetServoId),
+            0x3 => Some(SystemCmd::ScanBus),
             0xE => Some(SystemCmd::Error),
             0xF => Some(SystemCmd::Reboot),
             _ => None,
