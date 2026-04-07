@@ -166,8 +166,8 @@ fn main() {
     let mut robot_color = false;
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
     meca.pre_init();
-    //meca.calibrate_color_sensors(200, 0xC0, 1);
-    while starter.pin_is_high().unwrap_or(true) {
+    meca.calibrate_color_sensors();
+    while starter.pin_is_high().unwrap_or(true) || true {
         if color_selector.pin_is_high().unwrap_or(false) {
             robot_color = true;
         } else {
@@ -178,16 +178,16 @@ fn main() {
         
         //print all servo positions for debug
         let state = meca.get_state();
-        log::info!("T0: {} M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {} M0S20 : {} M0S21 : {}", 
-            state.translations[0].position,
-            state.arms[0][0].position, 
-            state.arms[0][1].position, 
-            state.arms[0][2].position, 
-            state.arms[0][3].position,
-            state.stage2[0][0].position,
-            state.stage2[0][1].position,
-        
-        );    
+       log::info!("T0: {} M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {} M0S20 : {} M0S21 : {}", 
+           state.translations[0].position,
+           state.arms[0][0].position, 
+           state.arms[0][1].position, 
+           state.arms[0][2].position, 
+           state.arms[0][3].position,
+           state.stage2[0][0].position,
+           state.stage2[0][1].position,
+       
+       );    
     }
     meca.init();
 

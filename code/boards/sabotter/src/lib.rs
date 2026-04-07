@@ -193,7 +193,7 @@ impl BoardSabotter {
             peripherals.can,
             peripherals.pins.gpio9,   // TX
             peripherals.pins.gpio10,  // RX
-            &can_config::Config::new().timing(can_config::Timing::B500K),
+            &can_config::Config::new().timing(can_config::Timing::B500K).rx_queue_len(64),
         ).ok();
 
         // Initialize SPI for IMU SCH16T

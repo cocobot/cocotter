@@ -2,6 +2,7 @@
 target/
 Cargo.lock
 .embuild/
+debugdata
 
 # kicad
 *-backups

@@ -31,19 +31,30 @@ impl Meca {
 
     // --- High-level algos ---
     pub fn pre_init(&self) {
+        if !self.proxy.ping(Duration::from_millis(3000)) {
+            log::error!("Failed to ping Meca");
+            return;
+        }
+
         for module in 0..3 {
             for arm in 0..4 {
                 self.proxy.set_torque(module, arm, false);
             }
         }
 
+        
+
         self.proxy.set_color_led_pwm(127);
 
         for module in 0..3 {
-            for arm in 0..4 {
-                // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
-                self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
-
+            for arm in 0..4 {      
+                //Embassy stm32 FDCAN bug... do not burst config messages
+                if !self.proxy.ping(Duration::from_millis(3000)) {
+                    log::error!("Failed to ping Meca after disabling torque - check servo connections");
+                    return;
+                }
+                thread::sleep(Duration::from_millis(100));
+                        
                 // Clear existing color table (color_id=0 clears all)
                 self.proxy.set_color_config(module, arm, 0, 0, 0, 0);
 
@@ -59,6 +70,9 @@ impl Meca {
                 self.proxy.set_color_config(module, arm, 2, 1, 150, 500);   // Red (high)
                 self.proxy.set_color_config(module, arm, 2, 2, 150, 500);   // Green (high)
                 self.proxy.set_color_config(module, arm, 2, 3, 20, 150);    // Blue (low)
+
+                 // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
+                self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
             }
         }
     }
@@ -86,19 +100,9 @@ impl Meca {
     /// Infinite loop that requests and logs raw color sensor values for calibration.
     /// Call this instead of the normal match sequence to tune thresholds.
     #[allow(dead_code)]
-    pub fn calibrate_color_sensors(&self, led_pwm: u8, integration_time: u8, gain: u8) -> ! {
+    pub fn calibrate_color_sensors(&self) -> ! {
         log::info!("=== Color sensor calibration mode ===");
-        log::info!("LED PWM={}, integration_time=0x{:02X}, gain={}", led_pwm, integration_time, gain);
-        log::info!("Place samples under sensors and read CRGB values.");
-
-        self.proxy.set_color_led_pwm(led_pwm);
-
-        for module in 0..3u8 {
-            for arm in 0..4u8 {
-                self.proxy.set_color_sensor_config(module, arm, integration_time, gain);
-            }
-        }
-
+       
         loop {
             // Request raw values from all sensors
             for module in 0..3u8 {

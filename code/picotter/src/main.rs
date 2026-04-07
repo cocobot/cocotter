@@ -13,7 +13,7 @@ mod lidar;
 mod module;
 mod scs0009;
 
-use embassy_executor::Spawner;
+use embassy_executor::{InterruptExecutor, Spawner};
 use embassy_stm32::can::CanConfigurator;
 use embassy_stm32::can::OperatingMode;
 use embassy_stm32::gpio::{Level, Output, OutputType, Speed};
@@ -25,6 +25,7 @@ use embassy_stm32::time::Hertz;
 use embassy_stm32::usart::{
     BufferedUart, BufferedUartRx, BufferedUartTx, Config as UartConfig, HalfDuplexReadback,
 };
+use embassy_stm32::interrupt;
 use embassy_stm32::{bind_interrupts, peripherals};
 use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_sync::mutex::Mutex;
@@ -94,6 +95,8 @@ impl core::fmt::Write for PanicBuf {
 ///    cortex_m::peripheral::SCB::sys_reset();
 ///}
 
+
+
 use can_handler::{cmd_receiver, log_sender, status_sender};
 use can_protocol::{ArmTarget, CanMessage, Domain, ServoBus, Stage2Target};
 use i2c_devices::I2cDevices;
@@ -108,6 +111,13 @@ bind_interrupts!(struct Irqs {
     I2C2_ER => embassy_stm32::i2c::ErrorInterruptHandler<peripherals::I2C2>;
     I2C3_EV => embassy_stm32::i2c::EventInterruptHandler<peripherals::I2C3>;
     I2C3_ER => embassy_stm32::i2c::ErrorInterruptHandler<peripherals::I2C3>;
+    // DMA for I2C
+    GPDMA1_CHANNEL0 => embassy_stm32::dma::InterruptHandler<peripherals::GPDMA1_CH0>;
+    GPDMA1_CHANNEL1 => embassy_stm32::dma::InterruptHandler<peripherals::GPDMA1_CH1>;
+    GPDMA1_CHANNEL2 => embassy_stm32::dma::InterruptHandler<peripherals::GPDMA1_CH2>;
+    GPDMA1_CHANNEL3 => embassy_stm32::dma::InterruptHandler<peripherals::GPDMA1_CH3>;
+    GPDMA1_CHANNEL4 => embassy_stm32::dma::InterruptHandler<peripherals::GPDMA1_CH4>;
+    GPDMA1_CHANNEL5 => embassy_stm32::dma::InterruptHandler<peripherals::GPDMA1_CH5>;
     // UART for servos
     USART11 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART11>;
     UART5 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART5>;
@@ -336,6 +346,14 @@ async fn cmd_task(
     loop {
         let msg = cmd_rx.receive().await;
 
+        // Track ping reception in cmd_task
+        if let CanMessage::Ping { value } = &msg {
+            status_tx
+                .try_send(CanMessage::Ping { value: *value + 1 })
+                .ok();
+            continue;
+        }
+
         // Handle Reboot command
         if let CanMessage::Reboot { mode } = &msg {
             match mode {
@@ -475,7 +493,7 @@ async fn cmd_task(
 
         // Handle color LED PWM
         if let CanMessage::SetColorLedPwm { duty } = &msg {
-            color_led_pwm.set_duty_cycle_fraction(*duty as u16, 255);
+            color_led_pwm.set_duty_cycle_fraction(*duty as u32, 255);
             continue;
         }
 
@@ -570,6 +588,13 @@ async fn cmd_task(
     }
 }
 
+static EXECUTOR_HIGH: InterruptExecutor = InterruptExecutor::new();
+
+#[interrupt]
+unsafe fn TIM7() {
+    unsafe { EXECUTOR_HIGH.on_interrupt() }
+}
+
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     rtt_init_print!();
@@ -588,7 +613,16 @@ async fn main(spawner: Spawner) {
             freq: Hertz(16_000_000),
             mode: HseMode::Oscillator,
         });
-        config.rcc.mux.fdcan12sel = mux::Fdcansel::HSE;
+        config.rcc.pll1 = Some(Pll {
+            source: PllSource::HSE,
+            prediv: PllPreDiv::DIV4,     // 16MHz / 4 = 4MHz
+            mul: PllMul::MUL125,         // 4MHz × 125 = 500MHz VCO
+            divp: Some(PllDiv::DIV2),    // 500MHz / 2 = 250MHz
+            divq: Some(PllDiv::DIV10),   // 500MHz / 10 = 50MHz for FDCAN
+            divr: None,
+        });
+        config.rcc.sys = Sysclk::PLL1_P;
+        config.rcc.mux.fdcan12sel = mux::Fdcansel::PLL1_Q;
     }
     let p = embassy_stm32::init(config);
 
@@ -597,17 +631,23 @@ async fn main(spawner: Spawner) {
     // =========================================================================
     let mut can = CanConfigurator::new(p.FDCAN1, p.PA11, p.PA12, Irqs);
     can.set_bitrate(500_000);
+    // Use FIFO mode for TX: never replace pending frames, just wait
+    let mut can_config = can.config();
+    can_config.tx_buffer_mode = embassy_stm32::can::config::TxBufferMode::Fifo;
+    can.set_config(can_config);
     let can = can.start(OperatingMode::NormalOperationMode);
-    let (can_tx, can_rx, properties) = can.split();
-    spawner.spawn(can_handler::can_rx_task(can_rx)).unwrap();
-    spawner.spawn(can_handler::can_tx_task(can_tx)).unwrap();
-    spawner.spawn(can_handler::can_monitor_task(properties)).unwrap();
+    let (can_tx, can_rx, _properties) = can.split();
+
+    // Start high-priority executor on TIM7 for CAN task
+    let high_spawner = EXECUTOR_HIGH.start(interrupt::TIM7);
+    high_spawner.spawn(can_handler::can_task(can_rx, can_tx).unwrap());
 
 
     // Initialize CAN logger
     unsafe { can_logger::init(log_sender()) };
     rprintln!("CAN logger initialized");
 
+   
     let mut led = Output::new(p.PD11, Level::Low, Speed::Low);
 
    
@@ -630,14 +670,16 @@ async fn main(spawner: Spawner) {
     .unwrap();
     let (tx0, rx0) = uart0.split();
 
+    let mut i2c1_config = I2cConfig::default();
+    i2c1_config.timeout = embassy_time::Duration::from_millis(100);
     let i2c1 = I2c::new(
         p.I2C1,
         p.PB6,
         p.PB7,
-        Irqs,
         p.GPDMA1_CH0,
         p.GPDMA1_CH1,
-        I2cConfig::default(),
+        Irqs,
+        i2c1_config,
     );
 
     let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), MODULE0_SERVO_IDS, MODULE0_STAGE2_IDS);
@@ -663,14 +705,16 @@ async fn main(spawner: Spawner) {
     .unwrap();
     let (tx1, rx1) = uart1.split();
 
+    let mut i2c2_config = I2cConfig::default();
+    i2c2_config.timeout = embassy_time::Duration::from_millis(100);
     let i2c2 = I2c::new(
         p.I2C2,
         p.PB10,
         p.PB12,
-        Irqs,
         p.GPDMA1_CH2,
         p.GPDMA1_CH3,
-        I2cConfig::default(),
+        Irqs,
+        i2c2_config,
     );
 
     let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), MODULE1_SERVO_IDS, MODULE1_STAGE2_IDS);
@@ -696,14 +740,16 @@ async fn main(spawner: Spawner) {
     .unwrap();
     let (tx2, rx2) = uart2.split();
 
+    let mut i2c3_config = I2cConfig::default();
+    i2c3_config.timeout = embassy_time::Duration::from_millis(100);
     let i2c3 = I2c::new(
         p.I2C3,
         p.PA8,
         p.PC9,
-        Irqs,
         p.GPDMA1_CH4,
         p.GPDMA1_CH5,
-        I2cConfig::default(),
+        Irqs,
+        i2c3_config,
     );
 
     let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), MODULE2_SERVO_IDS, MODULE2_STAGE2_IDS);
@@ -845,16 +891,12 @@ async fn main(spawner: Spawner) {
         Timer::after_millis(100).await;
     }
 
-    spawner
-        .spawn(led_status_task(led, module0, module1, module2, translation_bus))
-        .unwrap();
-    spawner
-        .spawn(cmd_task(module0, module1, module2, translation_bus, color_led_ch3))
-        .unwrap();
+    spawner.spawn(led_status_task(led, module0, module1, module2, translation_bus).unwrap());
+    spawner.spawn(cmd_task(module0, module1, module2, translation_bus, color_led_ch3).unwrap());
 
     // Main task idles
     loop {
-        Timer::after_millis(1000).await;
-        info!("Picotter blive 3!");
+        Timer::after_millis(5000).await;
+        info!("Picotter is alive !");
     }
 }

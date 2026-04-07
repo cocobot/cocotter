@@ -1,4 +1,6 @@
+use std::sync::atomic::{AtomicU8, Ordering};
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, Instant};
 
 use cancaner::{ArmFlags, ArmTarget, CanMessage, Stage2Target, ARMS_PER_MODULE, STAGE2_SERVOS_PER_MODULE};
 
@@ -49,14 +51,20 @@ pub struct MecaState {
 pub struct MecaProxy {
     pub(super) can: CanInterface,
     pub(super) state: Arc<Mutex<MecaState>>,
+    last_ping: Arc<AtomicU8>,
 }
 
 impl MecaProxy {
     pub(super) fn new(can: &CanInterface) -> Self {
         let state = Arc::new(Mutex::new(MecaState::default()));
+        let last_ping = Arc::new(AtomicU8::new(0));
         let s = state.clone();
+        let lp = last_ping.clone();
 
         can.add_callback(move |msg| match msg {
+            CanMessage::Ping { value } => {
+                lp.store(*value, Ordering::Relaxed);
+            }
             CanMessage::ArmStatus {
                 target,
                 position,
@@ -135,6 +143,7 @@ impl MecaProxy {
         Self {
             can: can.clone(),
             state,
+            last_ping,
         }
     }
 
@@ -194,8 +203,7 @@ impl MecaProxy {
     }
 
     pub fn set_translation(&self, module: u8, position: u16, time_ms: u16) {
-        self.can
-            .send(&CanMessage::SetTranslation { module, position, time_ms });
+        self.can.send(&CanMessage::SetTranslation { module, position, time_ms });
     }
 
     pub fn set_pump(&self, module: u8, arm: u8, enable: bool) {
@@ -268,5 +276,24 @@ impl MecaProxy {
             target: Stage2Target::new(module, servo),
             enable,
         });
+    }
+
+    /// Send a ping and wait for the response (value + 1), with timeout.
+    /// Returns true if pong received, false on timeout.
+    pub fn ping(&self, timeout: Duration) -> bool {    
+        static COUNTER: AtomicU8 = AtomicU8::new(42);
+        let value = COUNTER.fetch_add(1, Ordering::Relaxed);
+        let expected = value.wrapping_add(1);
+        self.last_ping.store(0, Ordering::Relaxed);
+        self.can.send(&CanMessage::Ping { value });
+
+        let start = Instant::now();
+        while start.elapsed() < timeout {
+            if self.last_ping.load(Ordering::Relaxed) == expected {
+                return true;
+            }
+            std::thread::sleep(Duration::from_millis(50));
+        }
+        false
     }
 }

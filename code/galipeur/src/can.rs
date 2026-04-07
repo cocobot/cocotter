@@ -122,7 +122,7 @@ impl CanInterface {
                     let len = raw.data_length_code as usize;
                     if let Some(msg) =
                         CanMessage::parse(raw.identifier as u16, &raw.data[..len])
-                    {                    
+                    {
                         let mut cbs = cb.lock().unwrap();
                         for callback in cbs.iter_mut() {
                             callback(&msg);
