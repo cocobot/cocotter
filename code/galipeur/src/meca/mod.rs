@@ -42,8 +42,6 @@ impl Meca {
             }
         }
 
-        
-
         self.proxy.set_color_led_pwm(127);
 
         for module in 0..3 {
@@ -74,7 +72,7 @@ impl Meca {
                  // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
                 self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
             }
-        }
+        }        
     }
 
     pub fn init(&self) {
@@ -85,7 +83,8 @@ impl Meca {
             }
         }
         self.proxy.set_stage2_torque(0, 0, true);
-        self.proxy.set_stage2(0, 0, 150, 500);
+        self.stage2_transfer_open();
+
 
         std::thread::sleep(std::time::Duration::from_secs(1));
 
@@ -93,8 +92,7 @@ impl Meca {
             for arm in 0..4 {
                 self.raise_arm_release(module, arm);
             }
-        }
-        self.proxy.set_stage2(0, 0, 90, 500);
+        }        
     }   
 
     /// Infinite loop that requests and logs raw color sensor values for calibration.
@@ -142,7 +140,7 @@ impl Meca {
             3 => 340,
             _ => 50,
         };
-        self.proxy.set_arm(module, arm, position, 500, true, false);
+        self.proxy.set_arm(module, arm, position, 500, false, false);
     }
 
     pub fn idle_arm_release(&self, module: u8, arm: u8) {
@@ -172,10 +170,16 @@ impl Meca {
     pub fn raise_arm_grab(&self, module: u8, arm: u8) {
         self.proxy.set_torque(module,arm,false);
         let position = match arm {
-            0 => 736,
-            1 => 602,
-            2 => 736,
-            3 => 736,
+            //0 => 736,
+            //1 => 602,
+            //2 => 736,
+            //3 => 736,
+            //_ => 50,
+
+            0 => 761,
+            1 => 625,
+            2 => 746,
+            3 => 746,
             _ => 50,
         };
         self.proxy.set_arm(module, arm, position, 500, true, false);
@@ -204,4 +208,126 @@ impl Meca {
         self.proxy.set_valve(module, arm, true);
         self.proxy.set_pump(module, arm, false);
     }
+
+    pub fn stage2_transfer_open(&self) {
+        self.proxy.set_stage2(0, 0, 820, 500);
+        self.proxy.set_stage2(0, 1, 316, 500);
+    }
+
+    pub fn stage2_transfer_close(&self) {
+        self.proxy.set_stage2(0, 0, 820, 500);
+        self.proxy.set_stage2(0, 1, 654, 500);
+    }
+
+    pub fn stage2_keep(&self) {
+        self.proxy.set_stage2(0, 0, 610, 500);
+        self.proxy.set_stage2(0, 1, 654, 500);
+    }
+
+    pub fn spread_arms(&self, module: u8, spread: bool) {
+        if spread {
+            self.proxy.set_translation(module, 640, 500);
+        } else {
+            self.proxy.set_translation(module, 910, 500);
+        }        
+    }
+
+    pub fn test_algo(&self, module: u8) {
+        self.spread_arms(module, true);
+
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.lower_arm_grab(module, arm);
+        }
+
+        thread::sleep(Duration::from_millis(1000));
+
+        self.spread_arms(module, false);
+
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.grab(module, arm);
+        }
+        self.stage2_transfer_open();
+
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.raise_arm_grab(module, arm);
+        }
+
+        thread::sleep(Duration::from_millis(1000));
+
+        self.stage2_transfer_close();
+
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.release(module, arm);
+        }
+
+        thread::sleep(Duration::from_millis(1000));
+
+        self.stage2_keep();        
+
+        thread::sleep(Duration::from_millis(5000));
+
+
+        //Second grab 
+
+        self.spread_arms(module, true);
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.lower_arm_grab(module, arm);
+        }
+        thread::sleep(Duration::from_millis(1000));
+
+        self.spread_arms(module, false);
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.grab(module, arm);
+        }
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.raise_arm_grab(module, arm);
+        }
+        thread::sleep(Duration::from_millis(5000));
+
+        for arm in 0..4 {
+            self.release(module, arm);
+        }        
+
+        thread::sleep(Duration::from_millis(5000));
+
+
+        //stage 2 => stage 1
+        self.stage2_transfer_close();
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.grab(module, arm);
+        }
+        thread::sleep(Duration::from_millis(1000));
+
+        self.stage2_transfer_open();
+        thread::sleep(Duration::from_millis(1000));
+
+        for arm in 0..4 {
+            self.lower_arm_grab(module, arm);
+        }
+        thread::sleep(Duration::from_millis(1000));
+            
+        for arm in 0..4 {
+            self.release(module, arm);
+        }
+        thread::sleep(Duration::from_millis(1000));
+
+       
+
+        }
 }

@@ -167,7 +167,7 @@ fn main() {
     let color_from_bool = |c| if c {RGB8 { r: 127, g: 127, b: 0 }} else {RGB8 { r: 0, g: 0, b: 255 }};    
     meca.pre_init();
     //meca.calibrate_color_sensors();
-    while starter.pin_is_high().unwrap_or(true) || true {
+    while starter.pin_is_high().unwrap_or(true) {
         if color_selector.pin_is_high().unwrap_or(false) {
             robot_color = true;
         } else {
@@ -190,6 +190,17 @@ fn main() {
        );    
     }
     meca.init();
+
+    std::thread::sleep(std::time::Duration::from_secs(3));
+
+    log::info!("Go !");
+    //
+    meca.test_algo(0);
+    
+
+    loop {
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    }
 
     let mut color_off = false;
     while starter.pin_is_low().unwrap_or(true) {
