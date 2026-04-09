@@ -7,6 +7,7 @@ use super::SmartLeds;
 pub enum LedMessage {
     LidarClosest { angle: f32, distance: u16 },
     GameColor { color: RGB8 },
+    BatteryLow,
 }
 
 pub struct Leds {
@@ -38,6 +39,7 @@ struct LedsInternal {
     lidar_angle: f32,
     lidar_distance: u16,
     game_color: RGB8,
+    battery_low: bool,
 }
 
 impl LedsInternal {
@@ -48,10 +50,12 @@ impl LedsInternal {
             lidar_angle: 0.0,
             lidar_distance: 0,
             game_color: RGB8 { r: 0, g: 0, b: 0 },
+            battery_low: false,
         }
     }
 
     fn run(&mut self) {
+        let start = std::time::Instant::now();
         loop {
             // Process all pending messages
             while let Ok(msg) = self.rx.try_recv() {
@@ -62,6 +66,9 @@ impl LedsInternal {
                     }
                     LedMessage::GameColor { color } => {
                         self.game_color = color;
+                    }
+                    LedMessage::BatteryLow => {
+                        self.battery_low = true;
                     }
                 }
             }
@@ -83,22 +90,32 @@ impl LedsInternal {
             };
 
             let mut pixels = Vec::new();
-            for i in 0..41 {
-                if i == 0 {
-                    // LED 0 is always yellow
-                    pixels.push(self.game_color);
-                } else if i == led_index {
-                    pixels.push(hsv2rgb(Hsv {
-                        hue,
-                        sat: 255,
-                        val: 255,
-                    }));
-                } else {
-                    pixels.push(hsv2rgb(Hsv {
-                        hue: 0,
-                        sat: 0,
-                        val: 0,
-                    }));
+
+            // Battery low: blink all LEDs red, overrides everything
+            if self.battery_low {
+                let blink_on = (start.elapsed().subsec_millis() % 500) < 250;
+                let color = if blink_on { RGB8 { r: 255, g: 0, b: 0 } } else { RGB8 { r: 0, g: 0, b: 0 } };
+                log::info!("Color: {:?}, Blink: {}, Time: {}", color, blink_on, start.elapsed().subsec_millis());
+                for _ in 0..41 {
+                    pixels.push(color);
+                }
+            } else {
+                for i in 0..41 {
+                    if i == 0 {
+                        pixels.push(self.game_color);
+                    } else if i == led_index {
+                        pixels.push(hsv2rgb(Hsv {
+                            hue,
+                            sat: 255,
+                            val: 255,
+                        }));
+                    } else {
+                        pixels.push(hsv2rgb(Hsv {
+                            hue: 0,
+                            sat: 0,
+                            val: 0,
+                        }));
+                    }
                 }
             }
 

@@ -48,6 +48,29 @@ fn main() {
     let leds = Leds::new(board.leds.take().unwrap());
     let led_sender = leds.sender();
 
+    //spawn battery monitoring thread
+    if let Some(mut battery_adc) = board.battery_adc.take() {
+        let battery_led_sender = led_sender.clone();
+        thread::spawn(move || {
+            const VBATT_RL_KOHMS: f32 = 6.8;
+            const VBATT_RH_KOHMS: f32 = 100.0;
+            const ADC_INPUT_IMP_KOHMS: f32 = 35.5; // measured empirically (DB_12 attenuation)
+            const RL_EFF_KOHMS: f32 = VBATT_RL_KOHMS * ADC_INPUT_IMP_KOHMS / (VBATT_RL_KOHMS + ADC_INPUT_IMP_KOHMS);
+            const BATTERY_LOW_MV: f32 = 14_830.0; // 4S LiPo discharged threshold
+            loop {
+                if let Ok(raw) = battery_adc.read() {
+                    let mv = raw as f32 * (1.0 + VBATT_RH_KOHMS / RL_EFF_KOHMS);
+                    log::info!("Battery: {:.0} mV (raw: {})", mv, raw);
+                    if mv < BATTERY_LOW_MV {
+                        log::warn!("Battery low! {:.0} mV", mv);
+                        battery_led_sender.send(led::LedMessage::BatteryLow).ok();
+                    }
+                }
+                thread::sleep(Duration::from_secs(1));
+            }
+        });
+    }
+
     //configure gyro
     let mut gyro = Sch16t::new(board.imu_spi.take().unwrap(), 0);
     gyro.init().unwrap();
