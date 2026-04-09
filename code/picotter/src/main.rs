@@ -821,91 +821,91 @@ async fn main(spawner: Spawner) {
     // =========================================================================
     // Lidars M703A (6x, 19200 baud full-duplex, nCTRL=PA4, PWR_EN=PB1)
     // =========================================================================
-    ///let lidar_nctrl = Output::new(p.PA4, Level::High, Speed::Low);
-    ///let lidar_pwr_en = Output::new(p.PB1, Level::High, Speed::Low);
-///
-    ///let mut lidar_uart_config = UartConfig::default();
-    ///lidar_uart_config.baudrate = 19200;
-///
-    ///// Lidar 0 (module 0.0): USART3 TX=PD8 RX=PD9
-    ///static LIDAR0_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    ///static LIDAR0_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    ///let lidar0_uart = BufferedUart::new(
-    ///    p.USART3, p.PD9, p.PD8,
-    ///    LIDAR0_TX_BUF.init([0u8; 32]),
-    ///    LIDAR0_RX_BUF.init([0u8; 64]),
-    ///    Irqs, lidar_uart_config,
-    ///).unwrap();
-    ///let (lidar0_tx, lidar0_rx) = lidar0_uart.split();
-///
-    ///// Lidar 1 (module 0.1): USART2 TX=PA2 RX=PA3
-    ///static LIDAR1_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    ///static LIDAR1_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    ///let lidar1_uart = BufferedUart::new(
-    ///    p.USART2, p.PA3, p.PA2,
-    ///    LIDAR1_TX_BUF.init([0u8; 32]),
-    ///    LIDAR1_RX_BUF.init([0u8; 64]),
-    ///    Irqs, lidar_uart_config,
-    ///).unwrap();
-    ///let (lidar1_tx, lidar1_rx) = lidar1_uart.split();
-///
-    ///// Lidar 2 (module 1.0): UART7 TX=PE8 RX=PE7
-    ///static LIDAR2_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    ///static LIDAR2_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    ///let lidar2_uart = BufferedUart::new(
-    ///    p.UART7, p.PE7, p.PE8,
-    ///    LIDAR2_TX_BUF.init([0u8; 32]),
-    ///    LIDAR2_RX_BUF.init([0u8; 64]),
-    ///    Irqs, lidar_uart_config,
-    ///).unwrap();
-    ///let (lidar2_tx, lidar2_rx) = lidar2_uart.split();
-///
-    ///// Lidar 3 (module 1.1): UART4 TX=PA0 RX=PA1
-    ///static LIDAR3_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    ///static LIDAR3_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    ///let lidar3_uart = BufferedUart::new(
-    ///    p.UART4, p.PA1, p.PA0,
-    ///    LIDAR3_TX_BUF.init([0u8; 32]),
-    ///    LIDAR3_RX_BUF.init([0u8; 64]),
-    ///    Irqs, lidar_uart_config,
-    ///).unwrap();
-    ///let (lidar3_tx, lidar3_rx) = lidar3_uart.split();
-///
-    ///// Lidar 4 (module 2.0): USART10 TX=PE3 RX=PE2
-    ///static LIDAR4_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    ///static LIDAR4_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    ///let lidar4_uart = BufferedUart::new(
-    ///    p.USART10, p.PE2, p.PE3,
-    ///    LIDAR4_TX_BUF.init([0u8; 32]),
-    ///    LIDAR4_RX_BUF.init([0u8; 64]),
-    ///    Irqs, lidar_uart_config,
-    ///).unwrap();
-    ///let (lidar4_tx, lidar4_rx) = lidar4_uart.split();
-///
-    ///// Lidar 5 (module 2.1): UART9 TX=PD15 RX=PD14
-    ///static LIDAR5_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
-    ///static LIDAR5_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
-    ///let lidar5_uart = BufferedUart::new(
-    ///    p.UART9, p.PD14, p.PD15,
-    ///    LIDAR5_TX_BUF.init([0u8; 32]),
-    ///    LIDAR5_RX_BUF.init([0u8; 64]),
-    ///    Irqs, lidar_uart_config,
-    ///).unwrap();
-    ///let (lidar5_tx, lidar5_rx) = lidar5_uart.split();
+    let lidar_nctrl = Output::new(p.PA4, Level::High, Speed::Low);
+    let lidar_pwr_en = Output::new(p.PB1, Level::High, Speed::Low);
 
-    //lidar::init_and_spawn(
-    //    &spawner,
-    //    lidar_nctrl,
-    //    lidar_pwr_en,
-    //    [
-    //        lidar::m703a::M703a::new(0, lidar0_tx, lidar0_rx),
-    //        lidar::m703a::M703a::new(1, lidar1_tx, lidar1_rx),
-    //        lidar::m703a::M703a::new(2, lidar2_tx, lidar2_rx),
-    //        lidar::m703a::M703a::new(3, lidar3_tx, lidar3_rx),
-    //        lidar::m703a::M703a::new(4, lidar4_tx, lidar4_rx),
-    //        lidar::m703a::M703a::new(5, lidar5_tx, lidar5_rx),
-    //    ],
-    //);
+    let mut lidar_uart_config = UartConfig::default();
+    lidar_uart_config.baudrate = 19200;
+
+    // Lidar 0 (module 0.0): USART3 TX=PD8 RX=PD9
+    static LIDAR0_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR0_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar0_uart = BufferedUart::new(
+        p.USART3, p.PD9, p.PD8,
+        LIDAR0_TX_BUF.init([0u8; 32]),
+        LIDAR0_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar0_tx, lidar0_rx) = lidar0_uart.split();
+
+    // Lidar 1 (module 0.1): USART2 TX=PA2 RX=PA3
+    static LIDAR1_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR1_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar1_uart = BufferedUart::new(
+        p.USART2, p.PA3, p.PA2,
+        LIDAR1_TX_BUF.init([0u8; 32]),
+        LIDAR1_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar1_tx, lidar1_rx) = lidar1_uart.split();
+
+    // Lidar 2 (module 1.0): UART7 TX=PE8 RX=PE7
+    static LIDAR2_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR2_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar2_uart = BufferedUart::new(
+        p.UART7, p.PE7, p.PE8,
+        LIDAR2_TX_BUF.init([0u8; 32]),
+        LIDAR2_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar2_tx, lidar2_rx) = lidar2_uart.split();
+
+    // Lidar 3 (module 1.1): UART4 TX=PA0 RX=PA1
+    static LIDAR3_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR3_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar3_uart = BufferedUart::new(
+        p.UART4, p.PA1, p.PA0,
+        LIDAR3_TX_BUF.init([0u8; 32]),
+        LIDAR3_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar3_tx, lidar3_rx) = lidar3_uart.split();
+
+    // Lidar 4 (module 2.0): USART10 TX=PE3 RX=PE2
+    static LIDAR4_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR4_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar4_uart = BufferedUart::new(
+        p.USART10, p.PE2, p.PE3,
+        LIDAR4_TX_BUF.init([0u8; 32]),
+        LIDAR4_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar4_tx, lidar4_rx) = lidar4_uart.split();
+
+    // Lidar 5 (module 2.1): UART9 TX=PD15 RX=PD14
+    static LIDAR5_TX_BUF: static_cell::StaticCell<[u8; 32]> = static_cell::StaticCell::new();
+    static LIDAR5_RX_BUF: static_cell::StaticCell<[u8; 64]> = static_cell::StaticCell::new();
+    let lidar5_uart = BufferedUart::new(
+        p.UART9, p.PD14, p.PD15,
+        LIDAR5_TX_BUF.init([0u8; 32]),
+        LIDAR5_RX_BUF.init([0u8; 64]),
+        Irqs, lidar_uart_config,
+    ).unwrap();
+    let (lidar5_tx, lidar5_rx) = lidar5_uart.split();
+
+    lidar::init_and_spawn(
+       &spawner,
+       lidar_nctrl,
+       lidar_pwr_en,
+       [
+           lidar::m703a::M703a::new(0, lidar0_tx, lidar0_rx),
+           lidar::m703a::M703a::new(1, lidar1_tx, lidar1_rx),
+           lidar::m703a::M703a::new(2, lidar2_tx, lidar2_rx),
+           lidar::m703a::M703a::new(3, lidar3_tx, lidar3_rx),
+           lidar::m703a::M703a::new(4, lidar4_tx, lidar4_rx),
+           lidar::m703a::M703a::new(5, lidar5_tx, lidar5_rx),
+       ],
+    );
 
     // =========================================================================
     // Color sensor LED PWM (TIM8_CH3 on PC8)
