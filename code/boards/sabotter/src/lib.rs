@@ -4,7 +4,8 @@ use esp_idf_svc::{
     hal::{
         adc::{
             ADCU1,
-            oneshot::{AdcChannelDriver, AdcDriver},
+            attenuation,
+            oneshot::{AdcChannelDriver, AdcDriver, config::AdcChannelConfig},
         },
         can::{CanDriver, config as can_config},
         gpio::{ADCPin, AnyIOPin, Gpio1, Output, PinDriver},
@@ -22,7 +23,7 @@ use pca9535::Pca9535Immediate;
 use esp32_encoder::Encoder;
 use std::{rc::Rc, sync::Mutex, time::Duration};
 use ws2812_esp32_rmt_driver::{LedPixelEsp32Rmt, RGB8};
-use ws2812_esp32_rmt_driver::driver::color::LedPixelColorRgb24;
+use ws2812_esp32_rmt_driver::driver::color::LedPixelColorGrb24;
 use ws2812_esp32_rmt_driver::driver::Ws2812Esp32RmtDriverBuilder;
 use esp_idf_svc::hal::rmt::{config::TxChannelConfig, TxChannelDriver};
 
@@ -59,7 +60,7 @@ pub struct Motor {
 }
 
 // LED strip type
-pub type SmartLeds = LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorRgb24>;
+pub type SmartLeds = LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorGrb24>;
 
 pub struct BoardSabotter {
     pub led_heartbeat: Option<LedHeartbeat>,
@@ -165,7 +166,7 @@ impl BoardSabotter {
             .build()
             .unwrap();
         let leds =
-            Some(LedPixelEsp32Rmt::<RGB8, LedPixelColorRgb24>::new_with_ws2812_driver(ws2812_driver)
+            Some(LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new_with_ws2812_driver(ws2812_driver)
                 .unwrap());
 
         // Initialize UART for asserv communication
@@ -217,8 +218,12 @@ impl BoardSabotter {
         };
 
         // Initialize ADC for battery monitoring
-        // ADC initialization - simplified for now
-        let battery_adc = None;
+        let adc: Rc<_> = Rc::new(AdcDriver::new(peripherals.adc1).unwrap());
+        let battery_adc = AdcChannelDriver::new(
+            adc,
+            peripherals.pins.gpio1,
+            &AdcChannelConfig { attenuation: attenuation::DB_12, ..Default::default() },
+        ).ok();
 
         // Initialize interrupt pins
         let mot_ena = PinDriver::output(peripherals.pins.gpio7).ok();
