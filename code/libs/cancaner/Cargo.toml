@@ -9,7 +9,7 @@ embedded-can = "0.4"
 log = "0.4"
 
 [features]
-default = ["std"]
+default = []
 std = []
 
 [target.'cfg(target_os = "espidf")'.dependencies]

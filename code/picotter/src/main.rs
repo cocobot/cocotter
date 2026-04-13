@@ -35,7 +35,7 @@ use log::{info, warn};
 use panic_rtt_target as _;
 use rtt_target::rprintln;
 
-static COLOR_LED_DUTY: AtomicU8 = AtomicU8::new(255);
+static COLOR_LED_DUTY: AtomicU8 = AtomicU8::new(0);
 static COLOR_THRESHOLD: AtomicU16 = AtomicU16::new(2000);
 use rtt_target::rtt_init_print;
 
@@ -298,10 +298,12 @@ async fn led_status_task(
         if led_state {
             // Next cycle will be LED off
             color_led_pwm.set_duty_cycle(0);
+            led.set_low();
         } else {
             // Next cycle will be LED on
             let duty = COLOR_LED_DUTY.load(Ordering::Relaxed);
             color_led_pwm.set_duty_cycle_fraction(duty as u32, 255);
+            led.set_high();
         }
 
         // Send battery status every ~1s (20 cycles @ 50ms)
