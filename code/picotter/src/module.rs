@@ -12,10 +12,8 @@
 
 use crate::arm::{ArmCommand, ArmError, ArmState};
 use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage, Stage2Target};
-use crate::color_sensor::ColorTable;
 use crate::i2c_devices::{GPIOBank, I2cDevices};
 use crate::scs0009::{Scs0009, ScsError};
-use embassy_time::Timer;
 use embedded_hal_async::i2c::I2c;
 use embedded_io_async::{Read, Write};
 use log::debug;
@@ -38,6 +36,10 @@ const LED_PIN: u8 = 7;
 /// Pin assignments for pumps (Bank 1, pins 0-3)
 const PUMP_BANK: GPIOBank = GPIOBank::Bank1;
 const PUMP_PINS: [u8; 4] = [0, 1, 2, 3];
+
+/// Pin assignment for battery measurement enable (Bank 0, pin 6)
+const BATT_ENABLE_BANK: GPIOBank = GPIOBank::Bank0;
+const BATT_ENABLE_PIN: u8 = 6;
 
 /// Stage2 servo state
 #[derive(Debug, Clone, Default)]
@@ -144,8 +146,13 @@ where
     servo_ids: [u8; ARMS_PER_MODULE],
     /// Servo IDs for stage2 servos (configurable)
     stage2_servo_ids: [u8; STAGE2_SERVOS_PER_MODULE],
-    /// Per-arm color decoding tables
-    color_tables: [ColorTable; ARMS_PER_MODULE],
+    /// Per-arm color delta (last measured on-off difference) [C, R, G, B]
+    color_deltas: [[u16; 4]; ARMS_PER_MODULE],
+    /// Per-arm color baseline (LED off reading) [C, R, G, B]
+    color_baseline: [[u16; 4]; ARMS_PER_MODULE],
+    /// Previous moving states for change detection
+    prev_arm_moving: [bool; ARMS_PER_MODULE],
+    prev_stage2_moving: [bool; STAGE2_SERVOS_PER_MODULE],
 }
 
 impl<TX, RX, I2C> Module<TX, RX, I2C>
@@ -169,12 +176,10 @@ where
             state: ModuleState::new(id),
             servo_ids,
             stage2_servo_ids,
-            color_tables: [
-                ColorTable::new(),
-                ColorTable::new(),
-                ColorTable::new(),
-                ColorTable::new(),
-            ],
+            color_deltas: [[0u16; 4]; ARMS_PER_MODULE],
+            color_baseline: [[0u16; 4]; ARMS_PER_MODULE],
+            prev_arm_moving: [false; ARMS_PER_MODULE],
+            prev_stage2_moving: [false; STAGE2_SERVOS_PER_MODULE],
         }
     }
 
@@ -264,6 +269,16 @@ where
                 .map_err(|_| ArmError::I2cError)?;
         }
 
+        // Enable battery voltage measurement (Bank 0, pin 6 = HIGH)
+        self.i2c_devices
+            .pca_pin_into_output(BATT_ENABLE_BANK, BATT_ENABLE_PIN)
+            .await
+            .map_err(|_| ArmError::I2cError)?;
+        self.i2c_devices
+            .pca_pin_set_high(BATT_ENABLE_BANK, BATT_ENABLE_PIN)
+            .await
+            .map_err(|_| ArmError::I2cError)?;
+
         Ok(())
     }
 
@@ -317,7 +332,7 @@ where
     // ==================== Ground sensor methods ====================
 
     /// Update ground sensor reading
-    pub async fn update_ground_sensor(&mut self) -> Result<(), ArmError> {
+    pub async fn update_ground_sensor(&mut self) -> Result<bool, ArmError> {
         self.i2c_devices
             .ground_update()
             .await
@@ -449,17 +464,20 @@ where
             }
         }
 
-        // Read color from TCS3472 via mux, match against table
-        match self.i2c_devices.tcs_read_all(arm).await {
-            Ok(crgb) => arm_state.color = self.color_tables[arm as usize].match_color(&crgb),
-            Err(_) => arm_state.color = 255,
-        }
-
         Ok(())
     }
 
     pub fn get_arm_state(&self, arm: u8) -> ArmState {
         self.state.arms[arm as usize].clone()
+    }
+
+    pub fn get_stage2_state(&self, servo: u8) -> Stage2ServoState {
+        self.state.stage2[servo as usize].clone()
+    }
+
+    /// Get battery voltage raw ADC value (None if I2C failed)
+    pub fn battery_voltage_raw(&self) -> Option<u16> {
+        self.i2c_devices.battery_voltage_raw()
     }
 
     /// Update state for all arms
@@ -470,6 +488,9 @@ where
                 self.state.arms[arm].pump_current = self.i2c_devices.pump_current(arm);
             }
         }
+
+        // Update battery voltage from ADC channel 6
+        self.i2c_devices.battery_voltage_raw_update().await;
 
         for arm in 0..ARMS_PER_MODULE as u8 {
             let _ = self.update_arm_state(arm).await;
@@ -542,31 +563,28 @@ where
                     self.update_arm_state(target.arm).await
                 }
             }
-            CanMessage::SetColorConfig {
-                color_id,
-                channel,
-                min,
-                max,
-                ..
-            } => {
-                if target.is_arm_broadcast() {
-                    self.set_color_config_broadcast(*color_id, *channel, *min, *max);
-                } else {
-                    self.set_color_config(target.arm, *color_id, *channel, *min, *max);
-                }
-                Ok(())
-            }
             CanMessage::SetColorSensorConfig {
                 integration_time,
                 gain,
                 ..
             } => {
                 if target.is_arm_broadcast() {
-                    self.set_color_sensor_config_broadcast(*integration_time, *gain)
-                        .await
+                    let mut last_err = Ok(());
+                    for arm in 0..ARMS_PER_MODULE as u8 {
+                        if let Err(e) = self.i2c_devices
+                            .tcs_set_config(arm, *integration_time as u16, *gain)
+                            .await
+                        {
+                            let _ = e;
+                            last_err = Err(ArmError::ColorSensorError);
+                        }
+                    }
+                    last_err
                 } else {
-                    self.set_color_sensor_config(target.arm, *integration_time, *gain)
+                    self.i2c_devices
+                        .tcs_set_config(target.arm, *integration_time as u16, *gain)
                         .await
+                        .map_err(|_| ArmError::ColorSensorError)
                 }
             }
             _ => return None,
@@ -586,6 +604,26 @@ where
         target: Stage2Target,
     ) -> impl Iterator<Item = CanMessage> + '_ {
         self.state.stage2_status_messages(target)
+    }
+
+    /// Check if any arm or stage2 moving state has changed since last call
+    pub fn has_moving_changed(&mut self) -> bool {
+        let mut changed = false;
+        for i in 0..ARMS_PER_MODULE {
+            let moving = self.state.arms[i].moving;
+            if moving != self.prev_arm_moving[i] {
+                self.prev_arm_moving[i] = moving;
+                changed = true;
+            }
+        }
+        for i in 0..STAGE2_SERVOS_PER_MODULE {
+            let moving = self.state.stage2[i].moving;
+            if moving != self.prev_stage2_moving[i] {
+                self.prev_stage2_moving[i] = moving;
+                changed = true;
+            }
+        }
+        changed
     }
 
     // ==================== Stage2 servo methods ====================
@@ -720,68 +758,75 @@ where
     // ==================== Color sensor methods ====================
 
     /// Set color config for a specific arm
-    pub fn set_color_config(&mut self, arm: u8, color_id: u8, channel: u8, min: u16, max: u16) {
-        if (arm as usize) < ARMS_PER_MODULE {
-            self.color_tables[arm as usize].set_range(color_id, channel, min, max);
+    /// Store color result for an arm (called from main after delta computation)
+    pub fn set_color_result(&mut self, arm: usize, hue_byte: u8, delta: [u16; 4]) {
+        if arm < ARMS_PER_MODULE {
+            self.state.arms[arm].color = hue_byte;
+            self.color_deltas[arm] = delta;
         }
     }
 
-    /// Set color config for all arms (broadcast)
-    pub fn set_color_config_broadcast(&mut self, color_id: u8, channel: u8, min: u16, max: u16) {
-        for table in &mut self.color_tables {
-            table.set_range(color_id, channel, min, max);
-        }
-    }
-
-    /// Set TCS3472 sensor config and mark as configured
-    pub async fn set_color_sensor_config(
-        &mut self,
-        arm: u8,
-        integration_time: u8,
-        gain: u8,
-    ) -> Result<(), ArmError> {
-        if (arm as usize) < ARMS_PER_MODULE {
-            self.i2c_devices
-                .tcs_set_config(arm, integration_time as u16, gain)
-                .await
-                .map_err(|_| ArmError::ColorSensorError)?;
-            self.color_tables[arm as usize].sensor_configured = true;
-        }
-        Ok(())
-    }
-
-    /// Set TCS3472 sensor config for all arms (broadcast)
-    pub async fn set_color_sensor_config_broadcast(
-        &mut self,
-        integration_time: u8,
-        gain: u8,
-    ) -> Result<(), ArmError> {
-        for arm in 0..ARMS_PER_MODULE as u8 {
-            self.i2c_devices
-                .tcs_set_config(arm, integration_time as u16, gain)
-                .await
-                .map_err(|_| ArmError::ColorSensorError)?;
-            self.color_tables[arm as usize].sensor_configured = true;
-        }
-        Ok(())
-    }
-
-    /// Read raw TCS3472 values for a specific arm
-    pub async fn read_color_sensor_raw(&mut self, arm: u8) -> Option<CanMessage> {
+    /// Get last measured color delta for a specific arm
+    pub fn get_color_delta(&self, arm: u8) -> Option<CanMessage> {
         if (arm as usize) >= ARMS_PER_MODULE {
             return None;
         }
-        if let Ok(crgb) = self.i2c_devices.tcs_read_all(arm).await {
-            Some(CanMessage::ColorSensorRaw {
-                target: ArmTarget::new(self.id, arm),
-                clear: crgb[0],
-                red: crgb[1],
-                green: crgb[2],
-                blue: crgb[3],
-            })
+        let d = &self.color_deltas[arm as usize];
+        Some(CanMessage::ColorSensorRaw {
+            target: ArmTarget::new(self.id, arm),
+            clear: d[0],
+            red: d[1],
+            green: d[2],
+            blue: d[3],
+        })
+    }
+
+    /// Read colors and update baseline (led_on=false) or compute delta/hue (led_on=true)
+    pub async fn update_color(&mut self, led_on: bool, threshold: u16) {
+        let colors = self.read_all_color_raw().await;
+        if led_on {
+            for arm in 0..ARMS_PER_MODULE {
+                let dc = colors[arm][0].saturating_sub(self.color_baseline[arm][0]);
+                let dr = colors[arm][1].saturating_sub(self.color_baseline[arm][1]) as i32;
+                let dg = colors[arm][2].saturating_sub(self.color_baseline[arm][2]) as i32;
+                let db = colors[arm][3].saturating_sub(self.color_baseline[arm][3]) as i32;
+
+                let delta = [dc, dr as u16, dg as u16, db as u16];
+
+                let max_rgb = dr.max(dg).max(db);
+                let min_rgb = dr.min(dg).min(db);
+                let range = max_rgb - min_rgb;
+
+                let hue = if range == 0 {
+                    0
+                } else if max_rgb == dr {
+                    (60 * (dg - db) / range + 360) % 360
+                } else if max_rgb == dg {
+                    60 * (db - dr) / range + 120
+                } else {
+                    60 * (dr - dg) / range + 240
+                };
+
+                let hue7 = (hue * 128 / 360) as u8;
+                let detected = dc >= threshold;
+                let hue_byte = if detected { 0x80 | hue7 } else { hue7 };
+
+                self.set_color_result(arm, hue_byte, delta);
+            }
         } else {
-            None
+            self.color_baseline = colors;
         }
+    }
+
+    /// Read raw CRGB values for all arms (I2C read)
+    pub async fn read_all_color_raw(&mut self) -> [[u16; 4]; ARMS_PER_MODULE] {
+        let mut result = [[0u16; 4]; ARMS_PER_MODULE];
+        for arm in 0..ARMS_PER_MODULE as u8 {
+            if let Ok(crgb) = self.i2c_devices.tcs_read_all(arm).await {
+                result[arm as usize] = crgb;
+            }
+        }
+        result
     }
 }
 

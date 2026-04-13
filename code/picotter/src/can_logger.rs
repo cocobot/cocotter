@@ -159,7 +159,9 @@ pub unsafe fn init(
     cortex_m::interrupt::free(|cs| {
         let logger_cell = GLOBAL_LOGGER.borrow(cs);
         // Safety: we're in a critical section
-        *logger_cell.get() = Some(CanLoggerGlobal { sender });
+        unsafe {
+            *logger_cell.get() = Some(CanLoggerGlobal { sender });
+        }
     });
 
     let _ = log::set_logger(&LOGGER_REF);

@@ -49,15 +49,8 @@ pub fn log_sender(
 }
 
 /// Process one RX envelope
-fn process_rx(
-    envelope: &embassy_stm32::can::frame::Envelope,
-    count: &mut u32,
-    missed: &mut u32,
-    last_ping: &mut i32,
-    tx_total: &mut u32,
-    tx_during_burst: &mut u32,
-) {
-    if let Some(msg) = CanMessage::from_frame(&envelope.frame) {        
+fn process_rx(envelope: &embassy_stm32::can::frame::Envelope) {
+    if let Some(msg) = CanMessage::from_frame(&envelope.frame) {
         CMD_CHANNEL.try_send(msg).ok();
     }
 }
@@ -68,12 +61,6 @@ fn process_rx(
 #[embassy_executor::task]
 pub async fn can_task(mut can_rx: CanRx<'static>, mut can_tx: CanTx<'static>) {
     rprintln!("CAN task started (rx+tx)");
-    let mut count: u32 = 0;
-    let mut missed: u32 = 0;
-    let mut last_ping: i32 = -1;
-    let mut tx_total: u32 = 0;
-    let mut tx_during_burst: u32 = 0;
-
     loop {
         // Wait for first event: RX frame or TX message
         match select(
@@ -85,14 +72,7 @@ pub async fn can_task(mut can_rx: CanRx<'static>, mut can_tx: CanTx<'static>) {
             Either::First(rx_result) => {
                 // Got RX — process it, then drain RX until 5ms silence
                 if let Ok(envelope) = rx_result {
-                    process_rx(
-                        &envelope,
-                        &mut count,
-                        &mut missed,
-                        &mut last_ping,
-                        &mut tx_total,
-                        &mut tx_during_burst,
-                    );
+                    process_rx(&envelope);
                 }
 
                 // Keep draining RX until no frame for RX_QUIET_MS
@@ -102,14 +82,7 @@ pub async fn can_task(mut can_rx: CanRx<'static>, mut can_tx: CanTx<'static>) {
                     {
                         Either::First(rx_result) => {
                             if let Ok(envelope) = rx_result {
-                                process_rx(
-                                    &envelope,
-                                    &mut count,
-                                    &mut missed,
-                                    &mut last_ping,
-                                    &mut tx_total,
-                                    &mut tx_during_burst,
-                                );
+                                process_rx(&envelope);
                             }
                         }
                         Either::Second(_timeout) => {
@@ -118,8 +91,6 @@ pub async fn can_task(mut can_rx: CanRx<'static>, mut can_tx: CanTx<'static>) {
                         }
                     }
                 }
-
-
             }
             Either::Second(tx_either) => {
                 // No RX pending, safe to TX immediately
@@ -127,13 +98,9 @@ pub async fn can_task(mut can_rx: CanRx<'static>, mut can_tx: CanTx<'static>) {
                     Either::First(m) | Either::Second(m) => m,
                 };
                 let frame = msg.to_frame();
-                let tx = can_tx.write(&frame).await; 
+                let tx = can_tx.write(&frame).await;
                 if tx.is_some() {
                     rprintln!("Error sending CAN frame: {:?}/ tx{:?}", frame, tx);
-                }
-                tx_total += 1;
-                if last_ping >= 0 {
-                    tx_during_burst += 1;
                 }
             }
         }

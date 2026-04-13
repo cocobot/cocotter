@@ -43,6 +43,7 @@ Messages système généraux. Target = 0 sauf pour les réponses (target = 1).
 | 0x1 | BoardInfo | `SystemCmd::BoardInfo` |
 | 0x2 | SetServoId | `SystemCmd::SetServoId` |
 | 0x3 | ScanBus | `SystemCmd::ScanBus` |
+| 0x4 | BatteryStatus | `SystemCmd::BatteryStatus` |
 | 0xE | Error | `SystemCmd::Error` |
 | 0xF | Reboot | `SystemCmd::Reboot` |
 
@@ -135,6 +136,23 @@ Data[0]: Bus cible (ServoBus)
          - 3 = Translation
 ```
 
+### 0x040 - BATTERY_STATUS
+
+Tension de la batterie meca, moyennée sur les modules ayant répondu.
+Chaque module lit le canal 6 du TLA2528 (diviseur 10k/2k2) via I2C.
+
+```
+ID: 0x040 (target=0)
+Longueur: 3 octets
+Direction: S→P
+
+Data[0-1]: Tension en mV (u16, LE) — moyenne des modules ayant répondu
+Data[2]:   Bitmask des modules ayant réussi la lecture
+           - bit 0: Module 0
+           - bit 1: Module 1
+           - bit 2: Module 2
+```
+
 ### 0x0E0 - ERROR
 
 Rapport d'erreur asynchrone.
@@ -213,7 +231,7 @@ Décodage : `module = target / 4`, `arm = target % 4`.
 | 0x5 | SetValve | `ArmCmd::SetValve` |
 | 0x6 | SetTranslation | `ArmCmd::SetTranslation` |
 | 0x7 | TranslationStatus | `ArmCmd::TranslationStatus` |
-| 0x8 | SetColorConfig | `ArmCmd::SetColorConfig` |
+| 0x8 | SetColorThreshold | `ArmCmd::SetColorThreshold` |
 | 0x9 | SetColorSensorConfig | `ArmCmd::SetColorSensorConfig` |
 | 0xA | ColorSensorRaw | `ArmCmd::ColorSensorRaw` |
 | 0xB | SetColorLedPwm | `ArmCmd::SetColorLedPwm` |
@@ -254,7 +272,9 @@ Longueur: 8 octets
 Direction: S→P
 
 Data[0-1]: Position servo actuelle (0-1023), little-endian
-Data[2]:   Identifiant couleur (u8, 0=aucune couleur, 255=config incomplète, 1-254=color_id)
+Data[2]:   Couleur (u8)
+           - bit 7: détection (1 = delta clear > seuil)
+           - bits 0-6: hue (0-127, toujours calculé, 0=rouge, ~42=vert, ~85=bleu)
 Data[3]:   État pompe (0=OFF, 1=ON)
 Data[4]:   État électrovanne (0=OFF, 1=ON)
 Data[5]:   Code erreur servo (0=OK, voir codes ci-dessous)
@@ -353,11 +373,15 @@ Le target est directement le numéro de module (0-2).
 
 ```
 ID: 0x17[module]
-Longueur: 3 octets
+Longueur: 4 octets
 Direction: S→P
 
 Data[0-1]: Position actuelle (0-1023), little-endian
 Data[2]:   Code erreur (0=OK)
+Data[3]:   Flags (ArmFlags)
+           - bit 0: Torque enabled
+           - bit 1: En mouvement
+           - bit 2: Position atteinte
 ```
 
 ### 0x1CM - REQUEST_TRANSLATION_STATUS
@@ -427,31 +451,18 @@ Data[3]:   Flags (ArmFlags)
            - bit 2: Position atteinte
 ```
 
-### 0x18T - SET_COLOR_CONFIG
+### 0x180 - SET_COLOR_THRESHOLD
 
-Configure une plage de valeurs pour un canal d'un color_id donné.
-4 messages sont nécessaires pour configurer une couleur complète (un par canal).
-
-Chaque bras possède une table de décodage (max 8 couleurs). Pour qu'une couleur soit
-détectée, les 4 canaux (C, R, G, B) doivent être dans leur plage respective.
+Configure le seuil de détection sur le canal clear (delta on-off).
+Si le delta clear dépasse ce seuil, le bit 7 de la couleur dans ARM_STATUS est mis à 1.
 
 ```
-ID: 0x18[target]
-Longueur: 6 octets
+ID: 0x180
+Longueur: 2 octets
 Direction: P→S
 
-Data[0]: Color ID (1-254 = configurer, 0 = effacer toute la table)
-Data[1]: Canal (0=Clear, 1=Red, 2=Green, 3=Blue)
-Data[2-3]: Valeur minimum (u16, LE)
-Data[4-5]: Valeur maximum (u16, LE)
+Data[0-1]: Seuil de détection (u16, LE) — défaut: 800
 ```
-
-**Valeurs de retour couleur (dans ARM_STATUS):**
-| Valeur | Signification |
-|--------|---------------|
-| 255 | Config incomplète (capteur ou table non configuré) |
-| 0 | Aucune couleur ne matche |
-| 1-254 | Color ID détecté |
 
 ### 0x19T - SET_COLOR_SENSOR_CONFIG
 
@@ -478,7 +489,8 @@ Data[1]: Gain
 
 ### 0x1AT - COLOR_SENSOR_RAW
 
-Lecture des valeurs brutes du capteur TCS3472 (debug).
+Retourne le dernier delta mesuré (LED on - LED off) pour le capteur TCS3472.
+Ne déclenche pas de nouvelle mesure, retourne les valeurs stockées.
 
 **Requête (P→S):**
 ```
@@ -491,10 +503,10 @@ Longueur: 0 octet
 ID: 0x1A[target]
 Longueur: 8 octets
 
-Data[0-1]: Clear (u16, LE)
-Data[2-3]: Red (u16, LE)
-Data[4-5]: Green (u16, LE)
-Data[6-7]: Blue (u16, LE)
+Data[0-1]: Delta Clear (u16, LE)
+Data[2-3]: Delta Red (u16, LE)
+Data[4-5]: Delta Green (u16, LE)
+Data[6-7]: Delta Blue (u16, LE)
 ```
 
 ### 0x1B0 - SET_COLOR_LED_PWM
