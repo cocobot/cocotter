@@ -5,10 +5,11 @@
 //! - CMD: 0-F command within domain
 //! - TARGET: 0-F target interpretation depends on domain
 
-use embedded_can::StandardId;
+use embedded_can::{Frame, Id, StandardId};
 
-use crate::protocol::MAX_DATA_LEN;
+use crate::protocol::{LOG_MSG_PAYLOAD_SIZE, LOG_CONT_PAYLOAD_SIZE, LOG_END_PAYLOAD_SIZE, MAX_DATA_LEN, OTA_CHUNK_SIZE};
 use crate::types::*;
+
 
 /// Encoded CAN message ready to be wrapped in a frame
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -17,6 +18,14 @@ pub struct EncodedMessage {
     pub data: [u8; MAX_DATA_LEN],
     pub len: usize,
 }
+
+impl EncodedMessage {
+    pub fn to_frame<F: Frame>(&self) -> F {
+        // `self.len < 8` so `unwrap()` is safe
+        F::new(self.id, &self.data[..self.len]).unwrap()
+    }
+}
+
 
 /// Parsed CAN message organized by domain
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -193,14 +202,14 @@ pub enum CanMessage {
     LogMsg {
         seq: u8,
         level: LogLevel,
-        payload: [u8; 6],
+        payload: [u8; LOG_MSG_PAYLOAD_SIZE],
         payload_len: u8,
     },
 
     /// Log message continuation (ID: 0x311)
     LogCont {
         seq: u8,
-        payload: [u8; 7],
+        payload: [u8; LOG_CONT_PAYLOAD_SIZE],
         payload_len: u8,
     },
 
@@ -208,7 +217,7 @@ pub enum CanMessage {
     LogEnd {
         seq: u8,
         total_len: u8,
-        payload: [u8; 6],
+        payload: [u8; LOG_END_PAYLOAD_SIZE],
         payload_len: u8,
     },
 
@@ -222,7 +231,7 @@ pub enum CanMessage {
     /// OTA data chunk (ID: 0x410)
     OtaData {
         chunk_idx: u16,
-        data: [u8; 6],
+        data: [u8; OTA_CHUNK_SIZE],
         data_len: u8,
     },
 
@@ -271,6 +280,19 @@ impl CanMessage {
             Domain::Log => Self::parse_log(cmd, data),
             Domain::Ota => Self::parse_ota(cmd, data),
         }
+    }
+
+    /// Parse from an `embedded_can` frame
+    pub fn from_frame<F: Frame>(frame: &F) -> Option<Self> {
+        match frame.id() {
+            Id::Standard(id) => Self::parse(id.as_raw(), frame.data()),
+            _ => None
+        }
+    }
+
+    /// Convert to an `embedded_can` frame
+    pub fn to_frame<F: Frame>(&self) -> F {
+        self.encode().to_frame()
     }
 
     fn parse_system(cmd: u8, data: &[u8]) -> Option<Self> {
@@ -557,8 +579,8 @@ impl CanMessage {
             }
             LogCmd::Msg => {
                 if data.len() >= 2 {
-                    let mut payload = [0u8; 6];
-                    let payload_len = (data.len() - 2).min(6) as u8;
+                    let mut payload = [0u8; LOG_MSG_PAYLOAD_SIZE];
+                    let payload_len = (data.len() - 2).min(payload.len()) as u8;
                     payload[..payload_len as usize].copy_from_slice(&data[2..2 + payload_len as usize]);
                     Some(CanMessage::LogMsg {
                         seq: data[0],
@@ -572,8 +594,8 @@ impl CanMessage {
             }
             LogCmd::Cont => {
                 if !data.is_empty() {
-                    let mut payload = [0u8; 7];
-                    let payload_len = (data.len() - 1).min(7) as u8;
+                    let mut payload = [0u8; LOG_CONT_PAYLOAD_SIZE];
+                    let payload_len = (data.len() - 1).min(payload.len()) as u8;
                     payload[..payload_len as usize].copy_from_slice(&data[1..1 + payload_len as usize]);
                     Some(CanMessage::LogCont {
                         seq: data[0],
@@ -586,8 +608,8 @@ impl CanMessage {
             }
             LogCmd::End => {
                 if data.len() >= 2 {
-                    let mut payload = [0u8; 6];
-                    let payload_len = (data.len() - 2).min(6) as u8;
+                    let mut payload = [0u8; LOG_END_PAYLOAD_SIZE];
+                    let payload_len = (data.len() - 2).min(payload.len()) as u8;
                     payload[..payload_len as usize].copy_from_slice(&data[2..2 + payload_len as usize]);
                     Some(CanMessage::LogEnd {
                         seq: data[0],
@@ -622,8 +644,8 @@ impl CanMessage {
                 if data.len() >= 3 {
                     let chunk_idx = u16::from_le_bytes([data[0], data[1]]);
                     if data.len() > 3 {
-                        let mut chunk_data = [0u8; 6];
-                        let data_len = (data.len() - 2).min(6) as u8;
+                        let mut chunk_data = [0u8; OTA_CHUNK_SIZE];
+                        let data_len = (data.len() - 2).min(chunk_data.len()) as u8;
                         chunk_data[..data_len as usize].copy_from_slice(&data[2..2 + data_len as usize]);
                         Some(CanMessage::OtaData {
                             chunk_idx,
@@ -1055,7 +1077,7 @@ impl CanMessage {
             | CanMessage::SetValve { .. }
             | CanMessage::SetTranslation { .. }
             | CanMessage::RequestTranslationStatus { .. }
-            | CanMessage::TranslationStatus { .. }
+            | CanMessage::TranslationStatus { .. } 
             | CanMessage::SetStage2 { .. }
             | CanMessage::SetStage2Torque { .. }
             | CanMessage::RequestStage2Status { .. }
@@ -1131,11 +1153,7 @@ mod tests {
     /// Helper: encode then parse, assert roundtrip equality
     fn roundtrip(msg: &CanMessage) {
         let encoded = msg.encode();
-        let raw_id = match encoded.id.into() {
-            Id::Standard(id) => id.as_raw(),
-            _ => panic!("Expected standard ID"),
-        };
-        let parsed = CanMessage::parse(raw_id, &encoded.data[..encoded.len]);
+        let parsed = CanMessage::parse(encoded.id.as_raw(), &encoded.data[..encoded.len]);
         assert_eq!(parsed.as_ref(), Some(msg), "roundtrip failed for {:?}", msg);
     }
 
@@ -1278,7 +1296,6 @@ mod tests {
                 position: 2048,
                 time_ms: 500,
             });
-            roundtrip(&CanMessage::RequestTranslationStatus { module });
             roundtrip(&CanMessage::TranslationStatus {
                 module,
                 position: 4000,

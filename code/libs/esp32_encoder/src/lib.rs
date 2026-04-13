@@ -1,13 +1,10 @@
 use esp_idf_svc::{
     hal::{
-        gpio::{AnyInputPin, InputPin}, 
+        gpio::{AnyInputPin, InputPin},        
         pcnt::{PcntUnitDriver, config::{ChannelEdgeAction, ChannelLevelAction, GlitchFilterConfig, UnitConfig}},
     }, 
     sys::EspError
 };
-
-const LOW_LIMIT: i32 = -10000;
-const HIGH_LIMIT: i32 = 10000;
 
 /// ESP32 Encoder driver using PCNT peripheral
 /// 
@@ -21,13 +18,21 @@ impl<'d> Encoder<'d> {
     /// Create a new encoder instance
     /// 
     /// # Arguments
-    /// * `pin_a` - Encoder A signal pin from a PCNT peripheral
-    /// * `pin_b` - Encoder B signal pin from a PCNT peripheral
+    /// * `pcnt` - PCNT peripheral (pcnt0, pcnt1, pcnt2, pcnt3)
+    /// * `pin_a` - Encoder A signal pin
+    /// * `pin_b` - Encoder B signal pin
     /// 
     /// # Returns
     /// * `Result<Self, EspError>` - The encoder instance or an error
-    pub fn new(pin_a: impl InputPin + 'd, pin_b: impl InputPin + 'd) -> Result<Self, EspError> {
-        let mut unit = PcntUnitDriver::new(&UnitConfig {
+    pub fn new(
+        pin_a: impl InputPin + 'd,
+        pin_b: impl InputPin + 'd,
+    ) -> Result<Self, EspError> {
+        const LOW_LIMIT: i32 = -10000;
+        const HIGH_LIMIT: i32 = 10000;
+        const FILTER_VALUE: u64 = 10;
+
+         let mut unit = PcntUnitDriver::new(&UnitConfig {
             low_limit: LOW_LIMIT,
             high_limit: HIGH_LIMIT,
             accum_count: true,
@@ -35,7 +40,7 @@ impl<'d> Encoder<'d> {
         })?;
 
         unit.set_glitch_filter(Some(&GlitchFilterConfig {
-            max_glitch: std::time::Duration::from_nanos(10),
+            max_glitch: std::time::Duration::from_nanos(FILTER_VALUE),
             ..Default::default()
         }))?;
 
@@ -56,7 +61,6 @@ impl<'d> Encoder<'d> {
             .set_level_action(ChannelLevelAction::Keep, ChannelLevelAction::Inverse)?;
 
         unit.enable()?;
-
         unit.add_watch_points_and_clear([LOW_LIMIT, HIGH_LIMIT])?;
 
         unit.stop()?;
@@ -69,17 +73,11 @@ impl<'d> Encoder<'d> {
     /// Get the current encoder value
     /// 
     /// This returns the full 32-bit signed value, accounting for overflows.
-    /// 
-    /// # Returns
-    /// * `Result<i32, EspError>` - The current encoder count
     pub fn get_value(&self) -> Result<i32, EspError> {
         self.unit.get_count()
     }
     
     /// Reset the encoder count to zero
-    /// 
-    /// # Returns
-    /// * `Result<(), EspError>` - Success or error
     pub fn reset(&mut self) -> Result<(), EspError> {
         self.unit.stop()?;
         self.unit.clear_count()?;

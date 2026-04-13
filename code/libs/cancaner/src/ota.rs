@@ -174,8 +174,7 @@ impl<'a> OtaSender<'a> {
     }
 
     fn total_chunks(&self) -> u16 {
-        let len = self.firmware.len();
-        ((len + OTA_CHUNK_SIZE - 1) / OTA_CHUNK_SIZE) as u16
+        self.firmware.len().div_ceil(OTA_CHUNK_SIZE) as u16
     }
 
     fn build_chunk(&self, idx: u16) -> CanMessage {
@@ -183,7 +182,7 @@ impl<'a> OtaSender<'a> {
         let remaining = self.firmware.len() - offset;
         let len = remaining.min(OTA_CHUNK_SIZE);
 
-        let mut data = [0u8; 6];
+        let mut data = [0u8; OTA_CHUNK_SIZE];
         data[..len].copy_from_slice(&self.firmware[offset..offset + len]);
 
         CanMessage::OtaData {

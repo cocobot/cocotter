@@ -6,7 +6,11 @@
 //! - 1 valve (via IO expander)
 //! - 1 color sensor
 
+<<<<<<< HEAD
 use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage};
+=======
+use cancaner::{ArmFlags, ArmTarget, CanMessage, Color};
+>>>>>>> origin/bry-dev
 
 /// Arm state
 #[derive(Debug, Clone, Default)]
@@ -15,8 +19,13 @@ pub struct ArmState {
     pub position: u16,
     /// Target servo position
     pub target_position: u16,
+<<<<<<< HEAD
     /// Detected color (0=no match, 255=config incomplete, 1-254=color_id)
     pub color: u8,
+=======
+    /// Detected color
+    pub color: Color,
+>>>>>>> origin/bry-dev
     /// Pump state
     pub pump: bool,
     /// Valve state

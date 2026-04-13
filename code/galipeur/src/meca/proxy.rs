@@ -1,8 +1,10 @@
 use std::sync::{Arc, Mutex};
+use embedded_can::Frame;
+use board_sabotter::SabotterBoard;
+use cancaner::{ArmFlags, ArmTarget, CanInterface, CanMessage, Color, LogDecoder, ARMS_PER_MODULE};
 
-use cancaner::{ArmFlags, ArmTarget, CanMessage, Stage2Target, ARMS_PER_MODULE, STAGE2_SERVOS_PER_MODULE};
 
-use crate::can::CanInterface;
+const MAX_TX_TRIES: u32 = 3;
 
 #[derive(Clone, Default, Debug)]
 pub struct ArmState {
@@ -184,7 +186,7 @@ impl MecaProxy {
         pump: bool,
         valve: bool,
     ) {
-        self.can.send(&CanMessage::SetArm {
+        self.send_message(&CanMessage::SetArm {
             target: ArmTarget::new(module, arm),
             position,
             time_ms,
@@ -194,26 +196,25 @@ impl MecaProxy {
     }
 
     pub fn set_translation(&self, module: u8, position: u16, time_ms: u16) {
-        self.can
-            .send(&CanMessage::SetTranslation { module, position, time_ms });
+        self.send_message(&CanMessage::SetTranslation { module, position, time_ms });
     }
 
     pub fn set_pump(&self, module: u8, arm: u8, enable: bool) {
-        self.can.send(&CanMessage::SetPump {
+        self.send_message(&CanMessage::SetPump {
             target: ArmTarget::new(module, arm),
             enable,
         });
     }
 
     pub fn set_valve(&self, module: u8, arm: u8, enable: bool) {
-        self.can.send(&CanMessage::SetValve {
+        self.send_message(&CanMessage::SetValve {
             target: ArmTarget::new(module, arm),
             enable,
         });
     }
 
     pub fn set_torque(&self, module: u8, arm: u8, enable: bool) {
-        self.can.send(&CanMessage::SetTorque {
+        self.send_message(&CanMessage::SetTorque {
             target: ArmTarget::new(module, arm),
             enable,
         });

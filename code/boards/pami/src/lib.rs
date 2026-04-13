@@ -3,7 +3,10 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
+<<<<<<< HEAD
 use flume::{Receiver, Sender};
+=======
+>>>>>>> origin/bry-dev
 use embedded_hal::{
     digital::StatefulOutputPin,
     i2c::I2c,
@@ -13,7 +16,9 @@ use embedded_graphics::{
     draw_target::DrawTarget,
     pixelcolor::BinaryColor,
 };
-pub use board_common::{BatteryLevel, Color, Encoder};
+use flume::{Receiver, Sender};
+pub use board_common::{BatteryLevel, Color};
+pub use board_common::hal::{BatteryReader, Encoder};
 use pwm_pca9685::{self, Pca9685};
 use pwm_pca9685::{Channel as Pca9685Channel};
 use tca6408::TCA6408;
@@ -28,7 +33,7 @@ type Pca9685Error<I2C> = pwm_pca9685::Error<<I2C as embedded_hal::i2c::ErrorType
 
 
 pub trait PamiBoard {
-    type BatteryLevel: BatteryLevel;
+    type BatteryReader: BatteryReader;
     type I2c: I2c;
     type Led: StatefulOutputPin;
     type Buttons: PamiButtons;
@@ -47,7 +52,7 @@ pub trait PamiBoard {
     /// Return Bluetooth MAC address of the device
     fn bt_mac_address(&self) -> [u8; 6];
 
-    fn battery_level(&mut self) -> Option<Self::BatteryLevel>;
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader>;
     fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
     fn starting_cord(&mut self) -> Option<Box<dyn FnMut() -> bool>>;
     fn leds(&mut self) -> Option<PamiLeds<Self::Led>>;
@@ -146,13 +151,13 @@ impl<I2C: I2c> PamiPwmController<I2C> {
         Ok(())
     }
 
-    pub fn set_battery_rgb(&mut self, color: Color) {
+    pub fn set_battery_rgb(&mut self, color: &Color) {
         self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[0], color.r);
         self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[1], color.g);
         self.set_inverted_channel_duty(PWM_CONTROLLER_VBAT_RGB[2], color.b);
     }
 
-    pub fn set_ground_rgb(&mut self, color: Color) {
+    pub fn set_ground_rgb(&mut self, color: &Color) {
         self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[0], color.r);
         self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[1], color.g);
         self.set_inverted_channel_duty(PWM_CONTROLLER_GROUND_RGB[2], color.b);

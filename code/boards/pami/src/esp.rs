@@ -9,13 +9,18 @@ use esp_idf_svc::{
             attenuation,
             oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
         },
+<<<<<<< HEAD
         gpio::{ADCPin, AnyInputPin, Gpio1, Input, InputPin, Output, PinDriver, Pull},
         i2c::{I2cConfig, I2cDriver},
         ledc::{LedcDriver, LedcTimerDriver, Resolution, config::TimerConfig},
         pcnt::{PcntUnitDriver, config::{ChannelEdgeAction, ChannelLevelAction, GlitchFilterConfig, UnitConfig}},
+=======
+        gpio::{AnyInputPin, AnyOutputPin, Input, Output, PinDriver, Gpio1},
+        i2c::{I2cConfig, I2cDriver},
+        ledc::{LedcDriver, LedcTimerDriver, Resolution, config::TimerConfig},
+>>>>>>> origin/bry-dev
         peripherals::Peripherals,
         units::Hertz,
-        sys::EspError,
     },
     nvs::EspDefaultNvsPartition,
 };
@@ -30,37 +35,46 @@ use ssd1306::{
     },
 };
 
+use board_common::esp::EspEncoder;
 use ble::{BleBuilder, RomePeripheral};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxI2cDriver, VlxError, VlxSensor, ZoneAlarm, l5::VL53L5CX};
-use crate::{BatteryLevel, DpadState, Encoder, PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotor, PamiMotors, PamiPwmController};
+use crate::{BatteryLevel, BatteryReader, DpadState, PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotor, PamiMotors, PamiPwmController};
 
 
 pub type I2cType = MutexDevice<'static, I2cDriver<'static>>;
 pub type PamiDisplay = Ssd1306<DisplayI2CInterface<I2cType>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
 
 
+<<<<<<< HEAD
 pub struct EspPamiBoard<'d> {
     battery_level: Option<PamiBatteryLevel>,
     emergency_stop: Option<PinDriver<'static, Input>>,
     starting_cord: Option<PinDriver<'static, Input>>,
+=======
+pub struct EspPamiBoard {
+    battery_reader: Option<PamiBatteryReader>,
+    emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
+    starting_cord: Option<PinDriver<'static, AnyInputPin, Input>>,
+    ble: Option<BtDriver<'static, Ble>>,
+>>>>>>> origin/bry-dev
     buttons: Option<EspPamiButtons>,
     display: Option<PamiDisplay>,
     leds: Option<PamiLeds<PinDriver<'static, Output>>>,
     line_sensor: Option<TCA6408<I2cType>>,
     vlx_sensor: Option<PamiVlxSensor>,
-    motors: Option<PamiMotors<EspEncoder<'d>, LedcDriver<'static>>>,
+    motors: Option<PamiMotors<EspEncoder<'static>, LedcDriver<'static>>>,
     pwm_controller: Option<PamiPwmController<I2cType>>,
 }
 
-impl<'d> PamiBoard for EspPamiBoard<'d> {
-    type BatteryLevel = PamiBatteryLevel;
+impl PamiBoard for EspPamiBoard {
+    type BatteryReader = PamiBatteryReader;
     type I2c = I2cType;
     type Led = PinDriver<'static, Output>;
     type Display = PamiDisplay;
     type Buttons = EspPamiButtons;
     type Vlx = PamiVlxSensor;
-    type MotorEncoder = EspEncoder<'d>;
+    type MotorEncoder = EspEncoder<'static>;
     type MotorPwm = LedcDriver<'static>;
 
     fn init() -> Self {
@@ -97,7 +111,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
             peripherals.pins.gpio1,
             &AdcChannelConfig { attenuation: attenuation::DB_12, ..Default::default() },
         ).unwrap();
-        let battery_level = PamiBatteryLevel(adc_vbatt);
+        let battery_reader = PamiBatteryReader(adc_vbatt);
 
         let _modem = peripherals.modem; // consumed to prevent reuse (Nimble will use it outside rust code)
 
@@ -140,7 +154,7 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         let starting_cord = PinDriver::input(peripherals.pins.gpio2, Pull::Up).unwrap();
 
         Self {
-            battery_level: Some(battery_level),
+            battery_reader: Some(battery_reader),
             emergency_stop: Some(emergency_stop),
             starting_cord: Some(starting_cord),
             leds: Some(leds),
@@ -165,8 +179,8 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
         mac
     }
 
-    fn battery_level(&mut self) -> Option<Self::BatteryLevel> {
-        self.battery_level.take()
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader> {
+        self.battery_reader.take()
     }
 
     fn emergency_stop(&mut self) -> Option<Box<dyn FnMut() -> bool>> {
@@ -219,9 +233,13 @@ impl<'d> PamiBoard for EspPamiBoard<'d> {
 }
 
 
+<<<<<<< HEAD
 pub struct PamiBatteryLevel(AdcChannelDriver<'static, <Gpio1<'static> as ADCPin>::AdcChannel, Rc<AdcDriver<'static, ADCU1>>>);
+=======
+pub struct PamiBatteryReader(AdcChannelDriver<'static, Gpio1, Rc<AdcDriver<'static, ADC1>>>);
+>>>>>>> origin/bry-dev
 
-impl PamiBatteryLevel {
+impl PamiBatteryReader {
     const fn raw_to_mv(raw: f32) -> f32 {
         const VBATT_RL_KOHMS: f32 = 91.0;
         const VBATT_RH_KOHMS: f32 = 91.0;
@@ -259,12 +277,12 @@ impl PamiBatteryLevel {
     }
 }
 
-impl BatteryLevel for PamiBatteryLevel {
-    fn read_vbatt(&mut self) -> (u16, u8) {
+impl BatteryReader for PamiBatteryReader {
+    fn read_vbatt(&mut self) -> BatteryLevel {
         let raw = self.0.read().unwrap() as f32;
         let mv = Self::raw_to_mv(raw);
-        let pct = Self::mv_to_percent(mv);
-        (mv as u16, pct)
+        let percent = Self::mv_to_percent(mv);
+        BatteryLevel { mv: mv as u16, percent }
     }
 }
 
@@ -295,6 +313,7 @@ impl VlxSensor for PamiVlxSensor {
 }
 
 
+<<<<<<< HEAD
 pub struct EspEncoder<'d> {
     unit: PcntUnitDriver<'d>,
 }
@@ -353,6 +372,8 @@ impl Encoder<i32> for EspEncoder<'_> {
 }
 
 
+=======
+>>>>>>> origin/bry-dev
 pub struct EspPamiButtons {
     tca: TCA6408<I2cType>,
     pin: PinDriver<'static, Input>,

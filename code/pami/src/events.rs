@@ -15,6 +15,8 @@ pub enum UiEvent {
     Battery { percent: u8 },
     EmergencyStop(bool),
     Dpad(DpadState),
+    ShowMessage(&'static str),
+    ShowMatchConf(MatchConf),
     KeypassNotif(u32), 
     ChangeTeam(Team),
     ChangeStartDelay(u8),
@@ -29,14 +31,11 @@ pub enum UiTrigger {
 }
 
 
-/// Steps for the main routine
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum MainStep {
-    /// Selecting team or waiting to unplug cord
-    Free,
-    /// Starting cord plugged in
-    CordPlugged,
-    /// Match started
-    Match,
+/// Match configuration
+#[derive(Clone)]
+pub struct MatchConf {
+    pub team: Team,
+    pub start_delay: u8,
+    pub role: PamiRole,
 }
 

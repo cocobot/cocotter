@@ -1,4 +1,3 @@
-use flume::{Receiver, Sender};
 use embedded_hal_mock::eh1::{
     digital::{Mock as PinMock},
     i2c::{Mock as I2cMock},
@@ -8,10 +7,11 @@ use embedded_graphics::{
     pixelcolor::BinaryColor,
     mock_display::MockDisplay,
 };
-use board_common::mock::{MockBatteryLevel, MockEncoder};
+use flume::{Receiver, Sender};
+use board_common::mock::{MockBatteryReader, MockEncoder};
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxError, VlxSensor, ZoneAlarm};
-use crate::{PamiBoard, PamiButtons, PamiMotors};
+use crate::{PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotors, PamiPwmController};
 
 
 pub struct MockPamiBoard;
@@ -19,11 +19,11 @@ pub struct MockPamiBoard;
 pub type PamiDisplay = MockDisplay<BinaryColor>;
 
 impl PamiBoard for MockPamiBoard {
-    type BatteryLevel = MockBatteryLevel;
+    type BatteryReader = MockBatteryReader;
     type I2c = I2cMock;
     type Led = PinMock;
     type Display = PamiDisplay;
-    type Buttons = MockPamiButtons,
+    type Buttons = MockPamiButtons;
     type Vlx = MockVlxSensor;
     type MotorEncoder = MockEncoder<i32>;
     type MotorPwm = SetDutyCycleMock;
@@ -41,7 +41,7 @@ impl PamiBoard for MockPamiBoard {
         [0; 6]
     }
 
-    fn battery_level(&mut self) -> Option<Self::BatteryLevel> {
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader> {
         None
     }
 
@@ -105,8 +105,8 @@ impl VlxSensor for MockVlxSensor {
 
 pub struct MockPamiButtons;
 
-impl<I2C: I2c> PamiButtons for EspPamiButtons<I2C> {
-    pub fn read_state(&mut self) -> PamiButtonsState {
+impl PamiButtons for MockPamiButtons {
+    fn read_state(&mut self) -> PamiButtonsState {
         PamiButtonsState::default()
     }
 }

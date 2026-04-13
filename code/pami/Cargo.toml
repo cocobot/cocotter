@@ -10,6 +10,7 @@ name = "pami"
 flume = { version = "0.11", default-features = false }
 embedded-graphics = "0.8"
 embedded-hal = "1.0"
+flume = { version = "0.11", default-features = false }
 log = "0.4"
 asserv = { path = "../libs/asserv", features = ["rome"] }
 board-common = { path = "../boards/common" }

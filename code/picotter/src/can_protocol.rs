@@ -9,6 +9,7 @@ use embedded_can::Id;
 // Re-export everything from cancaner
 pub use cancaner::*;
 
+<<<<<<< HEAD
 /// Extension trait to convert CanMessage to/from Embassy Frame
 pub trait CanMessageFrameExt {
     /// Parse a CAN message from an Embassy Frame
@@ -37,6 +38,8 @@ impl CanMessageFrameExt for CanMessage {
     }
 }
 
+=======
+>>>>>>> origin/bry-dev
 /// Build a ping response frame (for fast path in CAN handler)
 pub fn ping_response_frame(value: u8) -> Frame {
     ping_response(value).to_frame()

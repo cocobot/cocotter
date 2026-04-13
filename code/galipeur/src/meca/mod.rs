@@ -1,28 +1,20 @@
 mod proxy;
 
-pub use proxy::{MecaProxy, MecaState, ColorSensorRawState};
+pub use proxy::{ArmState, MecaProxy, MecaState, TranslationState};
 
-use std::thread;
-use std::time::Duration;
+use board_sabotter::SabotterBoard;
 
-use crate::can::CanInterface;
 
 /// High-level meca interface — cloneable, passes to threads
-#[derive(Clone)]
-pub struct Meca {
-    proxy: MecaProxy,
+pub struct Meca<B: SabotterBoard> {
+    proxy: MecaProxy<B>,
 }
 
-impl Meca {
-    pub fn new(can: &CanInterface) -> Self {
-        Self {
-            proxy: MecaProxy::new(can),
-        }
-    }
-
-    /// Returns a proxy for direct state reads and low-level commands
-    pub fn get_proxy(&self) -> MecaProxy {
-        self.proxy.clone()
+impl<B: SabotterBoard> Meca<B> {
+    pub fn new(can: B::Can) -> Self {
+        let mut proxy = MecaProxy::new(can);
+        proxy.init_rx();
+        Self { proxy }
     }
 
     pub fn get_state(&self) -> MecaState {

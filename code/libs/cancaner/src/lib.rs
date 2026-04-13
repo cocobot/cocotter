@@ -25,19 +25,18 @@
 //!
 //! See PROTOCOL.md for full protocol documentation.
 
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
 
+mod interface;
 mod message;
 mod protocol;
 mod types;
 pub mod log;
 pub mod ota;
 
+pub use interface::CanInterface;
 pub use message::{ping_response, CanMessage, EncodedMessage};
 pub use protocol::*;
 pub use types::*;
 pub use log::{LogEncoder, LogDecoder};
 pub use ota::{OtaSender, OtaSenderState, OtaReceiver, OtaReceiverState, OtaStorage};
-
-// Re-export embedded-can types for convenience
-pub use embedded_can::StandardId;

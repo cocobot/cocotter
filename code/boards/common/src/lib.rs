@@ -1,22 +1,18 @@
-///! Common elements shared by all boards
+//! Common elements shared by all boards
+pub mod hal;
+#[cfg(target_os = "espidf")]
+pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
 use std::time::{Duration, Instant};
 
 
-/// Read battery voltage
-pub trait BatteryLevel {
-    /// Read battery voltage, return value in mV and as percentage
-    fn read_vbatt(&mut self) -> (u16, u8);
-}
-
-/// Generic encoder, fetch a value of given type
-pub trait Encoder<T> {
-    type Error: core::fmt::Debug;
-
-    /// Get encoded value
-    fn get_value(&self) -> Result<T, Self::Error>;
+/// Battery level, read from board
+#[derive(Clone, Copy, Default)]
+pub struct BatteryLevel {
+    pub mv: u16,
+    pub percent: u8,
 }
 
 
@@ -123,12 +119,17 @@ pub struct Color {
 }
 
 impl Color {
+    pub const BLACK: Self = Self::new(0.0, 0.0, 0.0);
+    pub const WHITE: Self = Self::new(1.0, 1.0, 1.0);
+    pub const RED: Self = Self::new(1.0, 0.0, 0.0);
+    pub const GREEN: Self = Self::new(0.0, 1.0, 0.0);
+    pub const BLUE: Self = Self::new(0.0, 0.0, 1.0);
+    pub const CYAN: Self = Self::new(0.0, 1.0, 1.0);
+    pub const MAGENTA: Self = Self::new(1.0, 0.0, 1.0);
+    pub const YELLOW: Self = Self::new(1.0, 1.0, 0.0);
+
     pub const fn new(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b }
-    }
-
-    pub const fn off() -> Self {
-        Self::new(0.0, 0.0, 0.0)
     }
 
     pub const fn rgb8(r: u8, g: u8, b: u8) -> Self {

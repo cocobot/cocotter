@@ -1,12 +1,16 @@
 [package]
 name = "cancaner"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 description = "Shared CAN protocol for cocotter robots (picotter/sabotter)"
 
 [dependencies]
 embedded-can = "0.4"
+log = "0.4"
 
 [features]
-default = []
+default = ["std"]
 std = []
+
+[target.'cfg(target_os = "espidf")'.dependencies]
+esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }

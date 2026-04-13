@@ -5,21 +5,34 @@
 mod arm;
 mod can_handler;
 mod can_logger;
+<<<<<<< HEAD
 mod can_protocol;
 mod color_sensor;
 mod ground_sensors;
 mod i2c_devices;
 mod lidar;
 mod module;
+=======
+mod color_sensor;
+mod ground_sensors;
+mod i2c_devices;
+mod module;
+mod ota_handler;
+>>>>>>> origin/bry-dev
 mod scs0009;
 
 use embassy_executor::Spawner;
 use embassy_stm32::can::CanConfigurator;
 use embassy_stm32::can::OperatingMode;
+<<<<<<< HEAD
 use embassy_stm32::gpio::{Level, Output, OutputType, Speed};
 use embassy_stm32::i2c::{self, Config as I2cConfig, I2c};
 use embassy_stm32::timer::simple_pwm::{PwmPin, SimplePwm, SimplePwmChannel};
 use embassy_stm32::timer::low_level::{CountingMode, OutputPolarity};
+=======
+use embassy_stm32::gpio::{Level, Output, Speed};
+use embassy_stm32::i2c::{self, Config as I2cConfig, I2c};
+>>>>>>> origin/bry-dev
 use embassy_stm32::mode::Async;
 use embassy_stm32::time::Hertz;
 use embassy_stm32::usart::{
@@ -33,6 +46,7 @@ use log::{info, warn};
 use panic_rtt_target as _;
 use rtt_target::rprintln;
 use rtt_target::rtt_init_print;
+<<<<<<< HEAD
 
 // Shared no-init region at end of RAM (256 bytes, matches bootloader)
 // Layout: [panic_magic:4][panic_len:4][panic_msg:240][bootloader_magic:4][pad:4]
@@ -96,6 +110,12 @@ impl core::fmt::Write for PanicBuf {
 
 use can_handler::{cmd_receiver, log_sender, status_sender};
 use can_protocol::{ArmTarget, CanMessage, Domain, ServoBus, Stage2Target};
+=======
+use cancaner::{ArmTarget, CanMessage, Domain, ServoBus};
+
+use can_handler::{cmd_receiver, log_sender, status_sender};
+use color_sensor::DummyColorSensor;
+>>>>>>> origin/bry-dev
 use i2c_devices::I2cDevices;
 use module::Module;
 use scs0009::Scs0009;
@@ -113,6 +133,7 @@ bind_interrupts!(struct Irqs {
     UART5 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART5>;
     USART6 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART6>;
     USART1 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART1>;
+<<<<<<< HEAD
     // Lidar UARTs (19200 baud, full-duplex)
     USART3 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART3>;
     USART2 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART2>;
@@ -120,12 +141,15 @@ bind_interrupts!(struct Irqs {
     UART4 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART4>;
     USART10 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::USART10>;
     UART9 => embassy_stm32::usart::BufferedInterruptHandler<peripherals::UART9>;
+=======
+>>>>>>> origin/bry-dev
     // CAN
     FDCAN1_IT0 => embassy_stm32::can::IT0InterruptHandler<peripherals::FDCAN1>;
     FDCAN1_IT1 => embassy_stm32::can::IT1InterruptHandler<peripherals::FDCAN1>;
 });
 
 // Servo IDs for each module (4 servos per module)
+<<<<<<< HEAD
 const MODULE0_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 const MODULE1_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 const MODULE2_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
@@ -137,6 +161,14 @@ const MODULE2_STAGE2_IDS: [u8; 2] = [20, 21];
 
 // Translation servo IDs (one per module, on shared bus)
 const TRANSLATION_SERVO_IDS: [u8; 3] = [30, 31, 32];
+=======
+const MODULE0_SERVO_IDS: [u8; 4] = [10, 11, 12, 1];
+const MODULE1_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
+const MODULE2_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
+
+// Translation servo IDs (one per module, on shared bus)
+const TRANSLATION_SERVO_IDS: [u8; 3] = [10, 11, 12];
+>>>>>>> origin/bry-dev
 
 // Concrete types
 type I2cType = I2c<'static, Async, i2c::Master>;
@@ -144,6 +176,10 @@ type ModuleType = Module<
     BufferedUartTx<'static>,
     BufferedUartRx<'static>,
     I2cType,
+<<<<<<< HEAD
+=======
+    DummyColorSensor,
+>>>>>>> origin/bry-dev
 >;
 type TranslationBusType = Scs0009<BufferedUartTx<'static>, BufferedUartRx<'static>>;
 
@@ -164,7 +200,10 @@ async fn led_status_task(
     module0: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module1: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
+<<<<<<< HEAD
     translation_bus: &'static Mutex<CriticalSectionRawMutex, TranslationBusType>,
+=======
+>>>>>>> origin/bry-dev
 ) {
     let status_tx = status_sender();
     let mut led_state = false;
@@ -180,11 +219,19 @@ async fn led_status_task(
             m0.update_ground_sensor().await.ok();
         }
         {
+<<<<<<< HEAD
             //let mut m1 = module1.lock().await;
             //m1.update_ground_sensor().await.ok();
         }
         {
             //let mut m2 = module2.lock().await;
+=======
+            let _m1 = module1.lock().await;
+            //m1.update_ground_sensor().await.ok();
+        }
+        {
+            let _m2 = module2.lock().await;
+>>>>>>> origin/bry-dev
             //m2.update_ground_sensor().await.ok();
         }
 
@@ -239,6 +286,7 @@ async fn led_status_task(
             //        status_tx.try_send(status).ok();
             //    }
             //}
+<<<<<<< HEAD
 
             // Periodic stage2 status for all modules
             let s2_target = Stage2Target::BROADCAST_ALL;
@@ -282,6 +330,8 @@ async fn led_status_task(
                         .ok();
                 }
             }
+=======
+>>>>>>> origin/bry-dev
         }
 
         cycle_count = cycle_count.wrapping_add(1);
@@ -328,14 +378,22 @@ async fn cmd_task(
     module1: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     translation_bus: &'static Mutex<CriticalSectionRawMutex, TranslationBusType>,
+<<<<<<< HEAD
     mut color_led_pwm: SimplePwmChannel<'static, peripherals::TIM8>,
 ) {
     let cmd_rx = cmd_receiver();
     let status_tx = status_sender();
+=======
+) {
+    let cmd_rx = cmd_receiver();
+    let status_tx = status_sender();
+    let mut ota_handler = ota_handler::OtaHandler::new();
+>>>>>>> origin/bry-dev
 
     loop {
         let msg = cmd_rx.receive().await;
 
+<<<<<<< HEAD
         // Handle Reboot command
         if let CanMessage::Reboot { mode } = &msg {
             match mode {
@@ -353,6 +411,17 @@ async fn cmd_task(
 
         // OTA messages are handled by the bootloader, ignore here
         if msg.domain() == Domain::Ota {
+=======
+        // Handle OTA messages first
+        if msg.domain() == Domain::Ota {
+            if let Some(response) = ota_handler.handle_message(&msg) {
+                status_tx.try_send(response).ok();
+            }
+            if matches!(msg, CanMessage::OtaReboot) {
+                info!("OTA reboot requested");
+                cortex_m::peripheral::SCB::sys_reset();
+            }
+>>>>>>> origin/bry-dev
             continue;
         }
 
@@ -403,6 +472,7 @@ async fn cmd_task(
             continue;
         }
 
+<<<<<<< HEAD
         // Handle RequestTranslationStatus
         if let CanMessage::RequestTranslationStatus { module } = &msg {
             if (*module as usize) < 3 {
@@ -426,6 +496,8 @@ async fn cmd_task(
             continue;
         }
 
+=======
+>>>>>>> origin/bry-dev
         // Handle ground sensor commands
         match &msg {
             CanMessage::SetGroundThreshold { sensor, threshold } => {
@@ -473,6 +545,7 @@ async fn cmd_task(
             _ => {}
         }
 
+<<<<<<< HEAD
         // Handle color LED PWM
         if let CanMessage::SetColorLedPwm { duty } = &msg {
             color_led_pwm.set_duty_cycle_fraction(*duty as u16, 255);
@@ -502,6 +575,8 @@ async fn cmd_task(
             continue;
         }
 
+=======
+>>>>>>> origin/bry-dev
         // Handle arm-targeted messages
         if let Some(target) = msg.arm_target() {
             if target.match_module(0) || target.is_module_broadcast() {
@@ -533,6 +608,7 @@ async fn cmd_task(
                     }
                 }
             }
+<<<<<<< HEAD
             continue;
         }
 
@@ -566,6 +642,8 @@ async fn cmd_task(
                     }
                 }
             }
+=======
+>>>>>>> origin/bry-dev
         }
     }
 }
@@ -574,6 +652,7 @@ async fn cmd_task(
 async fn main(spawner: Spawner) {
     rtt_init_print!();
 
+<<<<<<< HEAD
     // Clear interrupt masks that bootloader may have left set
     unsafe {
         core::arch::asm!("cpsie i");
@@ -581,6 +660,8 @@ async fn main(spawner: Spawner) {
         core::arch::asm!("msr BASEPRI, {}", in(reg) 0u32);
     }
 
+=======
+>>>>>>> origin/bry-dev
     let mut config = embassy_stm32::Config::default();
     {
         use embassy_stm32::rcc::*;
@@ -605,7 +686,11 @@ async fn main(spawner: Spawner) {
 
 
     // Initialize CAN logger
+<<<<<<< HEAD
     unsafe { can_logger::init(log_sender()) };
+=======
+    can_logger::init(log_sender());
+>>>>>>> origin/bry-dev
     rprintln!("CAN logger initialized");
 
     let mut led = Output::new(p.PD11, Level::Low, Speed::Low);
@@ -640,7 +725,11 @@ async fn main(spawner: Spawner) {
         I2cConfig::default(),
     );
 
+<<<<<<< HEAD
     let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), MODULE0_SERVO_IDS, MODULE0_STAGE2_IDS);
+=======
+    let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), DummyColorSensor::new(), MODULE0_SERVO_IDS);
+>>>>>>> origin/bry-dev
     info!("Module 0 init: {:?}", module0.init().await);
     let module0 = MODULE0.init(Mutex::new(module0));
 
@@ -666,14 +755,22 @@ async fn main(spawner: Spawner) {
     let i2c2 = I2c::new(
         p.I2C2,
         p.PB10,
+<<<<<<< HEAD
         p.PB12,
+=======
+        p.PB11,
+>>>>>>> origin/bry-dev
         Irqs,
         p.GPDMA1_CH2,
         p.GPDMA1_CH3,
         I2cConfig::default(),
     );
 
+<<<<<<< HEAD
     let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), MODULE1_SERVO_IDS, MODULE1_STAGE2_IDS);
+=======
+    let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), DummyColorSensor::new(), MODULE1_SERVO_IDS);
+>>>>>>> origin/bry-dev
     module1.init().await.ok();
     let module1 = MODULE1.init(Mutex::new(module1));
 
@@ -706,7 +803,11 @@ async fn main(spawner: Spawner) {
         I2cConfig::default(),
     );
 
+<<<<<<< HEAD
     let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), MODULE2_SERVO_IDS, MODULE2_STAGE2_IDS);
+=======
+    let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), DummyColorSensor::new(), MODULE2_SERVO_IDS);
+>>>>>>> origin/bry-dev
     module2.init().await.ok();
     let module2 = MODULE2.init(Mutex::new(module2));
 
@@ -731,6 +832,7 @@ async fn main(spawner: Spawner) {
     let translation_bus = TRANSLATION_BUS.init(Mutex::new(Scs0009::new(tx_trans, rx_trans)));
 
     // =========================================================================
+<<<<<<< HEAD
     // Lidars M703A (6x, 19200 baud full-duplex, nCTRL=PA4, PWR_EN=PB1)
     // =========================================================================
     ///let lidar_nctrl = Output::new(p.PA4, Level::High, Speed::Low);
@@ -838,6 +940,8 @@ async fn main(spawner: Spawner) {
 
 
     // =========================================================================
+=======
+>>>>>>> origin/bry-dev
     // Startup
     // =========================================================================
     for _ in 0..5 {
@@ -845,16 +949,30 @@ async fn main(spawner: Spawner) {
         Timer::after_millis(100).await;
     }
 
+<<<<<<< HEAD
     spawner
         .spawn(led_status_task(led, module0, module1, module2, translation_bus))
         .unwrap();
     spawner
         .spawn(cmd_task(module0, module1, module2, translation_bus, color_led_ch3))
+=======
+    rprintln!("Picotter ready");
+
+    spawner
+        .spawn(led_status_task(led, module0, module1, module2))
+        .unwrap();
+    spawner
+        .spawn(cmd_task(module0, module1, module2, translation_bus))
+>>>>>>> origin/bry-dev
         .unwrap();
 
     // Main task idles
     loop {
         Timer::after_millis(1000).await;
+<<<<<<< HEAD
         info!("Picotter blive 3!");
+=======
+        info!("Picotter alive !");
+>>>>>>> origin/bry-dev
     }
 }
