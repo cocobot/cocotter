@@ -3,10 +3,6 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
-<<<<<<< HEAD
-use flume::{Receiver, Sender};
-=======
->>>>>>> origin/bry-dev
 use embedded_hal::{
     digital::StatefulOutputPin,
     i2c::I2c,

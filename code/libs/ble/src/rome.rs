@@ -1,4 +1,6 @@
-use std::sync::{Arc, Mutex};
+use std::ffi::c_void;
+use std::sync::atomic::{AtomicU16, Ordering};
+use std::sync::OnceLock;
 use std::time::Duration;
 
 use esp_idf_svc::sys;
@@ -31,10 +33,6 @@ static CHR_LOGS_UUID: sys::ble_uuid128_t = sys::ble_uuid128_t {
     u: sys::ble_uuid_t { type_: sys::BLE_UUID_TYPE_128 as u8 },
     value: CHAR_LOGS_UUID_BYTES,
 };
-use esp_idf_svc::sys::{EspError, ESP_FAIL};
-use enumset::enum_set;
-use flume::{self, Receiver, Sender};
-use crate::BleServer;
 
 // ---------------------------------------------------------------------------
 // GATT handle storage (written by ble_gatts_add_svcs, read later)
@@ -268,10 +266,12 @@ pub struct RomePeripheral {
     pub receiver: Receiver<Box<[u8]>>,
 }
 
-impl RomePeripheral {
-    pub fn run(server: BleServer, name: String) -> Self {
-        let (rome_rx, rome_receiver) = flume::unbounded();
-        let (rome_sender, rome_tx) = flume::unbounded::<Box<[u8]>>();
+impl RomeRegistration {
+    /// Finalize Rome service after host has started.
+    /// Copies GATT handles and spawns the notification thread.
+    pub fn start(self) -> RomePeripheral {
+        // Copy handles now that the host has started and assigned them
+        copy_handles();
 
         // Spawn notification thread
         let rome_tx_receiver = self.rome_tx_receiver;

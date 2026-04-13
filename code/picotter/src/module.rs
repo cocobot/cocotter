@@ -11,7 +11,6 @@
 //! - Bank 1, pins 0-3: Pumps 0-3
 
 use crate::arm::{ArmCommand, ArmError, ArmState};
-<<<<<<< HEAD
 use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage, Stage2Target};
 use crate::color_sensor::ColorTable;
 use crate::i2c_devices::{GPIOBank, I2cDevices};
@@ -21,24 +20,13 @@ use embedded_hal_async::i2c::I2c;
 use embedded_io_async::{Read, Write};
 use log::debug;
 use rtt_target::rprintln;
-=======
-use crate::i2c_devices::{GPIOBank, I2cDevices};
-use crate::scs0009::{Scs0009, ScsError};
-use embedded_hal_async::i2c::I2c;
-use embedded_io_async::{Read, Write};
-use rtt_target::rprintln;
-use cancaner::{ArmTarget, CanMessage, Color};
->>>>>>> origin/bry-dev
 
 /// Number of arms per module
 pub const ARMS_PER_MODULE: usize = 4;
 
-<<<<<<< HEAD
 /// Number of stage2 servos per module
 pub const STAGE2_SERVOS_PER_MODULE: usize = 2;
 
-=======
->>>>>>> origin/bry-dev
 /// Pin assignments for valves (Bank 0, pins 0-3)
 const VALVE_BANK: GPIOBank = GPIOBank::Bank0;
 const VALVE_PINS: [u8; 4] = [0, 1, 2, 3];
@@ -51,7 +39,6 @@ const LED_PIN: u8 = 7;
 const PUMP_BANK: GPIOBank = GPIOBank::Bank1;
 const PUMP_PINS: [u8; 4] = [0, 1, 2, 3];
 
-<<<<<<< HEAD
 /// Stage2 servo state
 #[derive(Debug, Clone, Default)]
 pub struct Stage2ServoState {
@@ -100,11 +87,6 @@ impl Stage2ServoState {
 pub struct ModuleState {
     pub arms: [ArmState; ARMS_PER_MODULE],
     pub stage2: [Stage2ServoState; STAGE2_SERVOS_PER_MODULE],
-=======
-/// Module state containing all 4 arms
-pub struct ModuleState {
-    pub arms: [ArmState; ARMS_PER_MODULE],
->>>>>>> origin/bry-dev
     pub module_id: u8,
 }
 
@@ -117,10 +99,7 @@ impl ModuleState {
                 ArmState::new(),
                 ArmState::new(),
             ],
-<<<<<<< HEAD
             stage2: [Stage2ServoState::new(), Stage2ServoState::new()],
-=======
->>>>>>> origin/bry-dev
             module_id,
         }
     }
@@ -131,7 +110,6 @@ impl ModuleState {
             .filter(move |&arm| target.matches(self.module_id, arm))
             .map(move |arm| self.arms[arm as usize].to_status_message(self.module_id, arm))
     }
-<<<<<<< HEAD
 
     /// Build stage2 status messages for specified target
     pub fn stage2_status_messages(
@@ -149,46 +127,21 @@ impl ModuleState {
 /// Module controller
 /// Manages 4 arms with shared UART (servos) and I2C (IO expander, ground sensor, color sensors)
 pub struct Module<TX, RX, I2C>
-=======
-}
-
-/// Color sensor interface
-pub trait ColorSensor {
-    /// Read color for specified arm
-    async fn read_color(&mut self, arm: u8) -> Result<Color, ArmError>;
-}
-
-/// Module controller
-/// Manages 4 arms with shared UART (servos) and I2C (IO expander, ground sensor)
-pub struct Module<TX, RX, I2C, CS>
->>>>>>> origin/bry-dev
 where
     TX: Write,
     RX: Read,
     I2C: I2c,
-<<<<<<< HEAD
-=======
-    CS: ColorSensor,
->>>>>>> origin/bry-dev
 {
     /// Module ID (0-2)
     pub id: u8,
     /// Servo controller (shared for all 4 servos)
     servo: Scs0009<TX, RX>,
-<<<<<<< HEAD
     /// I2C devices (PCA9535 + VCNL4040 + TLA2528 + TCA9548A/TCS3472)
     i2c_devices: I2cDevices<I2C>,
-=======
-    /// I2C devices (PCA9535 + VCNL4040 + TLA2528)
-    i2c_devices: I2cDevices<I2C>,
-    /// Color sensor
-    color_sensor: CS,
->>>>>>> origin/bry-dev
     /// State of all 4 arms
     state: ModuleState,
     /// Servo IDs for each arm (configurable)
     servo_ids: [u8; ARMS_PER_MODULE],
-<<<<<<< HEAD
     /// Servo IDs for stage2 servos (configurable)
     stage2_servo_ids: [u8; STAGE2_SERVOS_PER_MODULE],
     /// Per-arm color decoding tables
@@ -196,38 +149,23 @@ where
 }
 
 impl<TX, RX, I2C> Module<TX, RX, I2C>
-=======
-}
-
-impl<TX, RX, I2C, CS> Module<TX, RX, I2C, CS>
->>>>>>> origin/bry-dev
 where
     TX: Write,
     RX: Read,
     I2C: I2c,
-<<<<<<< HEAD
-=======
-    CS: ColorSensor,
->>>>>>> origin/bry-dev
 {
     /// Create new module
     pub fn new(
         id: u8,
         servo: Scs0009<TX, RX>,
         i2c_devices: I2cDevices<I2C>,
-<<<<<<< HEAD
         servo_ids: [u8; ARMS_PER_MODULE],
         stage2_servo_ids: [u8; STAGE2_SERVOS_PER_MODULE],
-=======
-        color_sensor: CS,
-        servo_ids: [u8; ARMS_PER_MODULE],
->>>>>>> origin/bry-dev
     ) -> Self {
         Self {
             id,
             servo,
             i2c_devices,
-<<<<<<< HEAD
             state: ModuleState::new(id),
             servo_ids,
             stage2_servo_ids,
@@ -237,11 +175,6 @@ where
                 ColorTable::new(),
                 ColorTable::new(),
             ],
-=======
-            color_sensor,
-            state: ModuleState::new(id),
-            servo_ids,
->>>>>>> origin/bry-dev
         }
     }
 
@@ -263,7 +196,6 @@ where
 
     /// Initialize IO expander pins and ground sensor
     pub async fn init(&mut self) -> Result<(), ArmError> {
-<<<<<<< HEAD
         //debug!("Module {}: Scanning servos", self.id);
         //self.scan_servos().await;
 
@@ -293,12 +225,6 @@ where
         //    };
 
         debug!("Module {}: Initializing I2C devices", self.id);
-=======
-        log::debug!("Module {}: Scanning servos", self.id);
-        self.scan_servos().await;
-
-        log::debug!("Module {}: Initializing I2C devices", self.id);
->>>>>>> origin/bry-dev
         self.i2c_devices
             .init()
             .await
@@ -523,17 +449,10 @@ where
             }
         }
 
-<<<<<<< HEAD
         // Read color from TCS3472 via mux, match against table
         match self.i2c_devices.tcs_read_all(arm).await {
             Ok(crgb) => arm_state.color = self.color_tables[arm as usize].match_color(&crgb),
             Err(_) => arm_state.color = 255,
-=======
-        // Read color
-        match self.color_sensor.read_color(arm).await {
-            Ok(color) => arm_state.color = color,
-            Err(_) => arm_state.color = Color::Unknown,
->>>>>>> origin/bry-dev
         }
 
         Ok(())
@@ -623,7 +542,6 @@ where
                     self.update_arm_state(target.arm).await
                 }
             }
-<<<<<<< HEAD
             CanMessage::SetColorConfig {
                 color_id,
                 channel,
@@ -651,8 +569,6 @@ where
                         .await
                 }
             }
-=======
->>>>>>> origin/bry-dev
             _ => return None,
         };
 
@@ -663,7 +579,6 @@ where
     pub fn get_status_messages(&self, target: ArmTarget) -> impl Iterator<Item = CanMessage> + '_ {
         self.state.status_messages(target)
     }
-<<<<<<< HEAD
 
     /// Get stage2 status messages for target
     pub fn get_stage2_status_messages(
@@ -868,8 +783,6 @@ where
             None
         }
     }
-=======
->>>>>>> origin/bry-dev
 }
 
 fn scs_error_to_code(e: &ScsError) -> u8 {

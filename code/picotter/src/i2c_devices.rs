@@ -4,11 +4,8 @@
 //! on the same I2C bus. Access is sequential (no concurrent I2C operations).
 
 use embedded_hal_async::i2c::I2c;
-<<<<<<< HEAD
 use rtt_target::rprintln;
 use tcs3472::Tcs3472;
-=======
->>>>>>> origin/bry-dev
 
 use crate::ground_sensors::GroundSensorState;
 
@@ -26,10 +23,7 @@ pub enum GPIOBank {
 const PCA9535_ADDR: u8 = 0x20;
 const VCNL4040_ADDR: u8 = 0x60;
 const TLA2528_ADDR: u8 = 0x13;
-<<<<<<< HEAD
 const TCA9548_ADDR: u8 = 0x70;
-=======
->>>>>>> origin/bry-dev
 
 // VCNL4040 registers
 const REG_PS_CONF1_2: u8 = 0x03;
@@ -77,12 +71,9 @@ impl<I2C: I2c> I2cDevices<I2C> {
         // Init TLA2528 ADC
         self.tla_init().await?;
 
-<<<<<<< HEAD
         // Init TCS3472 color sensors (via TCA9548A mux)
         self.tcs_init_all().await.ok();
 
-=======
->>>>>>> origin/bry-dev
         Ok(())
     }
 
@@ -308,7 +299,6 @@ impl<I2C: I2c> I2cDevices<I2C> {
             .write(TLA2528_ADDR, &[TLA_OPCODE_WRITE | reg, value])
             .await
     }
-<<<<<<< HEAD
 
     // ==================== TCA9548A mux + TCS3472 color sensor methods ====================
 
@@ -382,6 +372,4 @@ fn tcs_unwrap_i2c<E>(e: tcs3472::Error<E>) -> E {
         tcs3472::Error::I2C(e) => e,
         tcs3472::Error::InvalidInputData => panic!("TCS3472: invalid input data"),
     }
-=======
->>>>>>> origin/bry-dev
 }

@@ -1,4 +1,3 @@
-use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use asserv::holonomic::{conf::*, Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
@@ -130,44 +129,29 @@ fn main() {
                 Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
                 Order::RunPath(path) => asserv.run_path(path),
                 Order::MecaTake => {
-                    meca.lower_arm_grab(0, 3);
-                    meca.lower_arm_grab(0, 2);
-                    meca.lower_arm_grab(0, 1);
-                    meca.lower_arm_grab(0, 0);
+                    meca.lower_arm_grab(0);
                     log::info!("TO_DO wait with feedback from meca");
                     std::thread::sleep(Duration::from_secs(2));
                 }
                 Order::MecaRaiseGrab => {
-                    meca.grab(0, 0);
-                    meca.raise_arm_grab(0, 3);
-                    meca.raise_arm_grab(0, 2);
-                    meca.raise_arm_grab(0, 1);
-                    meca.raise_arm_grab(0, 0);
+                    meca.grab(0);
+                    meca.raise_arm_grab(0);
                     log::info!("TODO wait with feedback from meca");
                     std::thread::sleep(Duration::from_secs(2));
                 }
                 Order::MecaRaiseDrop => {
-                    meca.grab(0, 0);
-                    meca.raise_arm_release(0, 3);
-                    meca.raise_arm_release(0, 2);
-                    meca.raise_arm_release(0, 1);
-                    meca.raise_arm_release(0, 0);
+                    meca.grab(0);
+                    meca.raise_arm_release(0);
                     log::info!("TODO wait with feedback from meca");
                     std::thread::sleep(Duration::from_secs(2));
                 }
                 Order::MecaIdlePosGrab => {
-                    meca.idle_arm_grab(0, 3);
-                    meca.idle_arm_grab(0, 2);
-                    meca.idle_arm_grab(0, 1);
-                    meca.idle_arm_grab(0, 0);
+                    meca.idle_arm_grab(0);
                     log::info!("TODO wait with feedback from meca");
                     std::thread::sleep(Duration::from_secs(2));
                 }
                 Order::MecaIdlePosDrop => {
-                    meca.idle_arm_release(0, 3);
-                    meca.idle_arm_release(0, 2);
-                    meca.idle_arm_release(0, 1);
-                    meca.idle_arm_release(0, 0);
+                    meca.idle_arm_release(0);
                     log::info!("TODO wait with feedback from meca");
                     std::thread::sleep(Duration::from_secs(2));
                 }
@@ -217,10 +201,5 @@ fn main() {
         //pause between orders
         //thread::sleep(Duration::from_secs(2));
 
-    }
-    log::info!("Job done!");
-
-    loop {
-        thread::sleep(Duration::from_millis(100));
     }
 }

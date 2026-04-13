@@ -13,4 +13,4 @@ default = ["std"]
 std = []
 
 [target.'cfg(target_os = "espidf")'.dependencies]
-esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
+esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }

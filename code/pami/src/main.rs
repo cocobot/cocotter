@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-use flume::Sender;
-use std::time::{Duration, Instant};
-=======
->>>>>>> origin/bry-dev
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use asserv::differential::conf::*;

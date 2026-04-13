@@ -8,5 +8,5 @@ embedded-hal = "1.0"
 log = "0.4"
 
 [target.'cfg(target_os = "espidf")'.dependencies]
-esp-idf-svc = { version = "0.51", features = ["experimental", "alloc"] }
+esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }
 esp32_encoder = { path = "../../libs/esp32_encoder" }

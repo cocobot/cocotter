@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-use flume::{Receiver, Sender};
-=======
->>>>>>> origin/bry-dev
 use std::time::{Duration, Instant};
 use embedded_graphics::{
     draw_target::DrawTarget,

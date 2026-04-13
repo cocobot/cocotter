@@ -3,12 +3,12 @@ use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
 use board_common::Periodicity;
 use board_sabotter::{SabotterBoard, SabotterLeds};
-use cancaner::Color as CanColor;
 use embedded_hal::digital::StatefulOutputPin;
 use flume::{Receiver, Sender};
 use sch16t::Sch16t;
 use crate::movement::MovementLowLevelHardware;
 use crate::meca::Meca;
+use crate::can::GalipeurCan;
 
 
 /// Everything needed for PAMI routines
@@ -47,8 +47,11 @@ impl<B: SabotterBoard> GalipeurRoutines<B> {
         gyro.init().unwrap();
         let asserv_hardware = MovementLowLevelHardware::new(gyro, board.motors().unwrap());
 
+        // Setup CAN interface
+        let can_interface = GalipeurCan::new(board.can().unwrap());
+
         // Setup meca
-        let meca = Meca::new(board.can().unwrap());
+        let meca = Meca::new(can_interface.clone());
 
         Self {
             asserv: Asserv::new(asserv_hardware),
@@ -116,10 +119,10 @@ impl<B: SabotterBoard> GalipeurRoutines<B> {
                         module: i_module as u8,
                         arm: i_arm as u8,
                         position: arm.position,
-                        color: match arm.color {
-                            CanColor::Unknown => rome::params::MecaArmTmStateColor::Unknown,
-                            CanColor::Yellow => rome::params::MecaArmTmStateColor::Yellow,
-                            CanColor::Blue => rome::params::MecaArmTmStateColor::Blue,
+                        color: match arm.color {                            
+                            0 => rome::params::MecaArmTmStateColor::Yellow,
+                            1 => rome::params::MecaArmTmStateColor::Blue,
+                            _ => rome::params::MecaArmTmStateColor::Unknown,
                         },
                         pump: arm.pump,
                         valve: arm.valve,

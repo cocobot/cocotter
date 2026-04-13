@@ -7,10 +7,7 @@
 
 use embedded_io_async::{Read, Write};
 use embassy_time::{with_timeout, Duration, Timer};
-<<<<<<< HEAD
 use rtt_target::rprintln;
-=======
->>>>>>> origin/bry-dev
 
 const HEADER: [u8; 2] = [0xFF, 0xFF];
 
@@ -43,13 +40,10 @@ impl<TX: Write, RX: Read> Scs0009<TX, RX> {
         self.write_byte(0xFE, REG_ID, new_id).await
     }
 
-<<<<<<< HEAD
     pub async fn modify_id(&mut self, init_id: u8, new_id: u8) -> Result<(), ScsError> {
         self.write_byte(init_id, REG_ID, new_id).await
     }
 
-=======
->>>>>>> origin/bry-dev
     /// Change a specific servo's ID
     /// Call `unlock_eeprom()` before and `lock_eeprom()` after to persist
     pub async fn change_id(&mut self, old_id: u8, new_id: u8) -> Result<(), ScsError> {
@@ -71,10 +65,6 @@ impl<TX: Write, RX: Read> Scs0009<TX, RX> {
         let len: u8 = 2;
         let checksum = Self::calc_checksum(&[id, len, INST_PING]);
         let packet = [HEADER[0], HEADER[1], id, len, INST_PING, checksum];
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/bry-dev
         self.send_packet(&packet).await?;
 
         match self.read_response().await {
@@ -220,13 +210,8 @@ impl<TX: Write, RX: Read> Scs0009<TX, RX> {
 
     /// Flush RX buffer
     async fn flush_rx(&mut self) {
-<<<<<<< HEAD
         let mut buf = [0u8; 64];
         for _ in 0..3 {
-=======
-        let mut buf = [0u8; 1];
-        loop {
->>>>>>> origin/bry-dev
             if with_timeout(Duration::from_millis(1), self.rx.read(&mut buf))
                 .await
                 .is_err()

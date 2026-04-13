@@ -1,11 +1,10 @@
 [package]
 name = "picotter"
 version = "0.1.0"
-<<<<<<< HEAD
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-cancaner = { path = "../libs/cancaner" }
+cancaner = { path = "../libs/cancaner", default-features = false }
 embassy-executor = { version = "0.9", features = ["arch-cortex-m", "executor-thread"] }
 embassy-futures = "0.1"
 embassy-stm32 = { version = "0.4", features = ["stm32h562vg", "time-driver-any"] }
@@ -21,23 +20,3 @@ cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
 cortex-m-rt = "0.7"
 static_cell = "2"
 tcs3472 = { version = "1.0", features = ["async"] }
-=======
-edition = "2024"
-
-[dependencies]
-cortex-m = { version = "0.7", features = ["critical-section-single-core"] }
-cortex-m-rt = "0.7"
-embassy-executor = { version = "0.9", features = ["arch-cortex-m", "executor-thread"] }
-embassy-futures = "0.1"
-embassy-stm32 = { version = "0.4", features = ["stm32h562rg", "memory-x", "time-driver-any"] }
-embassy-sync = "0.6"
-embassy-time = "0.5"
-embedded-can = "0.4"
-embedded-hal-async = "1.0"
-embedded-io-async = "0.6"
-log = "0.4"
-panic-rtt-target = "0.2"
-rtt-target = "0.6"
-static_cell = "2"
-cancaner = { path = "../libs/cancaner", default-features = false }
->>>>>>> origin/bry-dev

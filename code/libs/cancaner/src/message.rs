@@ -1148,7 +1148,6 @@ pub fn ping_response(value: u8) -> CanMessage {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use embedded_can::Id;
 
     /// Helper: encode then parse, assert roundtrip equality
     fn roundtrip(msg: &CanMessage) {

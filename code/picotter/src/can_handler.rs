@@ -12,15 +12,9 @@ use embassy_time::Timer;
 use embedded_can::Id;
 use rtt_target::rprintln;
 use cortex_m::peripheral::SCB;
-<<<<<<< HEAD
 
 use crate::can_logger::{self, LOG_CHANNEL_CAPACITY};
 use crate::can_protocol::{CanMessage, CanMessageFrameExt};
-=======
-use cancaner::CanMessage;
-
-use crate::can_logger::{self, LOG_CHANNEL_CAPACITY};
->>>>>>> origin/bry-dev
 
 /// Channel capacity for CAN messages (increased from 8 to 32)
 /// Buffers messages during bus errors/BusWarning and prevents message loss
@@ -66,10 +60,7 @@ pub async fn can_rx_task(mut can_rx: CanRx<'static>) {
     let mut dropped_count: u32 = 0;
 
     loop {
-<<<<<<< HEAD
         rprintln!("Waiting for CAN frame...");
-=======
->>>>>>> origin/bry-dev
         match can_rx.read().await {
             Ok(envelope) => {
                 if consecutive_errors > 0 {

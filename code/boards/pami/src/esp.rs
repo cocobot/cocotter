@@ -9,16 +9,9 @@ use esp_idf_svc::{
             attenuation,
             oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
         },
-<<<<<<< HEAD
-        gpio::{ADCPin, AnyInputPin, Gpio1, Input, InputPin, Output, PinDriver, Pull},
-        i2c::{I2cConfig, I2cDriver},
-        ledc::{LedcDriver, LedcTimerDriver, Resolution, config::TimerConfig},
-        pcnt::{PcntUnitDriver, config::{ChannelEdgeAction, ChannelLevelAction, GlitchFilterConfig, UnitConfig}},
-=======
         gpio::{AnyInputPin, AnyOutputPin, Input, Output, PinDriver, Gpio1},
         i2c::{I2cConfig, I2cDriver},
         ledc::{LedcDriver, LedcTimerDriver, Resolution, config::TimerConfig},
->>>>>>> origin/bry-dev
         peripherals::Peripherals,
         units::Hertz,
     },
@@ -46,18 +39,11 @@ pub type I2cType = MutexDevice<'static, I2cDriver<'static>>;
 pub type PamiDisplay = Ssd1306<DisplayI2CInterface<I2cType>, DisplaySize128x64, BufferedGraphicsMode<DisplaySize128x64>>;
 
 
-<<<<<<< HEAD
-pub struct EspPamiBoard<'d> {
-    battery_level: Option<PamiBatteryLevel>,
-    emergency_stop: Option<PinDriver<'static, Input>>,
-    starting_cord: Option<PinDriver<'static, Input>>,
-=======
 pub struct EspPamiBoard {
     battery_reader: Option<PamiBatteryReader>,
     emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
     starting_cord: Option<PinDriver<'static, AnyInputPin, Input>>,
     ble: Option<BtDriver<'static, Ble>>,
->>>>>>> origin/bry-dev
     buttons: Option<EspPamiButtons>,
     display: Option<PamiDisplay>,
     leds: Option<PamiLeds<PinDriver<'static, Output>>>,
@@ -233,11 +219,7 @@ impl PamiBoard for EspPamiBoard {
 }
 
 
-<<<<<<< HEAD
-pub struct PamiBatteryLevel(AdcChannelDriver<'static, <Gpio1<'static> as ADCPin>::AdcChannel, Rc<AdcDriver<'static, ADCU1>>>);
-=======
 pub struct PamiBatteryReader(AdcChannelDriver<'static, Gpio1, Rc<AdcDriver<'static, ADC1>>>);
->>>>>>> origin/bry-dev
 
 impl PamiBatteryReader {
     const fn raw_to_mv(raw: f32) -> f32 {
@@ -313,67 +295,6 @@ impl VlxSensor for PamiVlxSensor {
 }
 
 
-<<<<<<< HEAD
-pub struct EspEncoder<'d> {
-    unit: PcntUnitDriver<'d>,
-}
-
-impl<'d> EspEncoder<'d> {
-    pub fn new(pin_a: impl InputPin + 'd, pin_b: impl InputPin + 'd) -> Result<Self, EspError> {
-        const LOW_LIMIT: i32 = -100;
-        const HIGH_LIMIT: i32 = 100;
-
-        let mut unit = PcntUnitDriver::new(&UnitConfig {
-            low_limit: LOW_LIMIT,
-            high_limit: HIGH_LIMIT,
-            accum_count: true,
-            ..Default::default()
-        })?;
-
-        unit.set_glitch_filter(Some(&GlitchFilterConfig {
-            max_glitch: std::time::Duration::from_nanos(1023),
-            ..Default::default()
-        }))?;
-
-        // SAFETY: copied from example code
-        let (dup_pin_a, dup_pin_b) = unsafe {
-            (
-                AnyInputPin::steal(pin_a.pin()),
-                AnyInputPin::steal(pin_b.pin()),
-            )
-        };
-
-        unit.add_channel(Some(pin_a), Some(pin_b), &Default::default())?
-            .set_edge_action(ChannelEdgeAction::Decrease, ChannelEdgeAction::Increase)?
-            .set_level_action(ChannelLevelAction::Keep, ChannelLevelAction::Inverse)?;
-
-        unit.add_channel(Some(dup_pin_b), Some(dup_pin_a), &Default::default())?
-            .set_edge_action(ChannelEdgeAction::Increase, ChannelEdgeAction::Decrease)?
-            .set_level_action(ChannelLevelAction::Keep, ChannelLevelAction::Inverse)?;
-
-        unit.enable()?;
-
-        unit.add_watch_points_and_clear([LOW_LIMIT, HIGH_LIMIT])?;
-
-        unit.stop()?;
-        unit.clear_count()?;
-        unit.start()?;
-
-        Ok(Self { unit })
-    }
-}
-
-impl Encoder<i32> for EspEncoder<'_> {
-    type Error = EspError;
-
-    fn get_value(&self) -> Result<i32, EspError> {
-        self.unit.get_count()
-    }
-}
-
-
-=======
->>>>>>> origin/bry-dev
 pub struct EspPamiButtons {
     tca: TCA6408<I2cType>,
     pin: PinDriver<'static, Input>,

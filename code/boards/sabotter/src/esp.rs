@@ -4,14 +4,13 @@ use embedded_can::blocking::Can;
 use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
-    bt::{Ble, BtDriver},
     hal::{
         can::{CanConfig, CanDriver},
         delay::BLOCK,
         gpio::{AnyOutputPin, Output, PinDriver},
         i2c::{I2cConfig, I2cDriver, I2cError},
         ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},
-        prelude::Peripherals,
+        peripherals::Peripherals,
         spi::{self, SpiConfig, SpiDeviceDriver, SpiDriver},
         units::Hertz,
         sys::{self, ets_delay_us},
@@ -19,7 +18,7 @@ use esp_idf_svc::{
     nvs::EspDefaultNvsPartition,
 };
 use flume::{Receiver, Sender};
-use ble::{BleBuilder, RomePeripheral};
+use ble::{BleBuilder, EspSelfOtaHandler};
 use cancaner::CanInterface;
 use pca9535::{Pca9535Immediate, ExpanderError, GPIOBank, StandardExpanderInterface};
 use esp32_encoder::Encoder as EspEncoder;
@@ -27,14 +26,13 @@ use crate::{SabotterBoard, SabotterLeds, SabotterMotor};
 
 
 type EspI2c = MutexDevice<'static, I2cDriver<'static>>;
-type EspOutputPin = PinDriver<'static, AnyOutputPin, Output>;
+type EspOutputPin = PinDriver<'static, Output>;
 
 
 pub struct EspSabotterBoard {
     com_led: Option<EspOutputPin>,
     imu_spi: Option<SpiDeviceDriver<'static, SpiDriver<'static>>>,
     can: Option<CanDriver<'static>>,
-    ble: Option<BtDriver<'static, Ble>>,
     motors: Option<[SabotterMotor<EspEncoder<'static>, LedcDriver<'static>>; 3]>,
     motor_enable: Option<EspOutputPin>,
     gpio_expanders: GpioExpanders,
@@ -62,7 +60,7 @@ impl SabotterBoard for EspSabotterBoard {
     fn init() -> Self {
         esp_idf_svc::sys::link_patches();
         esp_idf_svc::log::EspLogger::initialize_default();
-        let nvs = EspDefaultNvsPartition::take().unwrap();
+        let _nvs = EspDefaultNvsPartition::take().unwrap();
 
         let peripherals = Peripherals::take().unwrap();
 
@@ -115,22 +113,20 @@ impl SabotterBoard for EspSabotterBoard {
             SabotterMotor {
                 pwm: LedcDriver::new(peripherals.ledc.channel0, &motor_pwm, peripherals.pins.gpio17).unwrap(),
                 dir: LedcDriver::new(peripherals.ledc.channel1, &motor_pwm, peripherals.pins.gpio18).unwrap(),
-                encoder: EspEncoder::new(peripherals.pcnt0, peripherals.pins.gpio12, peripherals.pins.gpio11).unwrap(),
+                encoder: EspEncoder::new(peripherals.pins.gpio12, peripherals.pins.gpio11).unwrap(),
             },
             SabotterMotor {
                 pwm: LedcDriver::new(peripherals.ledc.channel2, &motor_pwm, peripherals.pins.gpio3).unwrap(),
                 dir: LedcDriver::new(peripherals.ledc.channel3, &motor_pwm, peripherals.pins.gpio8).unwrap(),
-                encoder: EspEncoder::new(peripherals.pcnt1, peripherals.pins.gpio16, peripherals.pins.gpio15).unwrap(),
+                encoder: EspEncoder::new(peripherals.pins.gpio16, peripherals.pins.gpio15).unwrap(),
             },
             SabotterMotor {
                 pwm: LedcDriver::new(peripherals.ledc.channel4, &motor_pwm, peripherals.pins.gpio35).unwrap(),
                 dir: LedcDriver::new(peripherals.ledc.channel5, &motor_pwm, peripherals.pins.gpio48).unwrap(),
-                encoder: EspEncoder::new(peripherals.pcnt2, peripherals.pins.gpio14, peripherals.pins.gpio13).unwrap(),
+                encoder: EspEncoder::new(peripherals.pins.gpio14, peripherals.pins.gpio13).unwrap(),
             },
         ];
         let motor_enable = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio7)).unwrap();
-
-        let ble = Some(BtDriver::new(peripherals.modem, Some(nvs.clone())).unwrap());
 
         /* Unused
         let motor_reset = gpio_expander.get_pin(3);
@@ -172,7 +168,6 @@ impl SabotterBoard for EspSabotterBoard {
             com_led: Some(com_led),
             imu_spi: Some(imu_spi),
             can: Some(can),
-            ble,
             motors: Some(motors),
             motor_enable: Some(motor_enable),
             gpio_expanders,
@@ -243,13 +238,28 @@ impl SabotterBoard for EspSabotterBoard {
     }
 
     fn rome(&mut self, device_name: String) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
-        let ble = self.ble.take()?;
         // Note: for now, client is not used, so we can easily initialize both server and client
         // and drop the client. But if the client (and `.with_scanner()`) are needed,
         // another approach must be implemented. Maybe by changing the BLE API.
-        let (ble_server, _ble_client) = BleBuilder::new(ble).run();
-        let RomePeripheral { sender, receiver } = RomePeripheral::run(ble_server, device_name);
-        Some((sender, receiver))
+        let (ble_server, _ble_client) = BleBuilder::new().run();
+
+        let rome_reg = ble::rome::register_gatt();
+        let ota_reg = ble::ota::register_gatt(2); // target 0 = self, target 1 = picotter
+
+        ble_server.start_host();
+        let rome = rome_reg.start();
+        log::error!("TODO enable can_ota_relay here");
+        //let picotter_ota = can_ota_relay::CanOtaRelayHandler::new(&can_iface);
+        let _ota = ota_reg.start(vec![
+            Box::new(EspSelfOtaHandler::new()),
+           // Box::new(picotter_ota),
+        ]);
+        
+
+        ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();
+        ble_server.start_advertising().unwrap();
+
+        Some((rome.sender, rome.receiver))
     }
 }
 

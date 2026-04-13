@@ -1,10 +1,9 @@
 use std::sync::{Arc, Mutex};
-use embedded_can::Frame;
+use cancaner::{ARMS_PER_MODULE, ArmFlags, ArmTarget, CanMessage, STAGE2_SERVOS_PER_MODULE, Stage2Target};
+
+use crate::can::GalipeurCan;
 use board_sabotter::SabotterBoard;
-use cancaner::{ArmFlags, ArmTarget, CanInterface, CanMessage, Color, LogDecoder, ARMS_PER_MODULE};
 
-
-const MAX_TX_TRIES: u32 = 3;
 
 #[derive(Clone, Default, Debug)]
 pub struct ArmState {
@@ -48,13 +47,13 @@ pub struct MecaState {
 
 /// Low-level proxy: read CAN-updated state + send direct commands
 #[derive(Clone)]
-pub struct MecaProxy {
-    pub(super) can: CanInterface,
-    pub(super) state: Arc<Mutex<MecaState>>,
+pub struct MecaProxy<B: SabotterBoard> {
+    state: Arc<Mutex<MecaState>>,
+    can: GalipeurCan<B>,
 }
 
-impl MecaProxy {
-    pub(super) fn new(can: &CanInterface) -> Self {
+impl<B: SabotterBoard> MecaProxy<B> {
+    pub fn new(can: GalipeurCan<B>) -> Self {
         let state = Arc::new(Mutex::new(MecaState::default()));
         let s = state.clone();
 
@@ -135,9 +134,13 @@ impl MecaProxy {
         });
 
         Self {
-            can: can.clone(),
+            can,
             state,
         }
+    }
+
+    pub fn send_message(&self, msg: &CanMessage) {
+        self.can.send(msg);
     }
 
     // --- State reads (updated by CAN callbacks) ---

@@ -1,8 +1,10 @@
 mod proxy;
 
-pub use proxy::{ArmState, MecaProxy, MecaState, TranslationState};
-
+use proxy::{MecaProxy, MecaState};
 use board_sabotter::SabotterBoard;
+use std::time::Duration;
+
+use crate::can::GalipeurCan;
 
 
 /// High-level meca interface — cloneable, passes to threads
@@ -11,9 +13,8 @@ pub struct Meca<B: SabotterBoard> {
 }
 
 impl<B: SabotterBoard> Meca<B> {
-    pub fn new(can: B::Can) -> Self {
-        let mut proxy = MecaProxy::new(can);
-        proxy.init_rx();
+    pub fn new(can: GalipeurCan<B>) -> Self {
+        let proxy = MecaProxy::new(can);
         Self { proxy }
     }
 
@@ -95,7 +96,7 @@ impl<B: SabotterBoard> Meca<B> {
             }
 
             // Wait for responses
-            thread::sleep(Duration::from_millis(200));
+            std::thread::sleep(Duration::from_millis(200));
 
             // Read and log state
             let state = self.proxy.get_state();
@@ -111,7 +112,7 @@ impl<B: SabotterBoard> Meca<B> {
             }
             log::info!("---");
 
-            thread::sleep(Duration::from_millis(500));
+            std::thread::sleep(Duration::from_millis(500));
         }
     }
 
