@@ -1,13 +1,14 @@
 use std::time::Duration;
 use flume::{Receiver, Sender};
-use smart_leds::{RGB8, hsv::{Hsv, hsv2rgb}};
+use smart_leds::{RGB, RGB8, hsv::{Hsv, hsv2rgb}};
 use smart_leds::SmartLedsWrite;
 use super::SmartLeds;
 
 pub enum LedMessage {
     LidarClosest { angle: f32, distance: u16 },
     GameColor { color: RGB8 },
-    BatteryLow,
+    BatteryLowLogic,
+    BatteryLowPower,
 }
 
 pub struct Leds {
@@ -39,7 +40,8 @@ struct LedsInternal {
     lidar_angle: f32,
     lidar_distance: u16,
     game_color: RGB8,
-    battery_low: bool,
+    battery_low_logic: bool,
+    battery_low_power: bool,
 }
 
 impl LedsInternal {
@@ -50,7 +52,8 @@ impl LedsInternal {
             lidar_angle: 0.0,
             lidar_distance: 0,
             game_color: RGB8 { r: 0, g: 0, b: 0 },
-            battery_low: false,
+            battery_low_logic: false,
+            battery_low_power: false,
         }
     }
 
@@ -67,8 +70,11 @@ impl LedsInternal {
                     LedMessage::GameColor { color } => {
                         self.game_color = color;
                     }
-                    LedMessage::BatteryLow => {
-                        self.battery_low = true;
+                    LedMessage::BatteryLowLogic => {
+                        self.battery_low_logic = true;
+                    }
+                    LedMessage::BatteryLowPower => {
+                        self.battery_low_power = true;
                     }
                 }
             }
@@ -92,12 +98,23 @@ impl LedsInternal {
             let mut pixels = Vec::new();
 
             // Battery low: blink all LEDs red, overrides everything
-            if self.battery_low {
+            if self.battery_low_logic|| self.battery_low_power {
                 let blink_on = (start.elapsed().subsec_millis() % 500) < 250;
-                let color = if blink_on { RGB8 { r: 255, g: 0, b: 0 } } else { RGB8 { r: 0, g: 0, b: 0 } };
-                log::info!("Color: {:?}, Blink: {}, Time: {}", color, blink_on, start.elapsed().subsec_millis());
-                for _ in 0..41 {
-                    pixels.push(color);
+                let color = if blink_on {
+                    RGB8 { r: 255, g: 0, b: 0 }
+                } else {
+                    RGB8 { r: 0, g: 0, b: 0 }
+                };
+                for i in 0..41 {
+                    if !self.battery_low_logic && ((i >= 1 && i <= 7) || (i >= 27)) {
+                        pixels.push(RGB8 { r: 0, g: 0, b: 0 });
+                    }
+                    else if !self.battery_low_power && (i >= 8 && i <= 27){
+                        pixels.push(RGB8 { r: 0, g: 0, b: 0 });
+                    }
+                    else {
+                        pixels.push(color);
+                    }
                 }
             } else {
                 for i in 0..41 {

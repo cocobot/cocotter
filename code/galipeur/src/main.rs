@@ -63,7 +63,7 @@ fn main() {
                     log::info!("Battery: {:.0} mV (raw: {})", mv, raw);
                     if mv < BATTERY_LOW_MV {
                         log::warn!("Battery low! {:.0} mV", mv);
-                        battery_led_sender.send(led::LedMessage::BatteryLow).ok();
+                        battery_led_sender.send(led::LedMessage::BatteryLowLogic).ok();
                     }
                 }
                 thread::sleep(Duration::from_secs(1));
@@ -139,6 +139,16 @@ fn main() {
     let can_iface = can::CanInterface::new(board.can_bus.take().expect("CAN bus not initialized"));
     can::setup_can_log(&can_iface);
 
+    let power_bat_led_sender = led_sender.clone();
+    can_iface.add_callback(move |msg| {
+        if let cancaner::CanMessage::BatteryStatus { voltage_mv, modules_mask } = msg {
+            log::info!("Meca battery: {} mV (modules: 0b{:03b})", voltage_mv, modules_mask);
+            if *voltage_mv < 14_830 {
+                power_bat_led_sender.send(led::LedMessage::BatteryLowPower).ok();
+            }
+        }
+    });
+
     let (ble_server, _ble_client) = BleBuilder::new().run();
 
     // Register GATT services (must happen before host start)
@@ -200,17 +210,17 @@ fn main() {
         thread::sleep(Duration::from_millis(100));
         
         //print all servo positions for debug
-        let state = meca.get_state();
-       log::info!("T0: {} M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {} M0S20 : {} M0S21 : {}", 
-           state.translations[0].position,
-           state.arms[0][0].position, 
-           state.arms[0][1].position, 
-           state.arms[0][2].position, 
-           state.arms[0][3].position,
-           state.stage2[0][0].position,
-           state.stage2[0][1].position,
-       
-       );    
+       //let state = meca.get_state();
+       //log::info!("T0: {} M0A0 : {} M0A1 : {} M0A2 : {} M0A3 : {} M0S20 : {} M0S21 : {}", 
+       //   state.translations[0].position,
+       //   state.arms[0][0].position, 
+       //   state.arms[0][1].position, 
+       //   state.arms[0][2].position, 
+       //   state.arms[0][3].position,
+       //   state.stage2[0][0].position,
+       //   state.stage2[0][1].position,
+       //
+       //;    
     }
     meca.init();
 
@@ -218,7 +228,7 @@ fn main() {
 
     log::info!("Go !");
     //
-    meca.test_algo(0);
+    meca.test_algo2(0);
     
 
     loop {
@@ -382,10 +392,16 @@ fn main() {
                         module: i_module as u8,
                         arm: i_arm as u8,
                         position: arm.position,
-                        color: match arm.color {
-                            1 => rome::params::MecaArmTmStateColor::Yellow,
-                            2 => rome::params::MecaArmTmStateColor::Blue,
-                            _ => rome::params::MecaArmTmStateColor::Unknown,
+                        color: {
+                            // Modular distance to yellow (~60°) and blue (~240°)
+                            let h = arm.hue as i16;
+                            let dist_yellow = (h - 60).abs().min((h - 60 + 360).abs()).min((h - 60 - 360).abs());
+                            let dist_blue = (h - 240).abs().min((h - 240 + 360).abs()).min((h - 240 - 360).abs());
+                            if dist_yellow <= dist_blue {
+                                rome::params::MecaArmTmStateColor::Yellow
+                            } else {
+                                rome::params::MecaArmTmStateColor::Blue
+                            }
                         },
                         pump: arm.pump,
                         valve: arm.valve,

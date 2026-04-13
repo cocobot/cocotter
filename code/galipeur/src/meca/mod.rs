@@ -40,39 +40,7 @@ impl Meca {
             for arm in 0..4 {
                 self.proxy.set_torque(module, arm, false);
             }
-        }
-
-        self.proxy.set_color_led_pwm(127);
-
-        for module in 0..3 {
-            for arm in 0..4 {      
-                //Embassy stm32 FDCAN bug... do not burst config messages
-                if !self.proxy.ping(Duration::from_millis(3000)) {
-                    log::error!("Failed to ping Meca after disabling torque - check servo connections");
-                    return;
-                }
-                thread::sleep(Duration::from_millis(100));
-                        
-                // Clear existing color table (color_id=0 clears all)
-                self.proxy.set_color_config(module, arm, 0, 0, 0, 0);
-
-                // Color 1 = Blue — dummy CRGB thresholds
-                // channel 0=Clear, 1=Red, 2=Green, 3=Blue
-                self.proxy.set_color_config(module, arm, 1, 0, 100, 500);   // Clear
-                self.proxy.set_color_config(module, arm, 1, 1, 20, 150);    // Red (low)
-                self.proxy.set_color_config(module, arm, 1, 2, 50, 250);    // Green
-                self.proxy.set_color_config(module, arm, 1, 3, 200, 600);   // Blue (high)
-
-                // Color 2 = Yellow — dummy CRGB thresholds
-                self.proxy.set_color_config(module, arm, 2, 0, 200, 800);   // Clear (bright)
-                self.proxy.set_color_config(module, arm, 2, 1, 150, 500);   // Red (high)
-                self.proxy.set_color_config(module, arm, 2, 2, 150, 500);   // Green (high)
-                self.proxy.set_color_config(module, arm, 2, 3, 20, 150);    // Blue (low)
-
-                 // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
-                self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
-            }
-        }        
+        }       
     }
 
     pub fn init(&self) {
@@ -99,14 +67,14 @@ impl Meca {
     /// Call this instead of the normal match sequence to tune thresholds.
     #[allow(dead_code)]
     pub fn calibrate_color_sensors(&self) -> ! {
-        log::info!("=== Color sensor calibration mode ===");
-       
+        log::info!("=== Color sensor calibration mode ===");       
         loop {
             // Request raw values from all sensors
             for module in 0..3u8 {
                 for arm in 0..4u8 {
                     self.proxy.request_color_sensor_raw(module, arm);
                 }
+                break;
             }
 
             // Wait for responses
@@ -117,12 +85,14 @@ impl Meca {
             for (m, module) in state.color_raw.iter().enumerate() {
                 for (a, raw) in module.iter().enumerate() {
                     // Also show the detected color from arm status
-                    let color_id = state.arms[m][a].color;
+                    let arm_state = &state.arms[m][a];
                     log::info!(
-                        "M{}A{}: C={:5} R={:5} G={:5} B={:5} | detected={}",
-                        m, a, raw.clear, raw.red, raw.green, raw.blue, color_id
+                        "M{}A{}: C={:5} R={:5} G={:5} B={:5} | det={} hue={}",
+                        m, a, raw.clear, raw.red, raw.green, raw.blue,
+                        arm_state.color_detected, arm_state.hue
                     );
                 }
+                break;
             }
             log::info!("---");
 
@@ -134,13 +104,13 @@ impl Meca {
     pub fn lower_arm_grab(&self, module: u8, arm: u8) {
         self.proxy.set_torque(module,arm,true);
         let position = match arm {
-            0 => 340,
+            0 => 330,
             1 => 225,
             2 => 340,
             3 => 340,
             _ => 50,
         };
-        self.proxy.set_arm(module, arm, position, 500, false, false);
+        self.proxy.set_arm(module, arm, position, 50, false, false);
     }
 
     pub fn idle_arm_release(&self, module: u8, arm: u8) {
@@ -152,7 +122,7 @@ impl Meca {
             3 => 430,
             _ => 50,
         };
-        self.proxy.set_arm(module, arm, position, 500, false, true);
+        self.proxy.set_arm(module, arm, position, 50, false, true);
     }
 
     pub fn idle_arm_grab(&self, module: u8, arm: u8) {
@@ -164,7 +134,7 @@ impl Meca {
             3 => 430,
             _ => 50,
         };
-        self.proxy.set_arm(module, arm, position, 500, true, false);
+        self.proxy.set_arm(module, arm, position, 50, true, false);
     }
 
     pub fn raise_arm_grab(&self, module: u8, arm: u8) {
@@ -182,7 +152,7 @@ impl Meca {
             3 => 746,
             _ => 50,
         };
-        self.proxy.set_arm(module, arm, position, 500, true, false);
+        self.proxy.set_arm(module, arm, position, 50, true, false);
     }
 
     pub fn raise_arm_release(&self, module: u8, arm: u8) {
@@ -194,7 +164,7 @@ impl Meca {
             3 => 736,
             _ => 50,
         };
-        self.proxy.set_arm(module, arm, position, 500, false, true);
+        self.proxy.set_arm(module, arm, position, 50, false, true);
     }
 
     /// Lower arm, enable pump, raise arm
@@ -209,125 +179,364 @@ impl Meca {
         self.proxy.set_pump(module, arm, false);
     }
 
+    /// Close valve after release (call ~250ms after release)
+    pub fn endrelease(&self, module: u8, arm: u8) {
+        self.proxy.set_valve(module, arm, false);
+    }
+
     pub fn stage2_transfer_open(&self) {
-        self.proxy.set_stage2(0, 0, 820, 500);
-        self.proxy.set_stage2(0, 1, 316, 500);
+        self.proxy.set_stage2(0, 0, 820, 50);
+        self.proxy.set_stage2(0, 1, 316, 50);
     }
 
     pub fn stage2_transfer_close(&self) {
-        self.proxy.set_stage2(0, 0, 820, 500);
-        self.proxy.set_stage2(0, 1, 654, 500);
+        self.proxy.set_stage2(0, 0, 820, 50);
+        self.proxy.set_stage2(0, 1, 654, 50);
     }
 
     pub fn stage2_keep(&self) {
-        self.proxy.set_stage2(0, 0, 610, 500);
-        self.proxy.set_stage2(0, 1, 654, 500);
+        self.proxy.set_stage2(0, 0, 610, 50);
+        self.proxy.set_stage2(0, 1, 654, 50);
     }
 
-    pub fn spread_arms(&self, module: u8, spread: bool) {
+    pub fn wait_arm(&self, module: u8, arm: u8, seq: u64) -> bool {
+        self.proxy.wait_arm(module, arm, seq, Duration::from_secs(3))
+    }
+
+    pub fn wait_arms(&self, module: u8, seq: u64) -> bool {
+        self.proxy.wait_arms(module, seq, Duration::from_secs(3))
+    }
+
+    pub fn wait_translation(&self, module: u8, seq: u64) -> bool {
+        self.proxy.wait_translation(module, seq, Duration::from_secs(3))
+    }
+
+    pub fn wait_stage2(&self, module: u8, servo: u8, seq: u64) -> bool {
+        self.proxy.wait_stage2(module, servo, seq, Duration::from_secs(3))
+    }
+
+    pub fn wait_stage2s(&self, module: u8, seq: u64) -> bool {
+        self.proxy.wait_stage2s(module, seq, Duration::from_secs(3))
+    }
+
+    pub fn spread_arms(&self, module: u8, spread: bool) -> u64 {
+        let seq = self.proxy.translation_seq(module);
         if spread {
-            self.proxy.set_translation(module, 640, 500);
+            self.proxy.set_translation(module, 640, 50);
         } else {
-            self.proxy.set_translation(module, 910, 500);
-        }        
+            self.proxy.set_translation(module, 910, 50);
+        }
+        seq
     }
 
-    pub fn test_algo(&self, module: u8) {
-        self.spread_arms(module, true);
+    pub fn test_algo2(&self, module: u8) {
+        self.stage2_keep();
+        loop {
+            self.proxy.set_color_led_pwm(255);
+            log::info!("Spreading arms...");
+            let seq = self.spread_arms(module, true);
+            log::info!("Waiting for translation...");
+            self.wait_translation(module, seq);
 
-        thread::sleep(Duration::from_millis(1000));
+            log::info!("Lowering arms...");
+            let seq = self.proxy.arms_seq(module);
+            for arm in 0..4 {
+                self.lower_arm_grab(module, arm);
+            }
+            log::info!("Waiting for arms to lower...");
+            self.wait_arms(module, seq);
+            log::info!("Done. Spreading arms...");
 
-        for arm in 0..4 {
-            self.lower_arm_grab(module, arm);
+            let seq = self.spread_arms(module, false);
+            self.wait_translation(module, seq);
+
+            for arm in 0..4 {
+                self.grab(module, arm);
+            }
+            thread::sleep(Duration::from_millis(250));
+            //let seq = self.proxy.stage2s_seq(0);
+            //self.stage2_transfer_open();
+            //thread::sleep(Duration::from_millis(250));
+            //self.wait_stage2s(0, seq);
+
+            let seq = self.proxy.arms_seq(module);
+            for arm in 0..4 {
+                self.raise_arm_grab(module, arm);
+            }
+            self.wait_arms(module, seq);
+            thread::sleep(Duration::from_millis(1000));
+
+            let colors: Vec<bool> = self.proxy.get_state().arms[0].iter().map(|c| {
+                // true = jaune (hue ~60), false = bleu (hue ~240)
+                c.hue < 180
+            }).collect();
+
+            self.proxy.set_color_led_pwm(0);
+
+
+            if !colors.get(0).copied().unwrap_or(false) {
+                self.release(0, 0);
+            }
+            if !colors.get(3).copied().unwrap_or(false) {
+                self.release(0, 3);
+            }           
+            thread::sleep(Duration::from_millis(250));
+            if !colors.get(1).copied().unwrap_or(false) {
+                self.release(0, 1);
+            }
+            if !colors.get(2).copied().unwrap_or(false) {
+                self.release(0, 2);
+            }
+            thread::sleep(Duration::from_millis(250));
+            let seq = self.proxy.arms_seq(module);
+            for arm in 0..4 {
+                if colors.get(arm).copied().unwrap_or(false) {
+                    self.lower_arm_grab(module, arm as u8);
+                }
+            }
+            self.wait_arms(module, seq);
+
+            for arm in 0..4 {
+                self.release(0, arm);
+            }
+
+            thread::sleep(Duration::from_millis(250));
+            for arm in 0..4 {
+                self.endrelease(module, arm);
+            } 
+
+            let seq = self.proxy.arms_seq(module);
+            for arm in 0..4 {
+                self.raise_arm_release(module, arm);
+                self.endrelease(module, arm);
+            }
+            self.wait_arms(module, seq);
+             thread::sleep(Duration::from_millis(5000));
         }
 
-        thread::sleep(Duration::from_millis(1000));
-
-        self.spread_arms(module, false);
-
-        thread::sleep(Duration::from_millis(1000));
-
-        for arm in 0..4 {
-            self.grab(module, arm);
-        }
-        self.stage2_transfer_open();
-
-        thread::sleep(Duration::from_millis(1000));
-
-        for arm in 0..4 {
-            self.raise_arm_grab(module, arm);
-        }
-
-        thread::sleep(Duration::from_millis(1000));
-
+        let seq = self.proxy.stage2s_seq(0);
         self.stage2_transfer_close();
+        self.wait_stage2s(0, seq);
 
-        thread::sleep(Duration::from_millis(1000));
-
-        for arm in 0..4 {
+        for arm in 1..4 {
             self.release(module, arm);
         }
+        thread::sleep(Duration::from_millis(250));
+        for arm in 1..4 {
+            self.endrelease(module, arm);
+        }
 
-        thread::sleep(Duration::from_millis(1000));
-
-        self.stage2_keep();        
+        let seq = self.proxy.stage2s_seq(0);
+        self.stage2_keep();
+        self.wait_stage2s(0, seq);
 
         thread::sleep(Duration::from_millis(5000));
 
 
-        //Second grab 
+        //Second grab
 
-        self.spread_arms(module, true);
-        thread::sleep(Duration::from_millis(1000));
+        let seq = self.spread_arms(module, true);
+        self.wait_translation(module, seq);
 
+        let seq = self.proxy.arms_seq(module);
         for arm in 0..4 {
             self.lower_arm_grab(module, arm);
         }
-        thread::sleep(Duration::from_millis(1000));
+        self.wait_arms(module, seq);
 
-        self.spread_arms(module, false);
-        thread::sleep(Duration::from_millis(1000));
+        let seq = self.spread_arms(module, false);
+        self.wait_translation(module, seq);
 
         for arm in 0..4 {
             self.grab(module, arm);
         }
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(250));
 
+        let seq = self.proxy.arms_seq(module);
         for arm in 0..4 {
             self.raise_arm_grab(module, arm);
         }
+        self.wait_arms(module, seq);
+
         thread::sleep(Duration::from_millis(5000));
 
         for arm in 0..4 {
             self.release(module, arm);
-        }        
+        }
+        thread::sleep(Duration::from_millis(250));
+        for arm in 0..4 {
+            self.endrelease(module, arm);
+        }
 
         thread::sleep(Duration::from_millis(5000));
 
 
         //stage 2 => stage 1
+        let seq = self.proxy.stage2s_seq(0);
         self.stage2_transfer_close();
-        thread::sleep(Duration::from_millis(1000));
+        self.wait_stage2s(0, seq);
 
         for arm in 0..4 {
             self.grab(module, arm);
         }
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(250));
 
+        let seq = self.proxy.stage2s_seq(0);
         self.stage2_transfer_open();
-        thread::sleep(Duration::from_millis(1000));
+        self.wait_stage2s(0, seq);
 
+        let seq = self.proxy.arms_seq(module);
         for arm in 0..4 {
             self.lower_arm_grab(module, arm);
         }
-        thread::sleep(Duration::from_millis(1000));
-            
+        self.wait_arms(module, seq);
+
         for arm in 0..4 {
             self.release(module, arm);
         }
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(250));
+        for arm in 0..4 {
+            self.endrelease(module, arm);
+        }
 
-       
+        }
+
+        pub fn test_algo(&self, module: u8) {
+        self.stage2_keep();
+        loop {
+            log::info!("Spreading arms...");
+            let seq = self.spread_arms(module, true);
+            log::info!("Waiting for translation...");
+            self.wait_translation(module, seq);
+
+            log::info!("Lowering arms...");
+            let seq = self.proxy.arms_seq(module);
+            for arm in 0..4 {
+                self.lower_arm_grab(module, arm);
+            }
+            log::info!("Waiting for arms to lower...");
+            self.wait_arms(module, seq);
+            log::info!("Done. Spreading arms...");
+
+            let seq = self.spread_arms(module, false);
+            self.wait_translation(module, seq);
+
+
+            for arm in 0..4 {
+                self.grab(module, arm);
+            }
+            thread::sleep(Duration::from_millis(250));
+            //let seq = self.proxy.stage2s_seq(0);
+            //self.stage2_transfer_open();
+            //thread::sleep(Duration::from_millis(250));
+            //self.wait_stage2s(0, seq);
+
+            let seq = self.proxy.arms_seq(module);
+            for arm in 0..4 {
+                self.raise_arm_grab(module, arm);
+            }
+            self.wait_arms(module, seq);
+
+            thread::sleep(Duration::from_millis(2000));
+
+            self.release(0, 0);
+            self.release(0, 3);
+            thread::sleep(Duration::from_millis(250));
+            self.release(0, 1);
+            self.release(0, 2);
+
+            thread::sleep(Duration::from_millis(250));
+            for arm in 0..4 {
+                self.endrelease(module, arm);
+            } 
+
+             thread::sleep(Duration::from_millis(20000));
+        }
+
+        let seq = self.proxy.stage2s_seq(0);
+        self.stage2_transfer_close();
+        self.wait_stage2s(0, seq);
+
+        for arm in 1..4 {
+            self.release(module, arm);
+        }
+        thread::sleep(Duration::from_millis(250));
+        for arm in 1..4 {
+            self.endrelease(module, arm);
+        }
+
+        let seq = self.proxy.stage2s_seq(0);
+        self.stage2_keep();
+        self.wait_stage2s(0, seq);
+
+        thread::sleep(Duration::from_millis(5000));
+
+
+        //Second grab
+
+        let seq = self.spread_arms(module, true);
+        self.wait_translation(module, seq);
+
+        let seq = self.proxy.arms_seq(module);
+        for arm in 0..4 {
+            self.lower_arm_grab(module, arm);
+        }
+        self.wait_arms(module, seq);
+
+        let seq = self.spread_arms(module, false);
+        self.wait_translation(module, seq);
+
+        for arm in 0..4 {
+            self.grab(module, arm);
+        }
+        thread::sleep(Duration::from_millis(250));
+
+        let seq = self.proxy.arms_seq(module);
+        for arm in 0..4 {
+            self.raise_arm_grab(module, arm);
+        }
+        self.wait_arms(module, seq);
+
+        thread::sleep(Duration::from_millis(5000));
+
+        for arm in 0..4 {
+            self.release(module, arm);
+        }
+        thread::sleep(Duration::from_millis(250));
+        for arm in 0..4 {
+            self.endrelease(module, arm);
+        }
+
+        thread::sleep(Duration::from_millis(5000));
+
+
+        //stage 2 => stage 1
+        let seq = self.proxy.stage2s_seq(0);
+        self.stage2_transfer_close();
+        self.wait_stage2s(0, seq);
+
+        for arm in 0..4 {
+            self.grab(module, arm);
+        }
+        thread::sleep(Duration::from_millis(250));
+
+        let seq = self.proxy.stage2s_seq(0);
+        self.stage2_transfer_open();
+        self.wait_stage2s(0, seq);
+
+        let seq = self.proxy.arms_seq(module);
+        for arm in 0..4 {
+            self.lower_arm_grab(module, arm);
+        }
+        self.wait_arms(module, seq);
+
+        for arm in 0..4 {
+            self.release(module, arm);
+        }
+        thread::sleep(Duration::from_millis(250));
+        for arm in 0..4 {
+            self.endrelease(module, arm);
+        }
 
         }
 }
