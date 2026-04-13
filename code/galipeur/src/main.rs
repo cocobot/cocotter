@@ -70,6 +70,8 @@ fn main() {
         }
     });
 
+    //routines.ground_sensor_calibration();
+
     loop {
         routines.step_idle();
     }

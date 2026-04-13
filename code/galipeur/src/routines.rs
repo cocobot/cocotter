@@ -3,13 +3,13 @@ use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
 use board_common::Periodicity;
 use board_sabotter::SabotterBoard;
+use cancaner::CanMessage;
 use flume::{Receiver, Sender};
 use sch16t::Sch16t;
 use crate::led::{LedMessage, Leds};
 use crate::movement::MovementLowLevelHardware;
 use crate::meca::Meca;
 use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
-use crate::sensors;
 use crate::strat::Strat;
 use crate::sensors::Sensors;
 
@@ -27,6 +27,9 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
 
     //leds
     led_sender: Sender<LedMessage>,
+
+    //can interface
+    can: GalipeurCan<B>,
 
     // Periodicity states
     asserv_periodicity: Periodicity,
@@ -78,6 +81,8 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
             led_sender,
 
+            can: can_interface,
+
             asserv_periodicity: Periodicity::new(Duration::from_millis(10)),
             asserv_tm_periodicity: Periodicity::new(Duration::from_millis(100)),
             meca_periodicity: Periodicity::new(Duration::from_millis(100)),
@@ -89,6 +94,15 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     pub fn init(&mut self) {
     }
 
+    #[allow(dead_code)]
+    pub fn ground_sensor_calibration(self) -> ! {
+        loop {
+            self.can.send(&CanMessage::RequestGroundValue { sensor: 0 });
+            self.can.send(&CanMessage::RequestGroundValue { sensor: 1 });
+            self.can.send(&CanMessage::RequestGroundValue { sensor: 2 });
+            std::thread::sleep(Duration::from_millis(100))
+        }
+    }
 
     /// Execute one round of idle updates
     ///

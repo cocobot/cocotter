@@ -22,6 +22,10 @@ impl<B: SabotterBoard> Sensors<B> {
                         battery_led_sender.send(LedMessage::LowPowerBattery).ok();
                     }
                 }
+                CanMessage::GroundValue { sensor, value, threshold } => {
+                    //only used in debug when requested by sabotter for calibration
+                    log::info!("GroundValue: sensor: {} value: {}/{}", sensor, value, threshold);
+                }
                 _ => {}
             }
         });
