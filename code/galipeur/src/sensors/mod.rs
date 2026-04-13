@@ -39,7 +39,6 @@ impl<B: SabotterBoard> Sensors<B> {
                 loop {
                     if let Ok(raw) = battery_adc.read() {
                         let mv = raw as f32 * (1.0 + VBATT_RH_KOHMS / RL_EFF_KOHMS);
-                        log::info!("Battery: {:.0} mV (raw: {})", mv, raw);
                         if mv < BATTERY_LOW_MV {
                             log::warn!("Battery low! {:.0} mV", mv);
                             led_sender.send(LedMessage::LowLogicBattery).ok();
