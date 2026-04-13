@@ -24,75 +24,42 @@ impl<B: SabotterBoard> Meca<B> {
 
     // --- High-level algos ---
     pub fn pre_init(&self) {
+        if !self.proxy.ping(Duration::from_millis(3000)) {
+            log::error!("Failed to ping Meca");
+            return;
+        }
+
         for module in 0..3 {
             for arm in 0..4 {
                 self.proxy.set_torque(module, arm, false);
             }
-        }
-
-        self.proxy.set_color_led_pwm(127);
-
-        for module in 0..3 {
-            for arm in 0..4 {
-                // Sensor config: integration_time=0xC0 (24 cycles ~58ms), gain=1 (4x)
-                self.proxy.set_color_sensor_config(module, arm, 0xC0, 1);
-
-                // Clear existing color table (color_id=0 clears all)
-                self.proxy.set_color_config(module, arm, 0, 0, 0, 0);
-
-                // Color 1 = Blue — dummy CRGB thresholds
-                // channel 0=Clear, 1=Red, 2=Green, 3=Blue
-                self.proxy.set_color_config(module, arm, 1, 0, 100, 500);   // Clear
-                self.proxy.set_color_config(module, arm, 1, 1, 20, 150);    // Red (low)
-                self.proxy.set_color_config(module, arm, 1, 2, 50, 250);    // Green
-                self.proxy.set_color_config(module, arm, 1, 3, 200, 600);   // Blue (high)
-
-                // Color 2 = Yellow — dummy CRGB thresholds
-                self.proxy.set_color_config(module, arm, 2, 0, 200, 800);   // Clear (bright)
-                self.proxy.set_color_config(module, arm, 2, 1, 150, 500);   // Red (high)
-                self.proxy.set_color_config(module, arm, 2, 2, 150, 500);   // Green (high)
-                self.proxy.set_color_config(module, arm, 2, 3, 20, 150);    // Blue (low)
-            }
-        }
+        }       
     }
 
     pub fn init(&self) {
-        for module in 0..=2 {
-                self.idle_arm_release(module);
-        }
         self.proxy.set_stage2_torque(0, 0, true);
-        self.proxy.set_stage2(0, 0, 150, 500);
+        //self.stage2_transfer_open();
+
 
         std::thread::sleep(std::time::Duration::from_secs(1));
 
-        for module in 0..=2 {
-                self.raise_arm_release(module);
-        }
-        self.proxy.set_stage2(0, 0, 90, 500);
+        for module in 0..3 {
+            self.raise_arm_release(module);
+        }        
     }   
 
     /// Infinite loop that requests and logs raw color sensor values for calibration.
     /// Call this instead of the normal match sequence to tune thresholds.
     #[allow(dead_code)]
-    pub fn calibrate_color_sensors(&self, led_pwm: u8, integration_time: u8, gain: u8) -> ! {
-        log::info!("=== Color sensor calibration mode ===");
-        log::info!("LED PWM={}, integration_time=0x{:02X}, gain={}", led_pwm, integration_time, gain);
-        log::info!("Place samples under sensors and read CRGB values.");
-
-        self.proxy.set_color_led_pwm(led_pwm);
-
-        for module in 0..3u8 {
-            for arm in 0..4u8 {
-                self.proxy.set_color_sensor_config(module, arm, integration_time, gain);
-            }
-        }
-
+    pub fn calibrate_color_sensors(&self) -> ! {
+        log::info!("=== Color sensor calibration mode ===");       
         loop {
             // Request raw values from all sensors
             for module in 0..3u8 {
                 for arm in 0..4u8 {
                     self.proxy.request_color_sensor_raw(module, arm);
                 }
+                break;
             }
 
             // Wait for responses
@@ -103,12 +70,14 @@ impl<B: SabotterBoard> Meca<B> {
             for (m, module) in state.color_raw.iter().enumerate() {
                 for (a, raw) in module.iter().enumerate() {
                     // Also show the detected color from arm status
-                    let color_id = state.arms[m][a].color;
+                    let arm_state = &state.arms[m][a];
                     log::info!(
-                        "M{}A{}: C={:5} R={:5} G={:5} B={:5} | detected={}",
-                        m, a, raw.clear, raw.red, raw.green, raw.blue, color_id
+                        "M{}A{}: C={:5} R={:5} G={:5} B={:5} | det={} hue={}",
+                        m, a, raw.clear, raw.red, raw.green, raw.blue,
+                        arm_state.color_detected, arm_state.hue
                     );
                 }
+                break;
             }
             log::info!("---");
 
@@ -116,61 +85,53 @@ impl<B: SabotterBoard> Meca<B> {
         }
     }
 
-    //lower arms, activate pump, disable valve
-    pub fn lower_arm_grab(&self, module: u8) {
-        for arm in 0..=3 {
-            self.proxy.set_torque(module,arm,true);
-            let position = match arm {
-                0 => 310,
-                1 => 225,
-                2 => 340,
-                3 => 320,
-                _ => 300,
-            };
-            self.proxy.set_arm(module, arm, position, 500, true, false);
-        }
+    //lower arm, activate pump, disable valve
+    pub fn lower_arm_grab(&self, module: u8, arm: u8) {
+        self.proxy.set_torque(module,arm,true);
+        let position = match arm {
+            0 => 340,
+            1 => 225,
+            2 => 340,
+            3 => 340,
+            _ => 50,
+        };
+        self.proxy.set_arm(module, arm, position, 500, true, false);
     }
 
-    pub fn idle_arm_release(&self, module: u8) {
-        for arm in 0..=3 {
-            self.proxy.set_torque(module,arm,true);
-            let position = match arm {
-                0 => 350,
-                1 => 240,
-                2 => 350,
-                3 => 350,
-                _ => 300,
-            };
-            self.proxy.set_arm(module, arm, position, 500, false, true);
-        }
+    pub fn idle_arm_release(&self, module: u8, arm: u8) {
+        self.proxy.set_torque(module,arm,false);
+        let position = match arm {
+            0 => 430,
+            1 => 301,
+            2 => 430,
+            3 => 430,
+            _ => 50,
+        };
+        self.proxy.set_arm(module, arm, position, 500, false, true);
     }
 
-    pub fn idle_arm_grab(&self, module: u8) {
-        for arm in 0..=3 {
-            self.proxy.set_torque(module,arm,true);
-            let position = match arm {
-                0 => 350,
-                1 => 240,
-                2 => 350,
-                3 => 350,
-                _ => 300,
-            };
-            self.proxy.set_arm(module, arm, position, 500, true, false);
-        }
+    pub fn idle_arm_grab(&self, module: u8, arm: u8) {
+        self.proxy.set_torque(module,arm,false);
+        let position = match arm {
+            0 => 430,
+            1 => 301,
+            2 => 430,
+            3 => 430,
+            _ => 50,
+        };
+        self.proxy.set_arm(module, arm, position, 500, true, false);
     }
 
-    pub fn raise_arm_grab(&self, module: u8) {
-        for arm in 0..=3 {
-            self.proxy.set_torque(module,arm,true);
-            let position = match arm {
-                0 => 690,
-                1 => 535,
-                2 => 665,
-                3 => 660,
-                _ => 300,
-            };
-            self.proxy.set_arm(module, arm, position, 500, true, false);
-        }
+    pub fn raise_arm_grab(&self, module: u8, arm: u8) {
+        self.proxy.set_torque(module,arm,false);
+        let position = match arm {
+            0 => 736,
+            1 => 602,
+            2 => 736,
+            3 => 736,
+            _ => 50,
+        };
+        self.proxy.set_arm(module, arm, position, 500, true, false);
     }
 
     pub fn raise_arm_release(&self, module: u8) {
@@ -181,14 +142,10 @@ impl<B: SabotterBoard> Meca<B> {
                 1 => 535,
                 2 => 665,
                 3 => 660,
-            _ => 50,
+                _ => 50,
             };
             self.proxy.set_arm(module, arm, position, 500, false, true);
         }
-    }
-
-    pub fn request_color(&self, module:u8, arm:u8) {
-        self.proxy.request_color_sensor_raw(module,arm);
     }
 
     /// Lower arm, enable pump, raise arm
@@ -200,10 +157,8 @@ impl<B: SabotterBoard> Meca<B> {
     }
 
     /// Open valve, disable pump
-    pub fn release(&self, module: u8) {
-        for arm in 0..=3 {
-            self.proxy.set_valve(module, arm, true);
-            self.proxy.set_pump(module, arm, false);
-        }
+    pub fn release(&self, module: u8, arm: u8) {
+        self.proxy.set_valve(module, arm, true);
+        self.proxy.set_pump(module, arm, false);
     }
 }

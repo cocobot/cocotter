@@ -2,14 +2,16 @@ use std::time::{Duration, Instant};
 use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
 use board_common::Periodicity;
-use board_sabotter::{SabotterBoard, SabotterLeds};
-use embedded_hal::digital::StatefulOutputPin;
+use board_sabotter::SabotterBoard;
 use flume::{Receiver, Sender};
 use sch16t::Sch16t;
+use crate::led::{LedMessage, Leds};
 use crate::movement::MovementLowLevelHardware;
 use crate::meca::Meca;
-use crate::can::GalipeurCan;
-
+use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
+use crate::sensors;
+use crate::strat::Strat;
+use crate::sensors::Sensors;
 
 /// Everything needed for PAMI routines
 ///
@@ -19,12 +21,12 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     pub asserv: Asserv<MovementLowLevelHardware<B>>,
     pub meca: Meca<B>,
 
-    // Peripherals
-    pub sabotter_leds: SabotterLeds<B::OutputPin, B::ExOutputPin>,
-
     // ROME sender/receiver
     pub rome_tx: Sender<Box<[u8]>>,
     pub rome_rx: Receiver<Box<[u8]>>,
+
+    //leds
+    led_sender: Sender<LedMessage>,
 
     // Periodicity states
     asserv_periodicity: Periodicity,
@@ -33,14 +35,13 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     meca_tm_periodicity: Periodicity,
 }
 
-impl<B: SabotterBoard> GalipeurRoutines<B> {
+impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     /// Initialize with default state values and peripherals from board
     ///
     /// Peripherals must be available on the board.
     /// The asserv must be configured manually, using `asserv.set_conf()`.
     pub fn new(
-        board: &mut B,
-        (rome_tx, rome_rx): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>),
+        board: &mut B
     ) -> Self {
         // Setup gyro, asserv
         let mut gyro = Sch16t::new(board.imu_spi().unwrap(), 0);
@@ -50,8 +51,23 @@ impl<B: SabotterBoard> GalipeurRoutines<B> {
         // Setup CAN interface
         let can_interface = GalipeurCan::new(board.can().unwrap());
 
+        // Setup Rome
+        let picotter_ota = CanOtaRelayHandler::new(can_interface.clone());
+        let (rome_tx, rome_rx) = board.rome("Galipeur".into(), Some(vec![Box::new(picotter_ota)])).unwrap();
+
+
+        // Setup Led feedback
+        let leds = Leds::new::<B>(board);
+        let led_sender = leds.sender();
+
         // Setup meca
         let meca = Meca::new(can_interface.clone());
+
+        // Setup sensors
+        let _sensors = Sensors::new(board, can_interface.clone(), led_sender.clone());
+
+        // Setup strat
+        Strat::init(board, led_sender.clone());
 
         Self {
             asserv: Asserv::new(asserv_hardware),
@@ -60,7 +76,7 @@ impl<B: SabotterBoard> GalipeurRoutines<B> {
             rome_tx,
             rome_rx,
 
-            sabotter_leds: board.leds().unwrap(),
+            led_sender,
 
             asserv_periodicity: Periodicity::new(Duration::from_millis(10)),
             asserv_tm_periodicity: Periodicity::new(Duration::from_millis(100)),
@@ -80,8 +96,9 @@ impl<B: SabotterBoard> GalipeurRoutines<B> {
     pub fn idle(&mut self, now: &Instant) {
 
         // Process ROME input messages
+        let mut rome_data_received = false;
         for data in self.rome_rx.try_iter() {
-            let _ = self.sabotter_leds.com.toggle();
+            rome_data_received = true;
             match rome::Message::decode(&data) {
                 Err(err) => log::error!("ROME RX error: {err:?}"),
                 Ok(message) => {
@@ -90,6 +107,9 @@ impl<B: SabotterBoard> GalipeurRoutines<B> {
                     }
                 },
             }
+        }
+        if rome_data_received {
+            self.led_sender.send(LedMessage::RomeActivity).ok();
         }
 
         // Update asserv, send asserv telemetry
@@ -119,11 +139,8 @@ impl<B: SabotterBoard> GalipeurRoutines<B> {
                         module: i_module as u8,
                         arm: i_arm as u8,
                         position: arm.position,
-                        color: match arm.color {                            
-                            0 => rome::params::MecaArmTmStateColor::Yellow,
-                            1 => rome::params::MecaArmTmStateColor::Blue,
-                            _ => rome::params::MecaArmTmStateColor::Unknown,
-                        },
+                        //TODO: update rome with full telemetry
+                        color: rome::params::MecaArmTmStateColor::Unknown,
                         pump: arm.pump,
                         valve: arm.valve,
                         servo_error: arm.error,

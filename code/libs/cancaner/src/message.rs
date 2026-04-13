@@ -53,17 +53,32 @@ pub enum CanMessage {
     Reboot { mode: RebootMode },
 
     /// Set servo ID command (ID: 0x020)
-    /// Broadcasts on the specified bus to set servo ID
+    /// Changes a servo's ID on the specified bus
     SetServoId {
         bus: ServoBus,
+        origin_id: u8,
         new_id: u8,
     },
 
     /// Set servo ID result (ID: 0x021)
     SetServoIdResult {
         bus: ServoBus,
+        origin_id: u8,
         new_id: u8,
         success: bool,
+    },
+
+    /// Scan bus command (ID: 0x030)
+    /// Scans for servos on the specified bus, results via log::info
+    ScanBus {
+        bus: ServoBus,
+    },
+
+    /// Battery status (ID: 0x040)
+    /// Meca battery voltage averaged across modules
+    BatteryStatus {
+        voltage_mv: u16,
+        modules_mask: u8,
     },
 
     // ==================== ARM Domain (0x1) ====================
@@ -116,6 +131,7 @@ pub enum CanMessage {
         module: u8,
         position: u16,
         error: u8,
+        flags: ArmFlags,
     },
 
     /// Set stage2 servo position (ID: 0x1DT)
@@ -142,15 +158,8 @@ pub enum CanMessage {
         flags: ArmFlags,
     },
 
-    /// Set color decoding range for one channel (ID: 0x18T)
-    /// color_id=0 clears all color config for that target
-    SetColorConfig {
-        target: ArmTarget,
-        color_id: u8,
-        channel: u8,
-        min: u16,
-        max: u16,
-    },
+    /// Set color detection threshold on clear channel delta (ID: 0x180, global)
+    SetColorThreshold { threshold: u16 },
 
     /// Set TCS3472 sensor parameters (ID: 0x19T)
     SetColorSensorConfig {
@@ -159,10 +168,10 @@ pub enum CanMessage {
         gain: u8,
     },
 
-    /// Request raw CRGB values (ID: 0x1AT, 0 bytes)
+    /// Request last color delta (ID: 0x1AT, 0 bytes)
     RequestColorSensorRaw { target: ArmTarget },
 
-    /// Raw CRGB response (ID: 0x1AT, 8 bytes)
+    /// Color delta response (ID: 0x1AT, 8 bytes) — last measured on-off delta
     ColorSensorRaw {
         target: ArmTarget,
         clear: u16,
@@ -327,20 +336,40 @@ impl CanMessage {
                 }
             }
             SystemCmd::SetServoId => {
-                if data.len() >= 2 {
+                if data.len() >= 3 {
                     let bus = ServoBus::from_u8(data[0])?;
-                    if data.len() >= 3 {
+                    if data.len() >= 4 {
                         Some(CanMessage::SetServoIdResult {
                             bus,
-                            new_id: data[1],
-                            success: data[2] != 0,
+                            origin_id: data[1],
+                            new_id: data[2],
+                            success: data[3] != 0,
                         })
                     } else {
                         Some(CanMessage::SetServoId {
                             bus,
-                            new_id: data[1],
+                            origin_id: data[1],
+                            new_id: data[2],
                         })
                     }
+                } else {
+                    None
+                }
+            }
+            SystemCmd::ScanBus => {
+                if !data.is_empty() {
+                    let bus = ServoBus::from_u8(data[0])?;
+                    Some(CanMessage::ScanBus { bus })
+                } else {
+                    None
+                }
+            }
+            SystemCmd::BatteryStatus => {
+                if data.len() >= 3 {
+                    Some(CanMessage::BatteryStatus {
+                        voltage_mv: u16::from_le_bytes([data[0], data[1]]),
+                        modules_mask: data[2],
+                    })
                 } else {
                     None
                 }
@@ -434,24 +463,21 @@ impl CanMessage {
                 }
             }
             ArmCmd::TranslationStatus => {
-                if data.len() >= 3 {
+                if data.len() >= 4 {
                     Some(CanMessage::TranslationStatus {
                         module: raw_target,
                         position: u16::from_le_bytes([data[0], data[1]]),
                         error: data[2],
+                        flags: ArmFlags::from_u8(data[3]),
                     })
                 } else {
                     None
                 }
             }
-            ArmCmd::SetColorConfig => {
-                if data.len() >= 6 {
-                    Some(CanMessage::SetColorConfig {
-                        target,
-                        color_id: data[0],
-                        channel: data[1],
-                        min: u16::from_le_bytes([data[2], data[3]]),
-                        max: u16::from_le_bytes([data[4], data[5]]),
+            ArmCmd::SetColorThreshold => {
+                if data.len() >= 2 {
+                    Some(CanMessage::SetColorThreshold {
+                        threshold: u16::from_le_bytes([data[0], data[1]]),
                     })
                 } else {
                     None
@@ -726,19 +752,34 @@ impl CanMessage {
                 data[0] = *mode as u8;
                 EncodedMessage { id, data, len: 1 }
             }
-            CanMessage::SetServoId { bus, new_id } => {
+            CanMessage::SetServoId { bus, origin_id, new_id } => {
                 let id = Self::build_id(Domain::System, SystemCmd::SetServoId as u8, 0);
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0] = *bus as u8;
-                data[1] = *new_id;
-                EncodedMessage { id, data, len: 2 }
+                data[1] = *origin_id;
+                data[2] = *new_id;
+                EncodedMessage { id, data, len: 3 }
             }
-            CanMessage::SetServoIdResult { bus, new_id, success } => {
+            CanMessage::SetServoIdResult { bus, origin_id, new_id, success } => {
                 let id = Self::build_id(Domain::System, SystemCmd::SetServoId as u8, 1);
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0] = *bus as u8;
-                data[1] = *new_id;
-                data[2] = *success as u8;
+                data[1] = *origin_id;
+                data[2] = *new_id;
+                data[3] = *success as u8;
+                EncodedMessage { id, data, len: 4 }
+            }
+            CanMessage::ScanBus { bus } => {
+                let id = Self::build_id(Domain::System, SystemCmd::ScanBus as u8, 0);
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0] = *bus as u8;
+                EncodedMessage { id, data, len: 1 }
+            }
+            CanMessage::BatteryStatus { voltage_mv, modules_mask } => {
+                let id = Self::build_id(Domain::System, SystemCmd::BatteryStatus as u8, 0);
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0..2].copy_from_slice(&voltage_mv.to_le_bytes());
+                data[2] = *modules_mask;
                 EncodedMessage { id, data, len: 3 }
             }
 
@@ -816,21 +857,19 @@ impl CanMessage {
                 let id = Self::build_id(Domain::Arm, ArmCmd::RequestTranslationStatus as u8, *module);
                 EncodedMessage { id, data: [0u8; MAX_DATA_LEN], len: 0 }
             }
-            CanMessage::TranslationStatus { module, position, error } => {
+            CanMessage::TranslationStatus { module, position, error, flags } => {
                 let id = Self::build_id(Domain::Arm, ArmCmd::TranslationStatus as u8, *module);
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0..2].copy_from_slice(&position.to_le_bytes());
                 data[2] = *error;
-                EncodedMessage { id, data, len: 3 }
+                data[3] = flags.to_u8();
+                EncodedMessage { id, data, len: 4 }
             }
-            CanMessage::SetColorConfig { target, color_id, channel, min, max } => {
-                let id = Self::build_id(Domain::Arm, ArmCmd::SetColorConfig as u8, target.to_u8());
+            CanMessage::SetColorThreshold { threshold } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetColorThreshold as u8, 0);
                 let mut data = [0u8; MAX_DATA_LEN];
-                data[0] = *color_id;
-                data[1] = *channel;
-                data[2..4].copy_from_slice(&min.to_le_bytes());
-                data[4..6].copy_from_slice(&max.to_le_bytes());
-                EncodedMessage { id, data, len: 6 }
+                data[0..2].copy_from_slice(&threshold.to_le_bytes());
+                EncodedMessage { id, data, len: 2 }
             }
             CanMessage::SetColorSensorConfig { target, integration_time, gain } => {
                 let id = Self::build_id(Domain::Arm, ArmCmd::SetColorSensorConfig as u8, target.to_u8());
@@ -1067,7 +1106,9 @@ impl CanMessage {
             | CanMessage::SystemError { .. }
             | CanMessage::Reboot { .. }
             | CanMessage::SetServoId { .. }
-            | CanMessage::SetServoIdResult { .. } => Domain::System,
+            | CanMessage::SetServoIdResult { .. }
+            | CanMessage::ScanBus { .. }
+            | CanMessage::BatteryStatus { .. } => Domain::System,
 
             CanMessage::SetArm { .. }
             | CanMessage::ArmStatus { .. }
@@ -1082,7 +1123,7 @@ impl CanMessage {
             | CanMessage::SetStage2Torque { .. }
             | CanMessage::RequestStage2Status { .. }
             | CanMessage::Stage2Status { .. }
-            | CanMessage::SetColorConfig { .. }
+            | CanMessage::SetColorThreshold { .. }
             | CanMessage::SetColorSensorConfig { .. }
             | CanMessage::RequestColorSensorRaw { .. }
             | CanMessage::ColorSensorRaw { .. }
@@ -1118,7 +1159,6 @@ impl CanMessage {
             | CanMessage::SetTorque { target, .. }
             | CanMessage::SetPump { target, .. }
             | CanMessage::SetValve { target, .. }
-            | CanMessage::SetColorConfig { target, .. }
             | CanMessage::SetColorSensorConfig { target, .. }
             | CanMessage::RequestColorSensorRaw { target }
             | CanMessage::ColorSensorRaw { target, .. } => Some(*target),
@@ -1195,12 +1235,29 @@ mod tests {
     fn roundtrip_set_servo_id() {
         roundtrip(&CanMessage::SetServoId {
             bus: ServoBus::Module0,
+            origin_id: 1,
             new_id: 5,
         });
         roundtrip(&CanMessage::SetServoIdResult {
             bus: ServoBus::Translation,
+            origin_id: 1,
             new_id: 3,
             success: true,
+        });
+    }
+
+    #[test]
+    fn roundtrip_scan_bus() {
+        roundtrip(&CanMessage::ScanBus {
+            bus: ServoBus::Module0,
+        });
+    }
+
+    #[test]
+    fn roundtrip_battery_status() {
+        roundtrip(&CanMessage::BatteryStatus {
+            voltage_mv: 16800,
+            modules_mask: 0x07,
         });
     }
 
@@ -1299,6 +1356,7 @@ mod tests {
                 module,
                 position: 4000,
                 error: 0,
+                flags: ArmFlags { torque_enabled: true, moving: false, position_reached: true },
             });
         }
     }
@@ -1358,22 +1416,10 @@ mod tests {
     }
 
     #[test]
-    fn roundtrip_set_color_config() {
-        roundtrip(&CanMessage::SetColorConfig {
-            target: ArmTarget::new(1, 2),
-            color_id: 3,
-            channel: 1,
-            min: 100,
-            max: 500,
-        });
-        // Clear all config
-        roundtrip(&CanMessage::SetColorConfig {
-            target: ArmTarget::BROADCAST_ALL,
-            color_id: 0,
-            channel: 0,
-            min: 0,
-            max: 0,
-        });
+    fn roundtrip_set_color_threshold() {
+        roundtrip(&CanMessage::SetColorThreshold { threshold: 800 });
+        roundtrip(&CanMessage::SetColorThreshold { threshold: 0 });
+        roundtrip(&CanMessage::SetColorThreshold { threshold: 65535 });
     }
 
     #[test]

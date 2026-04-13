@@ -30,9 +30,12 @@ const REG_PS_CONF1_2: u8 = 0x03;
 const REG_PS_DATA: u8 = 0x08;
 
 // TLA2528 opcodes and registers
-const TLA_OPCODE_WRITE: u8 = 0x08;
-const TLA_REG_OPMODE_CFG: u8 = 0x04;
+// TLA2528 opcodes (full byte, sent as first byte of I2C transaction)
+const TLA_OPCODE_SINGLE_WRITE: u8 = 0x08;
+
+// TLA2528 register addresses
 const TLA_REG_DATA_CFG: u8 = 0x02;
+const TLA_REG_OPMODE_CFG: u8 = 0x04;
 const TLA_REG_PIN_CFG: u8 = 0x05;
 const TLA_REG_CHANNEL_SEL: u8 = 0x11;
 
@@ -48,6 +51,8 @@ pub struct I2cDevices<I2C> {
     ground_state: GroundSensorState,
     /// Pump current readings (channels 0-3)
     pump_currents: [u16; 4],
+    /// Battery voltage raw ADC reading (channel 6), None if I2C failed
+    battery_voltage_raw: Option<u16>,
 }
 
 impl<I2C: I2c> I2cDevices<I2C> {
@@ -60,6 +65,7 @@ impl<I2C: I2c> I2cDevices<I2C> {
             pca_config_1: 0xFF,
             ground_state: GroundSensorState::new(),
             pump_currents: [0; 4],
+            battery_voltage_raw: None,
         }
     }
 
@@ -200,10 +206,10 @@ impl<I2C: I2c> I2cDevices<I2C> {
     // ==================== VCNL4040 methods ====================
 
     /// Read ground sensor and update state
-    pub async fn ground_update(&mut self) -> Result<(), I2C::Error> {
+    pub async fn ground_update(&mut self) -> Result<bool, I2C::Error> {
         let value = self.vcnl_read_register(REG_PS_DATA).await?;
         self.ground_state.update(value);
-        Ok(())
+        Ok(self.ground_state.detected)
     }
 
     /// Get ground sensor state
@@ -294,9 +300,23 @@ impl<I2C: I2c> I2cDevices<I2C> {
         }
     }
 
+    /// Update battery voltage reading (channel 6)
+    pub async fn battery_voltage_raw_update(&mut self) {
+        match self.tla_read_channel(6).await {
+            Ok(raw) => self.battery_voltage_raw = Some(raw),
+            Err(_) => self.battery_voltage_raw = None,
+        }
+    }
+
+    /// Get battery voltage raw ADC value (None if I2C failed)
+    pub fn battery_voltage_raw(&self) -> Option<u16> {
+        self.battery_voltage_raw
+    }
+
     async fn tla_write_reg(&mut self, reg: u8, value: u8) -> Result<(), I2C::Error> {
+        // TLA2528 single register write: [OPCODE, REG_ADDR, VALUE]
         self.i2c
-            .write(TLA2528_ADDR, &[TLA_OPCODE_WRITE | reg, value])
+            .write(TLA2528_ADDR, &[TLA_OPCODE_SINGLE_WRITE, reg, value])
             .await
     }
 
@@ -324,8 +344,8 @@ impl<I2C: I2c> I2cDevices<I2C> {
         let mut tcs = Tcs3472::new(&mut self.i2c);
         tcs.enable().await.map_err(tcs_unwrap_i2c)?;
         tcs.enable_rgbc().await.map_err(tcs_unwrap_i2c)?;
-        tcs.set_integration_cycles(64).await.map_err(tcs_unwrap_i2c)?;
-        tcs.set_rgbc_gain(tcs3472::RgbCGain::_4x).await.map_err(tcs_unwrap_i2c)?;
+        tcs.set_integration_cycles(10).await.map_err(tcs_unwrap_i2c)?;
+        tcs.set_rgbc_gain(tcs3472::RgbCGain::_60x).await.map_err(tcs_unwrap_i2c)?;
         Ok(())
     }
 

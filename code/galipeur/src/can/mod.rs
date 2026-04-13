@@ -5,6 +5,8 @@ use embedded_can::Frame;
 
 type Callback = Box<dyn FnMut(&CanMessage) + Send + 'static>;
 
+pub mod ota_relay;
+
 pub struct GalipeurCan<B: SabotterBoard> {
     callbacks: Arc<Mutex<Vec<Callback>>>,
     can: B::Can,
@@ -23,6 +25,7 @@ impl<B: SabotterBoard> GalipeurCan<B> {
     pub fn new(can: B::Can) -> Self {
         let callbacks: Arc<Mutex<Vec<Callback>>> = Arc::new(Mutex::new(Vec::new()));
         let cloned_can = can.clone();
+        let cloned_callbacks = callbacks.clone();
 
         std::thread::Builder::new()
             .name("can-rx".into())
@@ -30,7 +33,14 @@ impl<B: SabotterBoard> GalipeurCan<B> {
             .spawn(move || loop {
                 match cloned_can.can_receive() {
                     Ok(frame) => {
+                        if let Some(msg) = CanMessage::from_frame(&frame) {
+                            let mut cbs = cloned_callbacks.lock().unwrap();
+                            for cb in cbs.iter_mut() {
+                                cb(&msg);
+                            }
+                        } else {
                             log::warn!("CAN: unknown or invalid frame: id={:?} len={}", frame.id(), frame.data().len());
+                        }
                     }
                     Err(e) => {
                         log::error!("CAN receive error: {:?}", e);

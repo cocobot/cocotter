@@ -7,7 +7,6 @@
 
 use embedded_io_async::{Read, Write};
 use embassy_time::{with_timeout, Duration, Timer};
-use rtt_target::rprintln;
 
 const HEADER: [u8; 2] = [0xFF, 0xFF];
 
@@ -113,6 +112,19 @@ impl<TX: Write, RX: Read> Scs0009<TX, RX> {
     pub async fn set_torque(&mut self, id: u8, enable: bool) -> Result<(), ScsError> {
         self.write_byte(id, REG_TORQUE_ENABLE, u8::from(enable))
             .await
+    }
+
+    /// Read a single byte from a register
+    /// Returns (value, servo_error_byte)
+    pub async fn read_byte(&mut self, id: u8, reg: u8) -> Result<(u8, u8), ScsError> {
+        let len: u8 = 4;
+        let count: u8 = 1;
+        let checksum = Self::calc_checksum(&[id, len, INST_READ, reg, count]);
+        let packet = [HEADER[0], HEADER[1], id, len, INST_READ, reg, count, checksum];
+        self.send_packet(&packet).await?;
+
+        let (val, err) = self.read_response_with_data(1).await?;
+        Ok((val as u8, err))
     }
 
     /// Read a word (2 bytes) from a register
@@ -323,8 +335,12 @@ impl<TX: Write, RX: Read> Scs0009<TX, RX> {
 
         let error = buf[4];
 
-        // Data is big-endian (high byte first)
-        let value = ((buf[5] as u16) << 8) | (buf[6] as u16);
+        let value = if data_len == 1 {
+            buf[5] as u16
+        } else {
+            // Data is big-endian (high byte first)
+            ((buf[5] as u16) << 8) | (buf[6] as u16)
+        };
         Ok((value, error))
     }
 

@@ -205,6 +205,6 @@ pub fn init_and_spawn(
     rprintln!("Lidar manager initialized, power ON, nCTRL HIGH");
 
     for (id, lidar) in lidars.into_iter().enumerate() {
-        spawner.spawn(lidar_task(lidar, id as u8)).unwrap();
+        spawner.spawn(lidar_task(lidar, id as u8).unwrap());
     }
 }

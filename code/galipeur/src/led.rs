@@ -1,12 +1,16 @@
 use std::time::Duration;
+use board_common::{Color, Team};
+use board_sabotter::{SabotterBoard, SabotterLeds};
 use flume::{Receiver, Sender};
-use smart_leds::{RGB8, hsv::{Hsv, hsv2rgb}};
-use smart_leds::SmartLedsWrite;
-use super::SmartLeds;
+use embedded_hal::digital::OutputPin;
+use board_sabotter::{SmartLedsWrite, RGB8};
+
 
 pub enum LedMessage {
-    LidarClosest { angle: f32, distance: u16 },
-    GameColor { color: RGB8 },
+    GameSide { side: Team },
+    RomeActivity,
+    LowPowerBattery,
+    LowLogicBattery,
 }
 
 pub struct Leds {
@@ -14,10 +18,10 @@ pub struct Leds {
 }
 
 impl Leds {
-    pub fn new(leds: SmartLeds) -> Self {
+    pub fn new<B: SabotterBoard + 'static>(board: &mut B) -> Self {
         let (tx, rx) = flume::unbounded();
 
-        let mut internal = LedsInternal::new(leds, rx);
+        let mut internal = LedsInternal::new(board, rx);
 
         //start led thread
         std::thread::spawn(move || {
@@ -32,77 +36,123 @@ impl Leds {
     }
 }
 
-struct LedsInternal {
-    leds: SmartLeds,
+struct LedsInternal<B: SabotterBoard> {
+    leds: SabotterLeds<B::OutputPin, B::ExOutputPin, B::SmartLeds>,
     rx: Receiver<LedMessage>,
-    lidar_angle: f32,
-    lidar_distance: u16,
+
     game_color: RGB8,
+    low_logic_battery: bool,
+    low_power_battery: bool,
 }
 
-impl LedsInternal {
-    pub fn new(leds: SmartLeds, rx: Receiver<LedMessage>) -> Self {
+impl<B: SabotterBoard> LedsInternal<B> {
+    pub fn new(board: &mut B, rx: Receiver<LedMessage>) -> Self {
         Self {
-            leds,
+            leds: board.leds().unwrap(),
             rx,
-            lidar_angle: 0.0,
-            lidar_distance: 0,
             game_color: RGB8 { r: 0, g: 0, b: 0 },
+            low_logic_battery: false,
+            low_power_battery: false,
+        }
+    }
+
+    fn color_to_rgb8(c: Color) -> RGB8 {
+        RGB8 {
+            r: (c.r * 255.0) as u8,
+            g: (c.g * 255.0) as u8,
+            b: (c.b * 255.0) as u8,
         }
     }
 
     fn run(&mut self) {
+        let start = std::time::Instant::now();
+        let mut rome_activity = false;
+        let mut previous_rome_activity = !rome_activity;
+        let mut previous_heartbeat = false;
+
+        const BLACK : RGB8 = RGB8 { r: 0, g: 0, b: 0 };
+        const RED : RGB8 = RGB8 { r: 255, g: 0, b: 0 };
+
         loop {
-            // Process all pending messages
+            //Process all pending messages
             while let Ok(msg) = self.rx.try_recv() {
                 match msg {
-                    LedMessage::LidarClosest { angle, distance } => {
-                        self.lidar_angle = angle;
-                        self.lidar_distance = distance;
+                    LedMessage::GameSide { side } => {
+                        self.game_color = Self::color_to_rgb8(side.color());
                     }
-                    LedMessage::GameColor { color } => {
-                        self.game_color = color;
+                    LedMessage::RomeActivity => {
+                        rome_activity = true;
+                    }
+                    LedMessage::LowPowerBattery => {
+                        self.low_power_battery = true;
+                    }
+                    LedMessage::LowLogicBattery => {
+                        self.low_logic_battery = true;
                     }
                 }
             }
-
-            // Display lidar closest point direction on LED ring
-            // Map angle (0-360°) to LED index (1-40), LED 0 is separate
-            // Angle 0° = LED 14, rotation inverted (counter-clockwise)
-            let led_offset = (40 - ((self.lidar_angle / 360.0) * 40.0) as usize) % 40;
-            let led_index = 1 + (14 + led_offset - 1) % 40;
-
-            // Map distance to hue: 150mm = red (0), 1000mm = green (85)
-            let hue = if self.lidar_distance <= 150 {
-                0 // Red
-            } else if self.lidar_distance >= 1000 {
-                85 // Green
-            } else {
-                // Linear interpolation: 150->0, 1000->85
-                ((self.lidar_distance - 150) as u32 * 85 / (1000 - 150)) as u8
-            };
 
             let mut pixels = Vec::new();
-            for i in 0..41 {
-                if i == 0 {
-                    // LED 0 is always yellow
-                    pixels.push(self.game_color);
-                } else if i == led_index {
-                    pixels.push(hsv2rgb(Hsv {
-                        hue,
-                        sat: 255,
-                        val: 255,
-                    }));
+
+            // Battery low: blink all LEDs red, overrides everything
+            if self.low_logic_battery|| self.low_power_battery {
+                let blink_on = (start.elapsed().subsec_millis() % 500) < 250;
+                let color = if blink_on {
+                    RED
                 } else {
-                    pixels.push(hsv2rgb(Hsv {
-                        hue: 0,
-                        sat: 0,
-                        val: 0,
-                    }));
+                    BLACK
+                };
+                for i in 0..41 {
+                    if !self.low_logic_battery && ((i >= 1 && i <= 7) || (i >= 27)) {
+                        pixels.push(BLACK);
+                    }
+                    else if !self.low_power_battery && (i >= 8 && i <= 27){
+                        pixels.push(BLACK);
+                    }
+                    else {
+                        pixels.push(color);
+                    }
+                }
+            } else {
+                for i in 0..41 {
+                    if i == 0 {
+                        pixels.push(self.game_color);
+                    } else {
+                        pixels.push(RGB8 { r: 0, g: 0, b: 0 });
+                    }
                 }
             }
 
-            self.leds.write(pixels).unwrap();
+            self.leds.rgba.write(pixels).ok();
+
+            //update rome led
+            if rome_activity != previous_rome_activity {
+                if rome_activity {
+                    self.leds.com.set_high().ok();
+                }
+                else {
+                    self.leds.com.set_low().ok();
+                }
+                previous_rome_activity = rome_activity;                
+            }
+            rome_activity = false;
+
+            //update heartbeat
+            let heartbeat_on = (start.elapsed().as_millis() % 1000) < 500;
+            if heartbeat_on != previous_heartbeat {
+                if heartbeat_on {
+                    self.leds.heartbeat.set_high().ok();
+                    for led in &mut self.leds.motors {
+                        led.set_high().ok();
+                    }
+                } else {
+                    self.leds.heartbeat.set_low().ok();
+                    for led in &mut self.leds.motors {
+                        led.set_low().ok();
+                    }
+                }
+                previous_heartbeat = heartbeat_on;
+            }
 
             std::thread::sleep(Duration::from_millis(10));
         }

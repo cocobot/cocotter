@@ -3,9 +3,10 @@
 use std::time::Duration;
 
 use ble::OtaHandler;
+use board_sabotter::SabotterBoard;
 use cancaner::{CanMessage, OtaReadyStatus, OtaResultStatus, RebootMode};
 
-use crate::can::CanInterface;
+use super::GalipeurCan;
 
 const CAN_OTA_CHUNK_SIZE: usize = 6;
 /// Timeout waiting for CAN responses
@@ -19,8 +20,8 @@ const REBOOT_DELAY: Duration = Duration::from_millis(1000);
 /// - `data()` is called from the OTA handler thread (blocking is OK)
 /// - CAN RX callback pushes responses to a flume channel
 /// - Handler thread blocks on the channel waiting for ACKs
-pub struct CanOtaRelayHandler {
-    can: CanInterface,
+pub struct CanOtaRelayHandler<B : SabotterBoard + 'static> {
+    can: GalipeurCan<B>,
     /// Receives OTA responses (OtaReady, OtaAck, OtaResult) from CAN RX callback
     response_rx: flume::Receiver<CanOtaResponse>,
     /// Firmware state
@@ -40,8 +41,8 @@ enum CanOtaResponse {
     Result(OtaResultStatus),
 }
 
-impl CanOtaRelayHandler {
-    pub fn new(can: &CanInterface) -> Self {
+impl<B: SabotterBoard + 'static> CanOtaRelayHandler<B> {
+    pub fn new(can: GalipeurCan<B>) -> Self {
         let (response_tx, response_rx) = flume::bounded(8);
 
         // Register CAN callback for OTA responses from picotter
@@ -202,7 +203,7 @@ impl CanOtaRelayHandler {
     }
 }
 
-impl OtaHandler for CanOtaRelayHandler {
+impl<B: SabotterBoard + 'static>  OtaHandler  for CanOtaRelayHandler<B> {
     fn start(&mut self, size: u32, crc: u32) -> u8 {
         self.drain_responses();
         self.fw_size = size;

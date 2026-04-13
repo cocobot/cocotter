@@ -1,9 +1,5 @@
-use std::time::Duration;
-use asserv::holonomic::{conf::*, Asserv, RobotSide, TableSide};
-use asserv::maths::XY;
+use asserv::holonomic::{conf::*};
 use board_sabotter::SabotterBoard;
-use galipeur::meca::Meca;
-use galipeur::movement::MovementLowLevelHardware;
 use galipeur::routines::GalipeurRoutines;
 
 #[cfg(target_os = "espidf")]
@@ -15,11 +11,7 @@ use board_sabotter::MockSabotterBoard as SabotterBoardImpl;
 fn main() {
     let mut board = SabotterBoardImpl::init();
 
-    let mut leds = board.leds().unwrap();
-
-    let rome_server = board.rome("Galipeur".into()).unwrap();
-
-    let mut routines = GalipeurRoutines::new(&mut board, rome_server);
+    let mut routines = GalipeurRoutines::new(&mut board);
     routines.asserv.set_conf(AsservConf {
         pid_x: PidConf {
             gain_p: 50,
@@ -78,128 +70,7 @@ fn main() {
         }
     });
 
-    #[derive(Debug)]
-    enum Order<'a> {
-        GotoXy(f32, f32),
-        GotoA(f32),
-        GotoXyA(f32, f32, f32),
-        RunPath(&'a [XY]),
-        MecaTake,
-        MecaRaiseGrab,
-        MecaRaiseDrop,
-        MecaIdlePosGrab,
-        MecaIdlePosDrop,
-    }
-
-    let mut robot_color = true;
-
-    let robot_side_main = if robot_color { RobotSide::Right } else { RobotSide::Left };
-    let robot_side_aux  = if robot_color { RobotSide::Left } else { RobotSide::Right };
-    let table_side_main = if robot_color { TableSide::Left } else { TableSide::Right };
-    let table_side_aux  = if robot_color { TableSide::Right } else { TableSide::Left };
-
-    //function to get angle to apply to Align Robot Face Along given Side of the Table
-    fn arfast(face: RobotSide, side: TableSide) -> f32 {
-        match (face, side) {
-            (RobotSide::Left,  TableSide::Left)  => std::f32::consts::PI *  1.0/6.0,
-            (RobotSide::Left,  TableSide::Right) => std::f32::consts::PI * -5.0/6.0,
-            (RobotSide::Left,  TableSide::Up)    => std::f32::consts::PI * -1.0/3.0,
-            (RobotSide::Left,  TableSide::Down)  => std::f32::consts::PI *  2.0/3.0,
-            (RobotSide::Right, TableSide::Left)  => std::f32::consts::PI *  5.0/6.0,
-            (RobotSide::Right, TableSide::Right) => std::f32::consts::PI * -1.0/6.0,
-            (RobotSide::Right, TableSide::Up)    => std::f32::consts::PI *  1.0/3.0,
-            (RobotSide::Right, TableSide::Down)  => std::f32::consts::PI * -2.0/3.0,
-            (RobotSide::Back,  TableSide::Left)  => std::f32::consts::PI * -1.0/2.0,
-            (RobotSide::Back,  TableSide::Right) => std::f32::consts::PI *  1.0/2.0,
-            (RobotSide::Back,  TableSide::Up)    => std::f32::consts::PI *  1.0,
-            (RobotSide::Back,  TableSide::Down)  => std::f32::consts::PI *  0.0,
-        }
-    }
-
-    macro_rules! arfast {
-        ($face:ident, $side: ident) => { arfast(RobotSide::$face, TableSide::$side) }
-    }
-
-
-    impl Order<'_> {
-        fn apply(&self, asserv: &mut Asserv<MovementLowLevelHardware<SabotterBoardImpl>>, meca: &Meca<SabotterBoardImpl>) {
-            match self {
-                Order::GotoXy(x, y) => asserv.goto_xy(*x, *y),
-                Order::GotoA(a) => asserv.goto_a(*a),
-                Order::GotoXyA(x, y, a) => asserv.goto_xya(*x, *y, *a),
-                Order::RunPath(path) => asserv.run_path(path),
-                Order::MecaTake => {
-                    meca.lower_arm_grab(0);
-                    log::info!("TO_DO wait with feedback from meca");
-                    std::thread::sleep(Duration::from_secs(2));
-                }
-                Order::MecaRaiseGrab => {
-                    meca.grab(0);
-                    meca.raise_arm_grab(0);
-                    log::info!("TODO wait with feedback from meca");
-                    std::thread::sleep(Duration::from_secs(2));
-                }
-                Order::MecaRaiseDrop => {
-                    meca.grab(0);
-                    meca.raise_arm_release(0);
-                    log::info!("TODO wait with feedback from meca");
-                    std::thread::sleep(Duration::from_secs(2));
-                }
-                Order::MecaIdlePosGrab => {
-                    meca.idle_arm_grab(0);
-                    log::info!("TODO wait with feedback from meca");
-                    std::thread::sleep(Duration::from_secs(2));
-                }
-                Order::MecaIdlePosDrop => {
-                    meca.idle_arm_release(0);
-                    log::info!("TODO wait with feedback from meca");
-                    std::thread::sleep(Duration::from_secs(2));
-                }
-
-            }
-        }
-    }
-
-    let orders = [
-        //Order::RunPath(&[
-        //    XY::new(0.0, 500.0),
-        //    XY::new(500.0, 500.0),
-        //]),
-        Order::GotoXyA(0.0, 0.0, arfast!(Back, Down)),
-        Order::MecaIdlePosDrop,
-        Order::MecaTake,
-        //Order::RunPath(&[
-        //    XY::new(500.0, 0.0),
-        //    XY::new(0.0, 0.0),
-        //]),
-        Order::MecaRaiseGrab,
-        Order::GotoXyA(50.0, 0.0, arfast(RobotSide::Back, TableSide::Down)),
-        Order::MecaRaiseDrop,
-    ];
-    let mut index = 0;
-
-    /*TODO
-    if robot_color {
-        led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 127, g: 127, b: 0 }}).ok();
-    } else {
-        led_sender.send(led::LedMessage::GameColor { color: RGB8 { r: 0, g: 0, b: 255 }}).ok();
-    }
-    */
-
     loop {
-        let _ = routines.step_idle();
-
-        let position = routines.asserv.cs.position();
-        log::info!("Position: x: {:.2} y: {:.2} theta: {:.2}", position.x, position.y, position.a);
-
-        if routines.asserv.done_xy() && routines.asserv.done_a() {
-            let order = &orders[index];
-            log::info!("Send new order: {:?}", order);
-            order.apply(&mut routines.asserv, &routines.meca);
-            index = (index + 1) % orders.len();
-        }
-        //pause between orders
-        //thread::sleep(Duration::from_secs(2));
-
+        routines.step_idle();
     }
 }

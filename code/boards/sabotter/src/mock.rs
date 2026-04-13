@@ -8,8 +8,16 @@ use embedded_hal_mock::eh1::{
 };
 use flume::{Receiver, Sender};
 use board_common::mock::MockEncoder;
-use crate::{SabotterBoard, SabotterLeds, SabotterMotor};
+use crate::{OtaHandler, SabotterAdc, SabotterBoard, SabotterLeds, SabotterMotor};
 
+
+pub struct MockSabotterAdc;
+
+impl SabotterAdc for MockSabotterAdc {
+    fn read(&mut self) -> Result<u16, ()> {
+        Ok(0)
+    }
+}
 
 pub struct MockSabotterBoard;
 
@@ -21,6 +29,7 @@ impl SabotterBoard for MockSabotterBoard {
     type Spi = SpiMock<u8>;
     type MotorEncoder = MockEncoder<i32>;
     type MotorPwm = SetDutyCycleMock;
+    type Adc = MockSabotterAdc;
 
     fn init() -> Self {
         Self
@@ -34,6 +43,10 @@ impl SabotterBoard for MockSabotterBoard {
         None
     }
 
+    fn battery_adc(&mut self) -> Option<Self::Adc> {
+        None
+    }
+
     fn can(&mut self) -> Option<Self::Can> {
         None
     }
@@ -42,7 +55,7 @@ impl SabotterBoard for MockSabotterBoard {
         None
     }
 
-    fn rome(&mut self, _device_name: String) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
+    fn rome(&mut self, _device_name: String, _other_ota_handlers: Option<Vec<Box<dyn OtaHandler>>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
         None
     }
 }

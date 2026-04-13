@@ -5,8 +5,13 @@ use embedded_hal::digital::{ErrorType, InputPin, OutputPin, StatefulOutputPin};
 use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
     hal::{
+        adc::{
+            attenuation,
+            oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
+        },
         can::{CanConfig, CanDriver},
         delay::BLOCK,
+        adc::ADCU1,
         gpio::{AnyOutputPin, Output, PinDriver},
         i2c::{I2cConfig, I2cDriver, I2cError},
         ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},
@@ -14,28 +19,43 @@ use esp_idf_svc::{
         spi::{self, SpiConfig, SpiDeviceDriver, SpiDriver},
         units::Hertz,
         sys::{self, ets_delay_us},
+        rmt::{config::{MemoryAccess, TxChannelConfig}, TxChannelDriver},
     },
     nvs::EspDefaultNvsPartition,
 };
+use ws2812_esp32_rmt_driver::{LedPixelEsp32Rmt, RGB8};
+use ws2812_esp32_rmt_driver::driver::color::LedPixelColorGrb24;
+use ws2812_esp32_rmt_driver::driver::Ws2812Esp32RmtDriverBuilder;
 use flume::{Receiver, Sender};
-use ble::{BleBuilder, EspSelfOtaHandler};
+use ble::{BleBuilder, EspSelfOtaHandler, OtaHandler};
 use cancaner::CanInterface;
 use pca9535::{Pca9535Immediate, ExpanderError, GPIOBank, StandardExpanderInterface};
 use esp32_encoder::Encoder as EspEncoder;
-use crate::{SabotterBoard, SabotterLeds, SabotterMotor};
+use crate::{SabotterAdc, SabotterBoard, SabotterLeds, SabotterMotor, SabotterInputs};
 
 
 type EspI2c = MutexDevice<'static, I2cDriver<'static>>;
 type EspOutputPin = PinDriver<'static, Output>;
 
 
+type AdcCh0 = esp_idf_svc::hal::adc::ADCCH0<ADCU1>;
+pub struct EspSabotterAdc(AdcChannelDriver<'static, AdcCh0, Arc<AdcDriver<'static, ADCU1>>>);
+
+impl SabotterAdc for EspSabotterAdc {
+    fn read(&mut self) -> Result<u16, ()> {
+        self.0.read().map(|v| v as u16).map_err(|_| ())
+    }
+}
+
 pub struct EspSabotterBoard {
-    com_led: Option<EspOutputPin>,
+    heartbeat_led: Option<EspOutputPin>,
+    rgba_leds: Option<LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorGrb24>>,
     imu_spi: Option<SpiDeviceDriver<'static, SpiDriver<'static>>>,
     can: Option<CanDriver<'static>>,
     motors: Option<[SabotterMotor<EspEncoder<'static>, LedcDriver<'static>>; 3]>,
     motor_enable: Option<EspOutputPin>,
     gpio_expanders: GpioExpanders,
+    battery_adc: Option<EspSabotterAdc>,
 }
 
 impl EspSabotterBoard {
@@ -52,10 +72,13 @@ impl SabotterBoard for EspSabotterBoard {
     type I2c = EspI2c;
     type OutputPin = EspOutputPin;
     type ExOutputPin = SharedGpioPin;
+    type ExInputPin = SharedGpioPin;
     type Can = EspCanInterface;
     type Spi = SpiDeviceDriver<'static, SpiDriver<'static>>;
     type MotorEncoder = EspEncoder<'static>;
     type MotorPwm = LedcDriver<'static>;
+    type SmartLeds = LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorGrb24>;
+    type Adc = EspSabotterAdc;
 
     fn init() -> Self {
         esp_idf_svc::sys::link_patches();
@@ -65,7 +88,7 @@ impl SabotterBoard for EspSabotterBoard {
         let peripherals = Peripherals::take().unwrap();
 
         // Initialize digital output pins
-        let com_led = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio45)).unwrap();
+        let heartbeat_led = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio45)).unwrap();      
 
         // Initialize SPI for IMU SCH16T
         let imu_spi = SpiDeviceDriver::new(
@@ -154,8 +177,17 @@ impl SabotterBoard for EspSabotterBoard {
         ).ok();
         */
 
+        // Initialize ADC for battery voltage
+        let adc = Arc::new(AdcDriver::new(peripherals.adc1).unwrap());
+        let adc_vbatt = AdcChannelDriver::new(
+            adc,
+            peripherals.pins.gpio1,
+            &AdcChannelConfig { attenuation: attenuation::DB_12, ..Default::default() },
+        ).unwrap();
+        let battery_adc = EspSabotterAdc(adc_vbatt);
+
         // Initialize CAN bus with correct pins (GPIO9/10)
-        let can = CanDriver::new(peripherals.can, peripherals.pins.gpio9, peripherals.pins.gpio10, &CanConfig::new()).unwrap();
+        let can = CanDriver::new(peripherals.can, peripherals.pins.gpio9, peripherals.pins.gpio10, &CanConfig::new().rx_queue_len(64)).unwrap();
 
         /*
         // Initialize Lidar PWM
@@ -164,20 +196,51 @@ impl SabotterBoard for EspSabotterBoard {
             .ok();
         */
 
+        // Initialize ws2812 leds
+        const WS2812_T0H_NS: Duration = Duration::from_nanos(350);
+        const WS2812_T0L_NS: Duration = Duration::from_nanos(1360);
+        const WS2812_T1H_NS: Duration = Duration::from_nanos(1360);
+        const WS2812_T1L_NS: Duration = Duration::from_nanos(350);
+        let led_driver_config = TxChannelConfig { resolution: Hertz(80_000_000), memory_access: MemoryAccess::Indirect { memory_block_symbols: 192 }, ..Default::default() };
+        let led_tx_driver = TxChannelDriver::new(peripherals.pins.gpio4, &led_driver_config).unwrap();
+        let ws2812_driver = Ws2812Esp32RmtDriverBuilder::new_with_rmt_driver(led_tx_driver)
+            .unwrap()
+            .encoder_duration(
+                &WS2812_T0H_NS,
+                &WS2812_T0L_NS,
+                &WS2812_T1H_NS,
+                &WS2812_T1L_NS,
+            )
+            .unwrap()
+            .build()
+            .unwrap();
+        let rgba_leds = LedPixelEsp32Rmt::<RGB8, LedPixelColorGrb24>::new_with_ws2812_driver(ws2812_driver).unwrap();
+
         Self {
-            com_led: Some(com_led),
+            heartbeat_led: Some(heartbeat_led),
+            rgba_leds: Some(rgba_leds),
             imu_spi: Some(imu_spi),
             can: Some(can),
             motors: Some(motors),
             motor_enable: Some(motor_enable),
             gpio_expanders,
+            battery_adc: Some(battery_adc),
         }
     }
 
-    fn leds(&mut self) -> Option<SabotterLeds<Self::OutputPin, Self::ExOutputPin>> {
+    fn leds(&mut self) -> Option<SabotterLeds<Self::OutputPin, Self::ExOutputPin, Self::SmartLeds>> {
         Some(SabotterLeds {
-            com: self.com_led.take()?,
+            com: self.gpio_expanders.main.get_pin(0),
+            heartbeat: self.heartbeat_led.take()?,
             motors: self.motor_leds(),
+            rgba: self.rgba_leds.take()?,
+        })
+    }
+
+    fn inputs(&mut self) -> Option<SabotterInputs<Self::ExInputPin, Self::ExInputPin>> {
+        Some(SabotterInputs {
+            color: self.gpio_expanders.main.get_pin(6),
+            starter: self.gpio_expanders.main.get_pin(7),
         })
     }
 
@@ -188,6 +251,10 @@ impl SabotterBoard for EspSabotterBoard {
     fn can(&mut self) -> Option<Self::Can> {
         let can = self.can.take()?;
         Some(EspCanInterface::new(can))
+    }
+
+    fn battery_adc(&mut self) -> Option<Self::Adc> {
+        self.battery_adc.take()
     }
 
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]> {
@@ -237,23 +304,36 @@ impl SabotterBoard for EspSabotterBoard {
         self.motors.take()
     }
 
-    fn rome(&mut self, device_name: String) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
+    fn rome(&mut self, device_name: String, other_ota_handlers: Option<Vec<Box<dyn OtaHandler>>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
         // Note: for now, client is not used, so we can easily initialize both server and client
         // and drop the client. But if the client (and `.with_scanner()`) are needed,
         // another approach must be implemented. Maybe by changing the BLE API.
         let (ble_server, _ble_client) = BleBuilder::new().run();
 
+        let count = if let Some(ref other_ota_handlers) = other_ota_handlers {
+            other_ota_handlers.len() + 1
+        } else {
+            1
+        };
+
         let rome_reg = ble::rome::register_gatt();
-        let ota_reg = ble::ota::register_gatt(2); // target 0 = self, target 1 = picotter
+        let ota_reg = ble::ota::register_gatt(count);
 
         ble_server.start_host();
         let rome = rome_reg.start();
-        log::error!("TODO enable can_ota_relay here");
-        //let picotter_ota = can_ota_relay::CanOtaRelayHandler::new(&can_iface);
-        let _ota = ota_reg.start(vec![
-            Box::new(EspSelfOtaHandler::new()),
-           // Box::new(picotter_ota),
-        ]);
+        if let Some(other_ota_handlers) = other_ota_handlers {
+            let mut handlers: Vec<Box<dyn OtaHandler>> = vec![
+                Box::new(EspSelfOtaHandler::new()),
+            ];
+            handlers.extend(other_ota_handlers);
+            ota_reg.start(handlers);
+        }
+        else {
+            ota_reg.start(vec![
+                Box::new(EspSelfOtaHandler::new())
+            ]);
+        }
+        
         
 
         ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();

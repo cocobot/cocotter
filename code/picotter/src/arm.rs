@@ -15,7 +15,7 @@ pub struct ArmState {
     pub position: u16,
     /// Target servo position
     pub target_position: u16,
-    /// Detected color (0=no match, 255=config incomplete, 1-254=color_id)
+    /// Color: bit 7 = detected (dC > threshold), bits 0-6 = hue (0-127, always computed)
     pub color: u8,
     /// Pump state
     pub pump: bool,

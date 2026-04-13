@@ -12,6 +12,7 @@ log = "0.4"
 board-common = { path = "../common" }
 cancaner = { path = "../../libs/cancaner" }
 pca9535 = { version = "2.0", features = ["std"] }
+smart-leds-trait = "0.3.2"
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }

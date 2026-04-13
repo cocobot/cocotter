@@ -42,6 +42,8 @@ Messages système généraux. Target = 0 sauf pour les réponses (target = 1).
 | 0x0 | Ping | `SystemCmd::Ping` |
 | 0x1 | BoardInfo | `SystemCmd::BoardInfo` |
 | 0x2 | SetServoId | `SystemCmd::SetServoId` |
+| 0x3 | ScanBus | `SystemCmd::ScanBus` |
+| 0x4 | BatteryStatus | `SystemCmd::BatteryStatus` |
 | 0xE | Error | `SystemCmd::Error` |
 | 0xF | Reboot | `SystemCmd::Reboot` |
 
@@ -85,12 +87,12 @@ Data[4-7]: Uptime en ms (u32, LE)
 
 ### 0x020 - SET_SERVO_ID
 
-Configure l'ID d'un servo par broadcast sur un bus spécifique.
-⚠️ **Important:** Un seul servo doit être connecté sur le bus lors de l'exécution.
+Change l'ID d'un servo sur un bus spécifique. Cible le servo par son ID d'origine.
+Pour un broadcast (tous les servos du bus), utiliser `origin_id = 0xFE`.
 
 ```
 ID: 0x020 (target=0)
-Longueur: 2 octets
+Longueur: 3 octets
 Direction: P→S
 
 Data[0]: Bus cible (ServoBus)
@@ -98,7 +100,8 @@ Data[0]: Bus cible (ServoBus)
          - 1 = Module 1 (4 servos bras)
          - 2 = Module 2 (4 servos bras)
          - 3 = Translation (3 servos)
-Data[1]: Nouvel ID servo (1-253)
+Data[1]: ID d'origine du servo (1-253, ou 0xFE pour broadcast)
+Data[2]: Nouvel ID servo (1-253)
 ```
 
 ### 0x021 - SET_SERVO_ID_RESULT
@@ -107,12 +110,47 @@ Résultat de la commande SET_SERVO_ID.
 
 ```
 ID: 0x021 (target=1)
-Longueur: 3 octets
+Longueur: 4 octets
 Direction: S→P
 
 Data[0]: Bus utilisé (0-3)
-Data[1]: ID configuré
-Data[2]: Résultat (0=échec, 1=succès)
+Data[1]: ID d'origine
+Data[2]: ID configuré
+Data[3]: Résultat (0=échec, 1=succès)
+```
+
+### 0x030 - SCAN_BUS
+
+Lance un scan sur un bus pour découvrir les servos présents (IDs 1-253).
+Les résultats sont envoyés via `log::info` et relayés par le domaine LOG.
+
+```
+ID: 0x030 (target=0)
+Longueur: 1 octet
+Direction: P→S
+
+Data[0]: Bus cible (ServoBus)
+         - 0 = Module 0
+         - 1 = Module 1
+         - 2 = Module 2
+         - 3 = Translation
+```
+
+### 0x040 - BATTERY_STATUS
+
+Tension de la batterie meca, moyennée sur les modules ayant répondu.
+Chaque module lit le canal 6 du TLA2528 (diviseur 10k/2k2) via I2C.
+
+```
+ID: 0x040 (target=0)
+Longueur: 3 octets
+Direction: S→P
+
+Data[0-1]: Tension en mV (u16, LE) — moyenne des modules ayant répondu
+Data[2]:   Bitmask des modules ayant réussi la lecture
+           - bit 0: Module 0
+           - bit 1: Module 1
+           - bit 2: Module 2
 ```
 
 ### 0x0E0 - ERROR
@@ -193,6 +231,14 @@ Décodage : `module = target / 4`, `arm = target % 4`.
 | 0x5 | SetValve | `ArmCmd::SetValve` |
 | 0x6 | SetTranslation | `ArmCmd::SetTranslation` |
 | 0x7 | TranslationStatus | `ArmCmd::TranslationStatus` |
+| 0x8 | SetColorThreshold | `ArmCmd::SetColorThreshold` |
+| 0x9 | SetColorSensorConfig | `ArmCmd::SetColorSensorConfig` |
+| 0xA | ColorSensorRaw | `ArmCmd::ColorSensorRaw` |
+| 0xB | SetColorLedPwm | `ArmCmd::SetColorLedPwm` |
+| 0xC | RequestTranslationStatus | `ArmCmd::RequestTranslationStatus` |
+| 0xD | SetStage2 | `ArmCmd::SetStage2` |
+| 0xE | SetStage2Torque | `ArmCmd::SetStage2Torque` |
+| 0xF | Stage2Status | `ArmCmd::Stage2Status` |
 
 ### 0x10T - SET_ARM
 
@@ -226,7 +272,9 @@ Longueur: 8 octets
 Direction: S→P
 
 Data[0-1]: Position servo actuelle (0-1023), little-endian
-Data[2]:   Couleur détectée (Color: 0=Inconnu, 1=Jaune, 2=Bleu)
+Data[2]:   Couleur (u8)
+           - bit 7: détection (1 = delta clear > seuil)
+           - bits 0-6: hue (0-127, toujours calculé, 0=rouge, ~42=vert, ~85=bleu)
 Data[3]:   État pompe (0=OFF, 1=ON)
 Data[4]:   État électrovanne (0=OFF, 1=ON)
 Data[5]:   Code erreur servo (0=OK, voir codes ci-dessous)
@@ -325,11 +373,153 @@ Le target est directement le numéro de module (0-2).
 
 ```
 ID: 0x17[module]
-Longueur: 3 octets
+Longueur: 4 octets
 Direction: S→P
 
 Data[0-1]: Position actuelle (0-1023), little-endian
 Data[2]:   Code erreur (0=OK)
+Data[3]:   Flags (ArmFlags)
+           - bit 0: Torque enabled
+           - bit 1: En mouvement
+           - bit 2: Position atteinte
+```
+
+### 0x1CM - REQUEST_TRANSLATION_STATUS
+
+Force l'envoi immédiat du status de translation.
+
+```
+ID: 0x1C[module]
+Longueur: 0 octet
+Direction: P→S
+
+Réponse: Message 0x17M correspondant
+```
+
+### 0x1DT - SET_STAGE2
+
+Commande le servo du 2ème étage.
+Chaque module possède 2 servos de 2ème étage sur le même bus UART que les bras.
+
+Le target utilise un encodage plat : `module * 2 + servo` (0-5), 0xF = broadcast.
+
+```
+ID: 0x1D[target]
+Longueur: 4 octets
+Direction: P→S
+
+Data[0-1]: Position servo (0-1023), little-endian
+Data[2-3]: Temps de mouvement (ms), little-endian (0 = vitesse max)
+```
+
+**Servo IDs de 2ème étage (configurables, par défaut):**
+| Module | Servo 0 | Servo 1 |
+|--------|---------|---------|
+| 0 | 20 | 21 |
+| 1 | 20 | 21 |
+| 2 | 20 | 21 |
+
+### 0x1ET - SET_STAGE2_TORQUE
+
+Active ou désactive le couple d'un servo du 2ème étage.
+
+```
+ID: 0x1E[target]
+Longueur: 1 octet
+Direction: P→S
+
+Data[0]: 0=OFF, 1=ON
+```
+
+### 0x1FT - STAGE2_STATUS
+
+Status d'un servo du 2ème étage. Envoyé périodiquement ou en réponse à une requête.
+
+Requête (P→S) : 0 octet de données.
+Réponse (S→P) : 4 octets.
+
+```
+ID: 0x1F[target]
+Longueur: 0 octets (requête) ou 4 octets (status)
+Direction: P→S (requête) / S→P (status)
+
+Data[0-1]: Position servo actuelle (0-1023), little-endian
+Data[2]:   Code erreur servo (0=OK)
+Data[3]:   Flags (ArmFlags)
+           - bit 0: Torque enabled
+           - bit 1: En mouvement
+           - bit 2: Position atteinte
+```
+
+### 0x180 - SET_COLOR_THRESHOLD
+
+Configure le seuil de détection sur le canal clear (delta on-off).
+Si le delta clear dépasse ce seuil, le bit 7 de la couleur dans ARM_STATUS est mis à 1.
+
+```
+ID: 0x180
+Longueur: 2 octets
+Direction: P→S
+
+Data[0-1]: Seuil de détection (u16, LE) — défaut: 800
+```
+
+### 0x19T - SET_COLOR_SENSOR_CONFIG
+
+Configure les paramètres du capteur TCS3472 (integration time + gain).
+Un capteur par bras, accessible via mux I2C TCA9548A.
+
+```
+ID: 0x19[target]
+Longueur: 2 octets
+Direction: P→S
+
+Data[0]: Integration time (registre ATIME brut)
+         - 0xFF = 2.4ms
+         - 0xD5 = ~101ms
+         - 0xC0 = ~154ms
+         - 0x00 = ~614ms
+         Formule: temps_ms = (256 - ATIME) × 2.4
+Data[1]: Gain
+         - 0 = 1x
+         - 1 = 4x
+         - 2 = 16x
+         - 3 = 60x
+```
+
+### 0x1AT - COLOR_SENSOR_RAW
+
+Retourne le dernier delta mesuré (LED on - LED off) pour le capteur TCS3472.
+Ne déclenche pas de nouvelle mesure, retourne les valeurs stockées.
+
+**Requête (P→S):**
+```
+ID: 0x1A[target]
+Longueur: 0 octet
+```
+
+**Réponse (S→P):**
+```
+ID: 0x1A[target]
+Longueur: 8 octets
+
+Data[0-1]: Delta Clear (u16, LE)
+Data[2-3]: Delta Red (u16, LE)
+Data[4-5]: Delta Green (u16, LE)
+Data[6-7]: Delta Blue (u16, LE)
+```
+
+### 0x1B0 - SET_COLOR_LED_PWM
+
+Configure le duty cycle de la PWM pour les LEDs des capteurs de couleur TCS3472.
+Une seule PWM (TIM8_CH3, PC8) contrôle toutes les LEDs.
+
+```
+ID: 0x1B0
+Longueur: 1 octet
+Direction: P→S
+
+Data[0]: Duty cycle (0=OFF, 255=pleine puissance)
 ```
 
 ---
