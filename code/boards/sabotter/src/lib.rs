@@ -25,7 +25,7 @@ use std::{rc::Rc, sync::Mutex, time::Duration};
 use ws2812_esp32_rmt_driver::{LedPixelEsp32Rmt, RGB8};
 use ws2812_esp32_rmt_driver::driver::color::LedPixelColorGrb24;
 use ws2812_esp32_rmt_driver::driver::Ws2812Esp32RmtDriverBuilder;
-use esp_idf_svc::hal::rmt::{config::TxChannelConfig, TxChannelDriver};
+use esp_idf_svc::hal::rmt::{config::{MemoryAccess, TxChannelConfig}, TxChannelDriver};
 
 
 pub type I2CType = MutexDevice<'static, I2cDriver<'static>>;
@@ -152,7 +152,7 @@ impl BoardSabotter {
         const WS2812_T0L_NS: Duration = Duration::from_nanos(1360);
         const WS2812_T1H_NS: Duration = Duration::from_nanos(1360);
         const WS2812_T1L_NS: Duration = Duration::from_nanos(350);
-        let led_driver_config = TxChannelConfig { resolution: Hertz(80_000_000), ..Default::default() };
+        let led_driver_config = TxChannelConfig { resolution: Hertz(80_000_000), memory_access: MemoryAccess::Indirect { memory_block_symbols: 192 }, ..Default::default() };
         let led_tx_driver = TxChannelDriver::new(peripherals.pins.gpio4, &led_driver_config).unwrap();
         let ws2812_driver = Ws2812Esp32RmtDriverBuilder::new_with_rmt_driver(led_tx_driver)
             .unwrap()
