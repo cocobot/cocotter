@@ -1,11 +1,26 @@
 mod proxy;
 
 use proxy::{MecaProxy, MecaState};
+use asserv::holonomic::RobotSide;
 use board_sabotter::SabotterBoard;
 use std::time::Duration;
 
 use crate::can::GalipeurCan;
 
+/// Mapping RobotSide → CAN module index
+pub trait RobotSideModule {
+    fn module(self) -> u8;
+}
+
+impl RobotSideModule for RobotSide {
+    fn module(self) -> u8 {
+        match self {
+            RobotSide::Left => 0,
+            RobotSide::Back => 1,
+            RobotSide::Right => 2,
+        }
+    }
+}
 
 /// High-level meca interface — cloneable, passes to threads
 pub struct Meca<B: SabotterBoard> {

@@ -184,9 +184,8 @@ pub enum CanMessage {
     SetColorLedPwm { duty: u8 },
 
     // ==================== GROUND Domain (0x2) ====================
-    /// Ground sensors detection status (ID: 0x20S)
+    /// Ground sensors detection status (ID: 0x200)
     GroundStatus {
-        sensor: u8,
         detection_mask: u8,
     },
 
@@ -261,6 +260,20 @@ pub enum CanMessage {
 
     /// OTA reboot command (ID: 0x4F1)
     OtaReboot,
+
+    // ==================== LIDAR Domain (0x5) ====================
+    /// Enable/disable all lidars (ID: 0x500)
+    SetLidarEnable { enable: bool },
+
+    /// Lidar status per module (ID: 0x51M)
+    /// Each module has 2 lidars: module M has lidar M and lidar M+3
+    LidarStatus {
+        module: u8,
+        distance_0: u16,
+        sq_0: u16,
+        distance_1: u16,
+        sq_1: u16,
+    },
 }
 
 impl CanMessage {
@@ -288,6 +301,7 @@ impl CanMessage {
             Domain::Ground => Self::parse_ground(cmd, target, data),
             Domain::Log => Self::parse_log(cmd, data),
             Domain::Ota => Self::parse_ota(cmd, data),
+            Domain::Lidar => Self::parse_lidar(cmd, target, data),
         }
     }
 
@@ -561,7 +575,6 @@ impl CanMessage {
             GroundCmd::Status => {
                 if !data.is_empty() {
                     Some(CanMessage::GroundStatus {
-                        sensor,
                         detection_mask: data[0],
                     })
                 } else {
@@ -703,6 +716,31 @@ impl CanMessage {
                     Some(CanMessage::OtaAbort)
                 } else {
                     Some(CanMessage::OtaReboot)
+                }
+            }
+        }
+    }
+
+    fn parse_lidar(cmd: u8, module: u8, data: &[u8]) -> Option<Self> {
+        match LidarCmd::from_u8(cmd)? {
+            LidarCmd::SetEnable => {
+                if !data.is_empty() {
+                    Some(CanMessage::SetLidarEnable { enable: data[0] != 0 })
+                } else {
+                    None
+                }
+            }
+            LidarCmd::Status => {
+                if data.len() >= 8 {
+                    Some(CanMessage::LidarStatus {
+                        module,
+                        distance_0: u16::from_le_bytes([data[0], data[1]]),
+                        sq_0: u16::from_le_bytes([data[2], data[3]]),
+                        distance_1: u16::from_le_bytes([data[4], data[5]]),
+                        sq_1: u16::from_le_bytes([data[6], data[7]]),
+                    })
+                } else {
+                    None
                 }
             }
         }
@@ -929,10 +967,9 @@ impl CanMessage {
 
             // ==================== GROUND ====================
             CanMessage::GroundStatus {
-                sensor,
                 detection_mask,
             } => {
-                let id = Self::build_id(Domain::Ground, GroundCmd::Status as u8, *sensor);
+                let id = Self::build_id(Domain::Ground, GroundCmd::Status as u8, 0);
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0] = *detection_mask;
                 EncodedMessage { id, data, len: 1 }
@@ -1094,6 +1131,23 @@ impl CanMessage {
                     len: 0,
                 }
             }
+
+            // ==================== LIDAR ====================
+            CanMessage::SetLidarEnable { enable } => {
+                let id = Self::build_id(Domain::Lidar, LidarCmd::SetEnable as u8, 0);
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0] = *enable as u8;
+                EncodedMessage { id, data, len: 1 }
+            }
+            CanMessage::LidarStatus { module, distance_0, sq_0, distance_1, sq_1 } => {
+                let id = Self::build_id(Domain::Lidar, LidarCmd::Status as u8, *module);
+                let mut data = [0u8; MAX_DATA_LEN];
+                data[0..2].copy_from_slice(&distance_0.to_le_bytes());
+                data[2..4].copy_from_slice(&sq_0.to_le_bytes());
+                data[4..6].copy_from_slice(&distance_1.to_le_bytes());
+                data[6..8].copy_from_slice(&sq_1.to_le_bytes());
+                EncodedMessage { id, data, len: 8 }
+            }
         }
     }
 
@@ -1147,6 +1201,9 @@ impl CanMessage {
             | CanMessage::OtaResult { .. }
             | CanMessage::OtaAbort
             | CanMessage::OtaReboot => Domain::Ota,
+
+            CanMessage::SetLidarEnable { .. }
+            | CanMessage::LidarStatus { .. } => Domain::Lidar,
         }
     }
 
@@ -1454,7 +1511,6 @@ mod tests {
     #[test]
     fn roundtrip_ground_status() {
         roundtrip(&CanMessage::GroundStatus {
-            sensor: 1,
             detection_mask: 0b101,
         });
     }
@@ -1556,6 +1612,32 @@ mod tests {
         roundtrip(&CanMessage::OtaFinish);
     }
 
+    // ==================== LIDAR ====================
+
+    #[test]
+    fn roundtrip_set_lidar_enable() {
+        roundtrip(&CanMessage::SetLidarEnable { enable: true });
+        roundtrip(&CanMessage::SetLidarEnable { enable: false });
+    }
+
+    #[test]
+    fn roundtrip_lidar_status() {
+        roundtrip(&CanMessage::LidarStatus {
+            module: 0,
+            distance_0: 1234,
+            sq_0: 4200,
+            distance_1: 5678,
+            sq_1: 9900,
+        });
+        roundtrip(&CanMessage::LidarStatus {
+            module: 2,
+            distance_0: 0,
+            sq_0: 0,
+            distance_1: 65535,
+            sq_1: 65535,
+        });
+    }
+
     // ==================== Domain ====================
 
     #[test]
@@ -1565,7 +1647,7 @@ mod tests {
             target: ArmTarget::new(0, 0),
             position: 0, time_ms: 0, pump: false, valve: false,
         }.domain(), Domain::Arm);
-        assert_eq!(CanMessage::GroundStatus { sensor: 0, detection_mask: 0 }.domain(), Domain::Ground);
+        assert_eq!(CanMessage::GroundStatus { detection_mask: 0 }.domain(), Domain::Ground);
         assert_eq!(CanMessage::LogConfig { level: LogLevel::Off }.domain(), Domain::Log);
         assert_eq!(CanMessage::OtaFinish.domain(), Domain::Ota);
     }

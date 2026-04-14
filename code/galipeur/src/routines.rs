@@ -31,6 +31,9 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     //can interface
     can: GalipeurCan<B>,
 
+    // Sensors
+    pub sensors: Sensors<B>,
+
     // Periodicity states
     asserv_periodicity: Periodicity,
     asserv_tm_periodicity: Periodicity,
@@ -67,7 +70,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         let meca = Meca::new(can_interface.clone());
 
         // Setup sensors
-        let _sensors = Sensors::new(board, can_interface.clone(), led_sender.clone());
+        let sensors = Sensors::new(board, can_interface.clone(), led_sender.clone());
 
         // Setup strat
         Strat::init(board, led_sender.clone());
@@ -82,6 +85,8 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             led_sender,
 
             can: can_interface,
+
+            sensors,
 
             asserv_periodicity: Periodicity::new(Duration::from_millis(10)),
             asserv_tm_periodicity: Periodicity::new(Duration::from_millis(100)),

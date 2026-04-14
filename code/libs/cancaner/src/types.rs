@@ -9,6 +9,7 @@ pub enum Domain {
     Ground = 0x2,
     Log = 0x3,
     Ota = 0x4,
+    Lidar = 0x5,
 }
 
 impl Domain {
@@ -19,6 +20,7 @@ impl Domain {
             0x2 => Some(Domain::Ground),
             0x3 => Some(Domain::Log),
             0x4 => Some(Domain::Ota),
+            0x5 => Some(Domain::Lidar),
             _ => None,
         }
     }
@@ -463,6 +465,24 @@ impl OtaCmd {
             0x1 => Some(OtaCmd::DataAck),
             0x2 => Some(OtaCmd::FinishResult),
             0xF => Some(OtaCmd::AbortReboot),
+            _ => None,
+        }
+    }
+}
+
+/// Lidar domain commands (4 bits in CAN ID)
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
+pub enum LidarCmd {
+    SetEnable = 0x0,
+    Status = 0x1,
+}
+
+impl LidarCmd {
+    pub fn from_u8(val: u8) -> Option<Self> {
+        match val {
+            0x0 => Some(LidarCmd::SetEnable),
+            0x1 => Some(LidarCmd::Status),
             _ => None,
         }
     }

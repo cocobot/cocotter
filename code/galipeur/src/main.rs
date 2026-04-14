@@ -1,6 +1,7 @@
 use asserv::holonomic::{conf::*};
 use board_sabotter::SabotterBoard;
 use galipeur::routines::GalipeurRoutines;
+use galipeur::sensors::{GroundConf, LidarConf, LidarPose};
 
 #[cfg(target_os = "espidf")]
 type SabotterBoardImpl = board_sabotter::EspSabotterBoard;
@@ -70,7 +71,32 @@ fn main() {
         }
     });
 
-    //routines.ground_sensor_calibration();
+    routines.sensors.set_conf(
+        LidarConf {
+            modules: [
+                // Module 0 (Left): lidar 0 and lidar 3
+                [
+                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                ],
+                // Module 1 (Back): lidar 1 and lidar 4
+                [
+                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                ],
+                // Module 2 (Right): lidar 2 and lidar 5
+                [
+                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                ],
+            ],
+        },
+        GroundConf {
+            thresholds: [50, 50, 50],
+        },
+    );
+
+    routines.ground_sensor_calibration();
 
     loop {
         routines.step_idle();

@@ -1,4 +1,4 @@
-use embedded_can::{blocking::Can, Frame, Error};
+use embedded_can::{Frame, Error};
 
 
 /// CAN interface

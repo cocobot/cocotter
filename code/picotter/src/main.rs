@@ -29,7 +29,7 @@ use embassy_stm32::interrupt;
 use embassy_stm32::{bind_interrupts, peripherals};
 use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_sync::mutex::Mutex;
-use embassy_time::{Instant, Timer};
+use embassy_time::{Duration, Instant, Timer};
 use core::sync::atomic::{AtomicU8, AtomicU16, Ordering};
 use log::{info, warn};
 use panic_rtt_target as _;
@@ -189,43 +189,38 @@ async fn led_status_task(
     let mut led_state = false;
     let mut cycle_count: u8 = 0;
     let mut prev_transl_moving = [false; 3];
+    let mut prev_ground_mask: u8 = 0;
+    let mut last_ground_send = Instant::now();
 
     loop {
         let t0 = Instant::now();
         led_state = !led_state;
 
         // Update ground sensors every cycle
-        let ground_sensors ={
+        let ground = {
             let mut m0 = module0.lock().await;
             let mut m1 = module1.lock().await;
             let mut m2 = module2.lock().await;
-            join3(
+            let (g0, g1, g2) = join3(
                 m0.update_ground_sensor(),
                 m1.update_ground_sensor(),
                 m2.update_ground_sensor(),
-            ).await
+            ).await;
+            (g0.unwrap_or(false), g1.unwrap_or(false), g2.unwrap_or(false))
         };
 
-        // Send ground status every 500ms (10 cycles @ 50ms)
-        if cycle_count % 10 == 0 {
-            let detection_mask = {
-                let mut mask = 0u8;
-                if ground_sensors.0.unwrap_or(false) {
-                    mask |= 0x01;
-                }
-                if ground_sensors.1.unwrap_or(false) {
-                    mask |= 0x02;
-                }
-                if ground_sensors.2.unwrap_or(false) {
-                    mask |= 0x04;
-                }
-                mask
-            };
+        if !ground.0 || !ground.1 || !ground.2 {
+            lidar::power_off();
+        }
+
+        // Build detection mask, send on change or every 2s
+        let detection_mask =
+            (ground.0 as u8) | ((ground.1 as u8) << 1) | ((ground.2 as u8) << 2);
+        if detection_mask != prev_ground_mask || t0.duration_since(last_ground_send) >= Duration::from_secs(2) {
+            prev_ground_mask = detection_mask;
+            last_ground_send = t0;
             status_tx
-                .try_send(CanMessage::GroundStatus {
-                    sensor: 0,
-                    detection_mask,
-                })
+                .try_send(CanMessage::GroundStatus { detection_mask })
                 .ok();
         }
 
@@ -304,6 +299,25 @@ async fn led_status_task(
             let duty = COLOR_LED_DUTY.load(Ordering::Relaxed);
             color_led_pwm.set_duty_cycle_fraction(duty as u32, 255);
             led.set_high();
+        }
+
+        // Send lidar status every ~200ms (4 cycles @ 50ms)
+        // Module 0 → lidar 0,3 / Module 1 → lidar 1,4 / Module 2 → lidar 2,5
+        if cycle_count % 4 == 0 {
+            const LIDAR_MAP: [[usize; 2]; 3] = [[0, 3], [1, 4], [2, 5]];
+            for (module, lidars) in LIDAR_MAP.iter().enumerate() {
+                let m0 = lidar::get_measurement(lidars[0]);
+                let m1 = lidar::get_measurement(lidars[1]);
+                status_tx
+                    .try_send(CanMessage::LidarStatus {
+                        module: module as u8,
+                        distance_0: m0.distance_mm.min(u16::MAX as u32) as u16,
+                        sq_0: m0.signal_quality,
+                        distance_1: m1.distance_mm.min(u16::MAX as u32) as u16,
+                        sq_1: m1.signal_quality,
+                    })
+                    .ok();
+            }
         }
 
         // Send battery status every ~1s (20 cycles @ 50ms)
@@ -451,6 +465,18 @@ async fn cmd_task(
 
         // OTA messages are handled by the bootloader, ignore here
         if msg.domain() == Domain::Ota {
+            continue;
+        }
+
+        // Handle SetLidarEnable
+        if let CanMessage::SetLidarEnable { enable } = &msg {
+            if *enable {
+                lidar::power_on();
+                info!("Lidars enabled");
+            } else {
+                lidar::power_off();
+                info!("Lidars disabled");
+            }
             continue;
         }
 

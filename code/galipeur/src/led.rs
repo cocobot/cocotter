@@ -11,6 +11,7 @@ pub enum LedMessage {
     RomeActivity,
     LowPowerBattery,
     LowLogicBattery,
+    GroundSensor(bool, bool, bool),
 }
 
 pub struct Leds {
@@ -43,6 +44,7 @@ struct LedsInternal<B: SabotterBoard> {
     game_color: RGB8,
     low_logic_battery: bool,
     low_power_battery: bool,
+    ground_detected: (bool, bool, bool),
 }
 
 impl<B: SabotterBoard> LedsInternal<B> {
@@ -53,6 +55,7 @@ impl<B: SabotterBoard> LedsInternal<B> {
             game_color: RGB8 { r: 0, g: 0, b: 0 },
             low_logic_battery: false,
             low_power_battery: false,
+            ground_detected: (false, false, false),
         }
     }
 
@@ -69,9 +72,11 @@ impl<B: SabotterBoard> LedsInternal<B> {
         let mut rome_activity = false;
         let mut previous_rome_activity = !rome_activity;
         let mut previous_heartbeat = false;
+        let mut pixels = [BLACK; 41];
 
         const BLACK : RGB8 = RGB8 { r: 0, g: 0, b: 0 };
         const RED : RGB8 = RGB8 { r: 255, g: 0, b: 0 };
+        const BROWN : RGB8 = RGB8 {r: 137,g: 81, b: 41};
 
         loop {
             //Process all pending messages
@@ -89,37 +94,46 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     LedMessage::LowLogicBattery => {
                         self.low_logic_battery = true;
                     }
+                    LedMessage::GroundSensor(s0, s1, s2 ) => {
+                        self.ground_detected = (s0, s1, s2);
+                    }
                 }
             }
 
-            let mut pixels = Vec::new();
-
             // Battery low: blink all LEDs red, overrides everything
-            if self.low_logic_battery|| self.low_power_battery {
+            if self.low_logic_battery || self.low_power_battery {
                 let blink_on = (start.elapsed().subsec_millis() % 500) < 250;
-                let color = if blink_on {
-                    RED
-                } else {
-                    BLACK
-                };
+                let color = if blink_on { RED } else { BLACK };
                 for i in 0..41 {
                     if !self.low_logic_battery && ((i >= 1 && i <= 7) || (i >= 27)) {
-                        pixels.push(BLACK);
-                    }
-                    else if !self.low_power_battery && (i >= 8 && i <= 27){
-                        pixels.push(BLACK);
-                    }
-                    else {
-                        pixels.push(color);
+                        pixels[i] = BLACK
+                    } else if !self.low_power_battery && (i >= 8 && i <= 27) {
+                        pixels[i] = BLACK
+                    } else {
+                        pixels[i] = color;
                     }
                 }
             } else {
+                pixels[0] = self.game_color;
+
                 for i in 0..41 {
-                    if i == 0 {
-                        pixels.push(self.game_color);
-                    } else {
-                        pixels.push(RGB8 { r: 0, g: 0, b: 0 });
-                    }
+                    pixels[i] = BLACK
+                }
+
+                let ground_blink_on = (start.elapsed().subsec_millis() % 100) < 50;
+                let ground_error_color = if ground_blink_on { RED } else { BLACK };
+
+                if !self.ground_detected.0 {
+                    pixels[31] = ground_error_color;
+                    pixels[34] = ground_error_color;
+                }
+                if !self.ground_detected.1 {
+                    pixels[4] = ground_error_color;
+                    pixels[7] = ground_error_color;
+                }
+                if !self.ground_detected.2 {
+                    pixels[18] = ground_error_color;
+                    pixels[21] = ground_error_color;
                 }
             }
 

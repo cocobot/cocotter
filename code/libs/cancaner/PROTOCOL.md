@@ -23,7 +23,8 @@ Bits: `[DOMAIN:3bits][CMD:4bits][TARGET:4bits]` = 11 bits total.
 | 0x2 | GROUND | Capteurs de sol |
 | 0x3 | LOG | Logs picotter → sabotter |
 | 0x4 | OTA | Mise à jour firmware |
-| 0x5-0x7 | Réservé | Extensions futures |
+| 0x5 | LIDAR | Capteurs LiDAR (6 capteurs, 2 par module) |
+| 0x6-0x7 | Réservé | Extensions futures |
 
 **Direction:**
 - P→S : Sabotter (PC/master) envoie à Picotter (board/slave)
@@ -799,6 +800,56 @@ Direction: P→S
 - 6 bytes/chunk, ~500 chunks/s avec ACK
 - Débit effectif: ~3 KB/s
 - Firmware 100 KB: ~33 secondes
+
+---
+
+## Domaine 0x5 - LIDAR
+
+Capteurs LiDAR de proximité. 6 capteurs au total, 2 par module.
+
+**Assignation des LiDARs :**
+
+| Module | LiDAR 0 (index bas) | LiDAR 1 (index haut) |
+|--------|---------------------|----------------------|
+| 0 | LiDAR 0 | LiDAR 3 |
+| 1 | LiDAR 1 | LiDAR 4 |
+| 2 | LiDAR 2 | LiDAR 5 |
+
+### Commandes
+
+| Cmd | Nom | Valeur |
+|-----|-----|--------|
+| 0x0 | SetEnable | `LidarCmd::SetEnable` |
+| 0x1 | Status | `LidarCmd::Status` |
+
+### 0x500 - SET_LIDAR_ENABLE
+
+Active ou désactive tous les LiDARs simultanément.
+
+```
+ID: 0x500
+Longueur: 1 octet
+Direction: P→S
+
+Data[0]: 0=OFF, 1=ON
+```
+
+### 0x51M - LIDAR_STATUS
+
+Status d'un module LiDAR (2 capteurs). Envoyé périodiquement quand les LiDARs sont actifs.
+
+Le target M est le numéro du module (0-2).
+
+```
+ID: 0x51[module]
+Longueur: 8 octets
+Direction: S→P
+
+Data[0-1]: Distance LiDAR 0 en mm (u16, LE)
+Data[2-3]: Signal Quality LiDAR 0 (u16, LE)
+Data[4-5]: Distance LiDAR 1 en mm (u16, LE)
+Data[6-7]: Signal Quality LiDAR 1 (u16, LE)
+```
 
 ---
 

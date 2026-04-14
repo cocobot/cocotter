@@ -87,10 +87,18 @@ pub fn disable_continuous() {
 }
 
 /// Cut power to all lidars
-pub fn power_off_all() {
+pub fn power_off() {
     MANAGER.lock(|cell| {
         if let Some(mgr) = cell.borrow_mut().as_mut() {
             mgr.power_off();
+        }
+    });
+}
+
+pub fn power_on() {
+    MANAGER.lock(|cell| {
+        if let Some(mgr) = cell.borrow_mut().as_mut() {
+            mgr.power_on();
         }
     });
 }
@@ -196,7 +204,7 @@ pub fn init_and_spawn(
     lidars: [LidarConcrete; NUM_LIDARS],
 ) {
     let mut mgr = LidarManager::new(nctrl, power_en);
-    mgr.power_on();
+    mgr.power_off();
     // nCTRL stays HIGH — tasks will pull it low after laser_on + version read
 
     MANAGER.lock(|cell| {
