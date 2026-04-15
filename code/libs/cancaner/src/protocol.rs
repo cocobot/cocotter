@@ -9,8 +9,8 @@ pub const MAX_DATA_LEN: usize = 8;
 /// Number of arms per module (used for flat encoding in CAN ID target field)
 pub const ARMS_PER_MODULE: usize = 4;
 
-/// Number of stage2 servos per module
-pub const STAGE2_SERVOS_PER_MODULE: usize = 2;
+/// Number of clamp servos per module (rotate + left + right)
+pub const CLAMP_SERVOS_PER_MODULE: usize = 3;
 
 /// OTA chunk data size (6 bytes per frame)
 pub const OTA_CHUNK_SIZE: usize = 6;

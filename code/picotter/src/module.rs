@@ -11,7 +11,7 @@
 //! - Bank 1, pins 0-3: Pumps 0-3
 
 use crate::arm::{ArmCommand, ArmError, ArmState};
-use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage, Stage2Target};
+use crate::can_protocol::{ArmFlags, ArmTarget, CanMessage, ClampTarget};
 use crate::i2c_devices::{GPIOBank, I2cDevices};
 use crate::scs0009::{Scs0009, ScsError};
 use embedded_hal_async::i2c::I2c;
@@ -22,8 +22,8 @@ use rtt_target::rprintln;
 /// Number of arms per module
 pub const ARMS_PER_MODULE: usize = 4;
 
-/// Number of stage2 servos per module
-pub const STAGE2_SERVOS_PER_MODULE: usize = 2;
+/// Number of clamp servos per module (rotate + left + right)
+pub const CLAMP_SERVOS_PER_MODULE: usize = 3;
 
 /// Pin assignments for valves (Bank 0, pins 0-3)
 const VALVE_BANK: GPIOBank = GPIOBank::Bank0;
@@ -41,9 +41,9 @@ const PUMP_PINS: [u8; 4] = [0, 1, 2, 3];
 const BATT_ENABLE_BANK: GPIOBank = GPIOBank::Bank0;
 const BATT_ENABLE_PIN: u8 = 6;
 
-/// Stage2 servo state
+/// Clamp servo state
 #[derive(Debug, Clone, Default)]
-pub struct Stage2ServoState {
+pub struct ClampServoState {
     pub position: u16,
     pub target_position: u16,
     pub servo_error: u8,
@@ -52,7 +52,7 @@ pub struct Stage2ServoState {
     pub position_reached: bool,
 }
 
-impl Stage2ServoState {
+impl ClampServoState {
     pub fn new() -> Self {
         Self::default()
     }
@@ -66,8 +66,8 @@ impl Stage2ServoState {
     }
 
     pub fn to_status_message(&self, module: u8, servo: u8) -> CanMessage {
-        CanMessage::Stage2Status {
-            target: Stage2Target::new(module, servo),
+        CanMessage::ClampStatus {
+            target: ClampTarget::from_raw(module, servo),
             position: self.position,
             error: self.servo_error,
             flags: self.flags(),
@@ -88,7 +88,7 @@ impl Stage2ServoState {
 /// Module state containing all 4 arms
 pub struct ModuleState {
     pub arms: [ArmState; ARMS_PER_MODULE],
-    pub stage2: [Stage2ServoState; STAGE2_SERVOS_PER_MODULE],
+    pub clamp: [ClampServoState; CLAMP_SERVOS_PER_MODULE],
     pub module_id: u8,
 }
 
@@ -101,7 +101,11 @@ impl ModuleState {
                 ArmState::new(),
                 ArmState::new(),
             ],
-            stage2: [Stage2ServoState::new(), Stage2ServoState::new()],
+            clamp: [
+                ClampServoState::new(),
+                ClampServoState::new(),
+                ClampServoState::new(),
+            ],
             module_id,
         }
     }
@@ -113,15 +117,15 @@ impl ModuleState {
             .map(move |arm| self.arms[arm as usize].to_status_message(self.module_id, arm))
     }
 
-    /// Build stage2 status messages for specified target
-    pub fn stage2_status_messages(
+    /// Build clamp status messages for specified target
+    pub fn clamp_status_messages(
         &self,
-        target: Stage2Target,
+        target: ClampTarget,
     ) -> impl Iterator<Item = CanMessage> + '_ {
-        (0..STAGE2_SERVOS_PER_MODULE as u8)
+        (0..CLAMP_SERVOS_PER_MODULE as u8)
             .filter(move |&servo| target.matches(self.module_id, servo))
             .map(move |servo| {
-                self.stage2[servo as usize].to_status_message(self.module_id, servo)
+                self.clamp[servo as usize].to_status_message(self.module_id, servo)
             })
     }
 }
@@ -144,15 +148,15 @@ where
     state: ModuleState,
     /// Servo IDs for each arm (configurable)
     servo_ids: [u8; ARMS_PER_MODULE],
-    /// Servo IDs for stage2 servos (configurable)
-    stage2_servo_ids: [u8; STAGE2_SERVOS_PER_MODULE],
+    /// Servo IDs for clamp servos (configurable)
+    clamp_servo_ids: [u8; CLAMP_SERVOS_PER_MODULE],
     /// Per-arm color delta (last measured on-off difference) [C, R, G, B]
     color_deltas: [[u16; 4]; ARMS_PER_MODULE],
     /// Per-arm color baseline (LED off reading) [C, R, G, B]
     color_baseline: [[u16; 4]; ARMS_PER_MODULE],
     /// Previous moving states for change detection
     prev_arm_moving: [bool; ARMS_PER_MODULE],
-    prev_stage2_moving: [bool; STAGE2_SERVOS_PER_MODULE],
+    prev_clamp_moving: [bool; CLAMP_SERVOS_PER_MODULE],
 }
 
 impl<TX, RX, I2C> Module<TX, RX, I2C>
@@ -167,7 +171,7 @@ where
         servo: Scs0009<TX, RX>,
         i2c_devices: I2cDevices<I2C>,
         servo_ids: [u8; ARMS_PER_MODULE],
-        stage2_servo_ids: [u8; STAGE2_SERVOS_PER_MODULE],
+        clamp_servo_ids: [u8; CLAMP_SERVOS_PER_MODULE],
     ) -> Self {
         Self {
             id,
@@ -175,11 +179,11 @@ where
             i2c_devices,
             state: ModuleState::new(id),
             servo_ids,
-            stage2_servo_ids,
+            clamp_servo_ids,
             color_deltas: [[0u16; 4]; ARMS_PER_MODULE],
             color_baseline: [[0u16; 4]; ARMS_PER_MODULE],
             prev_arm_moving: [false; ARMS_PER_MODULE],
-            prev_stage2_moving: [false; STAGE2_SERVOS_PER_MODULE],
+            prev_clamp_moving: [false; CLAMP_SERVOS_PER_MODULE],
         }
     }
 
@@ -367,33 +371,21 @@ where
         let arm_idx = arm as usize;
 
         match cmd {
-            ArmCommand::SetAll {
-                position,
-                time_ms,
-                pump,
-                valve,
-            } => {
+            ArmCommand::SetPosition { position, time_ms } => {
                 match self.servo.set_position(servo_id, position, time_ms, 0).await {
                     Ok(()) => {
                         self.state.arms[arm_idx].target_position = position;
                         self.state.arms[arm_idx].servo_error = 0;
                         self.state.arms[arm_idx].moving = true;
                         self.state.arms[arm_idx].position_reached = false;
+                        Ok(())
                     }
                     Err(e) => {
                         self.state.arms[arm_idx].servo_error = scs_error_to_code(&e);
                         self.servo.set_torque(servo_id, true).await.ok();
-                        return Err(scs_error_to_arm_error(e));
+                        Err(scs_error_to_arm_error(e))
                     }
                 }
-
-                self.set_pump(arm, pump).await?;
-                self.state.arms[arm_idx].pump = pump;
-
-                self.set_valve(arm, valve).await?;
-                self.state.arms[arm_idx].valve = valve;
-
-                Ok(())
             }
             ArmCommand::SetTorque(enable) => {
                 match self.servo.set_torque(servo_id, enable).await {
@@ -471,8 +463,8 @@ where
         self.state.arms[arm as usize].clone()
     }
 
-    pub fn get_stage2_state(&self, servo: u8) -> Stage2ServoState {
-        self.state.stage2[servo as usize].clone()
+    pub fn get_clamp_state(&self, servo: u8) -> ClampServoState {
+        self.state.clamp[servo as usize].clone()
     }
 
     /// Get battery voltage raw ADC value (None if I2C failed)
@@ -513,15 +505,11 @@ where
             CanMessage::SetArm {
                 position,
                 time_ms,
-                pump,
-                valve,
                 ..
             } => {
-                let cmd = ArmCommand::SetAll {
+                let cmd = ArmCommand::SetPosition {
                     position: *position,
                     time_ms: *time_ms,
-                    pump: *pump,
-                    valve: *valve,
                 };
                 if target.is_arm_broadcast() {
                     self.execute_target(target, cmd).await
@@ -598,15 +586,15 @@ where
         self.state.status_messages(target)
     }
 
-    /// Get stage2 status messages for target
-    pub fn get_stage2_status_messages(
+    /// Get clamp status messages for target
+    pub fn get_clamp_status_messages(
         &self,
-        target: Stage2Target,
+        target: ClampTarget,
     ) -> impl Iterator<Item = CanMessage> + '_ {
-        self.state.stage2_status_messages(target)
+        self.state.clamp_status_messages(target)
     }
 
-    /// Check if any arm or stage2 moving state has changed since last call
+    /// Check if any arm or clamp moving state has changed since last call
     pub fn has_moving_changed(&mut self) -> bool {
         let mut changed = false;
         for i in 0..ARMS_PER_MODULE {
@@ -616,30 +604,30 @@ where
                 changed = true;
             }
         }
-        for i in 0..STAGE2_SERVOS_PER_MODULE {
-            let moving = self.state.stage2[i].moving;
-            if moving != self.prev_stage2_moving[i] {
-                self.prev_stage2_moving[i] = moving;
+        for i in 0..CLAMP_SERVOS_PER_MODULE {
+            let moving = self.state.clamp[i].moving;
+            if moving != self.prev_clamp_moving[i] {
+                self.prev_clamp_moving[i] = moving;
                 changed = true;
             }
         }
         changed
     }
 
-    // ==================== Stage2 servo methods ====================
+    // ==================== Clamp servo methods ====================
 
-    /// Set stage2 servo position
-    pub async fn set_stage2_position(
+    /// Set clamp servo position
+    pub async fn set_clamp_position(
         &mut self,
         servo: u8,
         position: u16,
         time_ms: u16,
     ) -> Result<(), ArmError> {
-        if servo as usize >= STAGE2_SERVOS_PER_MODULE {
+        if servo as usize >= CLAMP_SERVOS_PER_MODULE {
             return Err(ArmError::ServoError(0xFF));
         }
-        let servo_id = self.stage2_servo_ids[servo as usize];
-        let state = &mut self.state.stage2[servo as usize];
+        let servo_id = self.clamp_servo_ids[servo as usize];
+        let state = &mut self.state.clamp[servo as usize];
         match self.servo.set_position(servo_id, position, time_ms, 0).await {
             Ok(()) => {
                 state.target_position = position;
@@ -656,17 +644,17 @@ where
         }
     }
 
-    /// Set stage2 servo torque
-    pub async fn set_stage2_torque(
+    /// Set clamp servo torque
+    pub async fn set_clamp_torque(
         &mut self,
         servo: u8,
         enable: bool,
     ) -> Result<(), ArmError> {
-        if servo as usize >= STAGE2_SERVOS_PER_MODULE {
+        if servo as usize >= CLAMP_SERVOS_PER_MODULE {
             return Err(ArmError::ServoError(0xFF));
         }
-        let servo_id = self.stage2_servo_ids[servo as usize];
-        let state = &mut self.state.stage2[servo as usize];
+        let servo_id = self.clamp_servo_ids[servo as usize];
+        let state = &mut self.state.clamp[servo as usize];
         match self.servo.set_torque(servo_id, enable).await {
             Ok(()) => {
                 state.torque_enabled = enable;
@@ -680,13 +668,13 @@ where
         }
     }
 
-    /// Update stage2 servo state from hardware
-    pub async fn update_stage2_state(&mut self, servo: u8) -> Result<(), ArmError> {
-        if servo as usize >= STAGE2_SERVOS_PER_MODULE {
+    /// Update clamp servo state from hardware
+    pub async fn update_clamp_state(&mut self, servo: u8) -> Result<(), ArmError> {
+        if servo as usize >= CLAMP_SERVOS_PER_MODULE {
             return Err(ArmError::ServoError(0xFF));
         }
-        let servo_id = self.stage2_servo_ids[servo as usize];
-        let state = &mut self.state.stage2[servo as usize];
+        let servo_id = self.clamp_servo_ids[servo as usize];
+        let state = &mut self.state.clamp[servo as usize];
         match self.servo.read_position(servo_id).await {
             Ok((pos, servo_error)) => {
                 state.position = pos;
@@ -700,51 +688,51 @@ where
         Ok(())
     }
 
-    /// Update all stage2 servo states
-    pub async fn update_all_stage2_states(&mut self) -> Result<(), ArmError> {
-        for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
-            let _ = self.update_stage2_state(servo).await;
+    /// Update all clamp servo states
+    pub async fn update_all_clamp_states(&mut self) -> Result<(), ArmError> {
+        for servo in 0..CLAMP_SERVOS_PER_MODULE as u8 {
+            let _ = self.update_clamp_state(servo).await;
         }
         Ok(())
     }
 
-    /// Handle stage2 CAN message if it targets this module
-    pub async fn handle_stage2_message(&mut self, msg: &CanMessage) -> Option<Result<(), ArmError>> {
-        let target = msg.stage2_target()?;
+    /// Handle clamp CAN message if it targets this module
+    pub async fn handle_clamp_message(&mut self, msg: &CanMessage) -> Option<Result<(), ArmError>> {
+        let target = msg.clamp_target()?;
 
         if target.module != self.id && !target.is_module_broadcast() {
             return None;
         }
 
         let result = match msg {
-            CanMessage::SetStage2 {
+            CanMessage::SetClamp {
                 position, time_ms, ..
             } => {
                 let mut last_error = None;
-                for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
+                for servo in 0..CLAMP_SERVOS_PER_MODULE as u8 {
                     if target.matches(self.id, servo) {
-                        if let Err(e) = self.set_stage2_position(servo, *position, *time_ms).await {
+                        if let Err(e) = self.set_clamp_position(servo, *position, *time_ms).await {
                             last_error = Some(e);
                         }
                     }
                 }
                 last_error.map_or(Ok(()), Err)
             }
-            CanMessage::SetStage2Torque { enable, .. } => {
+            CanMessage::SetClampTorque { enable, .. } => {
                 let mut last_error = None;
-                for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
+                for servo in 0..CLAMP_SERVOS_PER_MODULE as u8 {
                     if target.matches(self.id, servo) {
-                        if let Err(e) = self.set_stage2_torque(servo, *enable).await {
+                        if let Err(e) = self.set_clamp_torque(servo, *enable).await {
                             last_error = Some(e);
                         }
                     }
                 }
                 last_error.map_or(Ok(()), Err)
             }
-            CanMessage::RequestStage2Status { .. } => {
-                for servo in 0..STAGE2_SERVOS_PER_MODULE as u8 {
+            CanMessage::RequestClampStatus { .. } => {
+                for servo in 0..CLAMP_SERVOS_PER_MODULE as u8 {
                     if target.matches(self.id, servo) {
-                        let _ = self.update_stage2_state(servo).await;
+                        let _ = self.update_clamp_state(servo).await;
                     }
                 }
                 Ok(())

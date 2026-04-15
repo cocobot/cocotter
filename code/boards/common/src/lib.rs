@@ -59,7 +59,7 @@ impl Team {
     /// Return team color
     pub const fn color(self) -> Color {
         match self {
-            Self::None => Color::new(0.5, 0.5, 0.5),
+            Self::None => Color::new(0.0, 0.0, 0.0),
             Self::Left => Color::new(0.8, 0.8, 0.0),
             Self::Right => Color::new(0.0, 0.0, 1.0),
         }

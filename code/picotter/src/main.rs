@@ -102,7 +102,7 @@ impl core::fmt::Write for PanicBuf {
 
 
 use can_handler::{cmd_receiver, log_sender, status_sender};
-use can_protocol::{ArmFlags, ArmTarget, CanMessage, Domain, ServoBus, Stage2Target};
+use can_protocol::{ArmFlags, ArmTarget, CanMessage, ClampTarget, Domain, ServoBus};
 use i2c_devices::I2cDevices;
 use module::Module;
 use scs0009::Scs0009;
@@ -144,10 +144,10 @@ const MODULE0_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 const MODULE1_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 const MODULE2_SERVO_IDS: [u8; 4] = [10, 11, 12, 13];
 
-// Stage2 servo IDs (2 per module, on same bus as arm servos)
-const MODULE0_STAGE2_IDS: [u8; 2] = [20, 21];
-const MODULE1_STAGE2_IDS: [u8; 2] = [20, 21];
-const MODULE2_STAGE2_IDS: [u8; 2] = [20, 21];
+// Clamp servo IDs (3 per module: rotate, left, right), on same bus as arm servos
+const MODULE0_CLAMP_IDS: [u8; 3] = [20, 21, 22];
+const MODULE1_CLAMP_IDS: [u8; 3] = [20, 21, 22];
+const MODULE2_CLAMP_IDS: [u8; 3] = [20, 21, 22];
 
 // Translation servo IDs (one per module, on shared bus)
 const TRANSLATION_SERVO_IDS: [u8; 3] = [30, 31, 32];
@@ -213,9 +213,7 @@ async fn led_status_task(
         if !ground.0 || !ground.1 || !ground.2 || aru {
             lidar::power_off();
         }
-        else {
-            lidar::power_on();
-        }
+        
 
         // Build detection mask, send on change or every 2s
         let detection_mask =
@@ -236,7 +234,7 @@ async fn led_status_task(
             async move {
                 let mut m = m.lock().await;
                 m.update_all_states().await.ok();
-                m.update_all_stage2_states().await.ok();
+                m.update_all_clamp_states().await.ok();
                 m.update_color(led_state, threshold).await;
 
                 let send_status = periodic_status || m.has_moving_changed();
@@ -244,7 +242,7 @@ async fn led_status_task(
                     for status in m.get_status_messages(ArmTarget::BROADCAST_ALL) {
                         status_tx.try_send(status).ok();
                     }
-                    for status in m.get_stage2_status_messages(Stage2Target::BROADCAST_ALL) {
+                    for status in m.get_clamp_status_messages(ClampTarget::BROADCAST_ALL) {
                         status_tx.try_send(status).ok();
                     }
                 }
@@ -287,8 +285,8 @@ async fn led_status_task(
         join(
             join_array([
                 module_update(module0),
-                //module_update(module1),
-                //module_update(module2),
+                module_update(module1),
+                module_update(module2),
             ]),
             translation_update,
         ).await;
@@ -711,32 +709,32 @@ async fn cmd_task(
             continue;
         }
 
-        // Handle stage2-targeted messages
-        if let Some(target) = msg.stage2_target() {
+        // Handle clamp-targeted messages
+        if let Some(target) = msg.clamp_target() {
             if target.match_module(0) || target.is_module_broadcast() {
                 let mut m0 = module0.lock().await;
-                if let Some(Err(e)) = m0.handle_stage2_message(&msg).await {
-                    warn!("Module 0 stage2 error: {:?}", e);
+                if let Some(Err(e)) = m0.handle_clamp_message(&msg).await {
+                    warn!("Module 0 clamp error: {:?}", e);
                 }
             }
             if target.match_module(1) || target.is_module_broadcast() {
                 let mut m1 = module1.lock().await;
-                if let Some(Err(e)) = m1.handle_stage2_message(&msg).await {
-                    warn!("Module 1 stage2 error: {:?}", e);
+                if let Some(Err(e)) = m1.handle_clamp_message(&msg).await {
+                    warn!("Module 1 clamp error: {:?}", e);
                 }
             }
             if target.match_module(2) || target.is_module_broadcast() {
                 let mut m2 = module2.lock().await;
-                if let Some(Err(e)) = m2.handle_stage2_message(&msg).await {
-                    warn!("Module 2 stage2 error: {:?}", e);
+                if let Some(Err(e)) = m2.handle_clamp_message(&msg).await {
+                    warn!("Module 2 clamp error: {:?}", e);
                 }
             }
 
-            // Send status after SetStage2 or RequestStage2Status
-            if matches!(msg, CanMessage::SetStage2 { .. } | CanMessage::RequestStage2Status { .. }) {
+            // Send status after SetClamp or RequestClampStatus
+            if matches!(msg, CanMessage::SetClamp { .. } | CanMessage::RequestClampStatus { .. }) {
                 for module in [module0, module1, module2] {
                     let m = module.lock().await;
-                    for status in m.get_stage2_status_messages(target) {
+                    for status in m.get_clamp_status_messages(target) {
                         status_tx.try_send(status).ok();
                     }
                 }
@@ -839,7 +837,7 @@ async fn main(spawner: Spawner) {
         i2c1_config,
     );
 
-    let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), MODULE0_SERVO_IDS, MODULE0_STAGE2_IDS);
+    let mut module0 = Module::new(0, Scs0009::new(tx0, rx0), I2cDevices::new(i2c1), MODULE0_SERVO_IDS, MODULE0_CLAMP_IDS);
     info!("Module 0 init: {:?}", module0.init().await);
 
 
@@ -876,7 +874,7 @@ async fn main(spawner: Spawner) {
         i2c2_config,
     );
 
-    let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), MODULE1_SERVO_IDS, MODULE1_STAGE2_IDS);
+    let mut module1 = Module::new(1, Scs0009::new(tx1, rx1), I2cDevices::new(i2c2), MODULE1_SERVO_IDS, MODULE1_CLAMP_IDS);
     module1.init().await.ok();
     let module1 = MODULE1.init(Mutex::new(module1));
 
@@ -911,7 +909,7 @@ async fn main(spawner: Spawner) {
         i2c3_config,
     );
 
-    let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), MODULE2_SERVO_IDS, MODULE2_STAGE2_IDS);
+    let mut module2 = Module::new(2, Scs0009::new(tx2, rx2), I2cDevices::new(i2c3), MODULE2_SERVO_IDS, MODULE2_CLAMP_IDS);
     module2.init().await.ok();
     let module2 = MODULE2.init(Mutex::new(module2));
 

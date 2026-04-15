@@ -20,7 +20,7 @@ pub struct LidarPacket {
 }
 
 /// Completed 360 scan snapshot
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct TopLidarSnapshot {
     pub points: Vec<(f32, u16, u8)>, // (angle_deg, distance_mm, intensity)
 }

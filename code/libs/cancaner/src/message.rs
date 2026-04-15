@@ -82,13 +82,11 @@ pub enum CanMessage {
     },
 
     // ==================== ARM Domain (0x1) ====================
-    /// Set arm position, pump and valve (ID: 0x10T)
+    /// Set arm position (ID: 0x10T)
     SetArm {
         target: ArmTarget,
         position: u16,
         time_ms: u16,
-        pump: bool,
-        valve: bool,
     },
 
     /// Arm status report (ID: 0x11T)
@@ -134,25 +132,25 @@ pub enum CanMessage {
         flags: ArmFlags,
     },
 
-    /// Set stage2 servo position (ID: 0x1DT)
-    SetStage2 {
-        target: Stage2Target,
+    /// Set clamp servo position (ID: 0x1DT)
+    SetClamp {
+        target: ClampTarget,
         position: u16,
         time_ms: u16,
     },
 
-    /// Set stage2 servo torque (ID: 0x1ET)
-    SetStage2Torque {
-        target: Stage2Target,
+    /// Set clamp servo torque (ID: 0x1ET)
+    SetClampTorque {
+        target: ClampTarget,
         enable: bool,
     },
 
-    /// Request stage2 status (ID: 0x1FT, 0 bytes) or stage2 status report (ID: 0x1FT, 4 bytes)
-    RequestStage2Status { target: Stage2Target },
+    /// Request clamp status (ID: 0x1FT, 0 bytes) or clamp status report (ID: 0x1FT, 4 bytes)
+    RequestClampStatus { target: ClampTarget },
 
-    /// Stage2 status report (ID: 0x1FT)
-    Stage2Status {
-        target: Stage2Target,
+    /// Clamp status report (ID: 0x1FT)
+    ClampStatus {
+        target: ClampTarget,
         position: u16,
         error: u8,
         flags: ArmFlags,
@@ -404,13 +402,11 @@ impl CanMessage {
         let target = ArmTarget::from_u8(raw_target);
         match ArmCmd::from_u8(cmd)? {
             ArmCmd::SetArm => {
-                if data.len() >= 6 {
+                if data.len() >= 4 {
                     Some(CanMessage::SetArm {
                         target,
                         position: u16::from_le_bytes([data[0], data[1]]),
                         time_ms: u16::from_le_bytes([data[2], data[3]]),
-                        pump: data[4] != 0,
-                        valve: data[5] != 0,
                     })
                 } else {
                     None
@@ -531,11 +527,11 @@ impl CanMessage {
             ArmCmd::RequestTranslationStatus => {
                 Some(CanMessage::RequestTranslationStatus { module: raw_target })
             }
-            ArmCmd::SetStage2 => {
-                let s2_target = Stage2Target::from_u8(raw_target);
+            ArmCmd::SetClamp => {
+                let clamp_target = ClampTarget::from_u8(raw_target);
                 if data.len() >= 4 {
-                    Some(CanMessage::SetStage2 {
-                        target: s2_target,
+                    Some(CanMessage::SetClamp {
+                        target: clamp_target,
                         position: u16::from_le_bytes([data[0], data[1]]),
                         time_ms: u16::from_le_bytes([data[2], data[3]]),
                     })
@@ -543,28 +539,28 @@ impl CanMessage {
                     None
                 }
             }
-            ArmCmd::SetStage2Torque => {
-                let s2_target = Stage2Target::from_u8(raw_target);
+            ArmCmd::SetClampTorque => {
+                let clamp_target = ClampTarget::from_u8(raw_target);
                 if !data.is_empty() {
-                    Some(CanMessage::SetStage2Torque {
-                        target: s2_target,
+                    Some(CanMessage::SetClampTorque {
+                        target: clamp_target,
                         enable: data[0] != 0,
                     })
                 } else {
                     None
                 }
             }
-            ArmCmd::Stage2Status => {
-                let s2_target = Stage2Target::from_u8(raw_target);
+            ArmCmd::ClampStatus => {
+                let clamp_target = ClampTarget::from_u8(raw_target);
                 if data.len() >= 4 {
-                    Some(CanMessage::Stage2Status {
-                        target: s2_target,
+                    Some(CanMessage::ClampStatus {
+                        target: clamp_target,
                         position: u16::from_le_bytes([data[0], data[1]]),
                         error: data[2],
                         flags: ArmFlags::from_u8(data[3]),
                     })
                 } else {
-                    Some(CanMessage::RequestStage2Status { target: s2_target })
+                    Some(CanMessage::RequestClampStatus { target: clamp_target })
                 }
             }
         }
@@ -826,16 +822,12 @@ impl CanMessage {
                 target,
                 position,
                 time_ms,
-                pump,
-                valve,
             } => {
                 let id = Self::build_id(Domain::Arm, ArmCmd::SetArm as u8, target.to_u8());
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0..2].copy_from_slice(&position.to_le_bytes());
                 data[2..4].copy_from_slice(&time_ms.to_le_bytes());
-                data[4] = *pump as u8;
-                data[5] = *valve as u8;
-                EncodedMessage { id, data, len: 6 }
+                EncodedMessage { id, data, len: 4 }
             }
             CanMessage::ArmStatus {
                 target,
@@ -939,25 +931,25 @@ impl CanMessage {
                 data[0] = *duty;
                 EncodedMessage { id, data, len: 1 }
             }
-            CanMessage::SetStage2 { target, position, time_ms } => {
-                let id = Self::build_id(Domain::Arm, ArmCmd::SetStage2 as u8, target.to_u8());
+            CanMessage::SetClamp { target, position, time_ms } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetClamp as u8, target.to_u8());
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0..2].copy_from_slice(&position.to_le_bytes());
                 data[2..4].copy_from_slice(&time_ms.to_le_bytes());
                 EncodedMessage { id, data, len: 4 }
             }
-            CanMessage::SetStage2Torque { target, enable } => {
-                let id = Self::build_id(Domain::Arm, ArmCmd::SetStage2Torque as u8, target.to_u8());
+            CanMessage::SetClampTorque { target, enable } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::SetClampTorque as u8, target.to_u8());
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0] = *enable as u8;
                 EncodedMessage { id, data, len: 1 }
             }
-            CanMessage::RequestStage2Status { target } => {
-                let id = Self::build_id(Domain::Arm, ArmCmd::Stage2Status as u8, target.to_u8());
+            CanMessage::RequestClampStatus { target } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::ClampStatus as u8, target.to_u8());
                 EncodedMessage { id, data: [0u8; MAX_DATA_LEN], len: 0 }
             }
-            CanMessage::Stage2Status { target, position, error, flags } => {
-                let id = Self::build_id(Domain::Arm, ArmCmd::Stage2Status as u8, target.to_u8());
+            CanMessage::ClampStatus { target, position, error, flags } => {
+                let id = Self::build_id(Domain::Arm, ArmCmd::ClampStatus as u8, target.to_u8());
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0..2].copy_from_slice(&position.to_le_bytes());
                 data[2] = *error;
@@ -1173,10 +1165,10 @@ impl CanMessage {
             | CanMessage::SetTranslation { .. }
             | CanMessage::RequestTranslationStatus { .. }
             | CanMessage::TranslationStatus { .. } 
-            | CanMessage::SetStage2 { .. }
-            | CanMessage::SetStage2Torque { .. }
-            | CanMessage::RequestStage2Status { .. }
-            | CanMessage::Stage2Status { .. }
+            | CanMessage::SetClamp { .. }
+            | CanMessage::SetClampTorque { .. }
+            | CanMessage::RequestClampStatus { .. }
+            | CanMessage::ClampStatus { .. }
             | CanMessage::SetColorThreshold { .. }
             | CanMessage::SetColorSensorConfig { .. }
             | CanMessage::RequestColorSensorRaw { .. }
@@ -1223,13 +1215,13 @@ impl CanMessage {
         }
     }
 
-    /// Get stage2 target if applicable
-    pub fn stage2_target(&self) -> Option<Stage2Target> {
+    /// Get clamp target if applicable
+    pub fn clamp_target(&self) -> Option<ClampTarget> {
         match self {
-            CanMessage::SetStage2 { target, .. }
-            | CanMessage::SetStage2Torque { target, .. }
-            | CanMessage::RequestStage2Status { target }
-            | CanMessage::Stage2Status { target, .. } => Some(*target),
+            CanMessage::SetClamp { target, .. }
+            | CanMessage::SetClampTorque { target, .. }
+            | CanMessage::RequestClampStatus { target }
+            | CanMessage::ClampStatus { target, .. } => Some(*target),
             _ => None,
         }
     }
@@ -1329,8 +1321,6 @@ mod tests {
                     target: ArmTarget::new(module, arm),
                     position: 512,
                     time_ms: 1000,
-                    pump: true,
-                    valve: false,
                 });
             }
         }
@@ -1419,21 +1409,21 @@ mod tests {
     }
 
     #[test]
-    fn roundtrip_stage2_all_modules() {
+    fn roundtrip_clamp_all_modules() {
         for module in 0..3u8 {
-            for servo in 0..2u8 {
-                let target = Stage2Target::new(module, servo);
-                roundtrip(&CanMessage::SetStage2 {
+            for servo in [ClampServo::Rotate, ClampServo::Left, ClampServo::Right] {
+                let target = ClampTarget::new(module, servo);
+                roundtrip(&CanMessage::SetClamp {
                     target,
                     position: 512,
                     time_ms: 300,
                 });
-                roundtrip(&CanMessage::SetStage2Torque {
+                roundtrip(&CanMessage::SetClampTorque {
                     target,
                     enable: true,
                 });
-                roundtrip(&CanMessage::RequestStage2Status { target });
-                roundtrip(&CanMessage::Stage2Status {
+                roundtrip(&CanMessage::RequestClampStatus { target });
+                roundtrip(&CanMessage::ClampStatus {
                     target,
                     position: 500,
                     error: 0,
@@ -1442,31 +1432,34 @@ mod tests {
             }
         }
         // Broadcast
-        roundtrip(&CanMessage::SetStage2 {
-            target: Stage2Target::BROADCAST_ALL,
+        roundtrip(&CanMessage::SetClamp {
+            target: ClampTarget::BROADCAST_ALL,
             position: 0,
             time_ms: 0,
         });
-        roundtrip(&CanMessage::SetStage2Torque {
-            target: Stage2Target::BROADCAST_ALL,
+        roundtrip(&CanMessage::SetClampTorque {
+            target: ClampTarget::BROADCAST_ALL,
             enable: false,
         });
     }
 
     #[test]
-    fn stage2_target_flat_encoding() {
-        assert_eq!(Stage2Target::new(0, 0).to_u8(), 0);
-        assert_eq!(Stage2Target::new(0, 1).to_u8(), 1);
-        assert_eq!(Stage2Target::new(1, 0).to_u8(), 2);
-        assert_eq!(Stage2Target::new(1, 1).to_u8(), 3);
-        assert_eq!(Stage2Target::new(2, 0).to_u8(), 4);
-        assert_eq!(Stage2Target::new(2, 1).to_u8(), 5);
-        assert_eq!(Stage2Target::BROADCAST_ALL.to_u8(), 0xF);
+    fn clamp_target_flat_encoding() {
+        assert_eq!(ClampTarget::new(0, ClampServo::Rotate).to_u8(), 0);
+        assert_eq!(ClampTarget::new(0, ClampServo::Left).to_u8(), 1);
+        assert_eq!(ClampTarget::new(0, ClampServo::Right).to_u8(), 2);
+        assert_eq!(ClampTarget::new(1, ClampServo::Rotate).to_u8(), 3);
+        assert_eq!(ClampTarget::new(1, ClampServo::Left).to_u8(), 4);
+        assert_eq!(ClampTarget::new(1, ClampServo::Right).to_u8(), 5);
+        assert_eq!(ClampTarget::new(2, ClampServo::Rotate).to_u8(), 6);
+        assert_eq!(ClampTarget::new(2, ClampServo::Left).to_u8(), 7);
+        assert_eq!(ClampTarget::new(2, ClampServo::Right).to_u8(), 8);
+        assert_eq!(ClampTarget::BROADCAST_ALL.to_u8(), 0xF);
 
         for module in 0..3u8 {
-            for servo in 0..2u8 {
-                let t = Stage2Target::new(module, servo);
-                let decoded = Stage2Target::from_u8(t.to_u8());
+            for servo in [ClampServo::Rotate, ClampServo::Left, ClampServo::Right] {
+                let t = ClampTarget::new(module, servo);
+                let decoded = ClampTarget::from_u8(t.to_u8());
                 assert_eq!(decoded, t);
             }
         }
@@ -1645,7 +1638,7 @@ mod tests {
         assert_eq!(CanMessage::Ping { value: 0 }.domain(), Domain::System);
         assert_eq!(CanMessage::SetArm {
             target: ArmTarget::new(0, 0),
-            position: 0, time_ms: 0, pump: false, valve: false,
+            position: 0, time_ms: 0,
         }.domain(), Domain::Arm);
         assert_eq!(CanMessage::GroundStatus { detection_mask: 0 }.domain(), Domain::Ground);
         assert_eq!(CanMessage::LogConfig { level: LogLevel::Off }.domain(), Domain::Log);

@@ -6,7 +6,6 @@
 
 use embedded_io_async::{Read, Write};
 use embassy_time::{with_timeout, Duration, Instant, Timer};
-use rtt_target::rprintln;
 
 // Commands
 const CMD_LASER_ON: u8 = b'O';

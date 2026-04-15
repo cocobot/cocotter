@@ -11,7 +11,7 @@ use embassy_time::{Duration, Timer};
 use rtt_target::rprintln;
 
 use crate::can_logger::LOG_CHANNEL_CAPACITY;
-use crate::can_protocol::{CanMessage, CanMessageFrameExt};
+use crate::can_protocol::CanMessage;
 
 /// Channel capacity for CAN messages
 const CHANNEL_CAPACITY: usize = 256;

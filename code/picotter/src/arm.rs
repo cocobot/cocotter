@@ -77,12 +77,10 @@ impl ArmState {
 /// Arm command to be executed
 #[derive(Debug, Clone)]
 pub enum ArmCommand {
-    /// Set position, pump and valve
-    SetAll {
+    /// Set servo target position
+    SetPosition {
         position: u16,
         time_ms: u16,
-        pump: bool,
-        valve: bool,
     },
     /// Set torque enable
     SetTorque(bool),

@@ -121,6 +121,8 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             }
         });
 
+        can.send(&CanMessage::SetLidarEnable { enable: false });
+
         let top_lidar: Watched<TopLidarSnapshot> = Watched::default();
         let top_lidar_thread = top_lidar.clone();
         let mut battery_reader = board.battery_reader().unwrap();
@@ -182,7 +184,7 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
                     // Full buffer: check sync
                     if buffer[0] == 0x54 && ld06::verify_crc(&buffer) {
                         if let Some(packet) = ld06::parse_packet(&buffer) {
-                            if let Some(snapshot) = ld06_scan.process_packet(&packet) {
+                            if let Some(snapshot) = ld06_scan.process_packet(&packet) {                                
                                 top_lidar_thread.update(|s| *s = snapshot);
                             }
                         }

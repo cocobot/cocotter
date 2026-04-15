@@ -237,30 +237,29 @@ Décodage : `module = target / 4`, `arm = target % 4`.
 | 0xA | ColorSensorRaw | `ArmCmd::ColorSensorRaw` |
 | 0xB | SetColorLedPwm | `ArmCmd::SetColorLedPwm` |
 | 0xC | RequestTranslationStatus | `ArmCmd::RequestTranslationStatus` |
-| 0xD | SetStage2 | `ArmCmd::SetStage2` |
-| 0xE | SetStage2Torque | `ArmCmd::SetStage2Torque` |
-| 0xF | Stage2Status | `ArmCmd::Stage2Status` |
+| 0xD | SetClamp | `ArmCmd::SetClamp` |
+| 0xE | SetClampTorque | `ArmCmd::SetClampTorque` |
+| 0xF | ClampStatus | `ArmCmd::ClampStatus` |
 
 ### 0x10T - SET_ARM
 
-Commande complète d'un bras.
+Commande de position d'un bras. Pompe et électrovanne sont contrôlées
+séparément via `SET_PUMP` (0x14T) et `SET_VALVE` (0x15T).
 
 ```
 ID: 0x10[target]
-Longueur: 6 octets
+Longueur: 4 octets
 Direction: P→S
 
 Data[0-1]: Position servo (0-1023), little-endian
 Data[2-3]: Temps de mouvement (ms), little-endian (0 = vitesse max)
-Data[4]:   Pompe (0=OFF, 1=ON)
-Data[5]:   Électrovanne (0=OFF, 1=ON)
 ```
 
 **Exemples:**
 | Action | ID | Data (hex) |
 |--------|-----|------------|
-| Module 0, Bras 2 (target=2): pos=500, 200ms, pompe ON, EV OFF | `0x102` | `F4 01 C8 00 01 00` |
-| Module 1, Bras 0 (target=4): pos=512, 100ms, tout OFF | `0x104` | `00 02 64 00 00 00` |
+| Module 0, Bras 2 (target=2): pos=500, 200ms | `0x102` | `F4 01 C8 00` |
+| Module 1, Bras 0 (target=4): pos=512, 100ms | `0x104` | `00 02 64 00` |
 | Broadcast tous bras (target=F) | `0x10F` | `...` |
 
 ### 0x11T - ARM_STATUS
@@ -397,12 +396,15 @@ Direction: P→S
 Réponse: Message 0x17M correspondant
 ```
 
-### 0x1DT - SET_STAGE2
+### 0x1DT - SET_CLAMP
 
-Commande le servo du 2ème étage.
-Chaque module possède 2 servos de 2ème étage sur le même bus UART que les bras.
+Commande un servo de la pince.
+Chaque module possède 3 servos de pince sur le même bus UART que les bras :
+- Servo 0 : rotation de la pince (`ClampServo::Rotate`)
+- Servo 1 : serrage gauche (`ClampServo::Left`)
+- Servo 2 : serrage droit (`ClampServo::Right`)
 
-Le target utilise un encodage plat : `module * 2 + servo` (0-5), 0xF = broadcast.
+Le target utilise un encodage plat : `module * 3 + servo` (0-8), 0xF = broadcast.
 
 ```
 ID: 0x1D[target]
@@ -413,16 +415,16 @@ Data[0-1]: Position servo (0-1023), little-endian
 Data[2-3]: Temps de mouvement (ms), little-endian (0 = vitesse max)
 ```
 
-**Servo IDs de 2ème étage (configurables, par défaut):**
-| Module | Servo 0 | Servo 1 |
-|--------|---------|---------|
-| 0 | 20 | 21 |
-| 1 | 20 | 21 |
-| 2 | 20 | 21 |
+**Servo IDs de la pince (configurables, par défaut):**
+| Module | Rotate (0) | Left (1) | Right (2) |
+|--------|------------|----------|-----------|
+| 0 | 20 | 21 | 22 |
+| 1 | 20 | 21 | 22 |
+| 2 | 20 | 21 | 22 |
 
-### 0x1ET - SET_STAGE2_TORQUE
+### 0x1ET - SET_CLAMP_TORQUE
 
-Active ou désactive le couple d'un servo du 2ème étage.
+Active ou désactive le couple d'un servo de la pince.
 
 ```
 ID: 0x1E[target]
@@ -432,9 +434,9 @@ Direction: P→S
 Data[0]: 0=OFF, 1=ON
 ```
 
-### 0x1FT - STAGE2_STATUS
+### 0x1FT - CLAMP_STATUS
 
-Status d'un servo du 2ème étage. Envoyé périodiquement ou en réponse à une requête.
+Status d'un servo de la pince. Envoyé périodiquement ou en réponse à une requête.
 
 Requête (P→S) : 0 octet de données.
 Réponse (S→P) : 4 octets.

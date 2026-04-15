@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use board_common::{Color, Team};
 use board_sabotter::{SabotterBoard, SabotterLeds};
 use flume::{Receiver, Sender};
@@ -13,7 +13,17 @@ pub enum LedMessage {
     LowLogicBattery,
     GroundSensor(bool, bool, bool),
     IdleLoopTooSlow,
+    MecaColors { module: u8, teams: [Team; 4] },
 }
+
+/// Per-module pixel slots for the meca color display.
+const MECA_COLOR_PIXELS: [[usize; 8]; 3] = [
+    [29, 28, 27, 26, 25, 24, 23, 22], // Module 0 (Left)
+    [ 4,  3,  2,  1, 40, 39, 38, 37], // Module 1 (Back)
+    [16, 15, 14, 13, 12, 11, 10,  9], // Module 2 (Right)
+];
+
+const MECA_COLORS_DISPLAY: Duration = Duration::from_millis(4000);
 
 pub struct Leds {
     tx: Sender<LedMessage>,
@@ -46,6 +56,7 @@ struct LedsInternal<B: SabotterBoard> {
     low_logic_battery: bool,
     low_power_battery: bool,
     ground_detected: (bool, bool, bool),
+    meca_colors: Option<(u8, [Team; 4], Instant)>,
 }
 
 impl<B: SabotterBoard> LedsInternal<B> {
@@ -57,6 +68,7 @@ impl<B: SabotterBoard> LedsInternal<B> {
             low_logic_battery: false,
             low_power_battery: false,
             ground_detected: (false, false, false),
+            meca_colors: None,
         }
     }
 
@@ -97,6 +109,9 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     }
                     LedMessage::GroundSensor(s0, s1, s2 ) => {
                         self.ground_detected = (s0, s1, s2);
+                    }
+                    LedMessage::MecaColors { module, teams } => {
+                        self.meca_colors = Some((module, teams, Instant::now() + MECA_COLORS_DISPLAY));
                     }
                     LedMessage::IdleLoopTooSlow => {
                         slow_idle_loop = true;
@@ -144,6 +159,34 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     for i in (0..41).step_by(3) {
                         pixels[i] = RED;
                     }
+                }
+            }
+
+            if let Some((module, teams, expiry)) = self.meca_colors {
+                if Instant::now() < expiry {
+                    if let Some(slots) = MECA_COLOR_PIXELS.get(module as usize) {
+                        for arm in 0..4 {
+                            let rgb = Self::color_to_rgb8(teams[arm].color());
+                            pixels[slots[arm * 2]]     = rgb;
+                            pixels[slots[arm * 2 + 1]] = rgb;
+                        }
+                    }
+                } else {
+                    self.meca_colors = None;
+                }
+            }
+
+            if let Some((module, teams, expiry)) = self.meca_colors {
+                if Instant::now() < expiry {
+                    if let Some(slots) = MECA_COLOR_PIXELS.get(module as usize) {
+                        for arm in 0..4 {
+                            let rgb = Self::color_to_rgb8(teams[arm].color());
+                            pixels[slots[arm * 2]]     = rgb;
+                            pixels[slots[arm * 2 + 1]] = rgb;
+                        }
+                    }
+                } else {
+                    self.meca_colors = None;
                 }
             }
 

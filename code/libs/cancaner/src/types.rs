@@ -151,21 +151,44 @@ impl ArmTarget {
     }
 }
 
-/// Target specification for stage2 servos (module/servo with broadcast support)
+/// Named clamp servo roles
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
+pub enum ClampServo {
+    /// Clamp rotation servo
+    Rotate = 0,
+    /// Left grip servo
+    Left = 1,
+    /// Right grip servo
+    Right = 2,
+}
+
+impl ClampServo {
+    pub fn from_u8(val: u8) -> Option<Self> {
+        match val {
+            0 => Some(ClampServo::Rotate),
+            1 => Some(ClampServo::Left),
+            2 => Some(ClampServo::Right),
+            _ => None,
+        }
+    }
+}
+
+/// Target specification for clamp servos (module/servo with broadcast support)
 ///
 /// Encoded as a flat index in the 4-bit CAN ID target field:
-/// - target = module * STAGE2_SERVOS_PER_MODULE + servo (0-5 for 3 modules × 2 servos)
+/// - target = module * CLAMP_SERVOS_PER_MODULE + servo (0-8 for 3 modules × 3 servos)
 /// - target = 0xF for broadcast to all
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Stage2Target {
+pub struct ClampTarget {
     /// Module index: 0-2 or 0xF for broadcast
     pub module: u8,
-    /// Servo index: 0-1 or 0xF for broadcast
+    /// Servo index: 0-2 or 0xF for broadcast
     pub servo: u8,
 }
 
-impl Stage2Target {
-    const SERVOS_PER_MODULE: u8 = crate::protocol::STAGE2_SERVOS_PER_MODULE as u8;
+impl ClampTarget {
+    const SERVOS_PER_MODULE: u8 = crate::protocol::CLAMP_SERVOS_PER_MODULE as u8;
 
     /// Broadcast to all modules and servos
     pub const BROADCAST_ALL: Self = Self {
@@ -173,7 +196,12 @@ impl Stage2Target {
         servo: 0xF,
     };
 
-    pub fn new(module: u8, servo: u8) -> Self {
+    pub fn new(module: u8, servo: ClampServo) -> Self {
+        Self { module, servo: servo as u8 }
+    }
+
+    /// Build from raw servo index (used when decoding from CAN ID)
+    pub fn from_raw(module: u8, servo: u8) -> Self {
         Self { module, servo }
     }
 
@@ -377,9 +405,9 @@ pub enum ArmCmd {
     ColorSensorRaw = 0xA,
     SetColorLedPwm = 0xB,
     RequestTranslationStatus = 0xC,
-    SetStage2 = 0xD,
-    SetStage2Torque = 0xE,
-    Stage2Status = 0xF,
+    SetClamp = 0xD,
+    SetClampTorque = 0xE,
+    ClampStatus = 0xF,
 }
 
 impl ArmCmd {
@@ -398,9 +426,9 @@ impl ArmCmd {
             0xA => Some(ArmCmd::ColorSensorRaw),
             0xB => Some(ArmCmd::SetColorLedPwm),
             0xC => Some(ArmCmd::RequestTranslationStatus),
-            0xD => Some(ArmCmd::SetStage2),
-            0xE => Some(ArmCmd::SetStage2Torque),
-            0xF => Some(ArmCmd::Stage2Status),
+            0xD => Some(ArmCmd::SetClamp),
+            0xE => Some(ArmCmd::SetClampTorque),
+            0xF => Some(ArmCmd::ClampStatus),
             _ => None,
         }
     }

@@ -1,14 +1,91 @@
 use std::sync::atomic::{AtomicU8, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::{Duration, Instant};
-use cancaner::{ARMS_PER_MODULE, ArmFlags, ArmTarget, CanMessage, LogDecoder, STAGE2_SERVOS_PER_MODULE, Stage2Target};
+use cancaner::{ArmFlags, ArmTarget, CanMessage, ClampServo, ClampTarget, LogDecoder};
 
 use crate::can::GalipeurCan;
 use board_sabotter::SabotterBoard;
 
+// ==================== Watcher ====================
+
+struct WatcherInner<T> {
+    value: T,
+    seq: u64,
+}
+
+/// A per-element value with change notification.
+///
+/// `set()` replaces the value, increments an internal sequence number and
+/// wakes any thread waiting in `wait_until()`. `wait_until()` blocks until
+/// both (a) a set has happened since the captured `seq_before` and (b) the
+/// predicate matches the current value.
+pub struct Watcher<T: Clone> {
+    inner: Arc<(Mutex<WatcherInner<T>>, Condvar)>,
+}
+
+impl<T: Clone> Clone for Watcher<T> {
+    fn clone(&self) -> Self {
+        Self { inner: self.inner.clone() }
+    }
+}
+
+impl<T: Clone> Watcher<T> {
+    pub fn new(initial: T) -> Self {
+        Self {
+            inner: Arc::new((
+                Mutex::new(WatcherInner { value: initial, seq: 0 }),
+                Condvar::new(),
+            )),
+        }
+    }
+
+    /// Clone the current value.
+    pub fn get(&self) -> T {
+        self.inner.0.lock().unwrap().value.clone()
+    }
+
+    /// Return the current sequence number without reading the value.
+    pub fn seq(&self) -> u64 {
+        self.inner.0.lock().unwrap().seq
+    }
+
+    /// Replace the value, bump the sequence and notify waiters.
+    pub fn set(&self, value: T) {
+        let (lock, cvar) = &*self.inner;
+        let mut inner = lock.lock().unwrap();
+        inner.value = value;
+        inner.seq = inner.seq.wrapping_add(1);
+        drop(inner);
+        cvar.notify_all();
+    }
+
+    /// Block until a new value arrived after `seq_before` AND it matches `predicate`.
+    /// Returns `true` if matched, `false` on timeout.
+    pub fn wait_until<P>(&self, seq_before: u64, predicate: P, timeout: Duration) -> bool
+    where
+        P: Fn(&T) -> bool,
+    {
+        let (lock, cvar) = &*self.inner;
+        let start = Instant::now();
+        let mut inner = lock.lock().unwrap();
+        loop {
+            if inner.seq > seq_before && predicate(&inner.value) {
+                return true;
+            }
+            let remaining = timeout.saturating_sub(start.elapsed());
+            if remaining.is_zero() {
+                return false;
+            }
+            let (guard, _) = cvar.wait_timeout(inner, remaining).unwrap();
+            inner = guard;
+        }
+    }
+}
+
+// ==================== State types ====================
 
 #[derive(Clone, Default, Debug)]
-pub struct ArmState {
+pub struct ArmStatus {
     pub position: u16,
     pub hue: u16,
     pub color_detected: bool,
@@ -17,61 +94,91 @@ pub struct ArmState {
     pub error: u8,
     pub flags: ArmFlags,
     pub pump_current: u8,
-    /// Incremented on each status update from CAN
-    pub update_seq: u64,
 }
 
 #[derive(Clone, Default, Debug)]
-pub struct TranslationState {
+pub struct ClampStatus {
     pub position: u16,
     pub error: u8,
     pub flags: ArmFlags,
-    pub update_seq: u64,
 }
 
 #[derive(Clone, Default, Debug)]
-pub struct Stage2State {
+pub struct TranslationStatus {
     pub position: u16,
     pub error: u8,
     pub flags: ArmFlags,
-    pub update_seq: u64,
 }
 
 #[derive(Clone, Default, Debug)]
-pub struct ColorSensorRawState {
+pub struct ColorRawStatus {
     pub clear: u16,
     pub red: u16,
     pub green: u16,
     pub blue: u16,
 }
 
-#[derive(Clone, Default, Debug)]
-pub struct MecaState {
-    pub arms: [[ArmState; ARMS_PER_MODULE]; 3],
-    pub translations: [TranslationState; 3],
-    pub stage2: [[Stage2State; STAGE2_SERVOS_PER_MODULE]; 3],
-    pub color_raw: [[ColorSensorRawState; ARMS_PER_MODULE]; 3],
-    pub battery_voltage_mv: Option<u16>,
-    pub battery_modules_mask: u8,
-}
+// ==================== Proxy ====================
 
-/// Low-level proxy: read CAN-updated state + send direct commands
-#[derive(Clone)]
+/// Low-level proxy: per-servo watchers updated by CAN callbacks + raw command senders.
 pub struct MecaProxy<B: SabotterBoard> {
     can: GalipeurCan<B>,
-    state: Arc<Mutex<MecaState>>,
-    state_changed: Arc<Condvar>,
+
+    arms: [[Watcher<ArmStatus>; 4]; 3],
+    clamps: [[Watcher<ClampStatus>; 3]; 3],
+    translations: [Watcher<TranslationStatus>; 3],
+    color_raw: [[Watcher<ColorRawStatus>; 4]; 3],
+    battery_voltage_mv: Watcher<Option<u16>>,
+
     last_ping: Arc<AtomicU8>,
+}
+
+impl<B: SabotterBoard> Clone for MecaProxy<B> {
+    fn clone(&self) -> Self {
+        Self {
+            can: self.can.clone(),
+            arms: self.arms.clone(),
+            clamps: self.clamps.clone(),
+            translations: self.translations.clone(),
+            color_raw: self.color_raw.clone(),
+            battery_voltage_mv: self.battery_voltage_mv.clone(),
+            last_ping: self.last_ping.clone(),
+        }
+    }
+}
+
+fn new_arm_watchers() -> [[Watcher<ArmStatus>; 4]; 3] {
+    std::array::from_fn(|_| std::array::from_fn(|_| Watcher::new(ArmStatus::default())))
+}
+
+fn new_clamp_watchers() -> [[Watcher<ClampStatus>; 3]; 3] {
+    std::array::from_fn(|_| std::array::from_fn(|_| Watcher::new(ClampStatus::default())))
+}
+
+fn new_translation_watchers() -> [Watcher<TranslationStatus>; 3] {
+    std::array::from_fn(|_| Watcher::new(TranslationStatus::default()))
+}
+
+fn new_color_raw_watchers() -> [[Watcher<ColorRawStatus>; 4]; 3] {
+    std::array::from_fn(|_| std::array::from_fn(|_| Watcher::new(ColorRawStatus::default())))
 }
 
 impl<B: SabotterBoard> MecaProxy<B> {
     pub fn new(can: GalipeurCan<B>) -> Self {
-        let state = Arc::new(Mutex::new(MecaState::default()));
-        let state_changed = Arc::new(Condvar::new());
+        let arms = new_arm_watchers();
+        let clamps = new_clamp_watchers();
+        let translations = new_translation_watchers();
+        let color_raw = new_color_raw_watchers();
+        let battery_voltage_mv = Watcher::new(None);
         let last_ping = Arc::new(AtomicU8::new(0));
-        let s = state.clone();
-        let sc = state_changed.clone();
-        let lp = last_ping.clone();
+
+        // Clone handles for the callback.
+        let cb_arms = arms.clone();
+        let cb_clamps = clamps.clone();
+        let cb_translations = translations.clone();
+        let cb_color_raw = color_raw.clone();
+        let cb_battery = battery_voltage_mv.clone();
+        let cb_last_ping = last_ping.clone();
 
         let mut log_decoder = LogDecoder::new();
         can.add_callback(move |msg| {
@@ -79,173 +186,136 @@ impl<B: SabotterBoard> MecaProxy<B> {
                 return;
             }
             match msg {
-                CanMessage::Ping { value } => {
-                    lp.store(*value, Ordering::Relaxed);
+            CanMessage::Ping { value } => {
+                cb_last_ping.store(*value, Ordering::Relaxed);
+            }
+            CanMessage::ArmStatus {
+                target,
+                position,
+                color,
+                pump,
+                valve,
+                error,
+                flags,
+                pump_current,
+            } => {
+                if let Some(w) = cb_arms
+                    .get(target.module as usize)
+                    .and_then(|m| m.get(target.arm as usize))
+                {
+                    w.set(ArmStatus {
+                        position: *position,
+                        hue: (color & 0x7F) as u16 * 360 / 128,
+                        color_detected: color & 0x80 != 0,
+                        pump: *pump,
+                        valve: *valve,
+                        error: *error,
+                        flags: *flags,
+                        pump_current: *pump_current,
+                    });
                 }
-                CanMessage::ArmStatus {
-                    target,
-                    position,
-                    color,
-                    pump,
-                    valve,
-                    error,
-                    flags,
-                    pump_current,
-                } => {
-                    let mut st = s.lock().unwrap();
-                    if let Some(arm) = st
-                        .arms
-                        .get_mut(target.module as usize)
-                        .and_then(|m| m.get_mut(target.arm as usize))
-                    {
-                        arm.position = *position;
-                        arm.hue = (color & 0x7F) as u16 * 360 / 128;
-                        arm.color_detected = color & 0x80 != 0;
-                        arm.pump = *pump;
-                        arm.valve = *valve;
-                        arm.error = *error;
-                        arm.flags = *flags;
-                        arm.pump_current = *pump_current;
-                        arm.update_seq += 1;
-                    }
-                    drop(st);
-                    sc.notify_all();
+            }
+            CanMessage::TranslationStatus {
+                module,
+                position,
+                error,
+                flags,
+            } => {
+                if let Some(w) = cb_translations.get(*module as usize) {
+                    w.set(TranslationStatus {
+                        position: *position,
+                        error: *error,
+                        flags: *flags,
+                    });
                 }
-                CanMessage::TranslationStatus {
-                    module,
-                    position,
-                    error,
-                    flags,
-                } => {
-                    let mut st = s.lock().unwrap();
-                    if let Some(t) = st.translations.get_mut(*module as usize) {
-                        t.position = *position;
-                        t.error = *error;
-                        t.flags = *flags;
-                        t.update_seq += 1;
-                    }
-                    drop(st);
-                    sc.notify_all();
+            }
+            CanMessage::ClampStatus {
+                target,
+                position,
+                error,
+                flags,
+            } => {
+                if let Some(w) = cb_clamps
+                    .get(target.module as usize)
+                    .and_then(|m| m.get(target.servo as usize))
+                {
+                    w.set(ClampStatus {
+                        position: *position,
+                        error: *error,
+                        flags: *flags,
+                    });
                 }
-                CanMessage::Stage2Status {
-                    target,
-                    position,
-                    error,
-                    flags,
-                } => {
-                    let mut st = s.lock().unwrap();
-                    if let Some(servo) = st
-                        .stage2
-                        .get_mut(target.module as usize)
-                        .and_then(|m| m.get_mut(target.servo as usize))
-                    {
-                        servo.position = *position;
-                        servo.error = *error;
-                        servo.flags = *flags;
-                        servo.update_seq += 1;
-                    }
-                    drop(st);
-                    sc.notify_all();
+            }
+            CanMessage::ColorSensorRaw {
+                target,
+                clear,
+                red,
+                green,
+                blue,
+            } => {
+                if let Some(w) = cb_color_raw
+                    .get(target.module as usize)
+                    .and_then(|m| m.get(target.arm as usize))
+                {
+                    w.set(ColorRawStatus {
+                        clear: *clear,
+                        red: *red,
+                        green: *green,
+                        blue: *blue,
+                    });
                 }
-                CanMessage::ColorSensorRaw {
-                    target,
-                    clear,
-                    red,
-                    green,
-                    blue,
-                } => {
-                    let mut st = s.lock().unwrap();
-                    if let Some(raw) = st
-                        .color_raw
-                        .get_mut(target.module as usize)
-                        .and_then(|m| m.get_mut(target.arm as usize))
-                    {
-                        raw.clear = *clear;
-                        raw.red = *red;
-                        raw.green = *green;
-                        raw.blue = *blue;
-                    }
-                }
-                CanMessage::BatteryStatus {
-                    voltage_mv,
-                    modules_mask,
-                } => {
-                    let mut st = s.lock().unwrap();
-                    st.battery_voltage_mv = Some(*voltage_mv);
-                    st.battery_modules_mask = *modules_mask;
-                }
-                _ => {}
+            }
+            CanMessage::BatteryStatus { voltage_mv, .. } => {
+                cb_battery.set(Some(*voltage_mv));
+            }
+            _ => {}
             }
         });
 
         Self {
             can,
-            state,
-            state_changed,
+            arms,
+            clamps,
+            translations,
+            color_raw,
+            battery_voltage_mv,
             last_ping,
         }
     }
+
+    // --- Watcher accessors ---
+
+    pub fn arm_watcher(&self, module: u8, arm: u8) -> &Watcher<ArmStatus> {
+        &self.arms[module as usize][arm as usize]
+    }
+
+    pub fn clamp_watcher(&self, module: u8, servo: ClampServo) -> &Watcher<ClampStatus> {
+        &self.clamps[module as usize][servo as usize]
+    }
+
+    pub fn translation_watcher(&self, module: u8) -> &Watcher<TranslationStatus> {
+        &self.translations[module as usize]
+    }
+
+    pub fn color_raw_watcher(&self, module: u8, arm: u8) -> &Watcher<ColorRawStatus> {
+        &self.color_raw[module as usize][arm as usize]
+    }
+
+    pub fn battery_voltage_mv(&self) -> Option<u16> {
+        self.battery_voltage_mv.get()
+    }
+
+    // --- Raw CAN commands ---
 
     pub fn send_message(&self, msg: &CanMessage) {
         self.can.send(msg);
     }
 
-    // --- State reads (updated by CAN callbacks) ---
-
-    pub fn get_state(&self) -> MecaState {
-        self.state.lock().unwrap().clone()
-    }
-
-    pub fn arm_state(&self, module: u8, arm: u8) -> Option<ArmState> {
-        self.state
-            .lock()
-            .unwrap()
-            .arms
-            .get(module as usize)
-            .and_then(|m| m.get(arm as usize))
-            .cloned()
-    }
-
-    pub fn translation_state(&self, module: u8) -> Option<TranslationState> {
-        self.state
-            .lock()
-            .unwrap()
-            .translations
-            .get(module as usize)
-            .cloned()
-    }
-
-    pub fn stage2_state(&self, module: u8, servo: u8) -> Option<Stage2State> {
-        self.state
-            .lock()
-            .unwrap()
-            .stage2
-            .get(module as usize)
-            .and_then(|m| m.get(servo as usize))
-            .cloned()
-    }
-
-    pub fn battery_voltage_mv(&self) -> Option<u16> {
-        self.state.lock().unwrap().battery_voltage_mv
-    }
-
-    // --- Direct CAN commands ---
-
-    pub fn set_arm(
-        &self,
-        module: u8,
-        arm: u8,
-        position: u16,
-        time_ms: u16,
-        pump: bool,
-        valve: bool,
-    ) {
-        self.send_message(&CanMessage::SetArm {
+    pub fn set_arm_position(&self, module: u8, arm: u8, position: u16, time_ms: u16) {
+        self.can.send(&CanMessage::SetArm {
             target: ArmTarget::new(module, arm),
             position,
             time_ms,
-            pump,
-            valve,
         });
     }
 
@@ -254,21 +324,21 @@ impl<B: SabotterBoard> MecaProxy<B> {
     }
 
     pub fn set_pump(&self, module: u8, arm: u8, enable: bool) {
-        self.send_message(&CanMessage::SetPump {
+        self.can.send(&CanMessage::SetPump {
             target: ArmTarget::new(module, arm),
             enable,
         });
     }
 
     pub fn set_valve(&self, module: u8, arm: u8, enable: bool) {
-        self.send_message(&CanMessage::SetValve {
+        self.can.send(&CanMessage::SetValve {
             target: ArmTarget::new(module, arm),
             enable,
         });
     }
 
     pub fn set_torque(&self, module: u8, arm: u8, enable: bool) {
-        self.send_message(&CanMessage::SetTorque {
+        self.can.send(&CanMessage::SetTorque {
             target: ArmTarget::new(module, arm),
             enable,
         });
@@ -296,17 +366,17 @@ impl<B: SabotterBoard> MecaProxy<B> {
         self.can.send(&CanMessage::SetColorLedPwm { duty });
     }
 
-    pub fn set_stage2(&self, module: u8, servo: u8, position: u16, time_ms: u16) {
-        self.can.send(&CanMessage::SetStage2 {
-            target: Stage2Target::new(module, servo),
+    pub fn set_clamp_position(&self, module: u8, servo: ClampServo, position: u16, time_ms: u16) {
+        self.can.send(&CanMessage::SetClamp {
+            target: ClampTarget::new(module, servo),
             position,
             time_ms,
         });
     }
 
-    pub fn set_stage2_torque(&self, module: u8, servo: u8, enable: bool) {
-        self.can.send(&CanMessage::SetStage2Torque {
-            target: Stage2Target::new(module, servo),
+    pub fn set_clamp_torque(&self, module: u8, servo: ClampServo, enable: bool) {
+        self.can.send(&CanMessage::SetClampTorque {
+            target: ClampTarget::new(module, servo),
             enable,
         });
     }
@@ -319,116 +389,9 @@ impl<B: SabotterBoard> MecaProxy<B> {
         self.can.send(&CanMessage::ScanBus { bus });
     }
 
-    /// Wait until a fresh status update (seq > seq_before) shows not moving, with timeout.
-    /// `seq_before` must be captured before sending the command.
-    fn wait_not_moving(
-        &self,
-        timeout: Duration,
-        seq_before: u64,
-        check: impl Fn(&MecaState) -> Option<(u64, bool)>, // returns (update_seq, moving)
-    ) -> bool {
-        let start = Instant::now();
-        let mut st = self.state.lock().unwrap();
-        loop {
-            if let Some((seq, moving)) = check(&st) {
-                if seq > seq_before && !moving {
-                    return true;
-                }
-            }
-            let remaining = timeout.saturating_sub(start.elapsed());
-            if remaining.is_zero() {
-                return false;
-            }
-            let (guard, _) = self.state_changed.wait_timeout(st, remaining).unwrap();
-            st = guard;
-        }
-    }
-
-    pub fn wait_arm(&self, module: u8, arm: u8, seq_before: u64, timeout: Duration) -> bool {
-        self.wait_not_moving(timeout, seq_before, |st| {
-            st.arms.get(module as usize)
-                .and_then(|m| m.get(arm as usize))
-                .map(|a| (a.update_seq, a.flags.moving))
-        })
-    }
-
-    pub fn wait_arms(&self, module: u8, seq_before: u64, timeout: Duration) -> bool {
-        self.wait_not_moving(timeout, seq_before, |st| {
-            st.arms.get(module as usize).map(|arms| {
-                // Skip arm 0 (buggy)
-                let min_seq = arms.iter().map(|a| a.update_seq).min().unwrap_or(0);
-                let any_moving = arms.iter().any(|a| a.flags.moving);
-                (min_seq, any_moving)
-            })
-        })
-    }
-
-    pub fn wait_translation(&self, module: u8, seq_before: u64, timeout: Duration) -> bool {
-        self.wait_not_moving(timeout, seq_before, |st| {
-            st.translations.get(module as usize)
-                .map(|t| (t.update_seq, t.flags.moving))
-        })
-    }
-
-    pub fn wait_stage2(&self, module: u8, servo: u8, seq_before: u64, timeout: Duration) -> bool {
-        self.wait_not_moving(timeout, seq_before, |st| {
-            st.stage2.get(module as usize)
-                .and_then(|m| m.get(servo as usize))
-                .map(|s| (s.update_seq, s.flags.moving))
-        })
-    }
-
-    /// Get current update_seq for an arm
-    pub fn arm_seq(&self, module: u8, arm: u8) -> u64 {
-        self.state.lock().unwrap().arms
-            .get(module as usize)
-            .and_then(|m| m.get(arm as usize))
-            .map_or(0, |a| a.update_seq)
-    }
-
-    /// Get min update_seq across arms 1-3 of a module (skip arm 0)
-    pub fn arms_seq(&self, module: u8) -> u64 {
-        self.state.lock().unwrap().arms
-            .get(module as usize)
-            .map_or(0, |arms| arms[1..].iter().map(|a| a.update_seq).min().unwrap_or(0))
-    }
-
-    /// Get current update_seq for a translation
-    pub fn translation_seq(&self, module: u8) -> u64 {
-        self.state.lock().unwrap().translations
-            .get(module as usize)
-            .map_or(0, |t| t.update_seq)
-    }
-
-    /// Get current update_seq for a stage2 servo
-    pub fn stage2_seq(&self, module: u8, servo: u8) -> u64 {
-        self.state.lock().unwrap().stage2
-            .get(module as usize)
-            .and_then(|m| m.get(servo as usize))
-            .map_or(0, |s| s.update_seq)
-    }
-
-    /// Get min update_seq across both stage2 servos of a module
-    pub fn stage2s_seq(&self, module: u8) -> u64 {
-        self.state.lock().unwrap().stage2
-            .get(module as usize)
-            .map_or(0, |servos| servos.iter().map(|s| s.update_seq).min().unwrap_or(0))
-    }
-
-    /// Wait for both stage2 servos of a module to stop moving
-    pub fn wait_stage2s(&self, module: u8, seq_before: u64, timeout: Duration) -> bool {
-        self.wait_not_moving(timeout, seq_before, |st| {
-            st.stage2.get(module as usize).map(|servos| {
-                let min_seq = servos.iter().map(|s| s.update_seq).min().unwrap_or(0);
-                let any_moving = servos.iter().any(|s| s.flags.moving);
-                (min_seq, any_moving)
-            })
-        })
-    }
-
     /// Send a ping and wait for the response (value + 1), with timeout.
     /// Returns true if pong received, false on timeout.
-    pub fn ping(&self, timeout: Duration) -> bool {    
+    pub fn ping(&self, timeout: Duration) -> bool {
         static COUNTER: AtomicU8 = AtomicU8::new(42);
         let value = COUNTER.fetch_add(1, Ordering::Relaxed);
         let expected = value.wrapping_add(1);
