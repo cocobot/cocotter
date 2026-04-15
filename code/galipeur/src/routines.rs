@@ -11,7 +11,7 @@ use crate::movement::MovementLowLevelHardware;
 use crate::meca::Meca;
 use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
 use crate::strat::Strat;
-use crate::sensors::Sensors;
+use crate::sensors::{Sensors, TopLidarConf};
 
 /// Everything needed for PAMI routines
 ///
@@ -34,11 +34,16 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     // Sensors
     pub sensors: Sensors<B>,
 
+    // Lidar telemetry flags
+    lidar_tm_ground: bool,
+    lidar_tm_top: bool,
+
     // Periodicity states
     asserv_periodicity: Periodicity,
     asserv_tm_periodicity: Periodicity,
     meca_periodicity: Periodicity,
     meca_tm_periodicity: Periodicity,
+    lidar_tm_periodicity: Periodicity,
 }
 
 impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
@@ -47,7 +52,8 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     /// Peripherals must be available on the board.
     /// The asserv must be configured manually, using `asserv.set_conf()`.
     pub fn new(
-        board: &mut B
+        board: &mut B,
+        top_lidar_conf: TopLidarConf,
     ) -> Self {
         // Setup gyro, asserv
         let mut gyro = Sch16t::new(board.imu_spi().unwrap(), 0);
@@ -70,10 +76,10 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         let meca = Meca::new(can_interface.clone());
 
         // Setup sensors
-        let sensors = Sensors::new(board, can_interface.clone(), led_sender.clone());
+        let sensors = Sensors::new(board, can_interface.clone(), led_sender.clone(), top_lidar_conf);
 
         // Setup strat
-        Strat::init(board, led_sender.clone());
+        Strat::init(board, led_sender.clone(), sensors.clone());
 
         Self {
             asserv: Asserv::new(asserv_hardware),
@@ -88,10 +94,14 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
             sensors,
 
+            lidar_tm_ground: false,
+            lidar_tm_top: false,
+
             asserv_periodicity: Periodicity::new(Duration::from_millis(10)),
-            asserv_tm_periodicity: Periodicity::new(Duration::from_millis(100)),
-            meca_periodicity: Periodicity::new(Duration::from_millis(100)),
-            meca_tm_periodicity: Periodicity::new(Duration::from_millis(500)),
+            asserv_tm_periodicity: Periodicity::new(Duration::from_millis(500)),
+            meca_periodicity: Periodicity::new(Duration::from_millis(1000)),
+            meca_tm_periodicity: Periodicity::new(Duration::from_millis(1000)),
+            lidar_tm_periodicity: Periodicity::new(Duration::from_millis(2000)),
         }
     }
 
@@ -113,24 +123,24 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     ///
     /// This method must be called regularly.
     pub fn idle(&mut self, now: &Instant) {
+        let t0 = Instant::now();
 
         // Process ROME input messages
-        let mut rome_data_received = false;
-        for data in self.rome_rx.try_iter() {
-            rome_data_received = true;
+        let rome_messages: Vec<_> = self.rome_rx.try_iter().collect();
+        if !rome_messages.is_empty() {
+            self.led_sender.send(LedMessage::RomeActivity).ok();
+        }
+        for data in rome_messages {
             match rome::Message::decode(&data) {
                 Err(err) => log::error!("ROME RX error: {err:?}"),
                 Ok(message) => {
-                    if !self.asserv.on_rome_message(&message) {
+                    if !self.on_rome_message(&message) && !self.asserv.on_rome_message(&message) {
                         log::warn!("ROME: ignored message: {}", message.message_id());
                     }
                 },
             }
         }
-        if rome_data_received {
-            self.led_sender.send(LedMessage::RomeActivity).ok();
-        }
-
+//
         // Update asserv, send asserv telemetry
         if self.asserv_periodicity.update(now) {
             self.asserv.update();
@@ -148,38 +158,103 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                 }
             }
         }
-
-        // Update meca, send meca telemetry
-        if self.meca_periodicity.update(now) {
-            let meca_state = self.meca.get_state();
-            for (i_module, module) in meca_state.arms.iter().enumerate() {
-                for (i_arm, arm) in module.iter().enumerate() {
-                    let _ = self.rome_tx.send(rome::Message::MecaArmTmState {
-                        module: i_module as u8,
-                        arm: i_arm as u8,
-                        position: arm.position,
-                        //TODO: update rome with full telemetry
-                        color: rome::params::MecaArmTmStateColor::Unknown,
-                        pump: arm.pump,
-                        valve: arm.valve,
-                        servo_error: arm.error,
-                        torque_enabled: arm.flags.torque_enabled,
-                        moving: arm.flags.moving,
-                        // Note: position_reached == !moving
-                        pump_current: arm.pump_current,
-                    }.encode());
-                }
+//
+        //// Send lidar telemetry
+        if self.lidar_tm_periodicity.update(now) {
+            if self.lidar_tm_ground {
+                let modules = self.sensors.ground_lidar_all();
+                let _ = self.rome_tx.send(rome::Message::GroundLidarTm {
+                    d0_0: modules[0].distance_0,
+                    sq0_0: modules[0].sq_0,
+                    d0_1: modules[0].distance_1,
+                    sq0_1: modules[0].sq_1,
+                    d1_0: modules[1].distance_0,
+                    sq1_0: modules[1].sq_0,
+                    d1_1: modules[1].distance_1,
+                    sq1_1: modules[1].sq_1,
+                    d2_0: modules[2].distance_0,
+                    sq2_0: modules[2].sq_0,
+                    d2_1: modules[2].distance_1,
+                    sq2_1: modules[2].sq_1,
+                }.encode());
             }
-            if self.meca_tm_periodicity.update(now) {
-                for (i_tr, translation) in meca_state.translations.iter().enumerate() {
-                    let _ = self.rome_tx.send(rome::Message::MecaArmTmTranslation {
-                        module: i_tr as u8,
-                        position: translation.position,
-                        error: translation.error,
+            if self.lidar_tm_top {
+                let scan = self.sensors.top_lidar_scan();
+                let chunk_size = 80;
+                let num_chunks = (scan.points.len() + chunk_size - 1) / chunk_size;
+                for (i, chunk) in scan.points.chunks(chunk_size).enumerate() {
+                    let mut angles = [0u16; 80];
+                    let mut distances = [0u16; 80];
+                    let mut intensities = [0u8; 80];
+                    for (j, &(angle, distance, intensity)) in chunk.iter().enumerate() {
+                        angles[j] = (angle * 100.0) as u16;
+                        distances[j] = distance;
+                        intensities[j] = intensity;
+                    }
+                    let _ = self.rome_tx.send(rome::Message::TopLidarTm {
+                        chunk_index: i as u8,
+                        num_chunks: num_chunks as u8,
+                        count: chunk.len() as u8,
+                        angles,
+                        distances,
+                        intensities,
                     }.encode());
                 }
             }
         }
+        //// Update meca, send meca telemetry
+        //if self.meca_periodicity.update(now) {
+        //    let meca_state = self.meca.get_state();
+        //    for (i_module, module) in meca_state.arms.iter().enumerate() {
+        //        for (i_arm, arm) in module.iter().enumerate() {
+        //            let _ = self.rome_tx.send(rome::Message::MecaArmTmState {
+        //                module: i_module as u8,
+        //                arm: i_arm as u8,
+        //                position: arm.position,
+        //                //TODO: update rome with full telemetry
+        //                color: rome::params::MecaArmTmStateColor::Unknown,
+        //                pump: arm.pump,
+        //                valve: arm.valve,
+        //                servo_error: arm.error,
+        //                torque_enabled: arm.flags.torque_enabled,
+        //                moving: arm.flags.moving,
+        //                // Note: position_reached == !moving
+        //                pump_current: arm.pump_current,
+        //            }.encode());
+        //        }
+        //    }
+        //    if self.meca_tm_periodicity.update(now) {
+        //        for (i_tr, translation) in meca_state.translations.iter().enumerate() {
+        //            let _ = self.rome_tx.send(rome::Message::MecaArmTmTranslation {
+        //                module: i_tr as u8,
+        //                position: translation.position,
+        //                error: translation.error,
+        //            }.encode());
+        //        }
+        //    }
+        //}
+        let total = t0.elapsed();
+        if total > Duration::from_millis(8) {
+            self.led_sender.send(LedMessage::IdleLoopTooSlow).ok();
+            log::warn!("idle too slow: {:?}", total);
+        }
+    }
+
+    fn on_rome_message(&mut self, message: &rome::Message) -> bool {
+        match *message {
+            rome::Message::LidarTmActivate { ground, top } => {
+                log::info!("ROME: LidarTmActivate ground={ground} top={top}");
+                self.lidar_tm_ground = ground;
+                self.lidar_tm_top = top;
+                
+                if ground {
+                    //non blocking call to enable ground lidar if previously deactivated
+                    self.sensors.ground_lidar(asserv::holonomic::RobotSide::Back);
+                }
+            }
+            _ => return false,
+        }
+        true
     }
 
     /// Wait for the next asserv step, the run `idle()` and return the associated instant
@@ -191,6 +266,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             now = *next_instant;
         }
         self.idle(&now);
+
         now
     }
 }

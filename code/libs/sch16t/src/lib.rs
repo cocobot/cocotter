@@ -17,6 +17,8 @@ pub struct Sch16t<SPI> {
     angle: Sch16tAxis,
     acceleration: Sch16tAxis,
     last_measure_instant: Option<Instant>,
+    /// Whether StatRateZ command was pre-sent in the previous call
+    z_command_pending: bool,
 }
 
 #[derive(Default)]
@@ -257,6 +259,7 @@ impl<SPI: SpiDevice> Sch16t<SPI> {
             angle: Sch16tAxis::default(),
             acceleration: Sch16tAxis::default(),
             last_measure_instant: None,
+            z_command_pending: false,
         }
     }
 
@@ -373,6 +376,56 @@ impl<SPI: SpiDevice> Sch16t<SPI> {
         Ok(())
     }
 
+    /// Update only the Z axis angle (for robots that only need yaw)
+    ///
+    /// Pipelined SPI: 2 transactions per call by pre-sending StatRateZ at the end
+    /// of each call for the next iteration. First call uses 3 transactions.
+    pub fn update_angle_z(&mut self) -> Result<(), Sch16tError<SPI>> {
+        if !self.z_command_pending {
+            // First call: send StatRateZ command (3 transactions total)
+            let stat_cmd = create_spi48bf(self.address, Register::StatRateZ, true, 0);
+            let _ = self.spi.transaction(&mut [Operation::Write(&stat_cmd)]);
+        }
+
+        // Transaction 1: send RateZ1 command, receive StatRateZ response
+        let rate_cmd = create_spi48bf(self.address, Register::RateZ1, true, 0);
+        let mut buf: [u8; 6] = rate_cmd;
+        let _ = self.spi.transaction(&mut [Operation::TransferInPlace(&mut buf)]);
+        let z_stat = parse_spi48bf(buf).data;
+
+        // Transaction 2: send StatRateZ (for next call), receive RateZ1 response
+        let stat_cmd = create_spi48bf(self.address, Register::StatRateZ, true, 0);
+        let mut buf: [u8; 6] = stat_cmd;
+        let _ = self.spi.transaction(&mut [Operation::TransferInPlace(&mut buf)]);
+        let rate_z_raw = parse_spi48bf(buf).data;
+        self.z_command_pending = true;
+
+        let new_instant = Instant::now();
+        if let Some(previous_instant) = self.last_measure_instant.replace(new_instant) {
+            let elapsed = (new_instant - previous_instant).as_secs_f32();
+
+            let stat = Sch16tStatRate::from(z_stat as u16);
+            if stat.all_flags_ok() {
+                let mut raw_reg = rate_z_raw;
+                raw_reg &= 0x000f_ffff;
+                raw_reg <<= 12;
+                let f32_reg = ((raw_reg as i32) >> 12) as f32;
+                let angle_rate = match self.angle_scale {
+                    SCH16TAngleScale::Scale300degs => f32_reg / 1600.0,
+                    SCH16TAngleScale::Scale125degs => f32_reg / 3200.0,
+                    SCH16TAngleScale::Scale62_5degs => f32_reg / 6400.0,
+                };
+                self.angle.z += angle_rate * elapsed;
+            } else {
+                // Fallback: read RateZ2 separately
+                self.angle.z += self.angle_from_register(Register::RateZ2)? * elapsed;
+                return Err(Sch16tError::ZReading(stat));
+            }
+        }
+
+        Ok(())
+    }
+
     fn angle_from_register(&mut self, register: Register) -> Result<f32, Sch16tError<SPI>> {
         let mut raw_reg = self.read_register(register)?;
         raw_reg &= 0x000f_ffff;
@@ -397,21 +450,22 @@ impl<SPI: SpiDevice> Sch16t<SPI> {
     fn read_register(&mut self, register: Register) -> Result<u32, Sch16tError<SPI>> {
         let frame = create_spi48bf(self.address, register, true, 0);
 
-        let mut answer: [u8; 6] = [0x00; 6];
-        // `transaction` asserts and deasserts CS for us. No need to do it manually!
+        // Send command frame (response comes in next transaction)
         let _ = self.spi.transaction(&mut [Operation::Write(&frame)]);
-        let _ = self.spi.transaction(&mut [Operation::Read(&mut answer)]);
-        let parsed_answer = parse_spi48bf(answer);
+        // Read response (send dummy bytes, receive previous command's response)
+        let mut buf: [u8; 6] = [0x00; 6];
+        let _ = self.spi.transaction(&mut [Operation::TransferInPlace(&mut buf)]);
+        let parsed_answer = parse_spi48bf(buf);
         Ok(parsed_answer.data)
     }
 
     /// write a register to the SCH16T and return the write error status
     fn write_register(&mut self, register: Register, data: u32) -> bool {
         let frame = create_spi48bf(self.address, register, false, data);
-        let mut answer: [u8; 6] = [0; 6];
         let _ = self.spi.transaction(&mut [Operation::Write(&frame)]);
-        let _ = self.spi.transaction(&mut [Operation::Read(&mut answer)]);
-        let parsed_answer = parse_spi48bf(answer);
+        let mut buf: [u8; 6] = [0; 6];
+        let _ = self.spi.transaction(&mut [Operation::TransferInPlace(&mut buf)]);
+        let parsed_answer = parse_spi48bf(buf);
         matches!(parsed_answer.status, SCH16TFrameStatus::Error)
     }
 }

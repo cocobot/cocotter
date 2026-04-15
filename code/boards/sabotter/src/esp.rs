@@ -10,13 +10,16 @@ use esp_idf_svc::{
             oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
         },
         can::{CanConfig, CanDriver},
+        cpu::Core,
         delay::BLOCK,
         adc::ADCU1,
-        gpio::{AnyOutputPin, Output, PinDriver},
+        gpio::{AnyIOPin, AnyOutputPin, Output, PinDriver},
         i2c::{I2cConfig, I2cDriver, I2cError},
         ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},
         peripherals::Peripherals,
         spi::{self, SpiConfig, SpiDeviceDriver, SpiDriver},
+        task::thread::ThreadSpawnConfiguration,
+        uart::{UartConfig, UartDriver},
         units::Hertz,
         sys::{self, ets_delay_us},
         rmt::{config::{MemoryAccess, TxChannelConfig}, TxChannelDriver},
@@ -31,7 +34,7 @@ use ble::{BleBuilder, EspSelfOtaHandler, OtaHandler};
 use cancaner::CanInterface;
 use pca9535::{Pca9535Immediate, ExpanderError, GPIOBank, StandardExpanderInterface};
 use esp32_encoder::Encoder as EspEncoder;
-use crate::{SabotterAdc, SabotterBoard, SabotterLeds, SabotterMotor, SabotterInputs};
+use crate::{SabotterAdc, SabotterBoard, SabotterLeds, SabotterMotor, SabotterInputs, SabotterUart};
 
 
 type EspI2c = MutexDevice<'static, I2cDriver<'static>>;
@@ -47,6 +50,16 @@ impl SabotterAdc for EspSabotterAdc {
     }
 }
 
+pub struct EspUartLidar(UartDriver<'static>);
+
+const UART_READ_TIMEOUT: u32 = 100; // ms
+
+impl SabotterUart for EspUartLidar {
+    fn read(&self, buf: &mut [u8]) -> Result<usize, ()> {
+        self.0.read(buf, UART_READ_TIMEOUT).map_err(|_| ())
+    }
+}
+
 pub struct EspSabotterBoard {
     heartbeat_led: Option<EspOutputPin>,
     rgba_leds: Option<LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorGrb24>>,
@@ -56,6 +69,7 @@ pub struct EspSabotterBoard {
     motor_enable: Option<EspOutputPin>,
     gpio_expanders: GpioExpanders,
     battery_adc: Option<EspSabotterAdc>,
+    lidar_uart: Option<EspUartLidar>,
 }
 
 impl EspSabotterBoard {
@@ -79,6 +93,7 @@ impl SabotterBoard for EspSabotterBoard {
     type MotorPwm = LedcDriver<'static>;
     type SmartLeds = LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorGrb24>;
     type Adc = EspSabotterAdc;
+    type UartLidar = EspUartLidar;
 
     fn init() -> Self {
         esp_idf_svc::sys::link_patches();
@@ -89,20 +104,6 @@ impl SabotterBoard for EspSabotterBoard {
 
         // Initialize digital output pins
         let heartbeat_led = PinDriver::output(Into::<AnyOutputPin>::into(peripherals.pins.gpio45)).unwrap();      
-
-        // Initialize SPI for IMU SCH16T
-        let imu_spi = SpiDeviceDriver::new(
-            SpiDriver::new(
-                peripherals.spi2,
-                peripherals.pins.gpio39,  // SCK
-                peripherals.pins.gpio38,  // MOSI
-                Some(peripherals.pins.gpio37),  // MISO
-                &spi::config::DriverConfig::new().dma(spi::Dma::Disabled),
-            ).unwrap(),
-            // CS on GPIO36, active low (default)
-            Some(peripherals.pins.gpio36),
-            &SpiConfig::new().baudrate(Hertz(100_000)),
-        ).unwrap();
 
         // Initialize main I2C bus
         let config = I2cConfig::new().baudrate(Hertz(400_000));
@@ -155,27 +156,65 @@ impl SabotterBoard for EspSabotterBoard {
         let motor_reset = gpio_expander.get_pin(3);
         */
 
-        /*
-        // Initialize UART for asserv communication
-        let uart_asserv = UartDriver::new(
-            peripherals.uart1,
-            peripherals.pins.gpio6,   // TX
-            peripherals.pins.gpio5,   // RX
-            Option::<AnyIOPin>::None, // CTS
-            Option::<AnyIOPin>::None, // RTS
-            &UartConfig::default().baudrate(Hertz(115_200)),
-        ).ok();
+        // Initialize SPI, UART and CAN on CPU1 so their ISRs are registered on CPU1
+        ThreadSpawnConfiguration {
+            pin_to_core: Some(Core::Core1),
+            ..Default::default()
+        }
+        .set()
+        .unwrap();
 
-        // Initialize UART for lidar (RX only)
-        let uart_lidar = UartDriver::new(
-            peripherals.uart2,
-            peripherals.pins.gpio0,   // TX (dummy pin)
-            peripherals.pins.gpio2,   // RX
-            Option::<AnyIOPin>::None, // CTS
-            Option::<AnyIOPin>::None, // RTS
-            &UartConfig::default().baudrate(Hertz(1_000_000)),
-        ).ok();
-        */
+        let spi2 = peripherals.spi2;
+        let spi_sck = peripherals.pins.gpio39;
+        let spi_mosi = peripherals.pins.gpio38;
+        let spi_miso = peripherals.pins.gpio37;
+        let spi_cs = peripherals.pins.gpio36;
+        let uart2 = peripherals.uart2;
+        let uart_tx_pin = peripherals.pins.gpio0;
+        let uart_rx_pin = peripherals.pins.gpio2;
+        let can_periph = peripherals.can;
+        let can_tx_pin = peripherals.pins.gpio9;
+        let can_rx_pin = peripherals.pins.gpio10;
+
+        let (imu_spi, lidar_uart, can) = std::thread::scope(|s| {
+            s.spawn(|| {
+                let imu_spi = SpiDeviceDriver::new(
+                    SpiDriver::new(
+                        spi2,
+                        spi_sck,   // SCK
+                        spi_mosi,  // MOSI
+                        Some(spi_miso),  // MISO
+                        &spi::config::DriverConfig::new().dma(spi::Dma::Disabled),
+                    ).unwrap(),
+                    Some(spi_cs),
+                    &SpiConfig::new().baudrate(Hertz(10_000_000)),
+                ).unwrap();
+
+                let lidar_uart = UartDriver::new(
+                    uart2,
+                    uart_tx_pin,   // TX (dummy pin)
+                    uart_rx_pin,   // RX
+                    Option::<AnyIOPin>::None, // CTS
+                    Option::<AnyIOPin>::None, // RTS
+                    &UartConfig::default().baudrate(Hertz(230_400)).rx_fifo_size(512),
+                ).ok().map(EspUartLidar);
+
+                let can = CanDriver::new(
+                    can_periph, can_tx_pin, can_rx_pin,
+                    &CanConfig::new().rx_queue_len(64),
+                ).unwrap();
+
+                (imu_spi, lidar_uart, can)
+            }).join().unwrap()
+        });
+
+        // Reset to CPU0 for subsequent initializations
+        ThreadSpawnConfiguration {
+            pin_to_core: Some(Core::Core0),
+            ..Default::default()
+        }
+        .set()
+        .unwrap();
 
         // Initialize ADC for battery voltage
         let adc = Arc::new(AdcDriver::new(peripherals.adc1).unwrap());
@@ -185,9 +224,6 @@ impl SabotterBoard for EspSabotterBoard {
             &AdcChannelConfig { attenuation: attenuation::DB_12, ..Default::default() },
         ).unwrap();
         let battery_adc = EspSabotterAdc(adc_vbatt);
-
-        // Initialize CAN bus with correct pins (GPIO9/10)
-        let can = CanDriver::new(peripherals.can, peripherals.pins.gpio9, peripherals.pins.gpio10, &CanConfig::new().rx_queue_len(64)).unwrap();
 
         /*
         // Initialize Lidar PWM
@@ -225,6 +261,7 @@ impl SabotterBoard for EspSabotterBoard {
             motor_enable: Some(motor_enable),
             gpio_expanders,
             battery_adc: Some(battery_adc),
+            lidar_uart,
         }
     }
 
@@ -255,6 +292,10 @@ impl SabotterBoard for EspSabotterBoard {
 
     fn battery_adc(&mut self) -> Option<Self::Adc> {
         self.battery_adc.take()
+    }
+
+    fn lidar_uart(&mut self) -> Option<Self::UartLidar> {
+        self.lidar_uart.take()
     }
 
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]> {
@@ -492,6 +533,13 @@ impl EspCanInterface {
         }
 
         // Monitor thread: watches for CAN alerts, logs errors, auto-recovers on bus-off
+        ThreadSpawnConfiguration {
+            pin_to_core: Some(Core::Core1),
+            ..Default::default()
+        }
+        .set()
+        .unwrap();
+
         std::thread::Builder::new()
             .name("can-mon".into())
             .stack_size(4096)
@@ -557,6 +605,14 @@ impl EspCanInterface {
                 }
             })
             .expect("spawn can-mon");
+
+        // Reset to CPU0
+        ThreadSpawnConfiguration {
+            pin_to_core: Some(Core::Core0),
+            ..Default::default()
+        }
+        .set()
+        .unwrap();
 
         // Leak the driver to get a static reference
         // SAFETY: the `CanDriver` object will always be valid; not dropping it will just not uninstall it

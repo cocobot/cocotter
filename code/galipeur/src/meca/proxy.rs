@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicU8, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::{Duration, Instant};
-use cancaner::{ARMS_PER_MODULE, ArmFlags, ArmTarget, CanMessage, STAGE2_SERVOS_PER_MODULE, Stage2Target};
+use cancaner::{ARMS_PER_MODULE, ArmFlags, ArmTarget, CanMessage, LogDecoder, STAGE2_SERVOS_PER_MODULE, Stage2Target};
 
 use crate::can::GalipeurCan;
 use board_sabotter::SabotterBoard;
@@ -73,103 +73,109 @@ impl<B: SabotterBoard> MecaProxy<B> {
         let sc = state_changed.clone();
         let lp = last_ping.clone();
 
-        can.add_callback(move |msg| match msg {
-            CanMessage::Ping { value } => {
-                lp.store(*value, Ordering::Relaxed);
+        let mut log_decoder = LogDecoder::new();
+        can.add_callback(move |msg| {
+            if log_decoder.process_and_log("picotter", msg) {
+                return;
             }
-            CanMessage::ArmStatus {
-                target,
-                position,
-                color,
-                pump,
-                valve,
-                error,
-                flags,
-                pump_current,
-            } => {
-                let mut st = s.lock().unwrap();
-                if let Some(arm) = st
-                    .arms
-                    .get_mut(target.module as usize)
-                    .and_then(|m| m.get_mut(target.arm as usize))
-                {
-                    arm.position = *position;
-                    arm.hue = (color & 0x7F) as u16 * 360 / 128;
-                    arm.color_detected = color & 0x80 != 0;
-                    arm.pump = *pump;
-                    arm.valve = *valve;
-                    arm.error = *error;
-                    arm.flags = *flags;
-                    arm.pump_current = *pump_current;
-                    arm.update_seq += 1;
+            match msg {
+                CanMessage::Ping { value } => {
+                    lp.store(*value, Ordering::Relaxed);
                 }
-                drop(st);
-                sc.notify_all();
-            }
-            CanMessage::TranslationStatus {
-                module,
-                position,
-                error,
-                flags,
-            } => {
-                let mut st = s.lock().unwrap();
-                if let Some(t) = st.translations.get_mut(*module as usize) {
-                    t.position = *position;
-                    t.error = *error;
-                    t.flags = *flags;
-                    t.update_seq += 1;
+                CanMessage::ArmStatus {
+                    target,
+                    position,
+                    color,
+                    pump,
+                    valve,
+                    error,
+                    flags,
+                    pump_current,
+                } => {
+                    let mut st = s.lock().unwrap();
+                    if let Some(arm) = st
+                        .arms
+                        .get_mut(target.module as usize)
+                        .and_then(|m| m.get_mut(target.arm as usize))
+                    {
+                        arm.position = *position;
+                        arm.hue = (color & 0x7F) as u16 * 360 / 128;
+                        arm.color_detected = color & 0x80 != 0;
+                        arm.pump = *pump;
+                        arm.valve = *valve;
+                        arm.error = *error;
+                        arm.flags = *flags;
+                        arm.pump_current = *pump_current;
+                        arm.update_seq += 1;
+                    }
+                    drop(st);
+                    sc.notify_all();
                 }
-                drop(st);
-                sc.notify_all();
-            }
-            CanMessage::Stage2Status {
-                target,
-                position,
-                error,
-                flags,
-            } => {
-                let mut st = s.lock().unwrap();
-                if let Some(servo) = st
-                    .stage2
-                    .get_mut(target.module as usize)
-                    .and_then(|m| m.get_mut(target.servo as usize))
-                {
-                    servo.position = *position;
-                    servo.error = *error;
-                    servo.flags = *flags;
-                    servo.update_seq += 1;
+                CanMessage::TranslationStatus {
+                    module,
+                    position,
+                    error,
+                    flags,
+                } => {
+                    let mut st = s.lock().unwrap();
+                    if let Some(t) = st.translations.get_mut(*module as usize) {
+                        t.position = *position;
+                        t.error = *error;
+                        t.flags = *flags;
+                        t.update_seq += 1;
+                    }
+                    drop(st);
+                    sc.notify_all();
                 }
-                drop(st);
-                sc.notify_all();
-            }
-            CanMessage::ColorSensorRaw {
-                target,
-                clear,
-                red,
-                green,
-                blue,
-            } => {
-                let mut st = s.lock().unwrap();
-                if let Some(raw) = st
-                    .color_raw
-                    .get_mut(target.module as usize)
-                    .and_then(|m| m.get_mut(target.arm as usize))
-                {
-                    raw.clear = *clear;
-                    raw.red = *red;
-                    raw.green = *green;
-                    raw.blue = *blue;
+                CanMessage::Stage2Status {
+                    target,
+                    position,
+                    error,
+                    flags,
+                } => {
+                    let mut st = s.lock().unwrap();
+                    if let Some(servo) = st
+                        .stage2
+                        .get_mut(target.module as usize)
+                        .and_then(|m| m.get_mut(target.servo as usize))
+                    {
+                        servo.position = *position;
+                        servo.error = *error;
+                        servo.flags = *flags;
+                        servo.update_seq += 1;
+                    }
+                    drop(st);
+                    sc.notify_all();
                 }
+                CanMessage::ColorSensorRaw {
+                    target,
+                    clear,
+                    red,
+                    green,
+                    blue,
+                } => {
+                    let mut st = s.lock().unwrap();
+                    if let Some(raw) = st
+                        .color_raw
+                        .get_mut(target.module as usize)
+                        .and_then(|m| m.get_mut(target.arm as usize))
+                    {
+                        raw.clear = *clear;
+                        raw.red = *red;
+                        raw.green = *green;
+                        raw.blue = *blue;
+                    }
+                }
+                CanMessage::BatteryStatus {
+                    voltage_mv,
+                    modules_mask,
+                } => {
+                    let mut st = s.lock().unwrap();
+                    st.battery_voltage_mv = Some(*voltage_mv);
+                    st.battery_modules_mask = *modules_mask;
+                }
+                _ => {}
             }
-            CanMessage::BatteryStatus {
-                voltage_mv,
-                modules_mask,
-            } => {
-                let mut st = s.lock().unwrap();
-                st.battery_voltage_mv = Some(*voltage_mv);
-                st.battery_modules_mask = *modules_mask;
-            }
-            _ => {}
         });
 
         Self {

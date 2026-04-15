@@ -83,13 +83,13 @@ fn build_gatt_svcs() -> &'static [sys::ble_gatt_svc_def] {
         .expect("HANDLE_PTRS already set");
 
     let chars: Vec<sys::ble_gatt_chr_def> = vec![
-        // Orders characteristic (write, encrypted)
+        // Orders characteristic (write)
         sys::ble_gatt_chr_def {
             uuid: &CHR_ORDERS_UUID.u as *const _,
             access_cb: Some(gatt_access_cb),
             arg: std::ptr::null_mut(),
             descriptors: std::ptr::null_mut(),
-            flags: (sys::BLE_GATT_CHR_F_WRITE | sys::BLE_GATT_CHR_F_WRITE_ENC) as sys::ble_gatt_chr_flags,
+            flags: sys::BLE_GATT_CHR_F_WRITE as sys::ble_gatt_chr_flags,
             min_key_size: 0,
             val_handle: orders_handle_ptr,
             cpfd: std::ptr::null_mut(),

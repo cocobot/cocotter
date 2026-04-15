@@ -194,6 +194,7 @@ impl<TX: Write, RX: Read> M703a<TX, RX> {
     /// Read one measurement from the continuous stream
     pub async fn read_measurement(&mut self) -> Result<LidarMeasurement, M703aError> {
         let mut buf = [0u8; LINE_BUF_SIZE];
+
         let len = self.read_line(&mut buf).await?;
         let m = parse_response(&buf[..len])?;
         self.last_measurement = m;
@@ -213,7 +214,6 @@ fn parse_response(line: &[u8]) -> Result<LidarMeasurement, M703aError> {
         line
     };
 
-    rprintln!("Parsing line: {}", core::str::from_utf8(line).unwrap_or("<invalid utf8>"));
 
     // Trim leading spaces
     let line = trim_leading_spaces(line);

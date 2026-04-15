@@ -165,3 +165,34 @@
     position: u16
     error: u8
 
+# Galipeur sensors
+70:
+  # Enable/disable lidar telemetry streaming
+  LidarTmActivate:
+    ground: bool
+    top: bool
+
+  # Ground lidar telemetry (3 modules, 2 lidars each)
+  GroundLidarTm:
+    d0_0: u16
+    sq0_0: u16
+    d0_1: u16
+    sq0_1: u16
+    d1_0: u16
+    sq1_0: u16
+    d1_1: u16
+    sq1_1: u16
+    d2_0: u16
+    sq2_0: u16
+    d2_1: u16
+    sq2_1: u16
+
+  # Top lidar telemetry (chunked, ~7 chunks per 360 scan)
+  TopLidarTm:
+    chunk_index: u8
+    num_chunks: u8
+    count: u8
+    angles: "[u16; 80]"
+    distances: "[u16; 80]"
+    intensities: "[u8; 80]"
+

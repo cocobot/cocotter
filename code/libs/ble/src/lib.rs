@@ -432,14 +432,7 @@ extern "C" fn gap_event_handler(event: *mut sys::ble_gap_event, _arg: *mut c_voi
             let connect = unsafe { &ev.__bindgen_anon_1.connect };
             if connect.status == 0 {
                 log::info!("Connected, handle: {}", connect.conn_handle);
-                // Request max Data Length Extension (251 octets, 2120 us)
-                let rc = unsafe {
-                    sys::ble_hs_hci_util_set_data_len(connect.conn_handle, 251, 2120)
-                };
-                if rc != 0 {
-                    log::warn!("DLE request failed: {rc}");
-                }
-                // Request fast connection interval (7.5ms–15ms) for OTA throughput
+                // Request fast connection interval (7.5ms–15ms)
                 let conn_params = sys::ble_gap_upd_params {
                     itvl_min: 6,   // 6 × 1.25ms = 7.5ms
                     itvl_max: 12,  // 12 × 1.25ms = 15ms

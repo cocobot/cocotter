@@ -191,6 +191,7 @@ async fn led_status_task(
     let mut prev_transl_moving = [false; 3];
     let mut prev_ground_mask: u8 = 0;
     let mut last_ground_send = Instant::now();
+    let mut aru = true;
 
     loop {
         let t0 = Instant::now();
@@ -209,8 +210,11 @@ async fn led_status_task(
             (g0.unwrap_or(false), g1.unwrap_or(false), g2.unwrap_or(false))
         };
 
-        if !ground.0 || !ground.1 || !ground.2 {
+        if !ground.0 || !ground.1 || !ground.2 || aru {
             lidar::power_off();
+        }
+        else {
+            lidar::power_on();
         }
 
         // Build detection mask, send on change or every 2s
@@ -360,6 +364,12 @@ async fn led_status_task(
 
             if count > 0 {
                 let voltage_mv = (sum_mv / count) as u16;
+                if voltage_mv < 1000 {
+                    aru = true;
+                }
+                else {
+                    aru = false;
+                }
                 status_tx
                     .try_send(CanMessage::BatteryStatus {
                         voltage_mv,

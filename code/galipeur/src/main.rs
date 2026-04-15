@@ -1,7 +1,7 @@
 use asserv::holonomic::{conf::*};
 use board_sabotter::SabotterBoard;
 use galipeur::routines::GalipeurRoutines;
-use galipeur::sensors::{GroundConf, LidarConf, LidarPose};
+use galipeur::sensors::{GroundConf, GroundLidarConf, GroundLidarPose, TopLidarConf};
 
 #[cfg(target_os = "espidf")]
 type SabotterBoardImpl = board_sabotter::EspSabotterBoard;
@@ -12,7 +12,7 @@ use board_sabotter::MockSabotterBoard as SabotterBoardImpl;
 fn main() {
     let mut board = SabotterBoardImpl::init();
 
-    let mut routines = GalipeurRoutines::new(&mut board);
+    let mut routines = GalipeurRoutines::new(&mut board, TopLidarConf { angle_offset: 0.0 });
     routines.asserv.set_conf(AsservConf {
         pid_x: PidConf {
             gain_p: 50,
@@ -72,22 +72,22 @@ fn main() {
     });
 
     routines.sensors.set_conf(
-        LidarConf {
+        GroundLidarConf {
             modules: [
                 // Module 0 (Left): lidar 0 and lidar 3
                 [
-                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
-                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
                 ],
                 // Module 1 (Back): lidar 1 and lidar 4
                 [
-                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
-                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: -131.3, y: -131.3, theta: 300.0_f32.to_radians() },
+                    GroundLidarPose { x:  133.7, y:  133.1, theta: 240.0_f32.to_radians() },
                 ],
                 // Module 2 (Right): lidar 2 and lidar 5
                 [
-                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
-                    LidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
                 ],
             ],
         },
@@ -96,7 +96,7 @@ fn main() {
         },
     );
 
-    routines.ground_sensor_calibration();
+    //routines.ground_sensor_calibration();
 
     loop {
         routines.step_idle();

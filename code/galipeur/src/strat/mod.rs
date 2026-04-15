@@ -1,25 +1,29 @@
 use std::{thread::sleep, time::Duration};
+use asserv::holonomic::RobotSide;
 use board_common::Team;
 use embedded_hal::digital::InputPin;
 use board_sabotter::{SabotterBoard, SabotterInputs};
 use flume::Sender;
 
 use crate::led::LedMessage;
+use crate::sensors::Sensors;
 
 pub mod types;
 
 pub struct Strat<B: SabotterBoard> {
     side: Team,
     leds: Sender<LedMessage>,
+    sensors: Sensors<B>,
 
     inputs: SabotterInputs<B::ExInputPin, B::ExInputPin>,
 }
 
 impl<B : SabotterBoard + 'static> Strat<B> {
-    pub fn init(board: &mut B, leds: Sender<LedMessage>) {
+    pub fn init(board: &mut B, leds: Sender<LedMessage>, sensors: Sensors<B>) {
         let instance = Self {
             side: Team::None,
             leds,
+            sensors,
 
             inputs: board.inputs().take().unwrap(),
         };
@@ -57,6 +61,13 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                 log::info!("Color selected");                
                 break;
             }
+        }
+        self.sensors.ground_lidar(RobotSide::Back);
+
+        loop {
+            let pos = self.sensors.get_plane_offset(RobotSide::Back);
+            log::info!("pos: {:?}", pos);
+            std::thread::sleep(Duration::from_secs(1));
         }
 
         log::info!("Set meca in init position");

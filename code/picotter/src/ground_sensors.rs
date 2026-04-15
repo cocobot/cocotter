@@ -4,7 +4,7 @@
 //! The actual I2C communication is handled by `I2cDevices`.
 
 /// Default threshold for detection
-pub const DEFAULT_THRESHOLD: u16 = 100;
+pub const DEFAULT_THRESHOLD: u16 = 5;
 
 /// Ground sensor state
 #[derive(Debug, Clone, Copy, Default)]

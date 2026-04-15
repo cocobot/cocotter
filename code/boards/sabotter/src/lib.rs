@@ -26,6 +26,11 @@ pub trait SabotterAdc: Send {
     fn read(&mut self) -> Result<u16, ()>;
 }
 
+/// UART reader (blocking)
+pub trait SabotterUart: Send {
+    fn read(&self, buf: &mut [u8]) -> Result<usize, ()>;
+}
+
 pub trait SabotterBoard {
     type I2c: I2c;
     type OutputPin: StatefulOutputPin + Send;
@@ -37,6 +42,7 @@ pub trait SabotterBoard {
     type MotorPwm: SetDutyCycle + Send;
     type SmartLeds: SmartLedsWrite<Color: From<RGB8>> + Send;
     type Adc: SabotterAdc + 'static;
+    type UartLidar: SabotterUart + 'static;
 
 
     /// Initialize the board and return its instance
@@ -50,6 +56,7 @@ pub trait SabotterBoard {
     fn can(&mut self) -> Option<Self::Can>;
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]>;
     fn battery_adc(&mut self) -> Option<Self::Adc>;
+    fn lidar_uart(&mut self) -> Option<Self::UartLidar>;
 
     /// Configure and return ROME interface
     fn rome(&mut self, device_name: String, other_ota_handlers: Option<Vec<Box<dyn OtaHandler>>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;

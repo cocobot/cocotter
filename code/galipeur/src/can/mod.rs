@@ -27,6 +27,18 @@ impl<B: SabotterBoard> GalipeurCan<B> {
         let cloned_can = can.clone();
         let cloned_callbacks = callbacks.clone();
 
+        #[cfg(target_os = "espidf")]
+        {
+            use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
+            use esp_idf_svc::hal::cpu::Core;
+            ThreadSpawnConfiguration {
+                pin_to_core: Some(Core::Core1),
+                ..Default::default()
+            }
+            .set()
+            .unwrap();
+        }
+
         std::thread::Builder::new()
             .name("can-rx".into())
             .stack_size(8192)
@@ -48,6 +60,18 @@ impl<B: SabotterBoard> GalipeurCan<B> {
                 }
             })
             .expect("spawn can-rx");
+
+        #[cfg(target_os = "espidf")]
+        {
+            use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
+            use esp_idf_svc::hal::cpu::Core;
+            ThreadSpawnConfiguration {
+                pin_to_core: Some(Core::Core0),
+                ..Default::default()
+            }
+            .set()
+            .unwrap();
+        }
 
         Self { callbacks, can }
     }

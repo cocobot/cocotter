@@ -67,4 +67,24 @@ impl<T> Watched<T> {
             Some(inner.value)
         }
     }
+
+    /// Get the current value (clone).
+    pub fn get_clone(&self) -> T where T: Clone {
+        let (lock, _) = &*self.inner;
+        lock.lock().map(|inner| inner.value.clone()).unwrap()
+    }
+
+    /// Block until the next update (timeout 3s), then return the new value (clone).
+    /// Returns `None` on timeout.
+    pub fn wait_next_clone(&self) -> Option<T> where T: Clone {
+        let (lock, cvar) = &*self.inner;
+        let inner = lock.lock().ok()?;
+        let cur_gen = inner.generation;
+        let (inner, result) = cvar.wait_timeout_while(inner, DEFAULT_TIMEOUT, |i| i.generation == cur_gen).ok()?;
+        if result.timed_out() {
+            None
+        } else {
+            Some(inner.value.clone())
+        }
+    }
 }

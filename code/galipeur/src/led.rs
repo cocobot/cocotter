@@ -12,6 +12,7 @@ pub enum LedMessage {
     LowPowerBattery,
     LowLogicBattery,
     GroundSensor(bool, bool, bool),
+    IdleLoopTooSlow,
 }
 
 pub struct Leds {
@@ -76,9 +77,9 @@ impl<B: SabotterBoard> LedsInternal<B> {
 
         const BLACK : RGB8 = RGB8 { r: 0, g: 0, b: 0 };
         const RED : RGB8 = RGB8 { r: 255, g: 0, b: 0 };
-        const BROWN : RGB8 = RGB8 {r: 137,g: 81, b: 41};
 
         loop {
+            let mut slow_idle_loop = false;
             //Process all pending messages
             while let Ok(msg) = self.rx.try_recv() {
                 match msg {
@@ -96,6 +97,9 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     }
                     LedMessage::GroundSensor(s0, s1, s2 ) => {
                         self.ground_detected = (s0, s1, s2);
+                    }
+                    LedMessage::IdleLoopTooSlow => {
+                        slow_idle_loop = true;
                     }
                 }
             }
@@ -134,6 +138,12 @@ impl<B: SabotterBoard> LedsInternal<B> {
                 if !self.ground_detected.2 {
                     pixels[18] = ground_error_color;
                     pixels[21] = ground_error_color;
+                }
+
+                if slow_idle_loop {
+                    for i in (0..41).step_by(3) {
+                        pixels[i] = RED;
+                    }
                 }
             }
 

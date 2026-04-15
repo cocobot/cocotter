@@ -78,7 +78,7 @@ impl<B: SabotterBoard> AsservHardware for MovementLowLevelHardware<B> {
     }
 
     fn get_gyro_offset(&mut self) -> f32 {
-        if let Err(e) = self.gyro.update_angle() {
+        if let Err(e) = self.gyro.update_angle_z() {
             if !self.gyro_is_in_error {
                 log::error!("Error updating gyro angle: {:?}", e);
                 self.gyro_is_in_error = true;
