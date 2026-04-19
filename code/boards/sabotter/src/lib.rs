@@ -21,11 +21,6 @@ pub use esp::EspSabotterBoard;
 pub use mock::MockSabotterBoard;
 
 
-/// ADC reader for battery voltage (returns raw ADC value in mV)
-pub trait SabotterAdc: Send {
-    fn read(&mut self) -> Result<u16, ()>;
-}
-
 /// UART reader (blocking)
 pub trait SabotterUart: Send {
     fn read(&self, buf: &mut [u8]) -> Result<usize, ()>;
@@ -41,7 +36,7 @@ pub trait SabotterBoard {
     type MotorEncoder: Encoder<i32> + Send;  //TODO exact type
     type MotorPwm: SetDutyCycle + Send;
     type SmartLeds: SmartLedsWrite<Color: From<RGB8>> + Send;
-    type Adc: SabotterAdc + 'static;
+    type BatteryReader: BatteryReader + Send;
     type UartLidar: SabotterUart + 'static;
 
 
@@ -55,7 +50,7 @@ pub trait SabotterBoard {
     fn imu_spi(&mut self) -> Option<Self::Spi>;
     fn can(&mut self) -> Option<Self::Can>;
     fn motors(&mut self) -> Option<[SabotterMotor<Self::MotorEncoder, Self::MotorPwm>; 3]>;
-    fn battery_adc(&mut self) -> Option<Self::Adc>;
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader>;
     fn lidar_uart(&mut self) -> Option<Self::UartLidar>;
 
     /// Configure and return ROME interface

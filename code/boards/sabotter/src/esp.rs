@@ -34,7 +34,7 @@ use ble::{BleBuilder, EspSelfOtaHandler, OtaHandler};
 use cancaner::CanInterface;
 use pca9535::{Pca9535Immediate, ExpanderError, GPIOBank, StandardExpanderInterface};
 use esp32_encoder::Encoder as EspEncoder;
-use crate::{SabotterAdc, SabotterBoard, SabotterLeds, SabotterMotor, SabotterInputs, SabotterUart};
+use crate::{BatteryLevel, BatteryReader, SabotterBoard, SabotterLeds, SabotterMotor, SabotterInputs, SabotterUart};
 
 
 type EspI2c = MutexDevice<'static, I2cDriver<'static>>;
@@ -42,11 +42,23 @@ type EspOutputPin = PinDriver<'static, Output>;
 
 
 type AdcCh0 = esp_idf_svc::hal::adc::ADCCH0<ADCU1>;
-pub struct EspSabotterAdc(AdcChannelDriver<'static, AdcCh0, Arc<AdcDriver<'static, ADCU1>>>);
+pub struct SabotterBatteryReader(AdcChannelDriver<'static, AdcCh0, Arc<AdcDriver<'static, ADCU1>>>);
 
-impl SabotterAdc for EspSabotterAdc {
-    fn read(&mut self) -> Result<u16, ()> {
-        self.0.read().map(|v| v as u16).map_err(|_| ())
+impl SabotterBatteryReader {
+    const fn raw_to_mv(raw: f32) -> f32 {
+        const VBATT_RL_KOHMS: f32 = 6.8;
+        const VBATT_RH_KOHMS: f32 = 100.0;
+        const ADC_INPUT_IMP_KOHMS: f32 = 35.5; // measured empirically (DB_12 attenuation)
+        const RL_EFF_KOHMS: f32 = VBATT_RL_KOHMS * ADC_INPUT_IMP_KOHMS / (VBATT_RL_KOHMS + ADC_INPUT_IMP_KOHMS);
+        raw * (1.0 + VBATT_RH_KOHMS / RL_EFF_KOHMS)
+    }
+}
+
+impl BatteryReader for SabotterBatteryReader {
+    fn read_vbatt(&mut self) -> BatteryLevel {
+        let raw = self.0.read().unwrap_or(0) as f32;
+        let mv = Self::raw_to_mv(raw);
+        BatteryLevel { mv: mv as u16, percent: 0 }
     }
 }
 
@@ -68,7 +80,7 @@ pub struct EspSabotterBoard {
     motors: Option<[SabotterMotor<EspEncoder<'static>, LedcDriver<'static>>; 3]>,
     motor_enable: Option<EspOutputPin>,
     gpio_expanders: GpioExpanders,
-    battery_adc: Option<EspSabotterAdc>,
+    battery_reader: Option<SabotterBatteryReader>,
     lidar_uart: Option<EspUartLidar>,
 }
 
@@ -92,7 +104,7 @@ impl SabotterBoard for EspSabotterBoard {
     type MotorEncoder = EspEncoder<'static>;
     type MotorPwm = LedcDriver<'static>;
     type SmartLeds = LedPixelEsp32Rmt::<'static, RGB8, LedPixelColorGrb24>;
-    type Adc = EspSabotterAdc;
+    type BatteryReader = SabotterBatteryReader;
     type UartLidar = EspUartLidar;
 
     fn init() -> Self {
@@ -223,7 +235,7 @@ impl SabotterBoard for EspSabotterBoard {
             peripherals.pins.gpio1,
             &AdcChannelConfig { attenuation: attenuation::DB_12, ..Default::default() },
         ).unwrap();
-        let battery_adc = EspSabotterAdc(adc_vbatt);
+        let battery_reader = SabotterBatteryReader(adc_vbatt);
 
         /*
         // Initialize Lidar PWM
@@ -260,7 +272,7 @@ impl SabotterBoard for EspSabotterBoard {
             motors: Some(motors),
             motor_enable: Some(motor_enable),
             gpio_expanders,
-            battery_adc: Some(battery_adc),
+            battery_reader: Some(battery_reader),
             lidar_uart,
         }
     }
@@ -290,8 +302,8 @@ impl SabotterBoard for EspSabotterBoard {
         Some(EspCanInterface::new(can))
     }
 
-    fn battery_adc(&mut self) -> Option<Self::Adc> {
-        self.battery_adc.take()
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader> {
+        self.battery_reader.take()
     }
 
     fn lidar_uart(&mut self) -> Option<Self::UartLidar> {

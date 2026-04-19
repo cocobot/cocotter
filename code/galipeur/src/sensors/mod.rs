@@ -4,7 +4,7 @@ pub use ld06::TopLidarSnapshot;
 
 use std::sync::{Arc, OnceLock};
 use std::time::{Duration, Instant};
-use board_sabotter::{SabotterAdc, SabotterBoard, SabotterUart};
+use board_sabotter::{BatteryLevel, BatteryReader, SabotterBoard, SabotterUart};
 use cancaner::CanMessage;
 use flume::Sender;
 
@@ -14,7 +14,7 @@ use crate::led::LedMessage;
 use crate::meca::RobotSideModule;
 use crate::watched::Watched;
 
-const BATTERY_LOW_MV: f32 = 14_830.0; // 4S LiPo discharged threshold
+const BATTERY_LOW_MV: u16 = 14_830; // 4S LiPo discharged threshold
 const NUM_MODULES: usize = 3;
 const NUM_GROUND_SENSORS: usize = 3;
 
@@ -91,7 +91,7 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
         can.add_callback(move |msg| {
             match msg {
                 CanMessage::BatteryStatus { voltage_mv, modules_mask: _ } => {
-                    if *voltage_mv < (BATTERY_LOW_MV as u16) {
+                    if *voltage_mv < BATTERY_LOW_MV {
                         battery_led_sender.send(LedMessage::LowPowerBattery).ok();
                     }
                 }
@@ -123,7 +123,7 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
 
         let top_lidar: Watched<TopLidarSnapshot> = Watched::default();
         let top_lidar_thread = top_lidar.clone();
-        let mut battery_adc = board.battery_adc().unwrap();
+        let mut battery_reader = board.battery_reader().unwrap();
         let uart = board.lidar_uart().unwrap();
 
         #[cfg(target_os = "espidf")]
@@ -142,18 +142,11 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             .name("sensors".into())
             .stack_size(16384)
             .spawn(move || {
-                const VBATT_RL_KOHMS: f32 = 6.8;
-                const VBATT_RH_KOHMS: f32 = 100.0;
-                const ADC_INPUT_IMP_KOHMS: f32 = 35.5; // measured empirically (DB_12 attenuation)
-                const RL_EFF_KOHMS: f32 = VBATT_RL_KOHMS * ADC_INPUT_IMP_KOHMS / (VBATT_RL_KOHMS + ADC_INPUT_IMP_KOHMS);
-
                 let mut check_battery = || {
-                    if let Ok(raw) = battery_adc.read() {
-                        let mv = raw as f32 * (1.0 + VBATT_RH_KOHMS / RL_EFF_KOHMS);
-                        if mv < BATTERY_LOW_MV {
-                            log::warn!("Battery low! {:.0} mV", mv);
-                            led_sender.send(LedMessage::LowLogicBattery).ok();
-                        }
+                    let BatteryLevel { mv, .. } = battery_reader.read_vbatt();
+                    if mv < BATTERY_LOW_MV {
+                        log::warn!("Battery low! {:.0} mV", mv);
+                        led_sender.send(LedMessage::LowLogicBattery).ok();
                     }
                 };
 

@@ -7,17 +7,9 @@ use embedded_hal_mock::eh1::{
     spi::{Mock as SpiMock},
 };
 use flume::{Receiver, Sender};
-use board_common::mock::MockEncoder;
-use crate::{OtaHandler, SabotterAdc, SabotterBoard, SabotterLeds, SabotterMotor, SabotterUart};
+use board_common::mock::{MockBatteryReader, MockEncoder};
+use crate::{OtaHandler, SabotterBoard, SabotterLeds, SabotterMotor, SabotterUart};
 
-
-pub struct MockSabotterAdc;
-
-impl SabotterAdc for MockSabotterAdc {
-    fn read(&mut self) -> Result<u16, ()> {
-        Ok(0)
-    }
-}
 
 pub struct MockUartLidar;
 
@@ -37,7 +29,7 @@ impl SabotterBoard for MockSabotterBoard {
     type Spi = SpiMock<u8>;
     type MotorEncoder = MockEncoder<i32>;
     type MotorPwm = SetDutyCycleMock;
-    type Adc = MockSabotterAdc;
+    type BatteryReader = MockBatteryReader;
     type UartLidar = MockUartLidar;
 
     fn init() -> Self {
@@ -52,7 +44,7 @@ impl SabotterBoard for MockSabotterBoard {
         None
     }
 
-    fn battery_adc(&mut self) -> Option<Self::Adc> {
+    fn battery_reader(&mut self) -> Option<Self::BatteryReader> {
         None
     }
 
