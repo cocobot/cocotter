@@ -357,37 +357,22 @@ impl SabotterBoard for EspSabotterBoard {
         self.motors.take()
     }
 
-    fn rome(&mut self, device_name: String, other_ota_handlers: Option<Vec<Box<dyn OtaHandler>>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
+    fn rome(&mut self, device_name: String, mut other_ota_handlers: Vec<Box<dyn OtaHandler>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
         // Note: for now, client is not used, so we can easily initialize both server and client
         // and drop the client. But if the client (and `.with_scanner()`) are needed,
         // another approach must be implemented. Maybe by changing the BLE API.
         let (ble_server, _ble_client) = BleBuilder::new().run();
 
-        let count = if let Some(ref other_ota_handlers) = other_ota_handlers {
-            other_ota_handlers.len() + 1
-        } else {
-            1
-        };
-
+        let count = other_ota_handlers.len() + 1;
         let rome_reg = ble::rome::register_gatt();
         let ota_reg = ble::ota::register_gatt(count);
 
         ble_server.start_host();
         let rome = rome_reg.start();
-        if let Some(other_ota_handlers) = other_ota_handlers {
-            let mut handlers: Vec<Box<dyn OtaHandler>> = vec![
-                Box::new(EspSelfOtaHandler::new()),
-            ];
-            handlers.extend(other_ota_handlers);
-            ota_reg.start(handlers);
-        }
-        else {
-            ota_reg.start(vec![
-                Box::new(EspSelfOtaHandler::new())
-            ]);
-        }
-        
-        
+
+        // Reuse "other" handlers to avoid extra allocations
+        other_ota_handlers.push(Box::new(EspSelfOtaHandler::new()));
+        ota_reg.start(other_ota_handlers);
 
         ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();
         ble_server.start_advertising().unwrap();

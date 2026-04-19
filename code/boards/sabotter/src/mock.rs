@@ -60,7 +60,7 @@ impl SabotterBoard for MockSabotterBoard {
         None
     }
 
-    fn rome(&mut self, _device_name: String, _other_ota_handlers: Option<Vec<Box<dyn OtaHandler>>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
+    fn rome(&mut self, _device_name: String, _other_ota_handlers: Vec<Box<dyn OtaHandler>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
         None
     }
 }

@@ -54,7 +54,7 @@ pub trait SabotterBoard {
     fn lidar_uart(&mut self) -> Option<Self::UartLidar>;
 
     /// Configure and return ROME interface
-    fn rome(&mut self, device_name: String, other_ota_handlers: Option<Vec<Box<dyn OtaHandler>>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;
+    fn rome(&mut self, device_name: String, other_ota_handlers: Vec<Box<dyn OtaHandler>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;
 }
 
 

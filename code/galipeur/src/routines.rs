@@ -65,7 +65,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
         // Setup Rome
         let picotter_ota = CanOtaRelayHandler::new(can_interface.clone());
-        let (rome_tx, rome_rx) = board.rome("Galipeur".into(), Some(vec![Box::new(picotter_ota)])).unwrap();
+        let (rome_tx, rome_rx) = board.rome("Galipeur".into(), vec![Box::new(picotter_ota)]).unwrap();
 
 
         // Setup Led feedback
