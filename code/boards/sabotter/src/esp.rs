@@ -6,13 +6,13 @@ use embedded_hal_bus::i2c::MutexDevice;
 use esp_idf_svc::{
     hal::{
         adc::{
+            ADCU1,
             attenuation,
             oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
         },
         can::{CanConfig, CanDriver},
         cpu::Core,
         delay::BLOCK,
-        adc::ADCU1,
         gpio::{AnyIOPin, AnyOutputPin, Output, PinDriver},
         i2c::{I2cConfig, I2cDriver, I2cError},
         ledc::{self, config::TimerConfig, LedcDriver, LedcTimerDriver},

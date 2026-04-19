@@ -9,7 +9,7 @@ use esp_idf_svc::{
             attenuation,
             oneshot::{config::AdcChannelConfig, AdcChannelDriver, AdcDriver},
         },
-        gpio::{AnyInputPin, AnyOutputPin, Input, Output, PinDriver, Gpio1},
+        gpio::{Input, Output, PinDriver, Pull},
         i2c::{I2cConfig, I2cDriver},
         ledc::{LedcDriver, LedcTimerDriver, Resolution, config::TimerConfig},
         peripherals::Peripherals,
@@ -29,7 +29,7 @@ use ssd1306::{
 };
 
 use board_common::esp::EspEncoder;
-use ble::{BleBuilder, RomePeripheral};
+use ble::BleBuilder;
 use tca6408::TCA6408;
 use vlx::{DistanceData, VlxI2cDriver, VlxError, VlxSensor, ZoneAlarm, l5::VL53L5CX};
 use crate::{BatteryLevel, BatteryReader, DpadState, PamiBoard, PamiButtons, PamiButtonsState, PamiLeds, PamiMotor, PamiMotors, PamiPwmController};
@@ -41,9 +41,8 @@ pub type PamiDisplay = Ssd1306<DisplayI2CInterface<I2cType>, DisplaySize128x64, 
 
 pub struct EspPamiBoard {
     battery_reader: Option<PamiBatteryReader>,
-    emergency_stop: Option<PinDriver<'static, AnyInputPin, Input>>,
-    starting_cord: Option<PinDriver<'static, AnyInputPin, Input>>,
-    ble: Option<BtDriver<'static, Ble>>,
+    emergency_stop: Option<PinDriver<'static, Input>>,
+    starting_cord: Option<PinDriver<'static, Input>>,
     buttons: Option<EspPamiButtons>,
     display: Option<PamiDisplay>,
     leds: Option<PamiLeds<PinDriver<'static, Output>>>,
@@ -66,7 +65,7 @@ impl PamiBoard for EspPamiBoard {
     fn init() -> Self {
         esp_idf_svc::sys::link_patches();
         esp_idf_svc::log::EspLogger::initialize_default();
-        let nvs = EspDefaultNvsPartition::take().unwrap();
+        let _nvs = EspDefaultNvsPartition::take().unwrap();
 
         let peripherals = Peripherals::take().unwrap();
 
@@ -213,13 +212,21 @@ impl PamiBoard for EspPamiBoard {
         let (ble_server, _ble_client) = BleBuilder::new()
             .with_passkey_notifier(passkey_notifier)
             .run();
-        let RomePeripheral { sender, receiver } = RomePeripheral::run(ble_server, device_name);
-        Some((sender, receiver))
+
+        let rome_reg = ble::rome::register_gatt();
+        ble_server.start_host();
+        let rome = rome_reg.start();
+
+        ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();
+        ble_server.start_advertising().unwrap();
+
+        Some((rome.sender, rome.receiver))
     }
 }
 
 
-pub struct PamiBatteryReader(AdcChannelDriver<'static, Gpio1, Rc<AdcDriver<'static, ADC1>>>);
+type AdcCh0 = esp_idf_svc::hal::adc::ADCCH0<ADCU1>;
+pub struct PamiBatteryReader(AdcChannelDriver<'static, AdcCh0, Rc<AdcDriver<'static, ADCU1>>>);
 
 impl PamiBatteryReader {
     const fn raw_to_mv(raw: f32) -> f32 {
