@@ -13,7 +13,7 @@ fn main() {
     let mut board = SabotterBoardImpl::init();
 
     let mut routines = GalipeurRoutines::new(&mut board, TopLidarConf { angle_offset: 0.0 });
-    routines.asserv.set_conf(AsservConf {
+    routines.asserv.lock().unwrap().set_conf(AsservConf {
         pid_x: PidConf {
             gain_p: 50,
             gain_i: 1,

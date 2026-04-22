@@ -1,32 +1,40 @@
+use std::sync::{Arc, Mutex};
 use std::{thread::sleep, time::Duration};
-use asserv::holonomic::RobotSide;
+use asserv::holonomic::{Asserv, RobotSide, TableSide};
+use asserv::maths::XY;
 use board_common::Team;
 use embedded_hal::digital::InputPin;
 use board_sabotter::{SabotterBoard, SabotterInputs};
 use flume::Sender;
 
+use crate::arfast;
 use crate::led::LedMessage;
 use crate::meca::Meca;
+use crate::movement::MovementLowLevelHardware;
 use crate::sensors::Sensors;
+use crate::strat::utils::{AsservHelper, arfast};
 
-pub mod types;
+pub mod utils;
+pub mod errors;
 
 pub struct Strat<B: SabotterBoard> {
     side: Team,
     leds: Sender<LedMessage>,
     sensors: Sensors<B>,
     meca: Meca<B>,
+    asserv: AsservHelper<B>,
 
     inputs: SabotterInputs<B::ExInputPin, B::ExInputPin>,
 }
 
 impl<B : SabotterBoard + 'static> Strat<B> {
-    pub fn init(board: &mut B, leds: Sender<LedMessage>, sensors: Sensors<B>, meca: Meca<B>) {
+    pub fn init(board: &mut B, leds: Sender<LedMessage>, sensors: Sensors<B>, meca: Meca<B>, asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>) {
         let instance = Self {
             side: Team::None,
             leds,
             sensors,
             meca,
+            asserv: AsservHelper::new(asserv),
 
             inputs: board.inputs().take().unwrap(),
         };
@@ -71,7 +79,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
 
         //waiting for starter to be removed
-        self.meca.proxy.set_color_led_pwm(255);
         loop {
             let side = match self.inputs.color.is_high().unwrap_or(false) {
                 true => Team::Left,
@@ -84,27 +91,42 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             sleep(Duration::from_millis(100));
 
             if self.inputs.starter.is_high().unwrap_or(false) {
-                self.meca.proxy.set_color_led_pwm(0);
                 log::info!("Match started");                
                 break;
-            }                        
-
-            self.meca.calobration_check_color();
+            }
         }
         
-        self.meca.calibration_position();
-        //self.meca.test_algo(0);
+        self.test_movement();
 
         loop {            
-    
             std::thread::sleep(Duration::from_secs(1));
         }
-
-        log::info!("Set meca in init position");
-        //self.meca.prepare();
-        
-
-        log::warn!("Todo: recallage");
     }
-    
+
+    fn test_movement(&mut self) {
+        let prefered_side = RobotSide::Left;
+                
+        //meca raise drop
+        let side = self.meca.prepare_direct_take(Some(prefered_side)).unwrap();
+        self.asserv.goto_xya(230.0, 200.0, arfast(prefered_side, TableSide::Left)).ok();
+
+        self.asserv.run_path(&[
+            XY::new(230.0, 200.0),
+            XY::new(200.0, 440.0),
+            XY::new(130.0, 440.0),
+        ]).ok();
+
+        //meca take
+        self.meca.direct_take(side);
+        self.asserv.goto_a(arfast!(Left, Down)).ok();
+
+        self.asserv.run_path(&[
+            XY::new(230.0, 200.0),
+            XY::new(200.0, 440.0),
+            XY::new(130.0, 440.0),
+        ]).ok();
+
+        self.meca.drop(side);
+        self.asserv.goto_xya(0.0, 100.0, arfast!(Left, Down)).ok();
+    }
 }

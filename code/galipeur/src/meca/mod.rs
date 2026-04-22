@@ -2,7 +2,6 @@ mod primitives;
 mod proxy;
 
 use board_common::Team;
-use log::warn;
 pub use primitives::MecaPrimitives;
 pub use proxy::{ArmStatus, ClampStatus, ColorRawStatus, MecaProxy, TranslationStatus, Watcher};
 use cancaner::ClampServo;
@@ -81,7 +80,22 @@ impl<B: SabotterBoard> Meca<B> {
         }
     }
 
-    #[warn(allow_dead_code)]
+    pub fn prepare_direct_take(&self, prefered_side: Option<RobotSide>) -> Option<RobotSide> {
+        Some(RobotSide::Left)
+    }
+
+    pub fn direct_take(&self, side: RobotSide) -> bool {
+        false
+    }
+
+    pub fn drop(&self, side: RobotSide) {
+        //
+    }
+
+
+
+
+    #[allow(dead_code)]
     pub fn calibration_position(&self) {        
         for module in 0..3 {
             self.primitives.arms_down(module, &[0, 1, 2, 3]);     
@@ -91,7 +105,7 @@ impl<B: SabotterBoard> Meca<B> {
         }
     }
 
-    #[warn(allow_dead_code)]
+    #[allow(dead_code)]
     pub fn calobration_check_color(&self) {   
         for module in 0..3 {     
             let teams = self.primitives.read_arms_teams(module);

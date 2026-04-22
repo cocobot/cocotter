@@ -1,3 +1,4 @@
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
@@ -18,7 +19,7 @@ use crate::sensors::{Sensors, TopLidarConf};
 /// Update state from multiple peripherals.
 /// States are updated when calling `idle()` or `step_idle()`.
 pub struct GalipeurRoutines<B: SabotterBoard> {
-    pub asserv: Asserv<MovementLowLevelHardware<B>>,
+    pub asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>,
     pub meca: Meca<B>,
 
     // ROME sender/receiver
@@ -78,11 +79,14 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         // Setup sensors
         let sensors = Sensors::new(board, can_interface.clone(), led_sender.clone(), top_lidar_conf);
 
+        // Setup asserv
+        let asserv = Arc::new(Mutex::new(Asserv::new(asserv_hardware)));
+
         // Setup strat
-        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone());
+        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone() ,asserv.clone());
 
         Self {
-            asserv: Asserv::new(asserv_hardware),
+            asserv,
             meca,
 
             rome_tx,
@@ -123,8 +127,6 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     ///
     /// This method must be called regularly.
     pub fn idle(&mut self, now: &Instant) {
-        let t0 = Instant::now();
-
         // Process ROME input messages
         let rome_messages: Vec<_> = self.rome_rx.try_iter().collect();
         if !rome_messages.is_empty() {
@@ -143,7 +145,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         
         // Update asserv, send asserv telemetry
         if self.asserv_periodicity.update(now) {
-            self.asserv.update();
+            self.asserv.lock().unwrap().update();
         }
         //if self.asserv_tm_periodicity.update(now) {
         //    if let Err(err) = self.rome_tx.send(self.asserv.asserv_tm_status().encode()) {
