@@ -7,7 +7,7 @@ use board_sabotter::{SmartLedsWrite, RGB8};
 
 
 pub enum LedMessage {
-    GameSide { side: Team },
+    GameTeam { team: Team },
     RomeActivity,
     LowPowerBattery,
     LowLogicBattery,
@@ -95,8 +95,8 @@ impl<B: SabotterBoard> LedsInternal<B> {
             //Process all pending messages
             while let Ok(msg) = self.rx.try_recv() {
                 match msg {
-                    LedMessage::GameSide { side } => {
-                        self.game_color = Self::color_to_rgb8(side.color());
+                    LedMessage::GameTeam { team } => {
+                        self.game_color = Self::color_to_rgb8(team.color());
                     }
                     LedMessage::RomeActivity => {
                         rome_activity = true;

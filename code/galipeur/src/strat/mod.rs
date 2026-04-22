@@ -18,7 +18,7 @@ pub mod utils;
 pub mod errors;
 
 pub struct Strat<B: SabotterBoard> {
-    side: Team,
+    team: Team,
     leds: Sender<LedMessage>,
     sensors: Sensors<B>,
     meca: Meca<B>,
@@ -30,7 +30,7 @@ pub struct Strat<B: SabotterBoard> {
 impl<B : SabotterBoard + 'static> Strat<B> {
     pub fn init(board: &mut B, leds: Sender<LedMessage>, sensors: Sensors<B>, meca: Meca<B>, asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>) {
         let instance = Self {
-            side: Team::None,
+            team: Team::None,
             leds,
             sensors,
             meca,
@@ -61,37 +61,34 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         
         //waiting for starter to be inserted
         loop {
-            let side = match self.inputs.color.is_high().unwrap_or(false) {
+            let team = match self.inputs.color.is_high().unwrap_or(false) {
                 true => Team::Left,
                 false => Team::Right,
             };
-
-            self.side = side;
-            self.leds.send(LedMessage::GameSide { side }).ok();
+            self.leds.send(LedMessage::GameTeam { team }).ok();
 
             sleep(Duration::from_millis(100));
 
             if self.inputs.starter.is_low().unwrap_or(false) {
                 log::info!("Color selected"); 
-                self.meca.init();               
+                self.team = team;
+                self.meca.init(team);               
                 break;
             }                       
         }
 
         //waiting for starter to be removed
+        let mut blink = false;
         loop {
-            let side = match self.inputs.color.is_high().unwrap_or(false) {
-                true => Team::Left,
-                false => Team::Right,
-            };
-
-            self.side = side;
-            self.leds.send(LedMessage::GameSide { side }).ok();
+            let team = if blink { self.team } else { Team::None };
+            self.leds.send(LedMessage::GameTeam { team }).ok();
+            blink = !blink;
 
             sleep(Duration::from_millis(100));
 
             if self.inputs.starter.is_high().unwrap_or(false) {
-                log::info!("Match started");                
+                self.leds.send(LedMessage::GameTeam { team: self.team }).ok();
+                log::info!("Match started");
                 break;
             }
         }
@@ -107,9 +104,14 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         let prefered_side = RobotSide::Left;
                 
         //meca raise drop
-        let side = self.meca.prepare_direct_take(Some(prefered_side)).unwrap();
-        self.asserv.goto_xya(230.0, 200.0, arfast(prefered_side, TableSide::Left)).ok();
-
+        let side = self.meca.prepare_direct_take(Some(prefered_side));
+        if side.is_none() {
+            log::warn!("All sides are full, cannot prepare direct take");   
+            return;
+        }
+        let side = side.unwrap();
+        
+        self.asserv.goto_xya(230.0, 200.0, arfast(side, TableSide::Left)).ok();
         self.asserv.run_path(&[
             XY::new(230.0, 200.0),
             XY::new(200.0, 440.0),
@@ -126,7 +128,13 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             XY::new(130.0, 440.0),
         ]).ok();
 
-        self.meca.drop(side);
+        let side = self.meca.prepare_release(Some(prefered_side));
+        if side.is_none() {
+            log::warn!("Nothing to release");   
+            return;
+        }
+        let side = side.unwrap();
+        self.meca.release(side);
         self.asserv.goto_xya(0.0, 100.0, arfast!(Left, Down)).ok();
     }
 }

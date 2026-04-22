@@ -85,9 +85,13 @@ impl<B: SabotterBoard> GalipeurCan<B> {
         const MAX_TX_TRIES: u32 = 3;
         
         if let Some(frame) = Frame::new(msg.id, &msg.data[..msg.len]) {
-            if let Err(e) = self.can.can_transmit(&frame) {
-                log::error!("CAN transmit error: {:?}", e);
+            for _ in 0..MAX_TX_TRIES {
+                match self.can.can_transmit(&frame) {
+                    Ok(_) => return,
+                    Err(e) => log::error!("CAN transmit error: {:?}", e),
+                }
             }
+            log::error!("CAN: failed to transmit after {} tries", MAX_TX_TRIES);
         }
         else {
             log::error!("CAN: failed to encode message for transmission");

@@ -33,7 +33,7 @@ pub const TRAJECTORY_MAX_POINTS: u8 = 15;
 
 
 /// Game table side
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TableSide {
     Left,
     Right,
@@ -43,7 +43,7 @@ pub enum TableSide {
 
 
 /// Robot side, relative to the Y axis
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RobotSide {
     /// Left side (X < 0, along Y axis)
     Left,
