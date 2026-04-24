@@ -21,7 +21,7 @@ use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
 use sim_protocol::{Pose2D, RobotKind};
 
 use crate::bridge::WorldUpdate;
-use crate::config::{CollisionPrimitive, Config, Finish, NeopixelFixture};
+use crate::config::{CollisionPrimitive, Config, Finish, GroundLidar, NeopixelFixture};
 use crate::controls::{
     self, ChordStateRes, ConnRegistry, SpawnSlots,
 };
@@ -34,6 +34,23 @@ struct CollisionOverlay;
 /// Tag for a single simulated neopixel (sphere child of a robot entity).
 #[derive(Component)]
 struct NeopixelLed;
+
+/// Tag for the visual cylinder of a ground lidar beam.
+#[derive(Component)]
+struct GroundLidarBeam;
+
+/// Per-beam geometry kept so incoming `GroundLidarHits` can clip the
+/// cylinder in place: rebuild `translation = start + dir * hit/2` and
+/// `scale.y = hit / max_range`.
+#[derive(Clone, Copy)]
+struct GroundBeamGeom {
+    start_bevy: Vec3,
+    dir_bevy: Vec3,
+    max_range_m: f32,
+}
+
+#[derive(Resource, Default)]
+struct GroundBeamRegistry(HashMap<String, Vec<(Entity, GroundBeamGeom)>>);
 
 /// Per-robot registry of `(entity, material-handle)` pairs in strip
 /// order. `NeopixelFrame` updates look up `robot_id` here and stream
@@ -120,7 +137,8 @@ pub fn run(
         .insert_resource(ChordStateRes::default())
         .insert_resource(SpawnSlots::default())
         .insert_resource(HumansVisible(false))
-        .insert_resource(NeopixelRegistry::default());
+        .insert_resource(NeopixelRegistry::default())
+        .insert_resource(GroundBeamRegistry::default());
 
     if headless {
         // Run a fixed-tick loop with no rendering.
@@ -500,6 +518,11 @@ fn drain_bridge(
     robot_assets: Option<Res<RobotVisualAssets>>,
     humans_visible: Res<HumansVisible>,
     mut neopixels: ResMut<NeopixelRegistry>,
+    mut beams: ResMut<GroundBeamRegistry>,
+    mut beam_transforms: Query<
+        &mut Transform,
+        (With<GroundLidarBeam>, Without<SimEntityTag>, Without<NeopixelLed>),
+    >,
     headless: Res<Headless>,
 ) {
     let stand_h = stand_height_m(&config.0);
@@ -698,6 +721,32 @@ fn drain_bridge(
                             });
                             neopixels.0.insert(id.clone(), entries);
                         }
+
+                        // Ground lidars: render each beam as a
+                        // translucent red cylinder of `max_range_mm`
+                        // pointing along `direction` from `position_mm`.
+                        // No raytracing yet — purely visual.
+                        let ground_lidars: &[GroundLidar] = match rk {
+                            RobotKind::Galipeur => &config.0.galipeur.ground_lidars,
+                            RobotKind::Pami => &config.0.pami.ground_lidars,
+                        };
+                        if !ground_lidars.is_empty() {
+                            let beam_bundles = build_ground_lidar_spawns(
+                                ground_lidars,
+                                y_off,
+                                meshes,
+                                materials,
+                            );
+                            let mut entries: Vec<(Entity, GroundBeamGeom)> =
+                                Vec::with_capacity(beam_bundles.len());
+                            cmd.with_children(|parent| {
+                                for (bundle, geom) in beam_bundles {
+                                    let e = parent.spawn(bundle).id();
+                                    entries.push((e, geom));
+                                }
+                            });
+                            beams.0.insert(id.clone(), entries);
+                        }
                     }
                 }
                 let entity = cmd.id();
@@ -716,6 +765,36 @@ fn drain_bridge(
                     commands.entity(entity).despawn();
                 }
                 neopixels.0.remove(&id);
+                beams.0.remove(&id);
+            }
+            WorldUpdate::GroundLidarHits { id, distances_mm } => {
+                let Some(entries) = beams.0.get(&id) else {
+                    log::debug!("ground hits for unknown robot {id}");
+                    continue;
+                };
+                let mut applied = 0u32;
+                let mut missed = 0u32;
+                for (i, d_mm) in distances_mm.iter().enumerate() {
+                    let Some((entity, geom)) = entries.get(i) else { break };
+                    let hit_m = d_mm * MM;
+                    let scale_y = if geom.max_range_m > 0.0 {
+                        (hit_m / geom.max_range_m).max(1e-4)
+                    } else {
+                        1e-4
+                    };
+                    let center = geom.start_bevy + geom.dir_bevy * (hit_m * 0.5);
+                    if let Ok(mut t) = beam_transforms.get_mut(*entity) {
+                        t.translation = center;
+                        t.scale = Vec3::new(1.0, scale_y, 1.0);
+                        applied += 1;
+                    } else {
+                        missed += 1;
+                    }
+                }
+                log::debug!(
+                    "[bevy] GroundLidarHits {id}: applied={applied} missed={missed} len={}",
+                    distances_mm.len(),
+                );
             }
             WorldUpdate::Neopixels { id, pixels } => {
                 let Some(entries) = neopixels.0.get(&id) else { continue };
@@ -909,6 +988,66 @@ fn build_neopixel_spawns(
     out
 }
 
+type GroundLidarSpawn = (
+    Mesh3d,
+    MeshMaterial3d<StandardMaterial>,
+    Transform,
+    GroundLidarBeam,
+);
+
+fn build_ground_lidar_spawns(
+    lidars: &[GroundLidar],
+    parent_y_offset_m: f32,
+    meshes: &mut ResMut<Assets<Mesh>>,
+    materials: &mut ResMut<Assets<StandardMaterial>>,
+) -> Vec<(GroundLidarSpawn, GroundBeamGeom)> {
+    // One shared material (translucent red, unlit) across all beams.
+    let mat = materials.add(StandardMaterial {
+        base_color: Color::srgba(1.0, 0.15, 0.15, 0.45),
+        alpha_mode: AlphaMode::Blend,
+        cull_mode: None,
+        unlit: true,
+        ..default()
+    });
+
+    let mut out = Vec::with_capacity(lidars.len());
+    for gl in lidars {
+        let length_m = gl.max_range_mm * MM;
+        let radius_m = gl.beam_radius_mm * MM;
+        if length_m <= 0.0 {
+            continue;
+        }
+        let start = body_pos_to_bevy(gl.position_mm, parent_y_offset_m);
+        // Beam lies in the body XY plane (parallel to the ground):
+        // direction = (cos θ, sin θ, 0) in body frame.
+        let dir_body = [gl.theta_rad.cos(), gl.theta_rad.sin(), 0.0];
+        let dir = body_dir_to_bevy(dir_body);
+        // Bevy's `Cylinder` has its axis along +Y, centred at its
+        // midpoint. Rotate so +Y aligns with `dir`, then offset the
+        // centre so the emitter end sits at `start` and the beam
+        // extends outward by `length_m`.
+        let rot = Quat::from_rotation_arc(Vec3::Y, dir);
+        let center = start + dir * (length_m * 0.5);
+        let geom = GroundBeamGeom {
+            start_bevy: start,
+            dir_bevy: dir,
+            max_range_m: length_m,
+        };
+        let bundle = (
+            Mesh3d(meshes.add(Cylinder::new(radius_m, length_m))),
+            MeshMaterial3d(mat.clone()),
+            Transform {
+                translation: center,
+                rotation: rot,
+                ..default()
+            },
+            GroundLidarBeam,
+        );
+        out.push((bundle, geom));
+    }
+    out
+}
+
 fn build_overlay_spawns(
     primitives: &[CollisionPrimitive],
     parent_y_offset_m: f32,
@@ -1098,11 +1237,17 @@ fn pose_to_transform(pose: &Pose2D, info: &EntityInfo, stand_h: f32) -> Transfor
     // height. glTF characters are bottom-anchored (origin at the feet).
     let y_offset = if info.bottom_anchored { 0.0 } else { info.half_height_m };
 
-    // CesiumMan's "forward" in its local frame is +Z. Our protocol theta=0
-    // means "facing world +X" (scene +X). The +π/2 pre-rotation aligns
-    // the two, then `-theta` applies the walking heading. For primitive
-    // meshes (symmetric cuboid / capsule) the pre-rotation is irrelevant.
-    let heading_offset = if info.bottom_anchored { std::f32::consts::FRAC_PI_2 } else { 0.0 };
+    // CesiumMan's glTF has its local "forward" along +Z rather than +X,
+    // so humans need a +π/2 pre-rotation to align with the protocol
+    // (theta=0 means facing world +X). Robots' glTF is already +X-fwd
+    // (onshape_fetch handles axis conversion on export), so no extra
+    // heading offset there — otherwise the visual rotation wouldn't
+    // match the physics and ray casts would land in the wrong
+    // direction.
+    let heading_offset = match info.kind {
+        EntityKind::Human => std::f32::consts::FRAC_PI_2,
+        _ => 0.0,
+    };
     Transform::from_xyz(pose.x_mm * MM, y_base + y_offset, pose.y_mm * MM)
         .with_rotation(Quat::from_rotation_y(heading_offset - pose.theta_rad))
 }

@@ -183,6 +183,48 @@ count = 41
 start_angle_rad = 0.6302598
 pixel_size_mm = 8
 
+# Ground-level lidars: mounted under the chassis, beams parallel to
+# the ground. `position_mm = [x_fwd, y_left, z_up]` (Onshape/body
+# frame, Z-up). `theta_rad` = heading in body XY plane (0 = +X, +pi/2
+# = +Y). Defaults below point radially outward from the robot origin.
+# Six ground lidars arranged as two trios (gl0/gl1/gl2 and gl3/gl4/gl5),
+# each trio 120° apart around the robot Z axis. gl1 and gl4 are the
+# measured references; the others are derived by ±120° rotation.
+
+# gl0 = gl1 rotated +120°
+[[galipeur.ground_lidars]]
+name = "gl0"
+position_mm = [164.115, 50.428, 25.850]
+theta_rad = -1.0471976           # 180° + 120° = 300°
+
+[[galipeur.ground_lidars]]
+name = "gl1"
+position_mm = [-38.381, -167.338, 25.850]
+theta_rad = 3.1415927            # 180°
+
+# gl2 = gl1 rotated -120°
+[[galipeur.ground_lidars]]
+name = "gl2"
+position_mm = [-125.734, 116.910, 25.850]
+theta_rad = 1.0471976            # 180° - 120° = 60°
+
+# gl3 = gl4 rotated +120°
+[[galipeur.ground_lidars]]
+name = "gl3"
+position_mm = [38.401, -166.806, 38.522]
+theta_rad = 0.0                  # -120° + 120° = 0°
+
+[[galipeur.ground_lidars]]
+name = "gl4"
+position_mm = [-163.662, 50.149, 38.522]
+theta_rad = -2.0943951           # -120°
+
+# gl5 = gl4 rotated -120°
+[[galipeur.ground_lidars]]
+name = "gl5"
+position_mm = [125.261, 116.657, 38.522]
+theta_rad = 2.0943951            # -120° - 120° = -240° = +120°
+
 [pami.bbox]
 width_mm  = 150
 length_mm = 150

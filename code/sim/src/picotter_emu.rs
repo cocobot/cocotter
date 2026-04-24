@@ -128,6 +128,22 @@ impl PicotterEmu {
         encoded_to_sim(&encoded)
     }
 
+    /// Encode a `LidarStatus` frame carrying up to two distance-mm
+    /// measurements for a module. Quality squares are hard-coded to a
+    /// non-zero placeholder so the consumer doesn't flag the readings
+    /// as "no return".
+    pub fn lidar_status_msg(module: u8, distance_0: u16, distance_1: u16) -> SimMsgS2C {
+        let encoded = CanMessage::LidarStatus {
+            module,
+            distance_0,
+            sq_0: 100,
+            distance_1,
+            sq_1: 100,
+        }
+        .encode();
+        encoded_to_sim(&encoded)
+    }
+
     // ---- state mutation helpers ----
 
     fn set_arm<F: FnMut(&mut ArmShadow)>(&mut self, target: ArmTarget, mut f: F) {

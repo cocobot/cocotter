@@ -237,6 +237,37 @@ pub struct RobotConfig {
     /// at strip index 0, the next picks up where it left off, etc.).
     #[serde(default)]
     pub neopixels: Vec<NeopixelFixture>,
+    /// Ground-facing distance sensors mounted on the chassis. For now
+    /// we only visualise the beam as a red cylinder — no raytracing
+    /// yet, so the beam just extends `max_range_mm` in the configured
+    /// direction without stopping on obstacles.
+    #[serde(default)]
+    pub ground_lidars: Vec<GroundLidar>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct GroundLidar {
+    #[serde(default)]
+    pub name: String,
+    /// `[x_forward, y_left, z_up]` in mm (body frame) — emitter origin.
+    /// Ground lidars sit just above the chassis base; Z stays small.
+    pub position_mm: [f32; 3],
+    /// Beam heading in the body's horizontal plane (rad). 0 = +X
+    /// forward, positive = CCW toward +Y (left). Beam is parallel to
+    /// the ground — no pitch.
+    pub theta_rad: f32,
+    #[serde(default = "default_ground_lidar_range")]
+    pub max_range_mm: f32,
+    #[serde(default = "default_ground_lidar_radius")]
+    pub beam_radius_mm: f32,
+}
+
+fn default_ground_lidar_range() -> f32 {
+    1000.0
+}
+
+fn default_ground_lidar_radius() -> f32 {
+    1.5
 }
 
 #[derive(Debug, Deserialize, Clone)]

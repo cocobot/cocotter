@@ -183,12 +183,30 @@ fn handle_galipeur(
     let static_walls = config
         .field
         .obstacle_segments_visible_from(config.galipeur.lidar_height_mm);
+    // Ground lidars sit near the chassis base; use the first fixture's Z
+    // as a representative sensor height for the per-beam visibility cull.
+    // Works while all ground lidars live at the same height (they do).
+    let ground_lidar_z = config
+        .galipeur
+        .ground_lidars
+        .first()
+        .map(|gl| gl.position_mm[2])
+        .unwrap_or(0.0);
+    let static_walls_ground = config.field.obstacle_segments_visible_from(ground_lidar_z);
+    log::info!(
+        "[{robot_id}] ground-lidar z={:.1}mm, walls_visible={} segments, configured_lidars={}",
+        ground_lidar_z,
+        static_walls_ground.len(),
+        config.galipeur.ground_lidars.len(),
+    );
     let mut lidar = Ld06Emitter::default();
     let mut emu = PicotterEmu::default();
     let mut last_battery = Instant::now();
     let mut last_pose_log = Instant::now();
+    let mut last_ground_lidar = Instant::now();
     let battery_period = Duration::from_secs(1);
     let pose_log_period = Duration::from_millis(500);
+    let ground_lidar_period = Duration::from_millis(250);
     let mut can_frames_in: u64 = 0;
     let mut can_frames_out: u64 = 0;
 
@@ -228,6 +246,78 @@ fn handle_galipeur(
                     // ground" init state forever.
                     send_msg(&stream, &PicotterEmu::ground_status_msg())?;
                     can_frames_out += 2;
+                }
+
+                if last_ground_lidar.elapsed() >= ground_lidar_period
+                    && !config.galipeur.ground_lidars.is_empty()
+                {
+                    last_ground_lidar = Instant::now();
+                    let ground_walls = world.visible_segments(
+                        robot_id,
+                        ground_lidar_z,
+                        &static_walls_ground,
+                    );
+                    let cos_t = state.pose.theta_rad.cos();
+                    let sin_t = state.pose.theta_rad.sin();
+                    // Pack ground lidars two per module to fit the
+                    // existing LidarStatus frame layout (distance_0,
+                    // distance_1). Unused slots stay at 0.
+                    const NUM_MODULES: usize = 3;
+                    let mut dists: [[u16; 2]; NUM_MODULES] = [[0; 2]; NUM_MODULES];
+                    for (i, gl) in config.galipeur.ground_lidars.iter().enumerate() {
+                        let module = i / 2;
+                        let lane = i % 2;
+                        if module >= NUM_MODULES {
+                            break;
+                        }
+                        // Body (x, y) rotated into world by robot θ,
+                        // then translated by the robot's pose.
+                        let bx = gl.position_mm[0];
+                        let by = gl.position_mm[1];
+                        let world_x = state.pose.x_mm + cos_t * bx - sin_t * by;
+                        let world_y = state.pose.y_mm + sin_t * bx + cos_t * by;
+                        let world_theta = state.pose.theta_rad + gl.theta_rad;
+                        let d = raycast::raycast(
+                            (world_x, world_y),
+                            world_theta,
+                            gl.max_range_mm,
+                            &ground_walls,
+                        );
+                        dists[module][lane] =
+                            d.round().clamp(0.0, 65535.0) as u16;
+                    }
+                    for (m, [d0, d1]) in dists.iter().enumerate() {
+                        if *d0 == 0 && *d1 == 0 {
+                            continue;
+                        }
+                        send_msg(
+                            &stream,
+                            &PicotterEmu::lidar_status_msg(m as u8, *d0, *d1),
+                        )?;
+                        can_frames_out += 1;
+                    }
+                    // Forward the hit distances to Bevy so it can clip
+                    // the red beam cylinders at the obstacle.
+                    let mut per_lidar_hits: Vec<f32> =
+                        Vec::with_capacity(config.galipeur.ground_lidars.len());
+                    for (i, _gl) in config.galipeur.ground_lidars.iter().enumerate() {
+                        let module = i / 2;
+                        let lane = i % 2;
+                        if module >= NUM_MODULES {
+                            break;
+                        }
+                        per_lidar_hits.push(dists[module][lane] as f32);
+                    }
+                    log::debug!(
+                        "[{robot_id}] ground lidar hits (mm) = {:?}",
+                        per_lidar_hits,
+                    );
+                    updates
+                        .send(WorldUpdate::GroundLidarHits {
+                            id: robot_id.to_string(),
+                            distances_mm: per_lidar_hits,
+                        })
+                        .ok();
                 }
 
                 if last_pose_log.elapsed() >= pose_log_period {

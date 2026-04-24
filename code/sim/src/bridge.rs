@@ -24,6 +24,10 @@ pub enum WorldUpdate {
     /// Wire-order neopixel strip frame. The sim app maps it onto the
     /// robot's configured fixtures.
     Neopixels { id: String, pixels: Vec<[u8; 3]> },
+    /// Ground-lidar hit distances (mm) in the same order as the
+    /// configured `ground_lidars`. The sim app clips each beam's
+    /// cylinder visual to the hit distance.
+    GroundLidarHits { id: String, distances_mm: Vec<f32> },
 }
 
 pub fn channel() -> (Sender<WorldUpdate>, Receiver<WorldUpdate>) {
