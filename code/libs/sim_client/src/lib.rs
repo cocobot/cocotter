@@ -36,6 +36,12 @@ pub fn global() -> Arc<SimClient> {
         .clone()
 }
 
+/// Non-panicking variant for paths that may fire before `install()` (e.g.
+/// self-tests, pre-handshake hot spots).
+pub fn try_global() -> Option<Arc<SimClient>> {
+    GLOBAL.get().cloned()
+}
+
 pub struct SimClient {
     tx: Mutex<UnixStream>,
     pub assigned_start: Pose2D,

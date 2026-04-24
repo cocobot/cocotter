@@ -135,11 +135,27 @@ impl SmartLedsWrite for MockSmartLeds {
     type Color = RGB8;
     type Error = Infallible;
 
-    fn write<T, I>(&mut self, _iterator: T) -> Result<(), Self::Error>
+    /// Collect every pixel written on the strip and forward it to the
+    /// simulator as a single `NeopixelFrame`. The sim then maps the
+    /// wire-order strip onto the fixtures declared in its config.
+    fn write<T, I>(&mut self, iterator: T) -> Result<(), Self::Error>
     where
         T: IntoIterator<Item = I>,
         I: Into<Self::Color>,
     {
+        let pixels: Vec<[u8; 3]> = iterator
+            .into_iter()
+            .map(|p| {
+                let c: RGB8 = p.into();
+                [c.r, c.g, c.b]
+            })
+            .collect();
+        // `send` errors are non-fatal — losing a frame just skips one
+        // visual update. The sim client may not be installed during
+        // board self-tests either.
+        if let Some(sim) = sim_client::try_global() {
+            let _ = sim.send(sim_protocol::SimMsgC2S::NeopixelFrame { pixels });
+        }
         Ok(())
     }
 }

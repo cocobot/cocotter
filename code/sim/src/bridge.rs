@@ -21,6 +21,9 @@ pub enum WorldUpdate {
     },
     UpdatePose { id: String, pose: Pose2D },
     Despawn { id: String },
+    /// Wire-order neopixel strip frame. The sim app maps it onto the
+    /// robot's configured fixtures.
+    Neopixels { id: String, pixels: Vec<[u8; 3]> },
 }
 
 pub fn channel() -> (Sender<WorldUpdate>, Receiver<WorldUpdate>) {

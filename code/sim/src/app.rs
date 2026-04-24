@@ -8,6 +8,8 @@ use std::time::Duration;
 
 use bevy::app::ScheduleRunnerPlugin;
 use bevy::asset::RenderAssetUsages;
+use bevy::core_pipeline::tonemapping::Tonemapping;
+use bevy::post_process::bloom::Bloom;
 use bevy::mesh::{Indices, PrimitiveTopology};
 use bevy::prelude::*;
 use bevy_mod_outline::{
@@ -19,7 +21,7 @@ use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
 use sim_protocol::{Pose2D, RobotKind};
 
 use crate::bridge::WorldUpdate;
-use crate::config::{CollisionPrimitive, Config, Finish};
+use crate::config::{CollisionPrimitive, Config, Finish, NeopixelFixture};
 use crate::controls::{
     self, ChordStateRes, ConnRegistry, SpawnSlots,
 };
@@ -28,6 +30,17 @@ use crate::world::EntityKind;
 
 #[derive(Component)]
 struct CollisionOverlay;
+
+/// Tag for a single simulated neopixel (sphere child of a robot entity).
+#[derive(Component)]
+struct NeopixelLed;
+
+/// Per-robot registry of `(entity, material-handle)` pairs in strip
+/// order. `NeopixelFrame` updates look up `robot_id` here and stream
+/// colours straight into the handles; the entity is used to hide the
+/// sphere when the LED is off so it doesn't render as a black ball.
+#[derive(Resource, Default)]
+struct NeopixelRegistry(HashMap<String, Vec<(Entity, Handle<StandardMaterial>)>>);
 
 /// Runtime toggle for the human (spectator) visual entities. They always
 /// exist in the sim world (for lidar realism) but the visuals can be
@@ -106,7 +119,8 @@ pub fn run(
         .insert_resource(conn_registry)
         .insert_resource(ChordStateRes::default())
         .insert_resource(SpawnSlots::default())
-        .insert_resource(HumansVisible(false));
+        .insert_resource(HumansVisible(false))
+        .insert_resource(NeopixelRegistry::default());
 
     if headless {
         // Run a fixed-tick loop with no rendering.
@@ -448,6 +462,11 @@ fn setup_camera_and_light(
     let focus = Vec3::new(cx, stand_h + 0.1, cy);
     commands.spawn((
         Camera3d::default(),
+        // Tonemapping + bloom make the emissive neopixels actually glow
+        // instead of looking like painted marbles. Bevy 0.18's bloom
+        // pass already reads the HDR pipeline automatically.
+        Tonemapping::TonyMcMapface,
+        Bloom::NATURAL,
         PanOrbitCamera {
             focus,
             radius: Some(table_diag * 1.2),
@@ -473,11 +492,14 @@ fn drain_bridge(
     bridge: Res<BridgeRx>,
     mut registry: ResMut<SimEntities>,
     mut transforms: Query<(&mut Transform, &SimEntityTag)>,
+    mut leds: Query<(&mut Visibility, &mut SpotLight), (With<NeopixelLed>, Without<SimEntityTag>)>,
     config: Res<SimConfig>,
     meshes: Option<ResMut<Assets<Mesh>>>,
     materials: Option<ResMut<Assets<StandardMaterial>>>,
     human_assets: Option<Res<HumanAssets>>,
     robot_assets: Option<Res<RobotVisualAssets>>,
+    humans_visible: Res<HumansVisible>,
+    mut neopixels: ResMut<NeopixelRegistry>,
     headless: Res<Headless>,
 ) {
     let stand_h = stand_height_m(&config.0);
@@ -511,13 +533,21 @@ fn drain_bridge(
                     bottom_anchored: is_scene,
                 };
                 let t = pose_to_transform(&pose, &info, stand_h);
-                // Add `Visibility` so Bevy propagates it to spawned children
-                // (SceneRoot, collision overlays). Without it, Bevy 0.18 warns
-                // B0004 and children don't update their InheritedVisibility.
+                // Humans spawn asynchronously after the resource-change
+                // window of `apply_humans_visibility` has passed, so set
+                // their initial `Visibility` directly here.
+                let initial_vis = match kind {
+                    EntityKind::Human if !humans_visible.0 => Visibility::Hidden,
+                    _ => Visibility::default(),
+                };
+                // `Visibility` is needed so Bevy propagates it to spawned
+                // children (SceneRoot, collision overlays). Without it,
+                // Bevy 0.18 warns B0004 and children don't update their
+                // InheritedVisibility.
                 let mut cmd = commands.spawn((
                     SimEntityTag { id: id.clone(), kind },
                     t,
-                    Visibility::default(),
+                    initial_vis,
                 ));
 
                 if let Some((ref mut meshes, ref mut materials)) = visuals {
@@ -630,23 +660,43 @@ fn drain_bridge(
                                 .as_ref()
                                 .map(|m| &m.collision),
                         };
+                        // Parent entity sits at the visual's own anchor:
+                        // scenes are bottom-anchored, cuboids are centre-
+                        // anchored. Shift accordingly for body-frame Z
+                        // to line up with the table top at y=0.
+                        let y_off = if is_scene { 0.0 } else { -info.half_height_m };
                         if let Some(prims) = prims {
                             if !prims.is_empty() {
-                                // Parent entity sits at the visual's own
-                                // anchor: scenes are bottom-anchored (parent
-                                // y == stand_h), cuboids are center-anchored
-                                // (parent y == stand_h + half_h). Overlay
-                                // coords are expressed from z_base=0 at the
-                                // table top, so we correct by -half_h when
-                                // the parent is center-anchored.
-                                let y_off = if is_scene { 0.0 } else { -info.half_height_m };
-                                let children = build_overlay_spawns(prims, y_off, meshes, materials);
+                                let children =
+                                    build_overlay_spawns(prims, y_off, meshes, materials);
                                 cmd.with_children(|parent| {
                                     for bundle in children {
                                         parent.spawn(bundle);
                                     }
                                 });
                             }
+                        }
+
+                        // Neopixel fixtures, if any. Each LED is a small
+                        // sphere child; we keep a Vec<Handle<Material>>
+                        // in strip order so incoming `NeopixelFrame`s can
+                        // recolour them directly.
+                        let fixtures: &[NeopixelFixture] = match rk {
+                            RobotKind::Galipeur => &config.0.galipeur.neopixels,
+                            RobotKind::Pami => &config.0.pami.neopixels,
+                        };
+                        if !fixtures.is_empty() {
+                            let led_bundles =
+                                build_neopixel_spawns(fixtures, y_off, meshes, materials);
+                            let mut entries = Vec::with_capacity(led_bundles.len());
+                            cmd.with_children(|parent| {
+                                for bundle in led_bundles {
+                                    let mat_handle = bundle.1 .0.clone();
+                                    let e = parent.spawn(bundle).id();
+                                    entries.push((e, mat_handle));
+                                }
+                            });
+                            neopixels.0.insert(id.clone(), entries);
                         }
                     }
                 }
@@ -665,6 +715,46 @@ fn drain_bridge(
                 if let Some((entity, _)) = registry.0.remove(&id) {
                     commands.entity(entity).despawn();
                 }
+                neopixels.0.remove(&id);
+            }
+            WorldUpdate::Neopixels { id, pixels } => {
+                let Some(entries) = neopixels.0.get(&id) else { continue };
+                let Some((_, ref mut materials_ref)) = visuals else { continue };
+                // Gain on emissive pushes the die into HDR so bloom
+                // picks it up (you see a halo around the die).
+                const EMISSIVE_GAIN: f32 = 20.0;
+                // Lumens at full brightness (255). ~200 lm is a strong
+                // flashlight, fits a small 5mm LED die used on a robot.
+                const SPOT_LUMENS_FULL: f32 = 200.0;
+                for (i, rgb) in pixels.iter().enumerate() {
+                    let Some((entity, handle)) = entries.get(i) else { break };
+                    let r = rgb[0] as f32 / 255.0;
+                    let g = rgb[1] as f32 / 255.0;
+                    let b = rgb[2] as f32 / 255.0;
+                    let brightness = r.max(g).max(b);
+                    let on = brightness > 1.0 / 255.0;
+                    if let Ok((mut vis, mut light)) = leds.get_mut(*entity) {
+                        if on {
+                            *vis = Visibility::Inherited;
+                            light.color = Color::srgb(r, g, b);
+                            light.intensity = brightness * SPOT_LUMENS_FULL;
+                        } else {
+                            *vis = Visibility::Hidden;
+                            light.intensity = 0.0;
+                        }
+                    }
+                    if on {
+                        if let Some(mat) = materials_ref.get_mut(handle) {
+                            mat.base_color = Color::srgb(r, g, b);
+                            mat.emissive = LinearRgba::new(
+                                r * EMISSIVE_GAIN,
+                                g * EMISSIVE_GAIN,
+                                b * EMISSIVE_GAIN,
+                                1.0,
+                            );
+                        }
+                    }
+                }
             }
         }
     }
@@ -677,6 +767,147 @@ type OverlaySpawn = (
     Visibility,
     CollisionOverlay,
 );
+
+type LedSpawn = (
+    Mesh3d,
+    MeshMaterial3d<StandardMaterial>,
+    Transform,
+    Visibility,
+    SpotLight,
+    NeopixelLed,
+);
+
+fn neopixel_material() -> StandardMaterial {
+    // Unlit: the die is a pure emitter. Starts black; the robot's frame
+    // overwrites base_color + emissive. Bloom on the camera turns the
+    // emissive into a real glow around the die.
+    StandardMaterial {
+        base_color: Color::BLACK,
+        emissive: LinearRgba::BLACK,
+        unlit: true,
+        ..default()
+    }
+}
+
+fn body_pos_to_bevy(pos_mm: [f32; 3], parent_y_off_m: f32) -> Vec3 {
+    // Body frame is (x_forward, y_left, z_up). The robot entity maps
+    // sim x -> Bevy x and sim y -> Bevy z (Bevy y is up).
+    Vec3::new(
+        pos_mm[0] * MM,
+        parent_y_off_m + pos_mm[2] * MM,
+        pos_mm[1] * MM,
+    )
+}
+
+/// Convert a body-frame unit direction `(x_fwd, y_left, z_up)` into
+/// the same Bevy axis mapping used for positions.
+fn body_dir_to_bevy(dir: [f32; 3]) -> Vec3 {
+    Vec3::new(dir[0], dir[2], dir[1]).normalize_or_zero()
+}
+
+fn led_transform(pos_body_mm: [f32; 3], outward_body: [f32; 3], parent_y_off_m: f32) -> Transform {
+    let pos = body_pos_to_bevy(pos_body_mm, parent_y_off_m);
+    let fwd = body_dir_to_bevy(outward_body);
+    // SpotLight's local forward is -Z. `looking_to` rotates so local -Z
+    // aligns with `fwd`. `up` just needs to be non-parallel to fwd.
+    let up = if fwd.y.abs() < 0.99 { Vec3::Y } else { Vec3::Z };
+    Transform::from_translation(pos).looking_to(fwd, up)
+}
+
+fn build_neopixel_spawns(
+    fixtures: &[NeopixelFixture],
+    parent_y_offset_m: f32,
+    meshes: &mut ResMut<Assets<Mesh>>,
+    materials: &mut ResMut<Assets<StandardMaterial>>,
+) -> Vec<LedSpawn> {
+    // Each LED starts off (intensity 0, colour black). The sim-tick
+    // handler overwrites both when a frame arrives. Geometry: a small
+    // sphere marks the die so the *source* is visible head-on; the
+    // SpotLight on the same entity casts a tight, shadowed cone so the
+    // volumetric fog can carve a beam through the air.
+    const SPOT_INNER_DEG: f32 = 8.0;
+    const SPOT_OUTER_DEG: f32 = 22.0;
+    const SPOT_RANGE_M: f32 = 0.6;
+
+    let mut out = Vec::new();
+    let mut push = |pos_body: [f32; 3],
+                    outward: [f32; 3],
+                    pixel_size_mm: f32,
+                    meshes: &mut ResMut<Assets<Mesh>>,
+                    materials: &mut ResMut<Assets<StandardMaterial>>,
+                    out: &mut Vec<LedSpawn>| {
+        let r = pixel_size_mm * 0.5 * MM;
+        let mesh = meshes.add(Sphere::new(r));
+        let mat = materials.add(neopixel_material());
+        out.push((
+            Mesh3d(mesh),
+            MeshMaterial3d(mat),
+            led_transform(pos_body, outward, parent_y_offset_m),
+            Visibility::Hidden,
+            SpotLight {
+                color: Color::BLACK,
+                intensity: 0.0,
+                range: SPOT_RANGE_M,
+                radius: r,
+                inner_angle: SPOT_INNER_DEG.to_radians(),
+                outer_angle: SPOT_OUTER_DEG.to_radians(),
+                shadows_enabled: false,
+                ..default()
+            },
+            NeopixelLed,
+        ));
+    };
+
+    for fixture in fixtures {
+        match fixture {
+            NeopixelFixture::Single {
+                position_mm,
+                pixel_size_mm,
+                ..
+            } => {
+                // Default orientation for a lone pixel: body +Z (up).
+                // Fine for status LEDs mounted on top; override by
+                // moving position_mm if you need something else later.
+                push(
+                    *position_mm,
+                    [0.0, 0.0, 1.0],
+                    *pixel_size_mm,
+                    meshes,
+                    materials,
+                    &mut out,
+                );
+            }
+            NeopixelFixture::Ring {
+                center_mm,
+                radius_mm,
+                count,
+                start_angle_rad,
+                pixel_size_mm,
+                ..
+            } => {
+                let [cx, cy, cz] = *center_mm;
+                for i in 0..*count {
+                    let angle = start_angle_rad
+                        + std::f32::consts::TAU * (i as f32) / (*count as f32);
+                    let (ca, sa) = (angle.cos(), angle.sin());
+                    let pos = [cx + radius_mm * ca, cy + radius_mm * sa, cz];
+                    // Ring LEDs point radially outward in the body XY
+                    // plane (Z-up stays zero).
+                    let outward = [ca, sa, 0.0];
+                    push(
+                        pos,
+                        outward,
+                        *pixel_size_mm,
+                        meshes,
+                        materials,
+                        &mut out,
+                    );
+                }
+            }
+        }
+    }
+    out
+}
 
 fn build_overlay_spawns(
     primitives: &[CollisionPrimitive],

@@ -159,6 +159,30 @@ height_mm = 300
 [galipeur]
 lidar_height_mm = 250
 
+# Neopixel fixtures wired to sabotter's single ws2812 output. Order of
+# the list defines strip order: the `single` below consumes pixel 0, the
+# ring consumes pixels 1..42. Total = 42 LEDs.
+[[galipeur.neopixels]]
+shape = "single"
+name = "status"
+# position_mm = [x_forward, y_left, z_up] in mm (Z is height).
+# Onshape point (-130.922, -57.112, 146.5) with Z-up copied verbatim.
+# Flip the sign of y if the LED ends up mirrored L/R (glTF export's
+# yAxisIsUp rotation may negate one axis).
+position_mm = [ -131.9, 58.332, 208.5]
+pixel_size_mm = 10
+
+[[galipeur.neopixels]]
+shape = "ring"
+name = "ring"
+center_mm = [0, 0, 351]
+radius_mm = 45
+count = 41
+# 30° + (0.6 * pixel_size / perimeter) expressed in rad:
+# pi/6 + 0.6 * 8 / 45 = 0.6302598...
+start_angle_rad = 0.6302598
+pixel_size_mm = 8
+
 [pami.bbox]
 width_mm  = 150
 length_mm = 150

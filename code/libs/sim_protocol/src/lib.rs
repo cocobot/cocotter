@@ -52,6 +52,11 @@ pub enum SimMsgC2S {
     CanFrame { id: u16, data: [u8; 8], len: u8 },
     RomeBytes { bytes: Vec<u8> },
     Ext { tag: String, payload: Vec<u8> },
+    /// Full neopixel strip frame in wire order. The sim maps strip
+    /// offsets onto the fixtures declared in `[[robot.neopixels]]`.
+    /// Component order is the one seen by the host code (RGB after
+    /// `smart_leds::RGB8`), not the on-the-wire GRB order.
+    NeopixelFrame { pixels: Vec<[u8; 3]> },
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

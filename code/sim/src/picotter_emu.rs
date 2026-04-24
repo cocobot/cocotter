@@ -117,6 +117,17 @@ impl PicotterEmu {
         encoded_to_sim(&encoded)
     }
 
+    /// Report all three ground sensors as detecting the table. Without
+    /// this the galipeur's LED ring stays red (sensor 0/1/2 not seen)
+    /// because its initial assumption is "not on ground".
+    pub fn ground_status_msg() -> SimMsgS2C {
+        let encoded = CanMessage::GroundStatus {
+            detection_mask: 0b111,
+        }
+        .encode();
+        encoded_to_sim(&encoded)
+    }
+
     // ---- state mutation helpers ----
 
     fn set_arm<F: FnMut(&mut ArmShadow)>(&mut self, target: ArmTarget, mut f: F) {

@@ -232,6 +232,56 @@ pub struct RobotConfig {
     /// uses the AABB silhouette.
     #[serde(default)]
     pub model: Option<RobotModel>,
+    /// Neopixel fixtures wired to the robot's LED output. The order of
+    /// this list defines the wire order (the first fixture's LEDs start
+    /// at strip index 0, the next picks up where it left off, etc.).
+    #[serde(default)]
+    pub neopixels: Vec<NeopixelFixture>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(tag = "shape", rename_all = "snake_case")]
+pub enum NeopixelFixture {
+    /// Single LED at a robot-local position.
+    Single {
+        #[serde(default)]
+        name: String,
+        /// `[x_forward, y_left, z_up]` in robot body frame (mm).
+        position_mm: [f32; 3],
+        /// Visual size of the pixel (mm diameter).
+        #[serde(default = "default_pixel_size_mm")]
+        pixel_size_mm: f32,
+    },
+    /// Ring of `count` LEDs, evenly spaced around `center_mm` in the
+    /// robot's XY plane (Y-forward convention matches the rest of the
+    /// robot body frame).
+    Ring {
+        #[serde(default)]
+        name: String,
+        /// `[x_forward, y_left, z_up]` — centre of the ring (mm).
+        center_mm: [f32; 3],
+        radius_mm: f32,
+        count: u32,
+        /// Pixel 0 starts at this angle (rad, 0 = +X forward), rotating
+        /// counter-clockwise (toward +Y).
+        #[serde(default)]
+        start_angle_rad: f32,
+        #[serde(default = "default_pixel_size_mm")]
+        pixel_size_mm: f32,
+    },
+}
+
+fn default_pixel_size_mm() -> f32 {
+    8.0
+}
+
+impl NeopixelFixture {
+    pub fn count(&self) -> usize {
+        match self {
+            Self::Single { .. } => 1,
+            Self::Ring { count, .. } => *count as usize,
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Clone)]

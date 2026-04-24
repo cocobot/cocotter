@@ -223,7 +223,11 @@ fn handle_galipeur(
                 if last_battery.elapsed() >= battery_period {
                     last_battery = Instant::now();
                     send_msg(&stream, &PicotterEmu::battery_status_msg())?;
-                    can_frames_out += 1;
+                    // Also emit ground status (all three sensors happy)
+                    // so the galipeur doesn't stay in its "not on
+                    // ground" init state forever.
+                    send_msg(&stream, &PicotterEmu::ground_status_msg())?;
+                    can_frames_out += 2;
                 }
 
                 if last_pose_log.elapsed() >= pose_log_period {
@@ -256,6 +260,14 @@ fn handle_galipeur(
                 log::warn!("[{robot_id}] unexpected Hello after handshake");
             }
             SimMsgC2S::Ext { tag, .. } => log::debug!("[{robot_id}] Ext {tag} ignored"),
+            SimMsgC2S::NeopixelFrame { pixels } => {
+                updates
+                    .send(WorldUpdate::Neopixels {
+                        id: robot_id.to_string(),
+                        pixels,
+                    })
+                    .ok();
+            }
         }
     }
 }
@@ -385,6 +397,7 @@ fn handle_pami(
                 log::warn!("[{robot_id}] unexpected Hello after handshake");
             }
             SimMsgC2S::Ext { tag, .. } => log::debug!("[{robot_id}] Ext {tag} ignored"),
+            SimMsgC2S::NeopixelFrame { .. } => { /* pami has no neopixels */ }
         }
     }
 }
