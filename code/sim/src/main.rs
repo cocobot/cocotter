@@ -10,6 +10,7 @@ mod app;
 mod bridge;
 mod collide;
 mod config;
+mod controls;
 mod humans;
 mod kinematics;
 mod ld06_encoder;
@@ -41,10 +42,6 @@ struct Cli {
     /// Simulation speed factor (1.0 = realtime, 5.0 = fast-forward).
     #[arg(long, default_value_t = 1.0)]
     time_factor: f32,
-
-    /// Enable the random humans walking around the table (off by default).
-    #[arg(long)]
-    humans: bool,
 }
 
 fn main() {
@@ -71,19 +68,17 @@ fn main() {
         cli.time_factor,
     );
 
-    let mut config = match config::Config::load(&cli.field) {
+    let config = match config::Config::load(&cli.field) {
         Ok(c) => c,
         Err(e) => {
             log::error!("failed to load {}: {e}", cli.field);
             std::process::exit(1);
         }
     };
-    if cli.humans {
-        config.humans.enabled = true;
-    }
 
     let (tx, rx) = bridge::channel();
     let shared_world = world::World::new();
+    let conn_registry = controls::ConnRegistry::default();
 
     // IPC listener runs on its own thread. Each accepted connection gets a
     // spawned sub-thread inside listen_forever.
@@ -91,10 +86,17 @@ fn main() {
     let server_config = config.clone();
     let world_for_server = shared_world.clone();
     let tx_for_server = tx.clone();
+    let registry_for_server = conn_registry.clone();
     std::thread::Builder::new()
         .name("sim-listener".into())
         .spawn(move || {
-            if let Err(e) = server::listen_forever(&socket, server_config, tx_for_server, world_for_server) {
+            if let Err(e) = server::listen_forever(
+                &socket,
+                server_config,
+                tx_for_server,
+                world_for_server,
+                registry_for_server,
+            ) {
                 log::error!("sim server error: {e}");
                 std::process::exit(1);
             }
@@ -110,5 +112,5 @@ fn main() {
     );
 
     // Bevy takes over the main thread.
-    app::run(config, rx, cli.headless);
+    app::run(config, rx, cli.headless, conn_registry);
 }

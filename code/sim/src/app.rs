@@ -20,11 +20,20 @@ use sim_protocol::{Pose2D, RobotKind};
 
 use crate::bridge::WorldUpdate;
 use crate::config::{CollisionPrimitive, Config, Finish};
+use crate::controls::{
+    self, ChordStateRes, ConnRegistry, SpawnSlots,
+};
 use crate::textures;
 use crate::world::EntityKind;
 
 #[derive(Component)]
 struct CollisionOverlay;
+
+/// Runtime toggle for the human (spectator) visual entities. They always
+/// exist in the sim world (for lidar realism) but the visuals can be
+/// hidden with the `C` shortcut.
+#[derive(Resource)]
+struct HumansVisible(bool);
 
 /// Convert millimeters (protocol / sim world) to meters (Bevy scene).
 const MM: f32 = 0.001;
@@ -83,12 +92,21 @@ struct SimEntityTag {
     kind: EntityKind,
 }
 
-pub fn run(config: Config, bridge_rx: flume::Receiver<WorldUpdate>, headless: bool) {
+pub fn run(
+    config: Config,
+    bridge_rx: flume::Receiver<WorldUpdate>,
+    headless: bool,
+    conn_registry: ConnRegistry,
+) {
     let mut app = App::new();
     app.insert_resource(BridgeRx(bridge_rx))
         .insert_resource(SimEntities::default())
         .insert_resource(SimConfig(config))
-        .insert_resource(Headless(headless));
+        .insert_resource(Headless(headless))
+        .insert_resource(conn_registry)
+        .insert_resource(ChordStateRes::default())
+        .insert_resource(SpawnSlots::default())
+        .insert_resource(HumansVisible(false));
 
     if headless {
         // Run a fixed-tick loop with no rendering.
@@ -134,7 +152,11 @@ pub fn run(config: Config, bridge_rx: flume::Receiver<WorldUpdate>, headless: bo
             drain_bridge,
             start_human_animations,
             toggle_collision_overlay,
+            toggle_humans_visibility,
+            apply_humans_visibility,
             ensure_mesh_normals,
+            controls::chord_input,
+            controls::render_chord_overlay,
         ),
     );
 
@@ -293,24 +315,11 @@ fn setup_world(
         let cx = (x0 + x1) * 0.5 * MM;
         let cy = (y0 + y1) * 0.5 * MM;
 
-        // Precedence: playmat crop > explicit texture > finish > flat color.
-        let material = if obs.use_playmat && playmat_handle.is_some() {
-            let scale_u = (x1 - x0) / field_w;
-            let scale_v = (y1 - y0) / field_h;
-            let trans_u = x0 / field_w;
-            let trans_v = y0 / field_h;
-            StandardMaterial {
-                base_color: Color::WHITE,
-                base_color_texture: playmat_handle.clone(),
-                perceptual_roughness: 0.9,
-                uv_transform: bevy::math::Affine2::from_scale_angle_translation(
-                    Vec2::new(scale_u, scale_v),
-                    0.0,
-                    Vec2::new(trans_u, trans_v),
-                ),
-                ..default()
-            }
-        } else if let Some(path) = obs.texture.as_deref() {
+        // Material for the body (sides + bottom). The playmat is *not*
+        // used here even when `use_playmat = true` — it only belongs on
+        // the top face, and gets spawned as a separate plane below.
+        // Precedence for the body: explicit texture > finish > flat color.
+        let body_material = if let Some(path) = obs.texture.as_deref() {
             let handle = texture_cache
                 .entry(path.to_string())
                 .or_insert_with(|| match textures::load_png(std::path::Path::new(path)) {
@@ -347,20 +356,44 @@ fn setup_world(
             }
         };
 
-        if h < 1e-4 {
-            // Flat ground tile — sits 1 mm below the table top so it never
-            // z-fights with obstacles whose base is exactly at stand_h.
-            commands.spawn((
-                Mesh3d(meshes.add(Plane3d::new(Vec3::Y, Vec2::new(w * 0.5, d * 0.5)))),
-                MeshMaterial3d(materials.add(material)),
-                Transform::from_xyz(cx, stand_h - 0.001, cy),
-            ));
-        } else {
-            commands.spawn((
-                Mesh3d(meshes.add(Cuboid::new(w, h, d))),
-                MeshMaterial3d(materials.add(material)),
-                Transform::from_xyz(cx, stand_h + h * 0.5, cy),
-            ));
+        // `height_mm = 0` marks the ground — physics/raycast skip it, but
+        // we still give it a 1 mm visual thickness so it renders like any
+        // other obstacle (same cuboid path, playmat visible on top).
+        const GROUND_VISUAL_H_M: f32 = 0.001;
+        let visual_h = if h < 1e-4 { GROUND_VISUAL_H_M } else { h };
+        commands.spawn((
+            Mesh3d(meshes.add(Cuboid::new(w, visual_h, d))),
+            MeshMaterial3d(materials.add(body_material)),
+            Transform::from_xyz(cx, stand_h + visual_h * 0.5, cy),
+        ));
+
+        // Playmat decal on the top face. The UV transform crops the
+        // region of the field-wide image corresponding to this obstacle's
+        // AABB, so a playmat tile on top of `granary_ground` shows the
+        // correct portion of the playing area.
+        if obs.use_playmat {
+            if let Some(handle) = playmat_handle.as_ref() {
+                let scale_u = (x1 - x0) / field_w;
+                let scale_v = (y1 - y0) / field_h;
+                let trans_u = x0 / field_w;
+                let trans_v = y0 / field_h;
+                let pm_material = StandardMaterial {
+                    base_color: Color::WHITE,
+                    base_color_texture: Some(handle.clone()),
+                    perceptual_roughness: 0.9,
+                    uv_transform: bevy::math::Affine2::from_scale_angle_translation(
+                        Vec2::new(scale_u, scale_v),
+                        0.0,
+                        Vec2::new(trans_u, trans_v),
+                    ),
+                    ..default()
+                };
+                commands.spawn((
+                    Mesh3d(meshes.add(Plane3d::new(Vec3::Y, Vec2::new(w * 0.5, d * 0.5)))),
+                    MeshMaterial3d(materials.add(pm_material)),
+                    Transform::from_xyz(cx, stand_h + visual_h + 0.001, cy),
+                ));
+            }
         }
     }
 }
@@ -383,7 +416,10 @@ fn setup_shortcuts_overlay(mut commands: Commands, headless: Res<Headless>) {
         .with_children(|p| {
             p.spawn((
                 Text::new(
-                    "LMB orbit · RMB pan · wheel zoom  ·  H toggle collision overlay",
+                    "LMB orbit | RMB pan | wheel zoom  |  \
+                     H collision overlay  |  C toggle humans  |  \
+                     S spawn (->G/P->B/Y)  |  K kill-all  |  \
+                     Q quit  |  Esc cancel",
                 ),
                 TextFont { font_size: 12.0, ..default() },
                 TextColor(Color::srgba(1.0, 1.0, 1.0, 0.9)),
@@ -785,6 +821,38 @@ fn toggle_collision_overlay(
                 Visibility::Hidden => Visibility::Visible,
                 _ => Visibility::Hidden,
             };
+        }
+    }
+}
+
+fn toggle_humans_visibility(
+    keys: Option<Res<ButtonInput<KeyCode>>>,
+    mut visible: ResMut<HumansVisible>,
+) {
+    let Some(keys) = keys else { return };
+    if keys.just_pressed(KeyCode::KeyC) {
+        visible.0 = !visible.0;
+    }
+}
+
+/// Push the `HumansVisible` flag down onto every human entity's
+/// `Visibility`. Reacts to `is_changed()` so normal frames don't
+/// scan the query.
+fn apply_humans_visibility(
+    visible: Res<HumansVisible>,
+    mut q: Query<(&mut Visibility, &SimEntityTag)>,
+) {
+    if !visible.is_changed() {
+        return;
+    }
+    let target = if visible.0 {
+        Visibility::Inherited
+    } else {
+        Visibility::Hidden
+    };
+    for (mut v, tag) in &mut q {
+        if matches!(tag.kind, EntityKind::Human) {
+            *v = target;
         }
     }
 }

@@ -221,10 +221,17 @@ fn rx_loop(stream: UnixStream, s: RxSenders) {
                 SimMsgS2C::Ext { tag, .. } => {
                     log::debug!("sim Ext {tag} ignored");
                 }
+                SimMsgS2C::Shutdown { reason } => {
+                    log::warn!("sim requested shutdown: {reason}");
+                    std::process::exit(0);
+                }
             },
             Err(e) => {
-                log::error!("sim RX loop exiting: {e}");
-                return;
+                // Sim closed the socket (crash, kill-all, etc.). There is
+                // no point keeping the robot process alive — every mock
+                // driver will just spam errors on a dead channel.
+                log::error!("sim connection lost ({e}); exiting");
+                std::process::exit(0);
             }
         }
     }

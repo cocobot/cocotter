@@ -17,6 +17,7 @@ use sim_protocol::{recv_msg, send_msg, Pose2D, RobotKind, SimMsgC2S, SimMsgS2C};
 use crate::bridge::WorldUpdate;
 use crate::collide::RobotShape;
 use crate::config::{BBoxConfig, CollisionPrimitive, Config, KinematicsConfig};
+use crate::controls::ConnRegistry;
 use crate::kinematics::{DiffState, HoloState};
 use crate::ld06_encoder;
 use crate::picotter_emu::PicotterEmu;
@@ -43,6 +44,7 @@ pub fn listen_forever(
     config: Config,
     updates: Sender<WorldUpdate>,
     world: World,
+    registry: ConnRegistry,
 ) -> io::Result<()> {
     if Path::new(socket_path).exists() {
         std::fs::remove_file(socket_path).ok();
@@ -56,10 +58,11 @@ pub fn listen_forever(
                 let cfg = config.clone();
                 let updates = updates.clone();
                 let world = world.clone();
+                let registry = registry.clone();
                 thread::Builder::new()
                     .name("sim-conn".into())
                     .spawn(move || {
-                        if let Err(e) = handle_connection(s, cfg, updates, world) {
+                        if let Err(e) = handle_connection(s, cfg, updates, world, registry) {
                             log::error!("connection ended: {e}");
                         }
                     })
@@ -76,6 +79,7 @@ fn handle_connection(
     config: Config,
     updates: Sender<WorldUpdate>,
     world: World,
+    registry: ConnRegistry,
 ) -> io::Result<()> {
     let hello: SimMsgC2S = recv_msg(&stream)?;
     let (robot_id, kind, requested_start) = match hello {
@@ -132,11 +136,19 @@ fn handle_connection(
         })
         .ok();
 
+    // Register the connection so the "kill all" shortcut can shutdown the
+    // stream from the UI thread. `try_clone` gives us an owned handle; the
+    // original `stream` stays with this thread for read/write.
+    if let Ok(clone) = stream.try_clone() {
+        registry.register(robot_id.clone(), clone);
+    }
+
     let result = match kind {
         RobotKind::Galipeur => handle_galipeur(stream, &config, start, sim_tick_ms, &robot_id, &updates, &world),
         RobotKind::Pami => handle_pami(stream, &config, start, sim_tick_ms, &robot_id, &updates, &world),
     };
 
+    registry.unregister(&robot_id);
     updates.send(WorldUpdate::Despawn { id: robot_id.clone() }).ok();
     world.remove(&robot_id);
     result

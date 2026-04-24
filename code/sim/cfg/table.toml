@@ -78,6 +78,7 @@ name = "granary_ground"
 aabb_mm = [615, 0, 2400, 450]
 height_mm = 55
 use_playmat = true
+finish = "wood"
 
 [start_poses.galipeur.blue]
 x_mm = 200
@@ -178,10 +179,12 @@ encoder_ticks_per_rev = 256
 max_wheel_speed_mm_s = 500.0
 
 # Random spectators walking around the table (outside the play area) to
-# exercise the lidars with moving external perturbations. Off by default —
-# enable with `--humans` on the CLI or set `enabled = true` here.
+# exercise the lidars with moving external perturbations. Always spawned
+# when `enabled = true`; use the `C` shortcut in the 3D view to toggle
+# their visibility at runtime. Set `enabled = false` to skip them
+# entirely (useful for CI / headless).
 [humans]
-enabled = false
+enabled = true
 count_min = 3
 count_max = 6
 body_height_min_mm = 1600

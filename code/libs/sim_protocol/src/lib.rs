@@ -70,6 +70,10 @@ pub enum SimMsgS2C {
     BatteryMv { mv: u16 },
     RomeBytes { bytes: Vec<u8> },
     Ext { tag: String, payload: Vec<u8> },
+    /// Sim-requested shutdown. The robot process should log the reason
+    /// and exit — don't try to reconnect, don't continue running with a
+    /// dead IPC channel.
+    Shutdown { reason: String },
 }
 
 /// Length-prefixed framing: `u32 LE length` + bincode payload.
