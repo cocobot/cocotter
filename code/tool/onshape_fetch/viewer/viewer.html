@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>glTF viewer — meca_cocotter</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #202024; color: #ddd; font-family: ui-sans-serif, system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; }
+  #info {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(0,0,0,0.6); padding: 10px 12px; border-radius: 6px;
+    font-size: 12px; line-height: 1.5; max-width: 360px; pointer-events: auto;
+  }
+  #info code { background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 3px; }
+  #info a { color: #7cd; }
+  #info .stats { margin-top: 8px; border-top: 1px solid #444; padding-top: 6px; }
+  #info .picked { margin-top: 8px; border-top: 1px solid #444; padding-top: 6px; }
+  #info .picked .chain button { margin: 2px 2px 0 0; font-size: 11px; }
+  #info .picked .chain button.copied { background: #2a5; border-color: #4c7; }
+  #info .hint { color: #888; }
+  #drop { position: absolute; inset: 0; border: 2px dashed transparent; pointer-events: none; }
+  #drop.dragging { border-color: #7cd; background: rgba(124,204,221,0.08); }
+  #error { color: #faa; white-space: pre-wrap; }
+  button {
+    background: #333; color: #ddd; border: 1px solid #555; border-radius: 4px;
+    padding: 3px 8px; font: inherit; cursor: pointer; margin-right: 4px;
+  }
+  button:hover { background: #444; }
+  button.active { background: #2a5; border-color: #4c7; }
+
+  #tree {
+    position: absolute; top: 8px; right: 8px; bottom: 8px; width: 340px;
+    background: rgba(0,0,0,0.6); border-radius: 6px;
+    display: flex; flex-direction: column; font-size: 12px; color: #ddd;
+  }
+  #tree.hidden { display: none; }
+  #tree .head {
+    padding: 8px 10px 6px;
+    border-bottom: 1px solid #444;
+    display: flex; gap: 6px; align-items: center;
+  }
+  #tree .head input {
+    flex: 1; background: #1a1a1d; color: #ddd;
+    border: 1px solid #444; border-radius: 4px; padding: 3px 6px; font: inherit;
+  }
+  #tree .head input::placeholder { color: #666; }
+  #tree .body { flex: 1; overflow-y: auto; padding: 6px 10px 10px; }
+  #tree ul { list-style: none; margin: 0; padding-left: 14px; }
+  #tree > .body > ul { padding-left: 0; }
+  #tree li { margin: 1px 0; }
+  #tree .row { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+  #tree .arrow {
+    width: 12px; display: inline-block; text-align: center;
+    cursor: pointer; color: #888; user-select: none;
+  }
+  #tree .name {
+    cursor: pointer; padding: 1px 4px; border-radius: 3px;
+    overflow: hidden; text-overflow: ellipsis; flex: 1;
+  }
+  #tree .name:hover { background: rgba(255,255,255,0.08); }
+  #tree .name.isolated { background: #2a5; }
+  #tree .name.unnamed { color: #666; font-style: italic; }
+  #tree .meta { color: #888; font-size: 10px; }
+  #tree li.collapsed > ul { display: none; }
+  #tree li.collapsed > .row > .arrow::before { content: '▸'; }
+  #tree li:not(.collapsed) > .row > .arrow::before { content: '▾'; }
+  #tree li.leaf > .row > .arrow { visibility: hidden; }
+  #tree li.hidden { display: none; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="drop"></div>
+<div id="tree">
+  <div class="head">
+    <input id="tree-filter" type="text" placeholder="filter (substring match)" />
+  </div>
+  <div class="body"><ul id="tree-root"></ul></div>
+</div>
+<div id="info">
+  <div><b>glTF viewer</b> — drag a <code>.glb</code>/<code>.gltf</code> here, or pass <code>?url=file.glb</code>.</div>
+  <div class="hint">LMB = rotate · RMB = pan · wheel = zoom</div>
+  <div style="margin-top: 8px;">
+    <button id="btn-wireframe">wireframe</button>
+    <button id="btn-grid" class="active">grid</button>
+    <button id="btn-axes" class="active">axes</button>
+    <button id="btn-tree" class="active">tree</button>
+    <button id="btn-reset">reset view</button>
+  </div>
+  <div class="stats" id="stats">no file loaded</div>
+  <div class="picked" id="picked"><span class="hint">click a part in the scene to pick it</span></div>
+  <div id="error"></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const canvas = document.getElementById('canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x202024);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+camera.position.set(2, 1.5, 2);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+
+// Lights
+const hemi = new THREE.HemisphereLight(0xffffff, 0x404040, 0.9);
+scene.add(hemi);
+const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+dir.position.set(3, 5, 2);
+scene.add(dir);
+
+// Helpers
+const grid = new THREE.GridHelper(2, 20, 0x555555, 0x333333);
+scene.add(grid);
+const axes = new THREE.AxesHelper(0.3);
+scene.add(axes);
+
+function resize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+let currentModel = null;
+let wireframe = false;
+const loader = new GLTFLoader();
+
+// Decoders needed to open files produced by `gltf-transform optimize`:
+//   - meshopt : applied by the `meshopt` step (mesh/attribute compression)
+//   - draco   : optional, only if --meshopt wasn't used
+//   - ktx2    : optional, only with compressed textures
+const draco = new DRACOLoader();
+draco.setDecoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/draco/');
+loader.setDRACOLoader(draco);
+
+const ktx2 = new KTX2Loader();
+ktx2.setTranscoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/basis/');
+ktx2.detectSupport(renderer);
+loader.setKTX2Loader(ktx2);
+
+loader.setMeshoptDecoder(MeshoptDecoder);
+
+function clearModel() {
+  if (typeof clearHighlight === 'function') clearHighlight();
+  if (typeof restoreIsolation === 'function') restoreIsolation();
+  document.getElementById('picked').innerHTML = '<span class="hint">click a part in the scene to pick it</span>';
+  if (currentModel) {
+    scene.remove(currentModel);
+    currentModel.traverse(c => {
+      if (c.geometry) c.geometry.dispose();
+      if (c.material) {
+        if (Array.isArray(c.material)) c.material.forEach(m => m.dispose());
+        else c.material.dispose();
+      }
+    });
+    currentModel = null;
+  }
+}
+
+function applyWireframe() {
+  if (!currentModel) return;
+  currentModel.traverse(c => {
+    if (c.material) {
+      const mats = Array.isArray(c.material) ? c.material : [c.material];
+      for (const m of mats) m.wireframe = wireframe;
+    }
+  });
+}
+
+function statsFor(model) {
+  let triangles = 0, vertices = 0, meshes = 0, materials = new Set();
+  const box = new THREE.Box3().setFromObject(model);
+  model.traverse(c => {
+    if (c.isMesh) {
+      meshes++;
+      const g = c.geometry;
+      vertices += g.attributes.position ? g.attributes.position.count : 0;
+      if (g.index) triangles += g.index.count / 3;
+      else triangles += (g.attributes.position ? g.attributes.position.count : 0) / 3;
+      if (c.material) {
+        const mats = Array.isArray(c.material) ? c.material : [c.material];
+        mats.forEach(m => materials.add(m.uuid));
+      }
+    }
+  });
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  return { triangles: Math.round(triangles), vertices, meshes, materials: materials.size, size, box };
+}
+
+function renderStats(s) {
+  const el = document.getElementById('stats');
+  el.innerHTML = `
+    <div><b>meshes</b>: ${s.meshes}</div>
+    <div><b>triangles</b>: ${s.triangles.toLocaleString()}</div>
+    <div><b>vertices</b>: ${s.vertices.toLocaleString()}</div>
+    <div><b>materials</b>: ${s.materials}</div>
+    <div><b>bbox</b>: ${s.size.x.toFixed(3)} × ${s.size.y.toFixed(3)} × ${s.size.z.toFixed(3)} m</div>
+    <div class="hint">(dims assume glTF metres convention)</div>
+  `;
+}
+
+function frameObject(obj, options = {}) {
+  const { resizeGrid = false } = options;
+  const box = new THREE.Box3().setFromObject(obj);
+  if (box.isEmpty()) return;
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
+  const fov = camera.fov * Math.PI / 180;
+  const distance = (maxDim / 2) / Math.tan(fov / 2) * 1.6;
+
+  // Keep the current view direction when reframing a sub-object; start
+  // from scratch (diagonal above-right) when framing the whole model.
+  let dir;
+  if (resizeGrid) {
+    dir = new THREE.Vector3(0.7, 0.6, 0.7).normalize();
+  } else {
+    dir = new THREE.Vector3().subVectors(camera.position, controls.target);
+    if (dir.lengthSq() < 1e-8) dir.set(0.7, 0.6, 0.7);
+    dir.normalize();
+  }
+  camera.position.copy(center).add(dir.multiplyScalar(distance));
+  camera.near = Math.max(maxDim / 1000, 0.001);
+  camera.far = maxDim * 100;
+  camera.updateProjectionMatrix();
+  controls.target.copy(center);
+  controls.update();
+
+  if (resizeGrid) {
+    scene.remove(grid);
+    const g = Math.max(1, Math.pow(10, Math.ceil(Math.log10(maxDim))));
+    const newGrid = new THREE.GridHelper(g, 20, 0x555555, 0x333333);
+    newGrid.visible = grid.visible;
+    grid.copy(newGrid);
+    scene.add(grid);
+  }
+}
+
+// Back-compat alias used when loading a fresh model.
+function frameModel(model) { frameObject(model, { resizeGrid: true }); }
+
+// Restore the original (non-sanitized) glTF node names onto Object3D.name
+// so what the viewer displays matches what the filter's exclude patterns
+// compare against. Without this, threejs replaces spaces / punctuation
+// with underscores and the user ends up chasing the wrong pattern.
+function restoreOriginalNames(gltf) {
+  const parser = gltf.parser;
+  const raw = parser && parser.json ? parser.json : null;
+  if (!raw || !parser.associations) return;
+  for (const [obj, assoc] of parser.associations) {
+    // Threejs 0.150+: associations values look like { nodes: idx, meshes: idx, ... }.
+    if (typeof assoc !== 'object' || assoc === null) continue;
+    if ('nodes' in assoc && Array.isArray(raw.nodes)) {
+      const n = raw.nodes[assoc.nodes];
+      if (n && typeof n.name === 'string') {
+        obj.name = n.name;
+      }
+    } else if ('meshes' in assoc && Array.isArray(raw.meshes) && !obj.name) {
+      const m = raw.meshes[assoc.meshes];
+      if (m && typeof m.name === 'string') {
+        obj.name = m.name;
+      }
+    }
+  }
+}
+
+async function afterLoad(gltf) {
+  clearModel();
+  restoreOriginalNames(gltf);
+  currentModel = gltf.scene;
+  scene.add(currentModel);
+  const s = statsFor(currentModel);
+  renderStats(s);
+  frameModel(currentModel);
+  applyWireframe();
+  buildTree(currentModel);
+}
+
+async function loadUrl(url) {
+  document.getElementById('error').textContent = '';
+  try {
+    const gltf = await new Promise((res, rej) => loader.load(url, res, undefined, rej));
+    await afterLoad(gltf);
+  } catch (e) {
+    document.getElementById('error').textContent = 'load error: ' + (e.message || e);
+  }
+}
+
+async function loadFile(file) {
+  document.getElementById('error').textContent = '';
+  const buf = await file.arrayBuffer();
+  try {
+    const gltf = await new Promise((res, rej) => loader.parse(buf, '', res, rej));
+    await afterLoad(gltf);
+  } catch (e) {
+    document.getElementById('error').textContent = 'load error: ' + (e.message || e);
+  }
+}
+
+// Drag & drop
+const dropZone = document.getElementById('drop');
+window.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragging');
+});
+window.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragging');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+
+// Buttons
+document.getElementById('btn-wireframe').onclick = (e) => {
+  wireframe = !wireframe;
+  e.target.classList.toggle('active', wireframe);
+  applyWireframe();
+};
+document.getElementById('btn-grid').onclick = (e) => {
+  grid.visible = !grid.visible;
+  e.target.classList.toggle('active', grid.visible);
+};
+document.getElementById('btn-axes').onclick = (e) => {
+  axes.visible = !axes.visible;
+  e.target.classList.toggle('active', axes.visible);
+};
+document.getElementById('btn-reset').onclick = () => {
+  if (currentModel) frameModel(currentModel);
+};
+document.getElementById('btn-tree').onclick = (e) => {
+  const panel = document.getElementById('tree');
+  const shown = panel.classList.toggle('hidden');
+  e.target.classList.toggle('active', !shown);
+};
+
+// --- Scene tree panel ---
+function meshCountSubtree(obj) {
+  let n = 0;
+  obj.traverse(o => { if (o.isMesh) n++; });
+  return n;
+}
+
+function buildTree(rootObj) {
+  const rootEl = document.getElementById('tree-root');
+  rootEl.innerHTML = '';
+
+  const makeNode = (obj) => {
+    const li = document.createElement('li');
+    const hasChildren = obj.children && obj.children.length > 0;
+    if (!hasChildren) li.classList.add('leaf');
+    li.classList.add('collapsed'); // default collapsed so huge trees don't freeze
+
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    const arrow = document.createElement('span');
+    arrow.className = 'arrow';
+    arrow.onclick = () => li.classList.toggle('collapsed');
+    row.appendChild(arrow);
+
+    const name = document.createElement('span');
+    name.className = 'name';
+    const rawName = obj.name || '';
+    if (rawName) {
+      name.textContent = rawName;
+    } else {
+      name.textContent = obj.type;
+      name.classList.add('unnamed');
+    }
+    name.title = `type=${obj.type}  uuid=${obj.uuid}`;
+    name.dataset.uuid = obj.uuid;
+    name.dataset.name = rawName;
+    name.onclick = () => {
+      // Single-click: isolate the subtree + reframe the camera on it.
+      document.querySelectorAll('#tree .name.isolated').forEach(n => n.classList.remove('isolated'));
+      name.classList.add('isolated');
+      isolate(obj.uuid);
+      frameObject(obj);
+    };
+    name.ondblclick = async () => {
+      // Double-click: copy the name (or a selector) to clipboard
+      if (!rawName) return;
+      try {
+        await navigator.clipboard.writeText(rawName);
+      } catch (_) {
+        window.prompt('copy:', rawName);
+      }
+    };
+    row.appendChild(name);
+
+    const meshes = meshCountSubtree(obj);
+    if (meshes > 0) {
+      const meta = document.createElement('span');
+      meta.className = 'meta';
+      meta.textContent = `· ${meshes} mesh${meshes > 1 ? 'es' : ''}`;
+      row.appendChild(meta);
+    }
+
+    li.appendChild(row);
+
+    if (hasChildren) {
+      const ul = document.createElement('ul');
+      for (const child of obj.children) ul.appendChild(makeNode(child));
+      li.appendChild(ul);
+    }
+    return li;
+  };
+
+  rootEl.appendChild(makeNode(rootObj));
+  // Expand the top level by default so the user sees the first layer.
+  const top = rootEl.firstChild;
+  if (top) top.classList.remove('collapsed');
+}
+
+document.getElementById('tree-filter').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  const lis = document.querySelectorAll('#tree li');
+  if (!q) {
+    lis.forEach(li => li.classList.remove('hidden'));
+    return;
+  }
+  // Show each <li> whose own name (or any descendant's name) contains q,
+  // and auto-expand the path down to matches.
+  const matchesQ = (el) => {
+    const n = el.querySelector(':scope > .row > .name');
+    return n && n.textContent.toLowerCase().includes(q);
+  };
+  const hasMatchInSubtree = (el) => {
+    if (matchesQ(el)) return true;
+    return [...el.querySelectorAll(':scope > ul > li')].some(hasMatchInSubtree);
+  };
+  lis.forEach(li => {
+    const visible = hasMatchInSubtree(li);
+    li.classList.toggle('hidden', !visible);
+    if (visible && !matchesQ(li)) {
+      li.classList.remove('collapsed');
+    }
+  });
+});
+
+// Initial load from ?url= query param (default to galipeur.glb if present).
+const params = new URLSearchParams(window.location.search);
+const initial = params.get('url') || 'galipeur.glb';
+loadUrl(initial).catch(() => {});
+
+// --- Click-to-pick: show the node name hierarchy and offer one-click
+// --- copy, so you can paste it into the fetch script's --exclude list.
+const raycaster = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+let highlightedMesh = null;
+let highlightedOrigColor = null;
+
+function clearHighlight() {
+  if (highlightedMesh && highlightedMesh.material && highlightedOrigColor) {
+    highlightedMesh.material.emissive = highlightedOrigColor;
+  }
+  highlightedMesh = null;
+  highlightedOrigColor = null;
+}
+
+function highlight(mesh) {
+  clearHighlight();
+  if (!mesh || !mesh.material) return;
+  const mat = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+  if (!mat.emissive) return;
+  highlightedMesh = mesh;
+  highlightedOrigColor = mat.emissive.clone();
+  mat.emissive = new THREE.Color(0x553300);
+}
+
+function pickedAncestry(obj) {
+  const chain = [];
+  let cur = obj;
+  while (cur && cur !== currentModel && cur !== scene) {
+    if (cur.name) chain.push({ name: cur.name, uuid: cur.uuid });
+    cur = cur.parent;
+  }
+  return chain;
+}
+
+// --- Isolate: fade everything except a given subtree to opacity 0.2. ---
+function findByUuid(root, uuid) {
+  let found = null;
+  root.traverse(o => { if (!found && o.uuid === uuid) found = o; });
+  return found;
+}
+
+function collectDescendantSet(obj) {
+  const set = new Set();
+  obj.traverse(o => set.add(o.uuid));
+  return set;
+}
+
+function isolate(keepUuid) {
+  if (!currentModel) return;
+  const root = findByUuid(currentModel, keepUuid);
+  if (!root) return;
+  const keepSet = collectDescendantSet(root);
+  currentModel.traverse(o => {
+    if (!o.isMesh) return;
+    if (o.userData.__origVisible === undefined) {
+      o.userData.__origVisible = o.visible;
+    }
+    o.visible = keepSet.has(o.uuid);
+  });
+}
+
+function restoreIsolation() {
+  if (!currentModel) return;
+  currentModel.traverse(o => {
+    if (!o.isMesh) return;
+    if (o.userData.__origVisible !== undefined) {
+      o.visible = o.userData.__origVisible;
+      delete o.userData.__origVisible;
+    }
+  });
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    restoreIsolation();
+    clearHighlight();
+  }
+});
+
+function renderPicked(info) {
+  const el = document.getElementById('picked');
+  if (!info) {
+    el.innerHTML = '<span class="hint">click a part in the scene to pick it</span>';
+    return;
+  }
+  const buttons = info.chain.length
+    ? info.chain.map(entry =>
+        `<button class="copy" data-name="${entry.name.replace(/"/g, '&quot;')}" data-uuid="${entry.uuid}">${entry.name}</button>`
+      ).join('')
+    : '<span class="hint">(mesh has no name — go up the hierarchy)</span>';
+  el.innerHTML = `
+    <div><b>picked</b> <span class="hint">(click to copy + isolate, Esc to restore)</span></div>
+    <div class="chain">${buttons}</div>
+    <div class="hint">distance ${info.distance.toFixed(3)} m @ (${info.point.x.toFixed(3)}, ${info.point.y.toFixed(3)}, ${info.point.z.toFixed(3)})</div>
+  `;
+  el.querySelectorAll('button.copy').forEach(b => {
+    b.onclick = async () => {
+      isolate(b.dataset.uuid);
+      try {
+        await navigator.clipboard.writeText(b.dataset.name);
+        b.classList.add('copied');
+        setTimeout(() => b.classList.remove('copied'), 800);
+      } catch (_) {
+        window.prompt('copy:', b.dataset.name);
+      }
+    };
+  });
+}
+
+// OrbitControls consumes pointer events for drag; only treat it as a
+// click if the pointer barely moved.
+let downX = 0, downY = 0;
+canvas.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; });
+canvas.addEventListener('pointerup', e => {
+  const dx = e.clientX - downX;
+  const dy = e.clientY - downY;
+  if (Math.hypot(dx, dy) > 4) return; // drag, not click
+  if (!currentModel) return;
+  const rect = canvas.getBoundingClientRect();
+  ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(ndc, camera);
+  const hits = raycaster.intersectObject(currentModel, true);
+  if (hits.length === 0) {
+    renderPicked(null);
+    clearHighlight();
+    return;
+  }
+  const hit = hits[0];
+  highlight(hit.object);
+  renderPicked({
+    chain: pickedAncestry(hit.object),
+    distance: hit.distance,
+    point: hit.point,
+  });
+});
+
+// Render loop
+function tick() {
+  requestAnimationFrame(tick);
+  controls.update();
+  renderer.render(scene, camera);
+}
+tick();
+</script>
+</body>
+</html>

@@ -24,5 +24,9 @@ embedded-hal = "1.0"
 esp-idf-svc = "0.52"
 ble = { path = "../libs/ble" }
 
+[target.'cfg(not(target_os = "espidf"))'.dependencies]
+sim_client = { path = "../libs/sim_client" }
+sim_protocol = { path = "../libs/sim_protocol" }
+
 [build-dependencies]
 embuild = { version = "0.33", features = ["espidf"] }

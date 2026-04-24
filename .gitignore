@@ -4,6 +4,10 @@ Cargo.lock
 .embuild/
 debugdata
 
+# onshape_fetch local caches (raw Onshape glb + in-flight translation ids)
+*.glb.raw
+*.glb.pending
+
 # kicad
 *-backups
 *.net

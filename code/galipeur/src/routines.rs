@@ -6,7 +6,6 @@ use board_common::Periodicity;
 use board_sabotter::SabotterBoard;
 use cancaner::CanMessage;
 use flume::{Receiver, Sender};
-use sch16t::Sch16t;
 use crate::led::{LedMessage, Leds};
 use crate::movement::MovementLowLevelHardware;
 use crate::meca::Meca;
@@ -56,10 +55,8 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         board: &mut B,
         top_lidar_conf: TopLidarConf,
     ) -> Self {
-        // Setup gyro, asserv
-        let mut gyro = Sch16t::new(board.imu_spi().unwrap(), 0);
-        gyro.init().unwrap();
-        let asserv_hardware = MovementLowLevelHardware::new(gyro, board.motors().unwrap());
+        // Setup asserv hardware (real gyro + motors on-target, sim client off-target).
+        let asserv_hardware = MovementLowLevelHardware::new(board);
 
         // Setup CAN interface
         let can_interface = GalipeurCan::new(board.can().unwrap());

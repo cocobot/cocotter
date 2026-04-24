@@ -1,0 +1,708 @@
+//! Bevy app: hosts the IPC listener in a background thread, mirrors world
+//! entities (robots + humans) into ECS entities, and renders them in 3D
+//! unless `--headless`.
+
+use std::collections::HashMap;
+use std::f32::consts::FRAC_PI_4;
+use std::time::Duration;
+
+use bevy::app::ScheduleRunnerPlugin;
+use bevy::asset::RenderAssetUsages;
+use bevy::mesh::{Indices, PrimitiveTopology};
+use bevy::prelude::*;
+
+use sim_protocol::{Pose2D, RobotKind};
+
+use crate::bridge::WorldUpdate;
+use crate::config::{CollisionPrimitive, Config, Finish};
+use crate::textures;
+use crate::world::EntityKind;
+
+#[derive(Component)]
+struct CollisionOverlay;
+
+/// Convert millimeters (protocol / sim world) to meters (Bevy scene).
+const MM: f32 = 0.001;
+
+#[derive(Resource)]
+struct BridgeRx(flume::Receiver<WorldUpdate>);
+
+#[derive(Resource, Default)]
+struct SimEntities(HashMap<String, (Entity, EntityInfo)>);
+
+struct EntityInfo {
+    kind: EntityKind,
+    /// Bbox half-height in meters. For robots this is rendered above the
+    /// table top; for humans it's rendered above the floor.
+    half_height_m: f32,
+    /// Whether the mesh's origin is at the base (true, glTF characters)
+    /// or at the centre (false, Bevy primitives).
+    bottom_anchored: bool,
+}
+
+#[derive(Resource)]
+struct HumanAssets {
+    scene: Handle<Scene>,
+    animation_graph: Handle<AnimationGraph>,
+    walk_node: AnimationNodeIndex,
+    /// CesiumMan is ~1.0 m tall in its default pose; scale to match the
+    /// configured body height.
+    native_height_m: f32,
+}
+
+#[derive(Resource, Default)]
+struct RobotVisualAssets {
+    galipeur: Option<Handle<Scene>>,
+    pami: Option<Handle<Scene>>,
+}
+
+impl RobotVisualAssets {
+    fn for_kind(&self, kind: RobotKind) -> Option<&Handle<Scene>> {
+        match kind {
+            RobotKind::Galipeur => self.galipeur.as_ref(),
+            RobotKind::Pami => self.pami.as_ref(),
+        }
+    }
+}
+
+#[derive(Resource)]
+struct SimConfig(Config);
+
+#[derive(Resource)]
+struct Headless(bool);
+
+#[derive(Component)]
+struct SimEntityTag {
+    #[allow(dead_code)]
+    id: String,
+    kind: EntityKind,
+}
+
+pub fn run(config: Config, bridge_rx: flume::Receiver<WorldUpdate>, headless: bool) {
+    let mut app = App::new();
+    app.insert_resource(BridgeRx(bridge_rx))
+        .insert_resource(SimEntities::default())
+        .insert_resource(SimConfig(config))
+        .insert_resource(Headless(headless));
+
+    if headless {
+        // Run a fixed-tick loop with no rendering.
+        app.add_plugins(MinimalPlugins.set(ScheduleRunnerPlugin::run_loop(
+            Duration::from_secs_f32(1.0 / 60.0),
+        )));
+    } else {
+        app.add_plugins(
+            DefaultPlugins
+                .set(AssetPlugin {
+                    file_path: format!("{}/assets", env!("CARGO_MANIFEST_DIR")),
+                    ..default()
+                })
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: "meca_cocotter sim".into(),
+                        resolution: (1200u32, 800u32).into(),
+                        ..default()
+                    }),
+                    ..default()
+                }),
+        );
+    }
+
+    app.add_systems(
+        Startup,
+        (
+            setup_world,
+            setup_camera_and_light,
+            setup_human_assets,
+            setup_robot_assets,
+        ),
+    )
+    .add_systems(
+        Update,
+        (drain_bridge, start_human_animations, toggle_collision_overlay),
+    );
+
+    app.run();
+}
+
+fn setup_human_assets(
+    mut commands: Commands,
+    asset_server: Option<Res<AssetServer>>,
+    graphs: Option<ResMut<Assets<AnimationGraph>>>,
+    headless: Res<Headless>,
+) {
+    if headless.0 {
+        return;
+    }
+    let Some(asset_server) = asset_server else { return };
+    let Some(mut graphs) = graphs else { return };
+
+    let scene: Handle<Scene> = asset_server.load("humans/cesium_man.glb#Scene0");
+    let clip = asset_server.load("humans/cesium_man.glb#Animation0");
+    let (graph, walk_node) = AnimationGraph::from_clip(clip);
+    let animation_graph = graphs.add(graph);
+
+    commands.insert_resource(HumanAssets {
+        scene,
+        animation_graph,
+        walk_node,
+        native_height_m: 1.0,
+    });
+}
+
+/// Attach the animation graph + play the walk clip on any `AnimationPlayer`
+/// that Bevy spawned inside a CesiumMan scene this frame.
+fn start_human_animations(
+    mut commands: Commands,
+    assets: Option<Res<HumanAssets>>,
+    mut players: Query<(Entity, &mut AnimationPlayer), Added<AnimationPlayer>>,
+) {
+    let Some(assets) = assets else { return };
+    for (entity, mut player) in &mut players {
+        commands
+            .entity(entity)
+            .insert(AnimationGraphHandle(assets.animation_graph.clone()));
+        player.play(assets.walk_node).repeat();
+    }
+}
+
+fn setup_robot_assets(
+    mut commands: Commands,
+    asset_server: Option<Res<AssetServer>>,
+    config: Res<SimConfig>,
+    headless: Res<Headless>,
+) {
+    if headless.0 {
+        return;
+    }
+    let Some(asset_server) = asset_server else { return };
+
+    let load = |cfg: &crate::config::RobotConfig| -> Option<Handle<Scene>> {
+        let visual = cfg.model.as_ref()?.visual.as_deref()?;
+        // Asset paths are resolved against the AssetPlugin `file_path`
+        // (configured to `sim/assets/`), but our TOML stores workspace-
+        // relative paths like `sim/assets/robots/galipeur.glb`. Strip the
+        // `sim/assets/` prefix so the asset loader can find it.
+        let key = visual
+            .strip_prefix("sim/assets/")
+            .unwrap_or(visual);
+        Some(asset_server.load(format!("{}#Scene0", key)))
+    };
+
+    commands.insert_resource(RobotVisualAssets {
+        galipeur: load(&config.0.galipeur),
+        pami: load(&config.0.pami),
+    });
+}
+
+fn stand_height_m(config: &Config) -> f32 {
+    config.field.stand_height_mm * MM
+}
+
+fn setup_world(
+    mut commands: Commands,
+    meshes: Option<ResMut<Assets<Mesh>>>,
+    materials: Option<ResMut<Assets<StandardMaterial>>>,
+    images: Option<ResMut<Assets<Image>>>,
+    config: Res<SimConfig>,
+    headless: Res<Headless>,
+) {
+    if headless.0 {
+        return;
+    }
+    let (Some(mut meshes), Some(mut materials), Some(mut images)) =
+        (meshes, materials, images)
+    else {
+        return;
+    };
+
+    let stand_h = stand_height_m(&config.0);
+    let field_w_m = config.0.field.width_mm as f32 * MM;
+    let field_d_m = config.0.field.height_mm as f32 * MM;
+
+    // Table stand (visual only, rendered from y=0 up to y=stand_h).
+    if stand_h > 1e-4 {
+        commands.spawn((
+            Mesh3d(meshes.add(Cuboid::new(field_w_m, stand_h, field_d_m))),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::srgb(0.35, 0.33, 0.30),
+                perceptual_roughness: 0.95,
+                ..default()
+            })),
+            Transform::from_xyz(field_w_m * 0.5, stand_h * 0.5, field_d_m * 0.5),
+        ));
+
+        // Floor around the stand (big grey plane so humans don't look like
+        // they're walking on the void).
+        let floor_side = (field_w_m + field_d_m) * 3.0;
+        commands.spawn((
+            Mesh3d(meshes.add(Plane3d::new(Vec3::Y, Vec2::new(floor_side * 0.5, floor_side * 0.5)))),
+            MeshMaterial3d(materials.add(StandardMaterial {
+                base_color: Color::srgb(0.12, 0.12, 0.13),
+                perceptual_roughness: 1.0,
+                ..default()
+            })),
+            Transform::from_xyz(field_w_m * 0.5, 0.0, field_d_m * 0.5),
+        ));
+    }
+
+    // Every table obstacle — including the flat ground — goes through the
+    // same rendering path, offset up by the stand height.
+    let mut texture_cache: std::collections::HashMap<String, Handle<Image>> =
+        std::collections::HashMap::new();
+
+    let field_w = config.0.field.width_mm as f32;
+    let field_h = config.0.field.height_mm as f32;
+    let playmat_handle: Option<Handle<Image>> = config
+        .0
+        .field
+        .playmat
+        .as_ref()
+        .and_then(|pm| match textures::load_png(std::path::Path::new(&pm.path)) {
+            Ok(img) => Some(images.add(img)),
+            Err(e) => {
+                log::error!("playmat {} load failed: {e}", pm.path);
+                None
+            }
+        });
+
+    for obs in &config.0.field.obstacles {
+        let [x0, y0, x1, y1] = obs.aabb_mm;
+        let w = ((x1 - x0) * MM).abs();
+        let d = ((y1 - y0) * MM).abs();
+        let h = obs.height_mm * MM;
+        if w < 1e-4 || d < 1e-4 {
+            continue;
+        }
+        let cx = (x0 + x1) * 0.5 * MM;
+        let cy = (y0 + y1) * 0.5 * MM;
+
+        // Precedence: playmat crop > explicit texture > finish > flat color.
+        let material = if obs.use_playmat && playmat_handle.is_some() {
+            let scale_u = (x1 - x0) / field_w;
+            let scale_v = (y1 - y0) / field_h;
+            let trans_u = x0 / field_w;
+            let trans_v = y0 / field_h;
+            StandardMaterial {
+                base_color: Color::WHITE,
+                base_color_texture: playmat_handle.clone(),
+                perceptual_roughness: 0.9,
+                uv_transform: bevy::math::Affine2::from_scale_angle_translation(
+                    Vec2::new(scale_u, scale_v),
+                    0.0,
+                    Vec2::new(trans_u, trans_v),
+                ),
+                ..default()
+            }
+        } else if let Some(path) = obs.texture.as_deref() {
+            let handle = texture_cache
+                .entry(path.to_string())
+                .or_insert_with(|| match textures::load_png(std::path::Path::new(path)) {
+                    Ok(img) => images.add(img),
+                    Err(e) => {
+                        log::error!("texture {} load failed: {e}", path);
+                        Handle::<Image>::default()
+                    }
+                })
+                .clone();
+            StandardMaterial {
+                base_color: Color::WHITE,
+                base_color_texture: Some(handle),
+                perceptual_roughness: 0.9,
+                ..default()
+            }
+        } else {
+            let rgb = obs.srgb_color();
+            match obs.finish {
+                Finish::Smooth => StandardMaterial {
+                    base_color: Color::srgb(rgb[0], rgb[1], rgb[2]),
+                    perceptual_roughness: 0.9,
+                    ..default()
+                },
+                Finish::Wood => {
+                    let tex = textures::wood_grain(rgb, 256, 512);
+                    StandardMaterial {
+                        base_color: Color::WHITE,
+                        base_color_texture: Some(images.add(tex)),
+                        perceptual_roughness: 0.95,
+                        ..default()
+                    }
+                }
+            }
+        };
+
+        if h < 1e-4 {
+            // Flat ground tile — sits exactly at table top.
+            commands.spawn((
+                Mesh3d(meshes.add(Plane3d::new(Vec3::Y, Vec2::new(w * 0.5, d * 0.5)))),
+                MeshMaterial3d(materials.add(material)),
+                Transform::from_xyz(cx, stand_h, cy),
+            ));
+        } else {
+            commands.spawn((
+                Mesh3d(meshes.add(Cuboid::new(w, h, d))),
+                MeshMaterial3d(materials.add(material)),
+                Transform::from_xyz(cx, stand_h + h * 0.5, cy),
+            ));
+        }
+    }
+}
+
+fn setup_camera_and_light(
+    mut commands: Commands,
+    config: Res<SimConfig>,
+    headless: Res<Headless>,
+) {
+    if headless.0 {
+        return;
+    }
+    let w = config.0.field.width_mm as f32 * MM;
+    let h = config.0.field.height_mm as f32 * MM;
+    let stand_h = stand_height_m(&config.0);
+    let cx = w / 2.0;
+    let cy = h / 2.0;
+
+    commands.spawn((
+        Camera3d::default(),
+        Transform::from_xyz(cx, stand_h + w.max(h) * 1.2, cy + h * 1.1)
+            .looking_at(Vec3::new(cx, stand_h, cy), Vec3::Y),
+    ));
+
+    commands.spawn((
+        DirectionalLight {
+            illuminance: 10_000.0,
+            shadows_enabled: false,
+            ..default()
+        },
+        Transform::from_xyz(cx, stand_h + 5.0, cy)
+            .with_rotation(Quat::from_rotation_x(-FRAC_PI_4)),
+    ));
+}
+
+fn drain_bridge(
+    mut commands: Commands,
+    bridge: Res<BridgeRx>,
+    mut registry: ResMut<SimEntities>,
+    mut transforms: Query<(&mut Transform, &SimEntityTag)>,
+    config: Res<SimConfig>,
+    meshes: Option<ResMut<Assets<Mesh>>>,
+    materials: Option<ResMut<Assets<StandardMaterial>>>,
+    human_assets: Option<Res<HumanAssets>>,
+    robot_assets: Option<Res<RobotVisualAssets>>,
+    headless: Res<Headless>,
+) {
+    let stand_h = stand_height_m(&config.0);
+
+    // Mesh/material handles are only available when DefaultPlugins provided
+    // the asset + rendering plugins; in headless mode we only track the
+    // Transform component and skip rendering.
+    let mut visuals = match (headless.0, meshes, materials) {
+        (false, Some(m), Some(mat)) => Some((m, mat)),
+        _ => None,
+    };
+
+    while let Ok(update) = bridge.0.try_recv() {
+        match update {
+            WorldUpdate::Spawn { id, kind, pose, width_mm, length_mm, body_height_mm } => {
+                if registry.0.contains_key(&id) {
+                    continue;
+                }
+                let h_m = body_height_mm * MM;
+                let robot_scene: Option<Handle<Scene>> = match kind {
+                    EntityKind::Robot(rk) => robot_assets
+                        .as_ref()
+                        .and_then(|ra| ra.for_kind(rk).cloned()),
+                    _ => None,
+                };
+                let is_human_scene = matches!(kind, EntityKind::Human) && human_assets.is_some();
+                let is_scene = is_human_scene || robot_scene.is_some();
+                let info = EntityInfo {
+                    kind,
+                    half_height_m: h_m * 0.5,
+                    bottom_anchored: is_scene,
+                };
+                let t = pose_to_transform(&pose, &info, stand_h);
+                // Add `Visibility` so Bevy propagates it to spawned children
+                // (SceneRoot, collision overlays). Without it, Bevy 0.18 warns
+                // B0004 and children don't update their InheritedVisibility.
+                let mut cmd = commands.spawn((
+                    SimEntityTag { id: id.clone(), kind },
+                    t,
+                    Visibility::default(),
+                ));
+
+                if let Some((ref mut meshes, ref mut materials)) = visuals {
+                    let (w_m, l_m) = (width_mm * MM, length_mm * MM);
+                    let color = match kind {
+                        EntityKind::Robot(RobotKind::Galipeur) => Color::srgb(0.2, 0.6, 1.0),
+                        EntityKind::Robot(RobotKind::Pami) => Color::srgb(1.0, 0.6, 0.2),
+                        EntityKind::Human => Color::srgb(0.85, 0.75, 0.65),
+                    };
+                    match kind {
+                        EntityKind::Human if human_assets.is_some() => {
+                            // Real humanoid scene from glTF, scaled to the
+                            // configured body height.
+                            let ha = human_assets.as_ref().unwrap();
+                            let scale = h_m / ha.native_height_m;
+                            cmd.insert(SceneRoot(ha.scene.clone()));
+                            if let Ok((mut t_mut, _)) = transforms.get_mut(cmd.id()) {
+                                t_mut.scale = Vec3::splat(scale);
+                            } else {
+                                // Re-spawn transform with scale baked in.
+                                let mut t2 = t;
+                                t2.scale = Vec3::splat(scale);
+                                cmd.insert(t2);
+                            }
+                        }
+                        EntityKind::Human => {
+                            // Fallback capsule.
+                            let r = (w_m.min(l_m) * 0.5).min(h_m * 0.45).max(0.05);
+                            let cyl = (h_m - 2.0 * r).max(0.01);
+                            cmd.insert((
+                                Mesh3d(meshes.add(Capsule3d::new(r, cyl))),
+                                MeshMaterial3d(materials.add(StandardMaterial {
+                                    base_color: color,
+                                    perceptual_roughness: 0.9,
+                                    ..default()
+                                })),
+                            ));
+                        }
+                        EntityKind::Robot(rk) if robot_scene.is_some() => {
+                            // Spawn the scene as a child so we can apply a
+                            // per-model translation (wheel axle → chassis
+                            // base) without fighting the parent's pose.
+                            let offset = match rk {
+                                RobotKind::Galipeur => config
+                                    .0
+                                    .galipeur
+                                    .model
+                                    .as_ref()
+                                    .map(|m| m.visual_offset_mm)
+                                    .unwrap_or([0.0; 3]),
+                                RobotKind::Pami => config
+                                    .0
+                                    .pami
+                                    .model
+                                    .as_ref()
+                                    .map(|m| m.visual_offset_mm)
+                                    .unwrap_or([0.0; 3]),
+                            };
+                            let scene_handle = robot_scene.clone().unwrap();
+                            cmd.with_children(|p| {
+                                p.spawn((
+                                    SceneRoot(scene_handle),
+                                    Transform::from_xyz(
+                                        offset[0] * MM,
+                                        offset[1] * MM,
+                                        offset[2] * MM,
+                                    ),
+                                ));
+                            });
+                        }
+                        EntityKind::Robot(_) => {
+                            cmd.insert((
+                                Mesh3d(meshes.add(Cuboid::new(l_m, h_m.max(0.02), w_m))),
+                                MeshMaterial3d(materials.add(StandardMaterial {
+                                    base_color: color,
+                                    perceptual_roughness: 0.9,
+                                    ..default()
+                                })),
+                            ));
+                        }
+                    }
+
+                    // Attach collision overlay children for robots configured
+                    // with a simplified model. Hidden by default; toggle with
+                    // the H key.
+                    if let EntityKind::Robot(rk) = kind {
+                        let prims: Option<&Vec<CollisionPrimitive>> = match rk {
+                            RobotKind::Galipeur => config
+                                .0
+                                .galipeur
+                                .model
+                                .as_ref()
+                                .map(|m| &m.collision),
+                            RobotKind::Pami => config
+                                .0
+                                .pami
+                                .model
+                                .as_ref()
+                                .map(|m| &m.collision),
+                        };
+                        if let Some(prims) = prims {
+                            if !prims.is_empty() {
+                                // Parent entity sits at the visual's own
+                                // anchor: scenes are bottom-anchored (parent
+                                // y == stand_h), cuboids are center-anchored
+                                // (parent y == stand_h + half_h). Overlay
+                                // coords are expressed from z_base=0 at the
+                                // table top, so we correct by -half_h when
+                                // the parent is center-anchored.
+                                let y_off = if is_scene { 0.0 } else { -info.half_height_m };
+                                let children = build_overlay_spawns(prims, y_off, meshes, materials);
+                                cmd.with_children(|parent| {
+                                    for bundle in children {
+                                        parent.spawn(bundle);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+                let entity = cmd.id();
+                registry.0.insert(id, (entity, info));
+                log::info!("[sim-app] spawned {:?}", kind);
+            }
+            WorldUpdate::UpdatePose { id, pose } => {
+                if let Some((entity, info)) = registry.0.get(&id) {
+                    if let Ok((mut t, _)) = transforms.get_mut(*entity) {
+                        *t = pose_to_transform(&pose, info, stand_h);
+                    }
+                }
+            }
+            WorldUpdate::Despawn { id } => {
+                if let Some((entity, _)) = registry.0.remove(&id) {
+                    commands.entity(entity).despawn();
+                }
+            }
+        }
+    }
+}
+
+type OverlaySpawn = (
+    Mesh3d,
+    MeshMaterial3d<StandardMaterial>,
+    Transform,
+    Visibility,
+    CollisionOverlay,
+);
+
+fn build_overlay_spawns(
+    primitives: &[CollisionPrimitive],
+    parent_y_offset_m: f32,
+    meshes: &mut ResMut<Assets<Mesh>>,
+    materials: &mut ResMut<Assets<StandardMaterial>>,
+) -> Vec<OverlaySpawn> {
+    let mat = materials.add(StandardMaterial {
+        base_color: Color::srgba(0.9, 0.15, 0.15, 0.35),
+        alpha_mode: AlphaMode::Blend,
+        cull_mode: None,
+        perceptual_roughness: 0.8,
+        unlit: true,
+        ..default()
+    });
+
+    let mut out = Vec::with_capacity(primitives.len());
+    for p in primitives {
+        match p {
+            CollisionPrimitive::Polygon { points_mm, z_base_mm, height_mm } => {
+                let mesh = build_polygon_prism(points_mm, *height_mm * MM);
+                out.push((
+                    Mesh3d(meshes.add(mesh)),
+                    MeshMaterial3d(mat.clone()),
+                    Transform::from_xyz(0.0, parent_y_offset_m + z_base_mm * MM, 0.0),
+                    Visibility::Hidden,
+                    CollisionOverlay,
+                ));
+            }
+            CollisionPrimitive::Cylinder { center_mm, radius_mm, z_base_mm, height_mm } => {
+                let h_m = *height_mm * MM;
+                out.push((
+                    Mesh3d(meshes.add(Cylinder::new(radius_mm * MM, h_m))),
+                    MeshMaterial3d(mat.clone()),
+                    Transform::from_xyz(
+                        center_mm[0] * MM,
+                        parent_y_offset_m + z_base_mm * MM + h_m * 0.5,
+                        center_mm[1] * MM,
+                    ),
+                    Visibility::Hidden,
+                    CollisionOverlay,
+                ));
+            }
+        }
+    }
+    out
+}
+
+/// Build a triangle-soup mesh for a polygon extruded from y=0 to y=height_m.
+/// Primitive points `[x_mm, y_mm]` map to Bevy local `(x*MM, 0, y*MM)` on the
+/// bottom ring and `(x*MM, height_m, y*MM)` on the top ring. Winding assumes
+/// the input polygon is ordered counter-clockwise in the robot's +X forward
+/// / +Y left frame.
+fn build_polygon_prism(points_mm: &[[f32; 2]], height_m: f32) -> Mesh {
+    let n = points_mm.len();
+    assert!(n >= 3, "polygon must have >= 3 points");
+
+    let mut positions: Vec<[f32; 3]> = Vec::with_capacity(2 * n);
+    let mut normals: Vec<[f32; 3]> = Vec::with_capacity(2 * n);
+    let mut indices: Vec<u32> = Vec::new();
+
+    for &[x, z] in points_mm {
+        positions.push([x * MM, 0.0, z * MM]);
+        normals.push([0.0, -1.0, 0.0]);
+    }
+    for &[x, z] in points_mm {
+        positions.push([x * MM, height_m, z * MM]);
+        normals.push([0.0, 1.0, 0.0]);
+    }
+
+    let nu = n as u32;
+    // Bottom fan (view from -Y → reverse winding so triangles face -Y).
+    for i in 1..nu - 1 {
+        indices.extend_from_slice(&[0, i + 1, i]);
+    }
+    // Top fan (view from +Y).
+    for i in 1..nu - 1 {
+        indices.extend_from_slice(&[nu, nu + i, nu + i + 1]);
+    }
+    // Sidewalls.
+    for i in 0..nu {
+        let next = (i + 1) % nu;
+        indices.extend_from_slice(&[i, next, nu + next]);
+        indices.extend_from_slice(&[i, nu + next, nu + i]);
+    }
+
+    let mut mesh = Mesh::new(
+        PrimitiveTopology::TriangleList,
+        RenderAssetUsages::RENDER_WORLD,
+    );
+    mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
+    mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
+    mesh.insert_indices(Indices::U32(indices));
+    mesh
+}
+
+fn toggle_collision_overlay(
+    keys: Option<Res<ButtonInput<KeyCode>>>,
+    mut q: Query<&mut Visibility, With<CollisionOverlay>>,
+) {
+    // MinimalPlugins (headless) doesn't provide a keyboard input resource.
+    let Some(keys) = keys else { return };
+    if keys.just_pressed(KeyCode::KeyH) {
+        for mut v in &mut q {
+            *v = match *v {
+                Visibility::Hidden => Visibility::Visible,
+                _ => Visibility::Hidden,
+            };
+        }
+    }
+}
+
+fn pose_to_transform(pose: &Pose2D, info: &EntityInfo, stand_h: f32) -> Transform {
+    // Robots sit on the table top; humans stand on the floor.
+    let y_base = match info.kind {
+        EntityKind::Robot(_) => stand_h,
+        EntityKind::Human => 0.0,
+    };
+    // Primitive meshes are centred on their origin: shift up by half
+    // height. glTF characters are bottom-anchored (origin at the feet).
+    let y_offset = if info.bottom_anchored { 0.0 } else { info.half_height_m };
+
+    // CesiumMan's "forward" in its local frame is +Z. Our protocol theta=0
+    // means "facing world +X" (scene +X). The +π/2 pre-rotation aligns
+    // the two, then `-theta` applies the walking heading. For primitive
+    // meshes (symmetric cuboid / capsule) the pre-rotation is irrelevant.
+    let heading_offset = if info.bottom_anchored { std::f32::consts::FRAC_PI_2 } else { 0.0 };
+    Transform::from_xyz(pose.x_mm * MM, y_base + y_offset, pose.y_mm * MM)
+        .with_rotation(Quat::from_rotation_y(heading_offset - pose.theta_rad))
+}

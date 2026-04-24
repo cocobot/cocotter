@@ -1,0 +1,10 @@
+[package]
+name = "sim_client"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+sim_protocol = { path = "../sim_protocol" }
+bincode = "1.3"
+flume = "0.11"
+log = "0.4"

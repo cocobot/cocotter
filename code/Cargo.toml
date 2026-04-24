@@ -13,10 +13,14 @@ members = [
     "libs/tca6408",
     "libs/vlx",
     "libs/sch16t",
+    "libs/sim_protocol",
+    "libs/sim_client",
 
     "boards/common",
     "boards/pami",
     "boards/sabotter",
+
+    "sim",
 ]
 resolver = "2"
 

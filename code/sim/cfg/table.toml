@@ -1,0 +1,187 @@
+# Simulator field + robot configuration.
+#
+# Units: millimeters for lengths, radians for angles.
+# The kinematics matrices below are intentionally duplicated from the
+# robot source code so that a mismatch can be used to validate calibration
+# routines. Keep in sync by default.
+
+[field]
+# Coupe de France de Robotique standard table (2026 placeholder).
+# The playing area is the axis-aligned box [0, 0] - [width_mm, height_mm].
+width_mm  = 3000
+height_mm = 2000
+# Visual elevation of the table above the floor. Lets spectators walk
+# around without clipping through the playing area.
+stand_height_mm = 1000
+
+# Obstacles are axis-aligned rectangles with a vertical height. The ground
+# itself is declared as a `height_mm = 0` obstacle carrying the playmat
+# texture — this unifies the field with every other raised surface.
+#
+# aabb_mm    = [x_min, y_min, x_max, y_max] in the same frame as the playing area.
+# height_mm  = vertical extent (0 = flat ground tile).
+# color      = optional sRGB hex "#RRGGBB". Defaults to RAL 7032 (Kieselgrau).
+# finish     = "smooth" (default) or "wood" (procedural grain).
+# texture    = optional PNG path (relative to cwd). Overrides `finish`.
+#
+# Raycast visibility is filtered per-robot by `lidar_height_mm`: a sensor
+# at height H only sees obstacles whose height_mm >= H. Flat ground tiles
+# (height 0) are never seen.
+
+[field.playmat]
+path = "sim/assets/table.png"
+
+[[field.obstacles]]
+name = "ground"
+aabb_mm = [0, 0, 3000, 2000]
+height_mm = 0
+use_playmat = true
+
+[[field.obstacles]]
+name = "wall_south"
+aabb_mm = [-22, -22, 3022, 0]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "wall_north"
+aabb_mm = [-22, 2000, 3022, 2022]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "wall_east"
+aabb_mm = [3000, 0, 3022, 2000]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "wall_west"
+aabb_mm = [-22, 0, 0, 2000]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "granary_west"
+aabb_mm = [600, 0, 615, 450]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "granary_est"
+aabb_mm = [2385, 0, 2400, 450]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "granary_ground"
+aabb_mm = [615, 0, 2400, 450]
+height_mm = 55
+use_playmat = true
+
+[start_poses.galipeur.blue]
+x_mm = 200
+y_mm = 200
+theta_rad = 0.0
+
+[start_poses.galipeur.yellow]
+x_mm = 2800
+y_mm = 200
+theta_rad = 3.14159
+
+[start_poses.pami.blue]
+x_mm = 500
+y_mm = 200
+theta_rad = 0.0
+
+[start_poses.pami.yellow]
+x_mm = 2500
+y_mm = 200
+theta_rad = 3.14159
+
+# Galipeur holonomic kinematics — mirrors galipeur/src/main.rs.
+# velocities_to_consigns[i][j]: motor i consign contribution from body axis j (vx, vy, va).
+[galipeur.kinematics]
+velocities_to_consigns = [
+    [ 0.137193775559, -0.227742535811,   32.7587578324 ],
+    [-0.267514745628,  0.000225842067981, 32.2910980339],
+    [ 0.138273262887,  0.235015679279,   32.2670974911 ],
+]
+encoders_to_position = [
+    [-1.24627114282,   2.4735001584,  -1.21007913871],
+    [ 2.15287736186, -0.0169008404017, -2.16876778164],
+    [-0.0103397573436, -0.010476522571, -0.0100097003094],
+]
+
+# Optional 3D model: visual `.glb` (e.g. produced by `tool/onshape_fetch/`)
+# + simplified collision shape (union of extruded polygons + cylinders).
+# Press `H` in the window to toggle a transparent red overlay of the
+# collision shape, useful to verify dimensions against the visual model.
+# Without `[galipeur.model]` the sim falls back to a blue cuboid based on
+# `[galipeur.bbox]`.
+#
+[galipeur.model]
+visual = "sim/assets/robots/galipeur.glb"
+# Raise the Onshape model 62mm above the table surface — the export's
+# origin sits at the wheel axle, not the chassis base.
+visual_offset_mm = [0, 62, 0]
+#
+# [[galipeur.model.collision]]
+# shape = "polygon"
+# points_mm = [[-150, -150], [150, -150], [150, 150], [-150, 150]]
+# z_base_mm = 0
+# height_mm = 250
+#
+# [[galipeur.model.collision]]
+# shape = "cylinder"
+# center_mm = [0, 0]
+# radius_mm = 60
+# z_base_mm = 250
+# height_mm = 100
+
+# Robot bounding box — width/length are the footprint, height is the body
+# size (used to let other robots' lidars see this robot).
+[galipeur.bbox]
+width_mm  = 300
+length_mm = 300
+height_mm = 300
+# Height of galipeur's top LD06 above the table surface. Realistic value
+# for a robot with the lidar mounted on top.
+[galipeur]
+lidar_height_mm = 250
+
+[pami.bbox]
+width_mm  = 150
+length_mm = 150
+height_mm = 150
+# VLX forward-facing ToF height above the table surface.
+[pami]
+lidar_height_mm = 30
+
+# Pami differential kinematics.
+# wheel_base_mm matches pami/src/main.rs (MotorsConf::from_dimensions first arg = 75mm).
+# wheel_diameter_mm matches the second arg (30 mm).
+# encoder_ticks_per_rev matches the third arg (256).
+# max_wheel_speed_mm_s: sim choice — consign ±1000 corresponds to ±this speed.
+[pami.kinematics]
+wheel_base_mm = 75.0
+wheel_diameter_mm = 30.0
+encoder_ticks_per_rev = 256
+max_wheel_speed_mm_s = 500.0
+
+# Random spectators walking around the table (outside the play area) to
+# exercise the lidars with moving external perturbations. Off by default —
+# enable with `--humans` on the CLI or set `enabled = true` here.
+[humans]
+enabled = false
+count_min = 3
+count_max = 6
+body_height_min_mm = 1600
+body_height_max_mm = 1950
+walk_speed_min_mm_s = 400
+walk_speed_max_mm_s = 1200
+width_min_mm = 350
+width_max_mm = 550
+margin_mm = 1500
+# `seed = 0` → non-deterministic; set a non-zero value for reproducible runs.
+seed = 0
