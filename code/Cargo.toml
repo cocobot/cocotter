@@ -5,14 +5,15 @@ members = [
     "picotter",
     "picotter-bootloader",
 
+    "libs/amatheur",
     "libs/asserv",
-    "libs/cancaner",
     "libs/ble",
+    "libs/cancaner",
     "libs/esp32_encoder",
     "libs/rome",
+    "libs/sch16t",
     "libs/tca6408",
     "libs/vlx",
-    "libs/sch16t",
 
     "boards/common",
     "boards/pami",

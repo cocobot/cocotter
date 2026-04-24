@@ -1,3 +1,6 @@
+//! Simple maths library with vectors and few operations
+#![cfg_attr(not(feature = "std"), no_std)]
+
 use core::ops;
 
 
@@ -61,11 +64,18 @@ impl XY {
     }
 
     /// Return the vector length
+    #[cfg(feature = "std")]
     pub fn length(&self) -> f32 {
         (self.x * self.x + self.y * self.y).sqrt()
     }
 
+    /// Return the power of two of vector length
+    pub fn length2(&self) -> f32 {
+        self.x * self.x + self.y * self.y
+    }
+
     /// Return a unit vectory of same direction, or (0, 0)
+    #[cfg(feature = "std")]
     pub fn unit(&self) -> Self {
         let d = self.length();
         if d == 0.0 {
@@ -81,6 +91,7 @@ impl XY {
     }
 
     /// Return vector angle 
+    #[cfg(feature = "std")]
     pub fn angle(&self) -> f32 {
         self.y.atan2(self.x)
     }

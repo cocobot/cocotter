@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 bitflags = "2.9"
 log = "0.4"
+amatheur = { path = "../amatheur" }
 rome = { path = "../rome", optional = true }
 
 [features]
