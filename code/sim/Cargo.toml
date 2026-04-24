@@ -19,6 +19,9 @@ flume = "0.11"
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
 bevy = { version = "0.18", features = ["jpeg"] }
+bevy_panorbit_camera = "0.34"
+bevy_mod_outline = "0.12"
+parry2d = "0.26"
 png = "0.17"
 fastrand = "2"
 

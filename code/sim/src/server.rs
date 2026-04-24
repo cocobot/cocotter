@@ -15,12 +15,28 @@ use flume::Sender;
 use sim_protocol::{recv_msg, send_msg, Pose2D, RobotKind, SimMsgC2S, SimMsgS2C};
 
 use crate::bridge::WorldUpdate;
-use crate::config::{Config, KinematicsConfig};
+use crate::collide::RobotShape;
+use crate::config::{BBoxConfig, CollisionPrimitive, Config, KinematicsConfig};
 use crate::kinematics::{DiffState, HoloState};
 use crate::ld06_encoder;
 use crate::picotter_emu::PicotterEmu;
 use crate::raycast;
 use crate::world::{EntityKind, EntitySnapshot, World};
+
+/// Build a parry2d shape describing the robot's footprint. When collision
+/// primitives are declared in config we use their exact union; otherwise
+/// fall back to a bounding ball sized to the bbox long side.
+fn robot_shape_from_config(
+    bbox: &BBoxConfig,
+    collision: Option<&[CollisionPrimitive]>,
+) -> RobotShape {
+    if let Some(prims) = collision {
+        if let Some(shape) = RobotShape::from_primitives(prims) {
+            return shape;
+        }
+    }
+    RobotShape::from_circle(0.5 * bbox.width_mm.max(bbox.length_mm))
+}
 
 pub fn listen_forever(
     socket_path: &str,
@@ -148,6 +164,10 @@ fn handle_galipeur(
     };
     let mut state = HoloState::new(start, v2c, e2p);
     let dt_s = (sim_tick_ms as f32) / 1000.0;
+    let robot_shape = robot_shape_from_config(
+        &config.galipeur.bbox,
+        config.galipeur.model.as_ref().map(|m| m.collision.as_slice()),
+    );
     let static_walls = config
         .field
         .obstacle_segments_visible_from(config.galipeur.lidar_height_mm);
@@ -160,13 +180,28 @@ fn handle_galipeur(
     let mut can_frames_in: u64 = 0;
     let mut can_frames_out: u64 = 0;
 
+    // The asserv starts at (0,0,0) inside the robot; it's the robot's
+    // responsibility to call `reset_position(start)` after it reads its
+    // assigned start pose from the sim (see galipeur/src/routines.rs for
+    // the non-espidf cfg).
     loop {
         let msg: SimMsgC2S = recv_msg(&stream)?;
         match msg {
             SimMsgC2S::MotorConsignsHolo { values } => {
-                let (enc_delta, gyro_delta) = state.step(values, dt_s);
+                let (enc_delta, gyro_delta) =
+                    state.step(values, dt_s, &config.field.obstacles, &robot_shape);
                 send_msg(&stream, &SimMsgS2C::EncoderDeltaHolo { delta: enc_delta })?;
                 send_msg(&stream, &SimMsgS2C::GyroDelta { d_theta_rad: gyro_delta })?;
+                // Cheap sampling log to see what the asserv actually outputs
+                // without drowning the terminal (~once per 500 ms).
+                if last_pose_log.elapsed() >= pose_log_period {
+                    log::debug!(
+                        "[{robot_id}] consigns=[{:.1}, {:.1}, {:.1}]  enc_delta=[{:.2}, {:.2}, {:.2}]  gyro={:.4}",
+                        values[0], values[1], values[2],
+                        enc_delta[0], enc_delta[1], enc_delta[2],
+                        gyro_delta
+                    );
+                }
 
                 // Emit one LD06 packet per tick (~30° of the 360° sweep).
                 let walls = world.visible_segments(robot_id, config.galipeur.lidar_height_mm, &static_walls);
@@ -290,6 +325,10 @@ fn handle_pami(
     };
     let mut state = DiffState::new(start, wb, wd, ticks, max_wv);
     let dt_s = (sim_tick_ms as f32) / 1000.0;
+    let robot_shape = robot_shape_from_config(
+        &config.pami.bbox,
+        config.pami.model.as_ref().map(|m| m.collision.as_slice()),
+    );
     let static_walls = config
         .field
         .obstacle_segments_visible_from(config.pami.lidar_height_mm);
@@ -299,7 +338,7 @@ fn handle_pami(
         let msg: SimMsgC2S = recv_msg(&stream)?;
         match msg {
             SimMsgC2S::MotorConsignsDiff { values } => {
-                let delta = state.step(values, dt_s);
+                let delta = state.step(values, dt_s, &config.field.obstacles, &robot_shape);
                 send_msg(&stream, &SimMsgS2C::EncoderDeltaDiff { delta })?;
 
                 // VLX forward raycast, including other entities' bboxes.

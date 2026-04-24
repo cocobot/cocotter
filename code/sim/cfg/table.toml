@@ -125,19 +125,27 @@ visual = "sim/assets/robots/galipeur.glb"
 # Raise the Onshape model 62mm above the table surface — the export's
 # origin sits at the wheel axle, not the chassis base.
 visual_offset_mm = [0, 62, 0]
-#
-# [[galipeur.model.collision]]
-# shape = "polygon"
-# points_mm = [[-150, -150], [150, -150], [150, 150], [-150, 150]]
-# z_base_mm = 0
-# height_mm = 250
-#
-# [[galipeur.model.collision]]
-# shape = "cylinder"
-# center_mm = [0, 0]
-# radius_mm = 60
-# z_base_mm = 250
-# height_mm = 100
+
+# Simplified collision / raycast shape — union of primitives in the robot
+# body frame (X forward, Y left, Z up). Used both for the 2D swept
+# collision against obstacles and, projected to 2D, for the lidar
+# raytracing silhouette. Press H in the sim window to toggle a translucent
+# red overlay showing these primitives on top of the visual model.
+
+## Triangular footprint pointing forward (+X), chassis level.
+[[galipeur.model.collision]]
+shape = "polygon"
+points_mm = [[-51.019, -178.338], [50.660, -178.338], [179.778, 45.96], [129.115, 133.042], [-128.935, 133.353], [-179.775, 45.296]]
+z_base_mm = 0
+height_mm = 342
+
+# Lidar/tower cylinder centred on the robot, sitting on top of the chassis.
+[[galipeur.model.collision]]
+shape = "cylinder"
+center_mm = [0, 0]
+radius_mm = 45
+z_base_mm = 340
+height_mm = 110
 
 # Robot bounding box — width/length are the footprint, height is the body
 # size (used to let other robots' lidars see this robot).

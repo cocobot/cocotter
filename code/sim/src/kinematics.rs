@@ -81,7 +81,13 @@ impl HoloState {
     /// realistic physical limits — without this the asserv's max-PWM output
     /// translates into supersonic "commanded" body velocity through the
     /// motors matrix.
-    pub fn step(&mut self, consigns: [f32; 3], dt_s: f32) -> ([f32; 3], f32) {
+    pub fn step(
+        &mut self,
+        consigns: [f32; 3],
+        dt_s: f32,
+        obstacles: &[crate::config::Obstacle],
+        robot_shape: &crate::collide::RobotShape,
+    ) -> ([f32; 3], f32) {
         const MAX_LIN_MM_S: f32 = 1500.0; // realistic galipeur ceiling
         const MAX_ANG_RAD_S: f32 = 8.0;
 
@@ -93,7 +99,6 @@ impl HoloState {
         let v_body = mat_vec3(self.vel_from_consigns, c_clamped);
         let (mut vx, mut vy, mut va) = (v_body[0], v_body[1], v_body[2]);
 
-        // Scale linear velocity uniformly if the norm exceeds MAX_LIN_MM_S.
         let v_norm = (vx * vx + vy * vy).sqrt();
         if v_norm > MAX_LIN_MM_S {
             let k = MAX_LIN_MM_S / v_norm;
@@ -102,20 +107,38 @@ impl HoloState {
         }
         va = va.clamp(-MAX_ANG_RAD_S, MAX_ANG_RAD_S);
 
-        // Robot-frame displacement over dt.
         let dx_r = vx * dt_s;
         let dy_r = vy * dt_s;
         let da = va * dt_s;
 
-        // Rotate into world frame and update pose.
         let c = self.pose.theta_rad.cos();
         let s = self.pose.theta_rad.sin();
-        self.pose.x_mm += c * dx_r - s * dy_r;
-        self.pose.y_mm += s * dx_r + c * dy_r;
+        let world_dx = c * dx_r - s * dy_r;
+        let world_dy = s * dx_r + c * dy_r;
+
+        // Clamp the fraction of the motion that would traverse an obstacle.
+        // Rotation is left un-blocked.
+        let t = crate::collide::sweep_max_fraction(
+            (self.pose.x_mm, self.pose.y_mm, self.pose.theta_rad),
+            (world_dx, world_dy),
+            robot_shape,
+            obstacles,
+        );
+        let eff_dx = world_dx * t;
+        let eff_dy = world_dy * t;
+        self.pose.x_mm += eff_dx;
+        self.pose.y_mm += eff_dy;
         self.pose.theta_rad += da;
 
-        // Synthesize encoder deltas from the robot-frame displacement.
-        let enc_delta = mat_vec3(self.enc_from_pos, [dx_r, dy_r, da]);
+        // Synthesize encoder deltas matching the **actual** displacement —
+        // if we hit a wall, the asserv sees smaller encoder deltas than
+        // its PID expected.
+        // Asserv quirk: `control_system::update_position` divides the
+        // `encoders_to_position * motor_offsets` output by 1000 (see the
+        // TODO in the asserv code). Mirror that scaling here.
+        const ASSERV_XY_SCALE: f32 = 1000.0;
+        let body_for_enc = [dx_r * t * ASSERV_XY_SCALE, dy_r * t * ASSERV_XY_SCALE, da];
+        let enc_delta = mat_vec3(self.enc_from_pos, body_for_enc);
         (enc_delta, da)
     }
 
@@ -148,7 +171,15 @@ impl DiffState {
 
     /// Consume `[left, right]` consigns (±1000 range) and return the pair
     /// of encoder deltas (ticks) corresponding to the integrated motion.
-    pub fn step(&mut self, consigns: [f32; 2], dt_s: f32) -> [f32; 2] {
+    /// Obstacle collisions clamp the translation fraction; rotation is
+    /// applied un-blocked.
+    pub fn step(
+        &mut self,
+        consigns: [f32; 2],
+        dt_s: f32,
+        obstacles: &[crate::config::Obstacle],
+        robot_shape: &crate::collide::RobotShape,
+    ) -> [f32; 2] {
         let scale = self.max_wheel_speed_mm_s / 1000.0;
         let vl = consigns[0].clamp(-1000.0, 1000.0) * scale;
         let vr = consigns[1].clamp(-1000.0, 1000.0) * scale;
@@ -158,12 +189,21 @@ impl DiffState {
 
         let c = self.pose.theta_rad.cos();
         let s = self.pose.theta_rad.sin();
-        self.pose.x_mm += c * v_body * dt_s;
-        self.pose.y_mm += s * v_body * dt_s;
+        let world_dx = c * v_body * dt_s;
+        let world_dy = s * v_body * dt_s;
+
+        let t = crate::collide::sweep_max_fraction(
+            (self.pose.x_mm, self.pose.y_mm, self.pose.theta_rad),
+            (world_dx, world_dy),
+            robot_shape,
+            obstacles,
+        );
+        self.pose.x_mm += world_dx * t;
+        self.pose.y_mm += world_dy * t;
         self.pose.theta_rad += omega * dt_s;
 
-        let dl_mm = vl * dt_s;
-        let dr_mm = vr * dt_s;
+        let dl_mm = vl * dt_s * t;
+        let dr_mm = vr * dt_s * t;
         [dl_mm / self.tick_to_mm, dr_mm / self.tick_to_mm]
     }
 }
@@ -210,9 +250,10 @@ mod tests {
             VEL2CONS,
             ENC2POS,
         );
+        let shape = crate::collide::RobotShape::from_circle(1.0);
         // Integrate 1 second in 10ms ticks.
         for _ in 0..100 {
-            state.step(consigns, 0.010);
+            state.step(consigns, 0.010, &[], &shape);
         }
         // Should have moved ~100mm forward in x direction.
         assert!((state.pose.x_mm - 100.0).abs() < 1.0, "x = {}", state.pose.x_mm);
@@ -228,8 +269,9 @@ mod tests {
             VEL2CONS,
             ENC2POS,
         );
+        let shape = crate::collide::RobotShape::from_circle(1.0);
         for _ in 0..100 {
-            state.step(consigns, 0.010);
+            state.step(consigns, 0.010, &[], &shape);
         }
         assert!((state.pose.theta_rad - 1.0).abs() < 0.01);
     }

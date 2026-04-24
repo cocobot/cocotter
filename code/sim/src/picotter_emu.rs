@@ -42,8 +42,10 @@ impl PicotterEmu {
     pub fn on_can_frame(&mut self, id: u16, data: &[u8; 8], len: u8) -> Vec<SimMsgS2C> {
         let frame = SimFrame::new_std(id, &data[..len as usize]);
         let Some(msg) = CanMessage::from_frame(&frame) else {
+            log::debug!("[picotter] unknown CAN id=0x{:03X} data={:02X?}", id, &data[..len as usize]);
             return vec![];
         };
+        log::debug!("[picotter] RX {:?}", msg);
 
         let mut out = Vec::new();
         match msg {

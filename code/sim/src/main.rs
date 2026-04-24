@@ -8,6 +8,7 @@ use clap::Parser;
 
 mod app;
 mod bridge;
+mod collide;
 mod config;
 mod humans;
 mod kinematics;

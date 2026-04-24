@@ -10,6 +10,11 @@ use bevy::app::ScheduleRunnerPlugin;
 use bevy::asset::RenderAssetUsages;
 use bevy::mesh::{Indices, PrimitiveTopology};
 use bevy::prelude::*;
+use bevy_mod_outline::{
+    AsyncSceneInheritOutline, AutoGenerateOutlineNormalsPlugin, GenerateOutlineNormalsSettings,
+    OutlinePlugin, OutlineVolume,
+};
+use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
 
 use sim_protocol::{Pose2D, RobotKind};
 
@@ -91,7 +96,7 @@ pub fn run(config: Config, bridge_rx: flume::Receiver<WorldUpdate>, headless: bo
             Duration::from_secs_f32(1.0 / 60.0),
         )));
     } else {
-        app.add_plugins(
+        app.add_plugins((
             DefaultPlugins
                 .set(AssetPlugin {
                     file_path: format!("{}/assets", env!("CARGO_MANIFEST_DIR")),
@@ -105,7 +110,12 @@ pub fn run(config: Config, bridge_rx: flume::Receiver<WorldUpdate>, headless: bo
                     }),
                     ..default()
                 }),
-        );
+            // LMB drag = orbit · RMB drag = pan · wheel = zoom · R = reset
+            PanOrbitCameraPlugin,
+            // Cartoon-style outline pass (inverted-hull technique).
+            OutlinePlugin,
+            AutoGenerateOutlineNormalsPlugin::new(GenerateOutlineNormalsSettings::default()),
+        ));
     }
 
     app.add_systems(
@@ -115,11 +125,17 @@ pub fn run(config: Config, bridge_rx: flume::Receiver<WorldUpdate>, headless: bo
             setup_camera_and_light,
             setup_human_assets,
             setup_robot_assets,
+            setup_shortcuts_overlay,
         ),
     )
     .add_systems(
         Update,
-        (drain_bridge, start_human_animations, toggle_collision_overlay),
+        (
+            drain_bridge,
+            start_human_animations,
+            toggle_collision_overlay,
+            ensure_mesh_normals,
+        ),
     );
 
     app.run();
@@ -332,11 +348,12 @@ fn setup_world(
         };
 
         if h < 1e-4 {
-            // Flat ground tile — sits exactly at table top.
+            // Flat ground tile — sits 1 mm below the table top so it never
+            // z-fights with obstacles whose base is exactly at stand_h.
             commands.spawn((
                 Mesh3d(meshes.add(Plane3d::new(Vec3::Y, Vec2::new(w * 0.5, d * 0.5)))),
                 MeshMaterial3d(materials.add(material)),
-                Transform::from_xyz(cx, stand_h, cy),
+                Transform::from_xyz(cx, stand_h - 0.001, cy),
             ));
         } else {
             commands.spawn((
@@ -346,6 +363,32 @@ fn setup_world(
             ));
         }
     }
+}
+
+fn setup_shortcuts_overlay(mut commands: Commands, headless: Res<Headless>) {
+    if headless.0 {
+        return;
+    }
+    commands
+        .spawn((
+            Node {
+                position_type: PositionType::Absolute,
+                bottom: Val::Px(6.0),
+                left: Val::Px(8.0),
+                padding: UiRect::axes(Val::Px(8.0), Val::Px(4.0)),
+                ..default()
+            },
+            BackgroundColor(Color::srgba(0.0, 0.0, 0.0, 0.55)),
+        ))
+        .with_children(|p| {
+            p.spawn((
+                Text::new(
+                    "LMB orbit · RMB pan · wheel zoom  ·  H toggle collision overlay",
+                ),
+                TextFont { font_size: 12.0, ..default() },
+                TextColor(Color::srgba(1.0, 1.0, 1.0, 0.9)),
+            ));
+        });
 }
 
 fn setup_camera_and_light(
@@ -362,10 +405,20 @@ fn setup_camera_and_light(
     let cx = w / 2.0;
     let cy = h / 2.0;
 
+    // Initial framing: "3/4 view" at pitch ≈ 35°, distance ≈ 1.2 × diagonal.
+    // PanOrbitCamera takes over afterwards — LMB drag rotates around the
+    // focus, RMB drag pans it, wheel zooms.
+    let table_diag = (w * w + h * h).sqrt();
+    let focus = Vec3::new(cx, stand_h + 0.1, cy);
     commands.spawn((
         Camera3d::default(),
-        Transform::from_xyz(cx, stand_h + w.max(h) * 1.2, cy + h * 1.1)
-            .looking_at(Vec3::new(cx, stand_h, cy), Vec3::Y),
+        PanOrbitCamera {
+            focus,
+            radius: Some(table_diag * 1.2),
+            pitch: Some(35.0_f32.to_radians()),
+            yaw: Some(0.0),
+            ..default()
+        },
     ));
 
     commands.spawn((
@@ -496,6 +549,18 @@ fn drain_bridge(
                                         offset[1] * MM,
                                         offset[2] * MM,
                                     ),
+                                    // Black ink-style outline on every
+                                    // mesh in the glTF scene. `AsyncScene…`
+                                    // waits for the scene to load, then
+                                    // sprinkles `InheritOutline` onto
+                                    // every child so the inverted-hull
+                                    // pass is applied mesh-by-mesh.
+                                    OutlineVolume {
+                                        visible: true,
+                                        width: 2.0,
+                                        colour: Color::BLACK,
+                                    },
+                                    AsyncSceneInheritOutline::default(),
                                 ));
                             });
                         }
@@ -662,14 +727,50 @@ fn build_polygon_prism(points_mm: &[[f32; 2]], height_m: f32) -> Mesh {
         indices.extend_from_slice(&[i, nu + next, nu + i]);
     }
 
+    // Keep the CPU copy (`MAIN_WORLD`) alongside the GPU one: outline
+    // plugins run systems that inspect mesh attributes after extraction,
+    // and they panic on RENDER_WORLD-only meshes.
     let mut mesh = Mesh::new(
         PrimitiveTopology::TriangleList,
-        RenderAssetUsages::RENDER_WORLD,
+        RenderAssetUsages::default(),
     );
     mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
     mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
     mesh.insert_indices(Indices::U32(indices));
     mesh
+}
+
+/// Fill in `Mesh::ATTRIBUTE_NORMAL` on any freshly loaded mesh that lacks
+/// it. `bevy_mod_outline`'s volume pipeline demands vertex normals, and
+/// some glTF primitives (e.g. simplified/decimated exports) come through
+/// without them — without this fix the outline queue spams
+/// `Mesh is missing requested attribute: Vertex_Normal` every frame.
+///
+/// Only reacts to `Added` events and only upgrades to `get_mut` once the
+/// read-only check has confirmed work is actually needed. `get_mut`
+/// emits a `Modified` event even when no mutation happens, so touching
+/// unrelated meshes here would turn into a per-frame feedback loop.
+fn ensure_mesh_normals(
+    mut meshes: Option<ResMut<Assets<Mesh>>>,
+    mut events: MessageReader<AssetEvent<Mesh>>,
+) {
+    let Some(meshes) = meshes.as_mut() else { return };
+    for event in events.read() {
+        let AssetEvent::Added { id } = event else { continue };
+        let needs_compute = {
+            let Some(mesh) = meshes.get(*id) else { continue };
+            mesh.primitive_topology() == PrimitiveTopology::TriangleList
+                && mesh.attribute(Mesh::ATTRIBUTE_POSITION).is_some()
+                && mesh.attribute(Mesh::ATTRIBUTE_NORMAL).is_none()
+        };
+        if !needs_compute {
+            continue;
+        }
+        let Some(mesh) = meshes.get_mut(*id) else { continue };
+        if let Err(e) = mesh.try_compute_normals() {
+            log::warn!("ensure_mesh_normals: failed to compute normals: {e:?}");
+        }
+    }
 }
 
 fn toggle_collision_overlay(
