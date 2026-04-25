@@ -163,10 +163,18 @@ fn handle_galipeur(
     updates: &Sender<WorldUpdate>,
     world: &World,
 ) -> io::Result<()> {
-    let (v2c, e2p) = match config.galipeur.kinematics.as_ref() {
-        Some(KinematicsConfig::Holo { velocities_to_consigns, encoders_to_position }) => {
-            (*velocities_to_consigns, *encoders_to_position)
-        }
+    let (v2c, e2p, asserv_to_sim, asserv_mirror) = match config.galipeur.kinematics.as_ref() {
+        Some(KinematicsConfig::Holo {
+            velocities_to_consigns,
+            encoders_to_position,
+            asserv_to_sim_rad,
+            asserv_mirror,
+        }) => (
+            *velocities_to_consigns,
+            *encoders_to_position,
+            *asserv_to_sim_rad,
+            *asserv_mirror,
+        ),
         _ => {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
@@ -174,7 +182,7 @@ fn handle_galipeur(
             ));
         }
     };
-    let mut state = HoloState::new(start, v2c, e2p);
+    let mut state = HoloState::new(start, v2c, e2p, asserv_to_sim, asserv_mirror);
     let dt_s = (sim_tick_ms as f32) / 1000.0;
     let robot_shape = robot_shape_from_config(
         &config.galipeur.bbox,
@@ -358,6 +366,20 @@ fn handle_galipeur(
                     })
                     .ok();
             }
+            SimMsgC2S::Teleport { pose } => {
+                log::info!(
+                    "[{robot_id}] teleport to ({:.1}, {:.1}, θ={:.3})",
+                    pose.x_mm, pose.y_mm, pose.theta_rad
+                );
+                state.pose = pose;
+                world.update_pose(robot_id, state.pose);
+                updates
+                    .send(WorldUpdate::UpdatePose {
+                        id: robot_id.to_string(),
+                        pose: state.pose,
+                    })
+                    .ok();
+            }
         }
     }
 }
@@ -488,6 +510,20 @@ fn handle_pami(
             }
             SimMsgC2S::Ext { tag, .. } => log::debug!("[{robot_id}] Ext {tag} ignored"),
             SimMsgC2S::NeopixelFrame { .. } => { /* pami has no neopixels */ }
+            SimMsgC2S::Teleport { pose } => {
+                log::info!(
+                    "[{robot_id}] teleport to ({:.1}, {:.1}, θ={:.3})",
+                    pose.x_mm, pose.y_mm, pose.theta_rad
+                );
+                state.pose = pose;
+                world.update_pose(robot_id, state.pose);
+                updates
+                    .send(WorldUpdate::UpdatePose {
+                        id: robot_id.to_string(),
+                        pose: state.pose,
+                    })
+                    .ok();
+            }
         }
     }
 }

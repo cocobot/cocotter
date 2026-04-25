@@ -110,6 +110,12 @@ impl<H: AsservHardware> ControlSystem<H> {
     }
 
     /// Enable or disable break on motors
+    /// Access to the underlying hardware for cross-cutting actions
+    /// (teleport, future bus-specific hooks, ...).
+    pub fn hardware(&mut self) -> &mut H {
+        &mut self.hardware
+    }
+
     pub fn set_motors_break(&mut self, enabled: bool) {
         self.hardware.set_motors_break(enabled);
     }

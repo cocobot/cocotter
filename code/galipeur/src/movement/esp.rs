@@ -1,4 +1,5 @@
 use asserv::holonomic::conf::*;
+use asserv::maths::XYA;
 use board_sabotter::{Encoder, SabotterBoard, SabotterMotor};
 use embedded_hal::pwm::SetDutyCycle;
 use sch16t::Sch16t;
@@ -74,6 +75,14 @@ impl<B: SabotterBoard> AsservHardware for MovementLowLevelHardware<B> {
         self.last_encoder_values = Some(new_offsets);
 
         delta_offsets
+    }
+
+    fn teleport(&mut self, _xya: XYA) {
+        log::error!(
+            "teleport() called on the real galipeur. You can't teleport \
+             a 6 kg chassis through sheer willpower — use the sim for \
+             that. Ignoring."
+        );
     }
 
     fn get_gyro_offset(&mut self) -> f32 {

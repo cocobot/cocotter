@@ -1,4 +1,5 @@
 use asserv::differential::conf::AsservHardware;
+use asserv::maths::XYA;
 use board_pami::{Encoder, PamiBoard, PamiMotor, PamiMotors};
 use embedded_hal::pwm::SetDutyCycle;
 
@@ -61,5 +62,12 @@ impl<B: PamiBoard> AsservHardware for PamiAsservHardware<B> {
             Self::get_encoder_delta(&mut self.motors.left, &mut self.last_encoder_reads[0]),
             Self::get_encoder_delta(&mut self.motors.right, &mut self.last_encoder_reads[1]),
         ]
+    }
+
+    fn teleport(&mut self, _xya: XYA) {
+        log::error!(
+            "teleport() called on the real pami. No dice — pami doesn't \
+             come with a teleporter. Use the sim."
+        );
     }
 }

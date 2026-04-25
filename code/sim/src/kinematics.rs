@@ -52,6 +52,17 @@ pub struct HoloState {
     pos_from_enc: Matrix3,
     /// inverse: encoder_deltas = M^-1 @ [dx_robot, dy_robot, da]
     enc_from_pos: Matrix3,
+    /// Rotation (rad) that maps a vector from the asserv body frame to
+    /// the sim body frame. Used to correct a rotational mismatch between
+    /// the physical motor/encoder mounting and the sim's orientation
+    /// convention — the asserv thinks +X_body is its forward, but the
+    /// visual/chassis has that axis rotated by this angle.
+    asserv_to_sim_rad: f32,
+    /// When `true`, the asserv frame is mirrored compared to the sim
+    /// (left-handed). Applied *before* `asserv_to_sim_rad` as
+    /// `(vx, va) → (-vx, -va)` which flips both the X axis and the
+    /// rotation sense.
+    asserv_mirror: bool,
 }
 
 impl HoloState {
@@ -59,6 +70,8 @@ impl HoloState {
         start: Pose2D,
         velocities_to_consigns: Matrix3,
         encoders_to_position: Matrix3,
+        asserv_to_sim_rad: f32,
+        asserv_mirror: bool,
     ) -> Self {
         let vel_from_consigns = inverse3(velocities_to_consigns)
             .expect("velocities_to_consigns is singular");
@@ -70,6 +83,8 @@ impl HoloState {
             vel_from_consigns,
             pos_from_enc: encoders_to_position,
             enc_from_pos,
+            asserv_to_sim_rad,
+            asserv_mirror,
         }
     }
 
@@ -96,8 +111,19 @@ impl HoloState {
             consigns[1].clamp(-4095.0, 4095.0),
             consigns[2].clamp(-4095.0, 4095.0),
         ];
-        let v_body = mat_vec3(self.vel_from_consigns, c_clamped);
-        let (mut vx, mut vy, mut va) = (v_body[0], v_body[1], v_body[2]);
+        let v_body_asserv = mat_vec3(self.vel_from_consigns, c_clamped);
+        // Optional mirror (left-handed asserv frame): flip X and the
+        // rotation sense. Applied *before* the rotation.
+        let mirror = if self.asserv_mirror { -1.0 } else { 1.0 };
+        let vxa = mirror * v_body_asserv[0];
+        let vya = v_body_asserv[1];
+        let vaa = mirror * v_body_asserv[2];
+        // Rotate the (possibly mirrored) asserv velocity into the sim
+        // body frame.
+        let (ca, sa) = (self.asserv_to_sim_rad.cos(), self.asserv_to_sim_rad.sin());
+        let mut vx = ca * vxa - sa * vya;
+        let mut vy = sa * vxa + ca * vya;
+        let mut va = vaa;
 
         let v_norm = (vx * vx + vy * vy).sqrt();
         if v_norm > MAX_LIN_MM_S {
@@ -137,9 +163,26 @@ impl HoloState {
         // `encoders_to_position * motor_offsets` output by 1000 (see the
         // TODO in the asserv code). Mirror that scaling here.
         const ASSERV_XY_SCALE: f32 = 1000.0;
-        let body_for_enc = [dx_r * t * ASSERV_XY_SCALE, dy_r * t * ASSERV_XY_SCALE, da];
+        // Map the displacement (sim body frame) back into the asserv
+        // body frame: undo the rotation, then undo the mirror so the
+        // encoders match the consigns the asserv sent.
+        let dx_sim = dx_r * t;
+        let dy_sim = dy_r * t;
+        let dx_mid = ca * dx_sim + sa * dy_sim;
+        let dy_mid = -sa * dx_sim + ca * dy_sim;
+        let dx_asserv = mirror * dx_mid;
+        let dy_asserv = dy_mid;
+        let da_asserv = mirror * da;
+        let body_for_enc = [
+            dx_asserv * ASSERV_XY_SCALE,
+            dy_asserv * ASSERV_XY_SCALE,
+            da_asserv,
+        ];
         let enc_delta = mat_vec3(self.enc_from_pos, body_for_enc);
-        (enc_delta, da)
+        // The asserv fuses this delta with the commanded `va`; return
+        // it in the *asserv* frame (mirrored) so the gyro agrees with
+        // the PWM it just sent, otherwise the angular PID oscillates.
+        (enc_delta, da_asserv)
     }
 
     #[allow(dead_code)]
@@ -249,6 +292,8 @@ mod tests {
             Pose2D { x_mm: 0.0, y_mm: 0.0, theta_rad: 0.0 },
             VEL2CONS,
             ENC2POS,
+            0.0,
+            false,
         );
         let shape = crate::collide::RobotShape::from_circle(1.0);
         // Integrate 1 second in 10ms ticks.
@@ -268,6 +313,8 @@ mod tests {
             Pose2D { x_mm: 0.0, y_mm: 0.0, theta_rad: 0.0 },
             VEL2CONS,
             ENC2POS,
+            0.0,
+            false,
         );
         let shape = crate::collide::RobotShape::from_circle(1.0);
         for _ in 0..100 {

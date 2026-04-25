@@ -47,6 +47,15 @@ impl<B: SabotterBoard> AsservHelper<B> {
         self.wait()
     }
 
+    /// Warp the robot to `xya`. In the simulator the chassis is
+    /// actually moved; on physical hardware only the software pose
+    /// estimate is updated (the caller is responsible for having
+    /// placed the robot at that pose).
+    pub fn teleport(&self, x: f32, y: f32, a: f32) {
+        use asserv::maths::XYA;
+        self.asserv.lock().unwrap().teleport(XYA::new(x, y, a));
+    }
+
     pub fn run_path(&self, path: &[XY]) -> Result<(), StrategyError> {
         self.asserv.lock().unwrap().run_path(path);
         self.wait()

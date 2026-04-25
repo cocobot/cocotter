@@ -8,8 +8,10 @@ use std::marker::PhantomData;
 use std::sync::Arc;
 
 use asserv::differential::conf::AsservHardware;
+use asserv::maths::XYA;
 use board_pami::PamiBoard;
 use sim_client::SimClient;
+use sim_protocol::{Pose2D, SimMsgC2S};
 
 pub struct PamiAsservHardware<B: PamiBoard> {
     sim: Arc<SimClient>,
@@ -39,5 +41,11 @@ impl<B: PamiBoard> AsservHardware for PamiAsservHardware<B> {
 
     fn get_motor_offsets(&mut self) -> [f32; 2] {
         std::mem::replace(&mut self.cached, [0.0, 0.0])
+    }
+
+    fn teleport(&mut self, xya: XYA) {
+        let _ = self.sim.send(SimMsgC2S::Teleport {
+            pose: Pose2D { x_mm: xya.x, y_mm: xya.y, theta_rad: xya.a },
+        });
     }
 }

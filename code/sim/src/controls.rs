@@ -17,6 +17,8 @@ use std::sync::{Arc, Mutex};
 use bevy::prelude::*;
 use sim_protocol::{send_msg, RobotKind, SimMsgS2C};
 
+use crate::config::{Side, TeamSides};
+
 /// Shared registry of active IPC connections. `server::listen_forever`
 /// pushes a cloned stream handle on accept and removes it on disconnect.
 /// `kill_all` drains the list and shuts down every stream, which makes
@@ -74,6 +76,12 @@ pub enum ChordState {
 #[derive(Resource, Default)]
 pub struct ChordStateRes(pub ChordState);
 
+/// Colour → side mapping copied from the TOML config at startup. Kept
+/// separate from `SimConfig` so the chord can access it without
+/// reaching into the full config resource.
+#[derive(Resource, Clone)]
+pub struct TeamSidesRes(pub TeamSides);
+
 /// Which `(kind, team)` combinations the sim has explicitly launched.
 /// `kill_all` clears every flag; there is no tracking of externally-
 /// spawned robots (those connecting via `cargo run` from a terminal),
@@ -120,6 +128,7 @@ pub fn chord_input(
     mut state: ResMut<ChordStateRes>,
     mut slots: ResMut<SpawnSlots>,
     conns: Res<ConnRegistry>,
+    teams: Res<TeamSidesRes>,
 ) {
     // Countdown on any active Flash state — reverts to Idle when expired.
     if let ChordState::Flash { ttl_s, .. } = &mut state.0 {
@@ -156,16 +165,16 @@ pub fn chord_input(
         }
         ChordState::AwaitingSpawnKind => {
             if keys.just_pressed(KeyCode::KeyG) {
-                pick_kind(RobotKind::Galipeur, &mut state, &mut slots);
+                pick_kind(RobotKind::Galipeur, &mut state, &mut slots, &teams.0);
             } else if keys.just_pressed(KeyCode::KeyP) {
-                pick_kind(RobotKind::Pami, &mut state, &mut slots);
+                pick_kind(RobotKind::Pami, &mut state, &mut slots, &teams.0);
             }
         }
         ChordState::AwaitingSpawnTeam(kind) => {
             if keys.just_pressed(KeyCode::KeyB) {
-                spawn_team(kind, "blue", &mut state, &mut slots);
+                spawn_team(kind, "blue", &mut state, &mut slots, &teams.0);
             } else if keys.just_pressed(KeyCode::KeyY) {
-                spawn_team(kind, "yellow", &mut state, &mut slots);
+                spawn_team(kind, "yellow", &mut state, &mut slots, &teams.0);
             }
         }
         ChordState::Flash { .. } => {
@@ -181,6 +190,7 @@ fn pick_kind(
     kind: RobotKind,
     state: &mut ChordStateRes,
     slots: &mut SpawnSlots,
+    teams: &TeamSides,
 ) {
     let [blue, yellow] = slots.slots(kind);
     match (blue, yellow) {
@@ -190,8 +200,8 @@ fn pick_kind(
                 ttl_s: 2.0,
             };
         }
-        (true, false) => spawn_team(kind, "yellow", state, slots),
-        (false, true) => spawn_team(kind, "blue", state, slots),
+        (true, false) => spawn_team(kind, "yellow", state, slots, teams),
+        (false, true) => spawn_team(kind, "blue", state, slots, teams),
         (false, false) => state.0 = ChordState::AwaitingSpawnTeam(kind),
     }
 }
@@ -201,6 +211,7 @@ fn spawn_team(
     team: &str,
     state: &mut ChordStateRes,
     slots: &mut SpawnSlots,
+    teams: &TeamSides,
 ) {
     let idx = team_idx(team);
     if slots.slots(kind)[idx] {
@@ -210,24 +221,31 @@ fn spawn_team(
         };
         return;
     }
-    launch_robot(kind, team);
+    launch_robot(kind, team, teams);
     slots.set(kind, idx, true);
     state.0 = ChordState::Idle;
 }
 
-fn launch_robot(kind: RobotKind, team: &str) {
+fn launch_robot(kind: RobotKind, team: &str, teams: &TeamSides) {
     // `s*` aliases target x86_64-unknown-linux-gnu (sim-native build);
     // the `r*` variants build for the ESP32 which makes no sense here.
     let alias = match kind {
         RobotKind::Galipeur => "sgalipeur",
         RobotKind::Pami => "spami",
     };
-    let label = format!("{alias}/{team}");
+    let side = teams.side_of(team).unwrap_or(Side::Left);
+    let side_name = match side {
+        Side::Left => "left",
+        Side::Right => "right",
+    };
+    let label = format!("{alias}/{team}/{side_name}");
     match Command::new("cargo")
         .arg(alias)
-        // Robot binaries read TEAM at startup (when they support it);
-        // harmless when ignored.
+        // Robot binaries may read either TEAM (colour) or SIDE (which
+        // side of the table). Both are passed; pick whichever fits the
+        // current strat.
         .env("TEAM", team)
+        .env("SIDE", side_name)
         .stdin(Stdio::null())
         // stdout/stderr inherit → child output lands in the sim console.
         .spawn()

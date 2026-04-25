@@ -1,5 +1,7 @@
 pub use crate::conf::PidConf;
 
+use crate::maths::XYA;
+
 
 /// Implement asserv hardware behavior
 ///
@@ -11,6 +13,14 @@ pub trait AsservHardware {
     fn set_motor_consigns(&mut self, values: [f32; 2]);
     /// Return motor encoder offset, since last call
     fn get_motor_offsets(&mut self) -> [f32; 2];
+    /// Warp the physical robot to the given pose. Only meaningful under
+    /// the simulator; hardware implementations log and no-op.
+    fn teleport(&mut self, _xya: XYA) {
+        log::warn!(
+            "AsservHardware::teleport called on physical hardware — \
+             ignoring (can't move the chassis without motors)."
+        );
+    }
 }
 
 

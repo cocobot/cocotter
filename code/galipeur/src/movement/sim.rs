@@ -10,8 +10,10 @@ use std::marker::PhantomData;
 use std::sync::Arc;
 
 use asserv::holonomic::conf::AsservHardware;
+use asserv::maths::XYA;
 use board_sabotter::SabotterBoard;
 use sim_client::SimClient;
+use sim_protocol::{Pose2D, SimMsgC2S};
 
 pub struct MovementLowLevelHardware<B: SabotterBoard> {
     sim: Arc<SimClient>,
@@ -48,5 +50,16 @@ impl<B: SabotterBoard> AsservHardware for MovementLowLevelHardware<B> {
 
     fn get_gyro_offset(&mut self) -> f32 {
         std::mem::replace(&mut self.cached_gyro_delta, 0.0)
+    }
+
+    fn teleport(&mut self, xya: XYA) {
+        //let _ = self.sim.send(SimMsgC2S::Teleport {
+        //    pose: Pose2D { x_mm: 2000.0 - xya.x, y_mm: 1500.0 + xya.y, theta_rad: xya.a },
+        //});
+
+
+        let _ = self.sim.send(SimMsgC2S::Teleport {
+            pose: Pose2D { x_mm: 1500.0 + xya.y, y_mm: 2000.0 - xya.x, theta_rad: xya.a },
+        });
     }
 }

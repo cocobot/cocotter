@@ -12,8 +12,10 @@ use crate::led::LedMessage;
 use crate::meca::Meca;
 use crate::movement::MovementLowLevelHardware;
 use crate::sensors::Sensors;
+use crate::strat::calibration::ground_lidars;
 use crate::strat::utils::{AsservHelper, arfast};
 
+pub mod calibration;
 pub mod utils;
 pub mod errors;
 
@@ -49,6 +51,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     }
 
     fn run(mut self) {
+        if std::env::var("CALIBRATE_GROUND").is_ok() {
+            log::info!("[strat] CALIBRATE_GROUND set — running ground-lidar calibration");
+            calibration::ground_lidars(&self.asserv, &self.sensors);
+            log::info!("[strat] calibration done, exiting");
+            std::process::exit(0);
+        }
         self.prepare_match();
     }
 
@@ -93,8 +101,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }
         }
         
-        self.test_movement();
-
+        ground_lidars(&self.asserv, &self.sensors);
+    
         loop {            
             std::thread::sleep(Duration::from_secs(1));
         }

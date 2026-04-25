@@ -1,5 +1,5 @@
 pub use crate::conf::PidConf;
-use crate::maths::{Matrix33, MATRIX33_IDENTITY};
+use crate::maths::{Matrix33, XYA, MATRIX33_IDENTITY};
 
 
 /// Implement asserv hardware behavior
@@ -14,6 +14,17 @@ pub trait AsservHardware {
     fn get_motor_offsets(&mut self) -> [f32; 3];
     /// Get angle offset from gyroscope, since last call
     fn get_gyro_offset(&mut self) -> f32;
+    /// Warp the physical robot to the given pose. Only the simulator
+    /// can honour this; on real hardware we log a warning and do
+    /// nothing (the asserv's local `reset_position` may still update
+    /// the software estimate, but the chassis itself won't move).
+    fn teleport(&mut self, _xya: XYA) {
+        log::warn!(
+            "AsservHardware::teleport called on physical hardware — that's \
+             not how robots work. The internal pose estimate may be \
+             reset, but the chassis isn't going to jump."
+        );
+    }
 }
 
 

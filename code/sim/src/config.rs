@@ -11,6 +11,8 @@ pub struct Config {
     pub pami: RobotConfig,
     #[serde(default)]
     pub humans: HumansConfig,
+    /// Year-specific team colour → table side mapping.
+    pub teams: TeamSides,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -197,10 +199,51 @@ pub struct StartPosesConfig {
     pub pami: TeamPoses,
 }
 
+/// Year-specific mapping from team colour to table side. The strat
+/// draws colours each year, so this translation lives in config
+/// rather than in the code. Example `[teams] blue = "left", yellow
+/// = "right"` matches a year where the blue team starts on the left.
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "lowercase")]
+pub struct TeamSides {
+    pub blue: Side,
+    pub yellow: Side,
+}
+
+impl TeamSides {
+    pub fn side_of(&self, colour: &str) -> Option<Side> {
+        match colour.to_ascii_lowercase().as_str() {
+            "blue" => Some(self.blue),
+            "yellow" => Some(self.yellow),
+            _ => None,
+        }
+    }
+}
+
+/// Start poses keyed by side, using the generic "left/right" naming
+/// (which side of the table the robot is on). The mapping of left/right
+/// onto the current year's team colour (`blue` / `yellow`) is part of
+/// the strat config, not the sim.
 #[derive(Debug, Deserialize, Clone)]
 pub struct TeamPoses {
-    pub blue: Pose2DToml,
-    pub yellow: Pose2DToml,
+    pub left: Pose2DToml,
+    pub right: Pose2DToml,
+}
+
+impl TeamPoses {
+    pub fn pose_for(&self, side: Side) -> &Pose2DToml {
+        match side {
+            Side::Left => &self.left,
+            Side::Right => &self.right,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Side {
+    Left,
+    Right,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -464,6 +507,23 @@ pub enum KinematicsConfig {
     Holo {
         velocities_to_consigns: [[f32; 3]; 3],
         encoders_to_position: [[f32; 3]; 3],
+        /// CCW rotation (rad) from the asserv body frame to the sim
+        /// body frame. Use when the motors/encoders are mounted at an
+        /// angular offset from the chassis visual forward, so that the
+        /// asserv's +X maps onto the sim's +X rotated by this angle.
+        /// Default 0 = frames aligned.
+        #[serde(default)]
+        asserv_to_sim_rad: f32,
+        /// Set to `true` when the asserv body frame is *mirrored*
+        /// compared to the sim frame (left-handed vs right-handed).
+        /// Symptom: commanding `va > 0` in the asserv makes the robot
+        /// rotate clockwise in the sim (indirect trig sense) and / or
+        /// the X and Y axes swap roles beyond what a pure rotation
+        /// can explain. Applied *before* `asserv_to_sim_rad`: we
+        /// negate `vx` and `va` (equivalent to mirroring across the
+        /// Y axis plus a sign flip on the rotation).
+        #[serde(default)]
+        asserv_mirror: bool,
     },
     Diff {
         wheel_base_mm: f32,
@@ -493,11 +553,17 @@ impl Config {
             .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
     }
 
-    /// Return the default start pose for a given robot kind (blue team for now).
+    /// Return the start pose for a given robot kind and side. Falls back
+    /// to the `Left` side when the caller doesn't specify one.
+    pub fn start_pose(&self, kind: RobotKind, side: Side) -> Pose2D {
+        let poses = match kind {
+            RobotKind::Galipeur => &self.start_poses.galipeur,
+            RobotKind::Pami => &self.start_poses.pami,
+        };
+        poses.pose_for(side).clone().into()
+    }
+
     pub fn default_start_for(&self, kind: RobotKind) -> Pose2D {
-        match kind {
-            RobotKind::Galipeur => self.start_poses.galipeur.blue.clone().into(),
-            RobotKind::Pami => self.start_poses.pami.blue.clone().into(),
-        }
+        self.start_pose(kind, Side::Left)
     }
 }

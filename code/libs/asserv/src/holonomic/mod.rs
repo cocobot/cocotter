@@ -442,6 +442,15 @@ impl<H: AsservHardware> Asserv<H> {
         self.carrot_a = self.cs.position().a;
     }
 
+    /// Warp the robot to `xya`: reset the software pose estimate AND
+    /// ask the hardware to move the chassis there. The latter is only
+    /// meaningful under the simulator; on real hardware it logs a
+    /// warning and does nothing.
+    pub fn teleport(&mut self, xya: XYA) {
+        self.reset_position(xya);
+        self.cs.hardware().teleport(xya);
+    }
+
 
     //
     // Internal methods

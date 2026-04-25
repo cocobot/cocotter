@@ -23,7 +23,7 @@ use sim_protocol::{Pose2D, RobotKind};
 use crate::bridge::WorldUpdate;
 use crate::config::{CollisionPrimitive, Config, Finish, GroundLidar, NeopixelFixture};
 use crate::controls::{
-    self, ChordStateRes, ConnRegistry, SpawnSlots,
+    self, ChordStateRes, ConnRegistry, SpawnSlots, TeamSidesRes,
 };
 use crate::textures;
 use crate::world::EntityKind;
@@ -129,6 +129,7 @@ pub fn run(
     conn_registry: ConnRegistry,
 ) {
     let mut app = App::new();
+    let team_sides = config.teams.clone();
     app.insert_resource(BridgeRx(bridge_rx))
         .insert_resource(SimEntities::default())
         .insert_resource(SimConfig(config))
@@ -136,6 +137,7 @@ pub fn run(
         .insert_resource(conn_registry)
         .insert_resource(ChordStateRes::default())
         .insert_resource(SpawnSlots::default())
+        .insert_resource(TeamSidesRes(team_sides))
         .insert_resource(HumansVisible(false))
         .insert_resource(NeopixelRegistry::default())
         .insert_resource(GroundBeamRegistry::default());
@@ -178,19 +180,21 @@ pub fn run(
             setup_shortcuts_overlay,
         ),
     )
-    .add_systems(
-        Update,
-        (
-            drain_bridge,
-            start_human_animations,
-            toggle_collision_overlay,
-            toggle_humans_visibility,
-            apply_humans_visibility,
-            ensure_mesh_normals,
-            controls::chord_input,
-            controls::render_chord_overlay,
-        ),
-    );
+    .add_systems(Update, drain_bridge);
+    if !headless {
+        app.add_systems(
+            Update,
+            (
+                start_human_animations,
+                toggle_collision_overlay,
+                toggle_humans_visibility,
+                apply_humans_visibility,
+                ensure_mesh_normals,
+                controls::chord_input,
+                controls::render_chord_overlay,
+            ),
+        );
+    }
 
     app.run();
 }

@@ -203,6 +203,14 @@ impl<H: AsservHardware> Asserv<H> {
         self.cs.reset_position(xya);
     }
 
+    /// Warp to `xya`: reset the software estimate AND ask the hardware
+    /// to move the chassis there. Only meaningful under the simulator;
+    /// real hardware logs a warning and does nothing.
+    pub fn teleport(&mut self, xya: XYA) {
+        self.reset_position(xya);
+        self.hardware_mut().teleport(xya);
+    }
+
 
     //
     // Internal methods

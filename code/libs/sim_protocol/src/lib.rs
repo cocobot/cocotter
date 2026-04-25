@@ -57,6 +57,9 @@ pub enum SimMsgC2S {
     /// Component order is the one seen by the host code (RGB after
     /// `smart_leds::RGB8`), not the on-the-wire GRB order.
     NeopixelFrame { pixels: Vec<[u8; 3]> },
+    /// Warp the robot's sim pose to the given value. Only meaningful in
+    /// the simulator — physical hardware logs a warning and no-ops.
+    Teleport { pose: Pose2D },
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
