@@ -212,6 +212,7 @@ async fn led_status_task(
 
         if !ground.0 || !ground.1 || !ground.2 || aru {
             lidar::power_off();
+            log::warn!("Force lidar off");
         }
         
 
@@ -254,7 +255,10 @@ async fn led_status_task(
                 let servo_id = TRANSLATION_SERVO_IDS[module as usize];
                 let (position, error) = match translation_bus.lock().await.read_position(servo_id).await {
                     Ok((pos, err)) => (pos, err),
-                    Err(_) => (0, 0xFF),
+                    Err(_) => {
+                        log::warn!("Translation servo {} read error", module);
+                        (0, 0xFF)
+                    },
                 };
                 let target = TRANSLATION_TARGETS[module as usize].load(Ordering::Relaxed);
                 let diff = if position > target { position - target } else { target - position };
@@ -286,7 +290,7 @@ async fn led_status_task(
             join_array([
                 module_update(module0),
                 //module_update(module1),
-                module_update(module2),
+                //module_update(module2),
             ]),
             translation_update,
         ).await;
@@ -1052,8 +1056,10 @@ async fn main(spawner: Spawner) {
     spawner.spawn(cmd_task(module0, module1, module2, translation_bus).unwrap());
 
     // Main task idles
+    let mut id : usize = 0;
     loop {
         Timer::after_millis(5000).await;
-        info!("Picotter is alive !");
+        info!("Picotter is alive ! : {}", id);
+        id = id.wrapping_add(1);
     }
 }
