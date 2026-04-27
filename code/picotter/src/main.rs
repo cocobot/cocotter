@@ -296,7 +296,7 @@ async fn led_status_task(
             join_array([
                 module_update(module0),
                 //module_update(module1),
-                //module_update(module2),
+                module_update(module2),
             ]),
             translation_update,
         ).await;
