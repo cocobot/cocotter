@@ -27,7 +27,7 @@ use m703a::{LidarMeasurement, M703a, M703aError};
 pub const NUM_LIDARS: usize = 6;
 pub const LIDARS_PER_MODULE: usize = 2;
 
-const WATCHDOG_TIMEOUT: Duration = Duration::from_secs(3);
+const WATCHDOG_TIMEOUT: Duration = Duration::from_secs(10);
 const POLL_INTERVAL: Duration = Duration::from_millis(25);
 
 // Shared measurement storage
