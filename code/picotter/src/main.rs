@@ -18,6 +18,7 @@ use embassy_stm32::can::CanConfigurator;
 use embassy_stm32::can::OperatingMode;
 use embassy_stm32::gpio::{Level, Output, OutputType, Speed};
 use embassy_stm32::i2c::{self, Config as I2cConfig, I2c};
+use embassy_stm32::pac::usart::vals::M0;
 use embassy_stm32::timer::simple_pwm::{PwmPin, SimplePwm, SimplePwmChannel};
 use embassy_stm32::timer::low_level::{CountingMode, OutputPolarity};
 use embassy_stm32::mode::Async;
@@ -212,7 +213,12 @@ async fn led_status_task(
 
         if !ground.0 || !ground.1 || !ground.2 || aru {
             lidar::power_off();
-            log::warn!("Force lidar off");
+            log::warn!("Force lidar off G0={} G1={} G2={}, aru={}", ground.0, ground.1, ground.2, aru);
+
+            let m0 = module0.lock().await;
+            let m1 = module1.lock().await;
+            let m2 = module2.lock().await;
+            log::warn!("ground value : {}, {}, {}", m0.ground_value(), m1.ground_value(), m2.ground_value());
         }
         
 
