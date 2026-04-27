@@ -270,6 +270,9 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             return None;
         }
 
+         log::info!("GroundLidarModule for {:?}: distance_0={} sq_0={} distance_1={} sq_1={}",
+            side, module.distance_0, module.sq_0, module.distance_1, module.sq_1);
+
         let conf = self.ground_lidar_conf.get()?.modules[idx];
 
         let pose0 = conf[0];
