@@ -371,7 +371,7 @@ impl SabotterBoard for EspSabotterBoard {
         let rome = rome_reg.start();
 
         // Reuse "other" handlers to avoid extra allocations
-        other_ota_handlers.push(Box::new(EspSelfOtaHandler::new()));
+        other_ota_handlers.insert(0, Box::new(EspSelfOtaHandler::new()));
         ota_reg.start(other_ota_handlers);
 
         ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();
