@@ -105,9 +105,6 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
                         detection_mask & 0b010 != 0,
                         detection_mask & 0b100 != 0)
                     ).ok();
-                    can.send(&CanMessage::RequestGroundValue { sensor: 0 });
-                    can.send(&CanMessage::RequestGroundValue { sensor: 1 });
-                    can.send(&CanMessage::RequestGroundValue { sensor: 2 });
                 }
                 CanMessage::LidarStatus { module, distance_0, sq_0, distance_1, sq_1 } => {
                     let idx = *module as usize;
