@@ -56,8 +56,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     //----------
 
     fn prepare_match(&mut self) {
-        log::info!("Color selection");
+        log::info!("Color selection");       
 
+        loop {            
+            self.sensors.ground_lidar(RobotSide::Back);
+            std::thread::sleep(Duration::from_secs(1));
+        }
         
         //waiting for starter to be inserted
         loop {

@@ -108,6 +108,7 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
                 }
                 CanMessage::LidarStatus { module, distance_0, sq_0, distance_1, sq_1 } => {
                     let idx = *module as usize;
+                    log::info!("LidarStatus: module: {} distance_0: {} sq_0: {} distance_1: {} sq_1: {}", module, distance_0, sq_0, distance_1, sq_1);
                     if idx < NUM_MODULES {
                         lidar_cb[idx].update(|m| {
                             m.distance_0 = *distance_0;
