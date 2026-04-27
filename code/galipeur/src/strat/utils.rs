@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use asserv::{holonomic::{Asserv, RobotSide, TableSide}, maths::XY};
+use asserv::{holonomic::{Asserv, RobotSide, TableSide}, maths::{XY, XYA}};
 use board_sabotter::SabotterBoard;
 
 use crate::{movement::MovementLowLevelHardware, strat::errors::StrategyError};
@@ -36,6 +36,16 @@ impl<B: SabotterBoard> AsservHelper<B> {
     pub fn new(asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>) -> Self {
         Self { asserv }
     }
+
+    pub fn position(&self) -> XYA {
+        let asserv = self.asserv.lock().unwrap();
+        *asserv.cs.position()
+    }
+    
+    pub fn teleport(&self, x: f32, y: f32, a: f32) {
+        log::warn!("TODO");
+    }
+    
 
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
         self.asserv.lock().unwrap().goto_xya(x, y, a);
