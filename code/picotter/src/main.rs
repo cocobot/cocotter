@@ -208,7 +208,7 @@ async fn led_status_task(
                 m1.update_ground_sensor(),
                 m2.update_ground_sensor(),
             ).await;
-            (g0.unwrap_or(false), g1.unwrap_or(false), g2.unwrap_or(false))
+            (g0.unwrap_or(true), g1.unwrap_or(true), g2.unwrap_or(true))
         };
 
         if !ground.0 || !ground.1 || !ground.2 || aru {
