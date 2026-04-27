@@ -146,12 +146,6 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         // Update asserv, send asserv telemetry
         if self.asserv_periodicity.update(now) {
             self.asserv.lock().unwrap().update();
-
-
-
-            self.can.send(&CanMessage::RequestGroundValue { sensor: 0 });
-            self.can.send(&CanMessage::RequestGroundValue { sensor: 1 });
-            self.can.send(&CanMessage::RequestGroundValue { sensor: 2 });
         }
         //if self.asserv_tm_periodicity.update(now) {
         //    if let Err(err) = self.rome_tx.send(self.asserv.asserv_tm_status().encode()) {
