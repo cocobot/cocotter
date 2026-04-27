@@ -46,6 +46,9 @@ impl<B: SabotterBoard> AsservHelper<B> {
         log::warn!("TODO");
     }
     
+    pub fn reset_position(&self, x: f32, y: f32, a: f32) {
+        self.asserv.lock().unwrap().reset_position(XYA::new(x, y, a));
+    }
 
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
         self.asserv.lock().unwrap().goto_xya(x, y, a);

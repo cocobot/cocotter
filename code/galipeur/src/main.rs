@@ -74,20 +74,20 @@ fn main() {
     routines.sensors.set_conf(
         GroundLidarConf {
             modules: [
-                // Module 0 (Left): lidar 0 and lidar 3
+                // Module 0: lidar 0 and lidar 3
                 [
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: 163.60, y: -49.31, theta: -87.900_f32.to_radians() },  // r_min=197 mm @ θ_R=235.3°
+                    GroundLidarPose { x: -37.88, y: 161.19, theta: 33.050_f32.to_radians() },  // r_min=200 mm @ θ_R=115.7°
                 ],
-                // Module 1 (Back): lidar 1 and lidar 4
+                // Module 1: lidar 1 and lidar 4
                 [
-                    GroundLidarPose { x: -131.3, y: -131.3, theta: 300.0_f32.to_radians() },
-                    GroundLidarPose { x:  133.7, y:  133.1, theta: 240.0_f32.to_radians() },
+                    GroundLidarPose { x: -122.49, y: 121.62, theta: -153.000_f32.to_radians() },  // r_min=197 mm @ θ_R=6.1°
+                    GroundLidarPose { x: -124.44, y: -110.72, theta: 154.800_f32.to_radians() },  // r_min=192 mm @ θ_R=354.5°
                 ],
-                // Module 2 (Right): lidar 2 and lidar 5
+                // Module 2: lidar 2 and lidar 5
                 [
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: -44.33, y: -163.00, theta: -32.850_f32.to_radians() },  // r_min=202 mm @ θ_R=245.3°
+                    GroundLidarPose { x: 148.74, y: 50.46, theta: 83.750_f32.to_radians() },  // r_min=198 mm @ θ_R=124.6°
                 ],
             ],
         },

@@ -436,7 +436,7 @@ impl<H: AsservHardware> Asserv<H> {
 
     /// Reset position, reset carrot to current position, reset motor consigns
     pub fn reset_position(&mut self, xya: XYA) {
-        self.cs.motor_filter.reset();
+        self.cs.motor_filter.reset(&xya);
         self.cs.reset_position(xya);
         self.carrot = self.cs.position().xy();
         self.carrot_a = self.cs.position().a;
