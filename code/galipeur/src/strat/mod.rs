@@ -60,13 +60,11 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     fn prepare_match(&mut self) {
         log::info!("Color selection");
 
+        self.sensors.ground_lidar(RobotSide::Back);
         
         
         //waiting for starter to be inserted
         loop {
-            //force lidar enable
-            self.sensors.ground_lidar(RobotSide::Back);
-
             let team = match self.inputs.color.is_high().unwrap_or(false) {
                 true => Team::Left,
                 false => Team::Right,

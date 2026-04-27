@@ -122,8 +122,6 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             }
         });
 
-        can.send(&CanMessage::SetLidarEnable { enable: false });
-
         let top_lidar: Watched<TopLidarSnapshot> = Watched::default();
         let top_lidar_thread = top_lidar.clone();
         let mut battery_reader = board.battery_reader().unwrap();
