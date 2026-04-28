@@ -61,7 +61,7 @@ impl<H: AsservHardware> ControlSystem<H> {
 
         // If CS was previously inactive, we need a little hack for quadramps
         if self.motors_reactivated {
-            self.motor_filter.reset();
+            self.motor_filter.reset(&self.position);
             self.motors_reactivated = false;
         }
 
@@ -90,7 +90,7 @@ impl<H: AsservHardware> ControlSystem<H> {
     pub fn reset_position(&mut self, xya: XYA) {
         self.position = xya;
         self.target = xya;
-        self.motor_filter.reset();
+        self.motor_filter.reset(&self.position);
     }
 
     /// Set target position (consign)

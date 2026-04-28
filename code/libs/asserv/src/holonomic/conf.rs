@@ -1,3 +1,5 @@
+use amatheur::XYA;
+
 pub use crate::conf::PidConf;
 use crate::maths::{Matrix33, MATRIX33_IDENTITY};
 
@@ -14,6 +16,8 @@ pub trait AsservHardware {
     fn get_motor_offsets(&mut self) -> [f32; 3];
     /// Get angle offset from gyroscope, since last call
     fn get_gyro_offset(&mut self) -> f32;
+    /// Teleport the robot to a given position. Should do nothing on the real robot
+    fn teleport(&mut self, _xya: XYA);
 }
 
 

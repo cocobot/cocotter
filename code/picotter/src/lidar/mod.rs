@@ -27,7 +27,7 @@ use m703a::{LidarMeasurement, M703a, M703aError};
 pub const NUM_LIDARS: usize = 6;
 pub const LIDARS_PER_MODULE: usize = 2;
 
-const WATCHDOG_TIMEOUT: Duration = Duration::from_secs(3);
+const WATCHDOG_TIMEOUT: Duration = Duration::from_secs(10);
 const POLL_INTERVAL: Duration = Duration::from_millis(25);
 
 // Shared measurement storage
@@ -247,7 +247,7 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
         let init_ok = match lidar.laser_on().await {
             Ok(()) => true,
             Err(e) => {
-                rprintln!("Lidar {}: laser_on failed: {:?}, sleeping until next power cycle", id, e);
+                log::warn!("Lidar {}: laser_on failed: {:?}, sleeping until next power cycle", id, e);
                 false
             }
         };
@@ -255,7 +255,7 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
         // Barrier 2: wait for all tasks to finish init
         let count = INIT_REPORTED.fetch_add(1, Ordering::SeqCst) + 1;
         if count == NUM_LIDARS as u8 {
-            rprintln!("Lidar {}: all {} reported, enabling nCTRL", id, NUM_LIDARS);
+            log::info!("Lidar {}: all {} reported, enabling nCTRL", id, NUM_LIDARS);
             enable_nctrl();
         }
         while INIT_REPORTED.load(Ordering::SeqCst) < NUM_LIDARS as u8 {
@@ -281,7 +281,7 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
 
         // Start fast continuous measurement
         if let Err(e) = lidar.start_continuous().await {
-            rprintln!("Lidar {}: start_continuous failed: {:?}", id, e);
+            log::error!("Lidar {}: start_continuous failed: {:?}", id, e);
         }
 
         // Continuous read loop — exits when power is cut
@@ -293,7 +293,7 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
                 }
                 Err(M703aError::Timeout) => {
                     if lidar.is_stale(WATCHDOG_TIMEOUT) {
-                        rprintln!("Lidar {}: watchdog timeout, resetting", id);
+                        log::error!("Lidar {}: watchdog timeout, resetting", id);
                         lidar.reset().await;
                     }
                 }

@@ -1,5 +1,5 @@
 use std::time::Duration;
-use asserv::holonomic::conf::*;
+use asserv::{holonomic::conf::*, maths::XYA};
 use board_sabotter::{Encoder, SabotterBoard, SabotterMotor};
 use embedded_hal::pwm::SetDutyCycle;
 use sch16t::Sch16t;
@@ -100,5 +100,13 @@ impl<B: SabotterBoard> AsservHardware for MovementLowLevelHardware<B> {
                 0.0
             }
         }
+    }
+
+    fn teleport(&mut self, _xya: XYA) {
+        log::error!(
+            "teleport() called on the real galipeur. You can't teleport \
+             a 6 kg chassis through sheer willpower — use the sim for \
+             that. Ignoring."
+        );
     }
 }

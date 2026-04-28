@@ -46,12 +46,11 @@ impl MotorFilter {
     }
 
     /// Reset PIDs and angle quadramp
-    pub(crate) fn reset(&mut self) {
+    pub(crate) fn reset(&mut self, position: &XYA) {
         self.pid_x.reset();
         self.pid_y.reset();
         self.pid_a.reset();
-        //TODO Previously, was resetting to current state, use `reset_finished()`?
-        self.qramp_a.reset_finished_to(0);
+        self.qramp_a.reset_finished_to(rcs_rad_to_cs_unit(position.a));
     }
 
     /// Provide access to PID configurations

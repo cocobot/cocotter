@@ -207,11 +207,12 @@ async fn led_status_task(
                 m1.update_ground_sensor(),
                 m2.update_ground_sensor(),
             ).await;
-            (g0.unwrap_or(false), g1.unwrap_or(false), g2.unwrap_or(false))
+            (g0.unwrap_or(true), g1.unwrap_or(true), g2.unwrap_or(true))
         };
 
         if !ground.0 || !ground.1 || !ground.2 || aru {
             lidar::power_off();
+            log::warn!("Force lidar off G0={} G1={} G2={}, aru={}", ground.0, ground.1, ground.2, aru);
         }
         
 
@@ -285,7 +286,7 @@ async fn led_status_task(
         join(
             join_array([
                 module_update(module0),
-                module_update(module1),
+                //module_update(module1),
                 module_update(module2),
             ]),
             translation_update,

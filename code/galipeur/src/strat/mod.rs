@@ -16,6 +16,8 @@ use crate::strat::utils::{AsservHelper, arfast};
 
 pub mod utils;
 pub mod errors;
+mod calibration;
+mod realign;
 
 pub struct Strat<B: SabotterBoard> {
     team: Team,
@@ -58,6 +60,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     fn prepare_match(&mut self) {
         log::info!("Color selection");
 
+        self.sensors.ground_lidar(RobotSide::Back);
+        
         
         //waiting for starter to be inserted
         loop {
@@ -72,10 +76,17 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             if self.inputs.starter.is_low().unwrap_or(false) {
                 log::info!("Color selected"); 
                 self.team = team;
-                self.meca.init(team);               
+                self.meca.init(team);       
+                self.sensors.ground_lidar(RobotSide::Back);        
                 break;
             }                       
         }
+
+        std::thread::sleep(Duration::from_secs(1));
+
+        self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Up));
+        realign::realign(&mut self.asserv, &self.sensors, RobotSide::Back, TableSide::Up).ok();
+        self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
 
         //waiting for starter to be removed
         let mut blink = false;
@@ -92,8 +103,10 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                 break;
             }
         }
+
+        //calibration::ground_lidars(&self.asserv, &self.sensors);
         
-        self.test_movement();
+        //self.test_movement();
 
         loop {            
             std::thread::sleep(Duration::from_secs(1));
