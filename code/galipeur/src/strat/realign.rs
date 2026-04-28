@@ -9,6 +9,7 @@
 //! untouched (the lidars can't resolve it).
 //!
 
+use amatheur::normalize_radians_pi_pi;
 use asserv::holonomic::{RobotSide, TableSide};
 use board_sabotter::SabotterBoard;
 
@@ -25,11 +26,6 @@ const ASSERV_X_AT_UP_WALL: f32 = 2000.0;
 const ASSERV_X_AT_DOWN_WALL: f32 = 0.0;
 const ASSERV_Y_AT_LEFT_WALL: f32 = 1500.0;
 const ASSERV_Y_AT_RIGHT_WALL: f32 = -1500.0;
-
-fn wrap_pi(x: f32) -> f32 {
-    ((x + core::f32::consts::PI).rem_euclid(core::f32::consts::TAU))
-        - core::f32::consts::PI
-}
 
 /// Realign the asserv pose using the ground lidars on `face`,
 /// against `wall`.
@@ -66,7 +62,7 @@ pub fn realign<B: SabotterBoard + 'static>(
         .ok_or(StrategyError::SensorUnavailable)?;
     let current = asserv.position();
 
-    let new_theta = wrap_pi(arfast(face, wall) - po.angle);
+    let new_theta = normalize_radians_pi_pi(arfast(face, wall) - po.angle);
 
     let (new_x, new_y) = match wall {
         TableSide::Up => (ASSERV_X_AT_UP_WALL - po.distance, current.y),

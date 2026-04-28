@@ -9,6 +9,7 @@
 
 use std::time::Duration;
 
+use amatheur::normalize_radians_pi_pi;
 use asserv::holonomic::RobotSide;
 use board_sabotter::SabotterBoard;
 
@@ -199,9 +200,9 @@ pub fn ground_lidars<B: SabotterBoard + 'static>(
     log::info!(
         "[ground-cal] face-orientation residuals (BA frame, post Back-reset): \
          back α* = {:.3}°, left α* − 2π/3 = {:.3}°, right α* + 2π/3 = {:.3}°",
-        wrap_pi(back.alpha_star).to_degrees(),
-        wrap_pi(left.alpha_star - left_target).to_degrees(),
-        wrap_pi(right.alpha_star - right_target).to_degrees(),
+        normalize_radians_pi_pi(back.alpha_star).to_degrees(),
+        normalize_radians_pi_pi(left.alpha_star - left_target).to_degrees(),
+        normalize_radians_pi_pi(right.alpha_star - right_target).to_degrees(),
     );
 
     // -------- Render GroundLidarConf for paste into main.rs --------
@@ -265,7 +266,7 @@ fn calibrate_face<B: SabotterBoard + 'static>(
         "[ground-cal] {side:?} α* (BA) = {:.4} rad ({:.3}°), Δ vs target = {:.3}°",
         alpha_star,
         alpha_star.to_degrees(),
-        wrap_pi(alpha_star - alpha_target_ba).to_degrees(),
+        normalize_radians_pi_pi(alpha_star - alpha_target_ba).to_degrees(),
     );
 
     let samples = collect_phase2_samples(asserv, sensors, side, alpha_star);
@@ -335,7 +336,7 @@ fn find_symmetry_angle<B: SabotterBoard + 'static>(
         match sweep_and_fit(asserv, sensors, side, center)? {
             FitOutcome::InWindow(a) => return Some(a),
             FitOutcome::Outside(extrapolated) => {
-                if wrap_pi(extrapolated - alpha_center).abs() > max_drift {
+                if normalize_radians_pi_pi(extrapolated - alpha_center).abs() > max_drift {
                     log::warn!(
                         "[ground-cal] phase1 {side:?}: extrapolated α* = {:.3}° \
                          drifted > ±{:.1}° from initial center {:.3}° — aborting",
@@ -416,23 +417,13 @@ fn sweep_and_fit<B: SabotterBoard + 'static>(
         return None;
     }
     let star = -b / a;
-    if wrap_pi(star - alpha_center).abs() <= half + step {
+    if normalize_radians_pi_pi(star - alpha_center).abs() <= half + step {
         Some(FitOutcome::InWindow(star))
     } else {
         Some(FitOutcome::Outside(star))
     }
 }
 
-/// Wrap an angular delta to (-π, π]. Used to compute angular
-/// distances that survive 2π winding-number differences in raw gyro
-/// readings (e.g., target = -2π/3 ≈ -2.09 rad vs actual = +4.19 rad
-/// representing the same physical heading).
-fn wrap_pi(delta: f32) -> f32 {
-    let tau = core::f32::consts::TAU;
-    let pi = core::f32::consts::PI;
-    let d = delta.rem_euclid(tau);
-    if d > pi { d - tau } else { d }
-}
 
 /// Phase 2: wider sweep around `alpha_star`, return all valid
 /// `(actual_α, r_a, r_b)` triples.
