@@ -76,13 +76,13 @@ fn main() {
             modules: [
                 // Module 0 (Left): lane 0 / lane 1
                 [
-                    GroundLidarPose { x: 0.00, y: 0.00, theta: 90.000_f32.to_radians() },
-                    GroundLidarPose { x: 0.00, y: 0.00, theta: 30.000_f32.to_radians() },
+                    GroundLidarPose { x: -824.37, y: -430.23, theta: 79.601_f32.to_radians() },
+                    GroundLidarPose { x: -396.75, y: -370.46, theta: 19.601_f32.to_radians() },
                 ],
                 // Module 1 (Back): lane 0 / lane 1
                 [
-                    GroundLidarPose { x: -105.76, y: 143.98, theta: 206.699_f32.to_radians() },
-                    GroundLidarPose { x: -124.76, y: -116.37, theta: 146.699_f32.to_radians() },
+                    GroundLidarPose { x: -113.96, y: 146.54, theta: 208.302_f32.to_radians() },
+                    GroundLidarPose { x: -124.75, y: -112.12, theta: 148.302_f32.to_radians() },
                 ],
                 // Module 2 (Right): lane 0 / lane 1
                 [
