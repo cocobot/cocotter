@@ -82,11 +82,11 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }                       
         }
 
-        std::thread::sleep(Duration::from_secs(1));
+        //std::thread::sleep(Duration::from_secs(1));
 
-        self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Up));
-        realign::realign(&mut self.asserv, &self.sensors, RobotSide::Back, TableSide::Up).ok();
-        self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
+        //self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Up));
+        //realign::realign(&mut self.asserv, &self.sensors, RobotSide::Back, TableSide::Up).ok();
+        //self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
 
         //waiting for starter to be removed
         let mut blink = false;
@@ -104,7 +104,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }
         }
 
-        //calibration::ground_lidars(&self.asserv, &self.sensors);
+        calibration::ground_lidars(&self.asserv, &self.sensors);
         
         //self.test_movement();
 
