@@ -308,9 +308,17 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             dist = -dist;
         }
 
-        Some(PlaneOffset {
-            angle: ny.atan2(nx),
-            distance: dist,
-        })
+        let absolute = ny.atan2(nx);
+        let side_outward = match side {
+            RobotSide::Left  => core::f32::consts::FRAC_PI_3,    //  +π/3
+            RobotSide::Right => -core::f32::consts::FRAC_PI_3,   //  -π/3
+            RobotSide::Back  => core::f32::consts::PI,           //   π
+        };
+        let mut angle = absolute - side_outward;
+        // Wrap to (-π, π].
+        let tau = core::f32::consts::TAU;
+        angle = ((angle + core::f32::consts::PI).rem_euclid(tau)) - core::f32::consts::PI;
+
+        Some(PlaneOffset { angle, distance: dist })
     }
 }
