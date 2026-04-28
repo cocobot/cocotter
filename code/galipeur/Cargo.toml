@@ -18,6 +18,7 @@ flume = { version = "0.11", default-features = false }
 cancaner = { path = "../libs/cancaner" }
 rome = { path = "../libs/rome" }
 sch16t = { path = "../libs/sch16t" }
+amatheur = { version = "0.1.0", path = "../libs/amatheur" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 embedded-hal = "1.0"
