@@ -74,20 +74,20 @@ fn main() {
     routines.sensors.set_conf(
         GroundLidarConf {
             modules: [
-                // Module 0 (Left): lidar 0 and lidar 3
+                // Module 0 (Left): lane 0 / lane 1
                 [
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: 0.00, y: 0.00, theta: 90.000_f32.to_radians() },
+                    GroundLidarPose { x: 0.00, y: 0.00, theta: 30.000_f32.to_radians() },
                 ],
-                // Module 1 (Back): lidar 1 and lidar 4
+                // Module 1 (Back): lane 0 / lane 1
                 [
-                    GroundLidarPose { x: -131.3, y: -131.3, theta: 300.0_f32.to_radians() },
-                    GroundLidarPose { x:  133.7, y:  133.1, theta: 240.0_f32.to_radians() },
+                    GroundLidarPose { x: -105.76, y: 143.98, theta: 206.699_f32.to_radians() },
+                    GroundLidarPose { x: -124.76, y: -116.37, theta: 146.699_f32.to_radians() },
                 ],
-                // Module 2 (Right): lidar 2 and lidar 5
+                // Module 2 (Right): lane 0 / lane 1
                 [
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
-                    GroundLidarPose { x: 0.0, y: 0.0, theta: 0.0 },
+                    GroundLidarPose { x: 0.00, y: 0.00, theta: 330.000_f32.to_radians() },
+                    GroundLidarPose { x: 0.00, y: 0.00, theta: 270.000_f32.to_radians() },
                 ],
             ],
         },
