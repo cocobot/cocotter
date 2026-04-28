@@ -45,8 +45,8 @@ pub struct TopLidarConf {
 /// Result of plane offset computation from a ground lidar module
 #[derive(Debug, Clone, Copy)]
 pub struct PlaneOffset {
-    /// Normal direction of the detected surface in robot frame (radians)
-    pub angle: f32,
+    /// Angular offset of wall vs expected face normal (radians). None if geometry is degenerate.
+    pub angle: Option<f32>,
     /// Perpendicular distance from robot center to the surface (mm)
     pub distance: f32,
 }
@@ -270,55 +270,55 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             return None;
         }
 
-         log::info!("GroundLidarModule for {:?}: distance_0={} sq_0={} distance_1={} sq_1={}",
+        log::info!("GroundLidarModule for {:?}: distance_0={} sq_0={} distance_1={} sq_1={}",
             side, module.distance_0, module.sq_0, module.distance_1, module.sq_1);
 
         let conf = self.ground_lidar_conf.get()?.modules[idx];
 
         let pose0 = conf[0];
         let pose1 = conf[1];
-        let d0 = module.distance_0 as f32;
-        let d1 = module.distance_1 as f32;
+        let r0 = module.distance_0 as f32;
+        let r1 = module.distance_1 as f32;
 
-        // Hit points in robot frame
-        let p0x = pose0.x + d0 * pose0.theta.cos();
-        let p0y = pose0.y + d0 * pose0.theta.sin();
-        let p1x = pose1.x + d1 * pose1.theta.cos();
-        let p1y = pose1.y + d1 * pose1.theta.sin();
+        // Expected outward normal direction for this face (in robot frame)
+        let phi = match side {
+            RobotSide::Left  => core::f32::consts::FRAC_PI_3,    //  +60°
+            RobotSide::Right => -core::f32::consts::FRAC_PI_3,   //  -60°
+            RobotSide::Back  => core::f32::consts::PI,           //  180°
+        };
+        let cos_phi = phi.cos();
+        let sin_phi = phi.sin();
 
-        // Direction along the surface
-        let dx = p1x - p0x;
-        let dy = p1y - p0y;
-        let len = (dx * dx + dy * dy).sqrt();
-        if len < 1e-6 {
+        // For each lidar, compute:
+        //   a_i = perpendicular distance from robot center to wall through beam i
+        //       = r_i * cos(θ_i - φ) + x_i * cos(φ) + y_i * sin(φ)
+        //   b_i = tangential position of hit point (sensitivity to angular offset δ)
+        //       = r_i * sin(θ_i - φ) - x_i * sin(φ) + y_i * cos(φ)
+        //
+        // The wall angle δ (relative to expected face normal) satisfies:
+        //   δ ≈ (a_0 - a_1) / (b_1 - b_0)  when |b_1 - b_0| >> |a_0 - a_1|
+        // The perpendicular distance:
+        //   D ≈ (a_0 + a_1) / 2
+
+        let a0 = r0 * (pose0.theta - phi).cos() + pose0.x * cos_phi + pose0.y * sin_phi;
+        let b0 = r0 * (pose0.theta - phi).sin() - pose0.x * sin_phi + pose0.y * cos_phi;
+        let a1 = r1 * (pose1.theta - phi).cos() + pose1.x * cos_phi + pose1.y * sin_phi;
+        let b1 = r1 * (pose1.theta - phi).sin() - pose1.x * sin_phi + pose1.y * cos_phi;
+
+        let distance = (a0 + a1) / 2.0;
+        if distance < 0.0 {
             return None;
         }
 
-        // Outward normal (perpendicular to surface, pointing away from robot)
-        let mut nx = -dy / len;
-        let mut ny = dx / len;
-
-        // Perpendicular distance from origin to the line
-        let mut dist = nx * p0x + ny * p0y;
-
-        // Ensure distance is positive (normal points outward)
-        if dist < 0.0 {
-            nx = -nx;
-            ny = -ny;
-            dist = -dist;
-        }
-
-        let absolute = ny.atan2(nx);
-        let side_outward = match side {
-            RobotSide::Left  => core::f32::consts::FRAC_PI_3,    //  +π/3
-            RobotSide::Right => -core::f32::consts::FRAC_PI_3,   //  -π/3
-            RobotSide::Back  => core::f32::consts::PI,           //   π
+        // Angular offset: only trust it if tangential baseline is large enough
+        let baseline = (b1 - b0).abs();
+        let angle = if baseline > 20.0 {
+            Some((a0 - a1) / (b1 - b0))
+        } else {
+            log::warn!("get_plane_offset({side:?}): degenerate geometry (baseline={baseline:.1}mm)");
+            None
         };
-        let mut angle = absolute - side_outward;
-        // Wrap to (-π, π].
-        let tau = core::f32::consts::TAU;
-        angle = ((angle + core::f32::consts::PI).rem_euclid(tau)) - core::f32::consts::PI;
 
-        Some(PlaneOffset { angle, distance: dist })
+        Some(PlaneOffset { angle, distance })
     }
 }

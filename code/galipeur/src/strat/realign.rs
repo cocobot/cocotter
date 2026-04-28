@@ -51,18 +51,55 @@ const ASSERV_Y_AT_RIGHT_WALL: f32 = -1500.0;
 /// in mm. The wall-normal coordinate of the body is then the wall's
 /// known coordinate ± `distance`, sign chosen so that the body sits
 /// inside the playing area.
+/// Options for realignment
+pub struct RealignOpts {
+    /// Max distance (mm) the robot may advance/retreat toward the wall to get
+    /// a reliable angle measurement. 0 = don't move, only correct distance.
+    pub max_advance: f32,
+}
+
+impl Default for RealignOpts {
+    fn default() -> Self {
+        Self { max_advance: 0.0 }
+    }
+}
+
 pub fn realign<B: SabotterBoard + 'static>(
     asserv: &AsservHelper<B>,
     sensors: &Sensors<B>,
     face: RobotSide,
     wall: TableSide,
+    opts: &RealignOpts,
 ) -> Result<(), StrategyError> {
-    let po = sensors
+    let mut po = sensors
         .get_plane_offset(face)
         .ok_or(StrategyError::SensorUnavailable)?;
+
+    // If angle is degenerate and we're allowed to move, back away from the wall
+    // to increase the baseline, then re-measure.
+    if po.angle.is_none() && opts.max_advance > 0.0 {
+        let advance = opts.max_advance;
+        let current = asserv.position();
+        // Move away from the wall to increase baseline
+        let (tx, ty) = match wall {
+            TableSide::Up => (current.x - advance, current.y),
+            TableSide::Down => (current.x + advance, current.y),
+            TableSide::Left => (current.x, current.y - advance),
+            TableSide::Right => (current.x, current.y + advance),
+        };
+        log::info!("[realign] {face:?}/{wall:?}: angle degenerate, advancing {advance:.0}mm");
+        asserv.goto_xya(tx, ty, current.a)?;
+        po = sensors
+            .get_plane_offset(face)
+            .ok_or(StrategyError::SensorUnavailable)?;
+    }
+
     let current = asserv.position();
 
-    let new_theta = normalize_radians_pi_pi(arfast(face, wall) - po.angle);
+    let new_theta = match po.angle {
+        Some(a) => normalize_radians_pi_pi(arfast(face, wall) - a),
+        None => current.a,
+    };
 
     let (new_x, new_y) = match wall {
         TableSide::Up => (ASSERV_X_AT_UP_WALL - po.distance, current.y),
@@ -72,7 +109,7 @@ pub fn realign<B: SabotterBoard + 'static>(
     };
 
     log::info!(
-        "[realign] {face:?}/{wall:?}: angle={:.3} dist={:.1} \
+        "[realign] {face:?}/{wall:?}: angle={:?} dist={:.1} \
          pose ({:.1}, {:.1}, {:.3}) → ({:.1}, {:.1}, {:.3})",
         po.angle, po.distance,
         current.x, current.y, current.a,

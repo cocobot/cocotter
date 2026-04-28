@@ -85,7 +85,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         //std::thread::sleep(Duration::from_secs(1));
 
         self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Up));
-        realign::realign(&mut self.asserv, &self.sensors, RobotSide::Back, TableSide::Up).ok();
+        realign::realign(&self.asserv, &self.sensors, RobotSide::Back, TableSide::Up, &RealignOpts { max_advance: 150.0 }).ok();
         self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
 
         //waiting for starter to be removed
