@@ -150,44 +150,36 @@ pub fn ground_lidars<B: SabotterBoard + 'static>(
     let left = match calibrate_face(asserv, sensors, RobotSide::Left, left_target) {
         Some(v) => v,
         None => {
-            log::error!("[ground-cal] Left calibration failed");
-            return;
+            log::warn!("[ground-cal] Left calibration failed, using zeroed values");
+            FaceFit::zeroed(left_target)
         }
     };
 
     // -------- Return to BA α = 0 between sides --------
-    // Re-anchor on the back-symmetric pose before rotating to Right
-    // so cumulative angular drift (gyro bias IRL, PID rotation
-    // residuals) doesn't compound across the two side rotations. We
-    // also re-run a quick Phase 1 Back to detect and correct gyro
-    // drift accrued during the Left calibration.
     log::info!("[ground-cal] returning to BA α=0 to re-anchor before Right");
     asserv.goto_a(0.0).ok();
     std::thread::sleep(Duration::from_millis(SETTLE_MS));
-    let alpha_drift = match find_symmetry_angle(asserv, sensors, RobotSide::Back, 0.0) {
-        Some(a) => a,
-        None => {
-            log::error!("[ground-cal] re-anchor Phase 1 Back failed");
-            return;
-        }
-    };
-    log::info!(
-        "[ground-cal] re-anchor: Back α* drifted by {:.3}° since the original reset \
-         — re-zeroing the gyro",
-        alpha_drift.to_degrees(),
-    );
-    asserv.goto_a(alpha_drift).ok();
-    std::thread::sleep(Duration::from_millis(SETTLE_MS));
-    let pos = asserv.position();
-    asserv.reset_position(pos.x, pos.y, 0.0);
+    if let Some(alpha_drift) = find_symmetry_angle(asserv, sensors, RobotSide::Back, 0.0) {
+        log::info!(
+            "[ground-cal] re-anchor: Back α* drifted by {:.3}° since the original reset \
+             — re-zeroing the gyro",
+            alpha_drift.to_degrees(),
+        );
+        asserv.goto_a(alpha_drift).ok();
+        std::thread::sleep(Duration::from_millis(SETTLE_MS));
+        let pos = asserv.position();
+        asserv.reset_position(pos.x, pos.y, 0.0);
+    } else {
+        log::warn!("[ground-cal] re-anchor Phase 1 Back failed, skipping gyro re-zero");
+    }
 
     // -------- Right: BA α ≈ -2π/3 --------
     let right_target = -core::f32::consts::FRAC_PI_3 * 2.0;
     let right = match calibrate_face(asserv, sensors, RobotSide::Right, right_target) {
         Some(v) => v,
         None => {
-            log::error!("[ground-cal] Right calibration failed");
-            return;
+            log::warn!("[ground-cal] Right calibration failed, using zeroed values");
+            FaceFit::zeroed(right_target)
         }
     };
 
@@ -236,6 +228,18 @@ struct FaceFit {
     alpha_star: f32,
     pose_a: (f32, f32, f32), // (x, y, θ) of lane 0 in BA frame
     pose_b: (f32, f32, f32), // (x, y, θ) of lane 1 in BA frame
+}
+
+impl FaceFit {
+    fn zeroed(alpha_target: f32) -> Self {
+        let theta_face = core::f32::consts::PI - alpha_target;
+        Self {
+            d: 0.0,
+            alpha_star: alpha_target,
+            pose_a: (0.0, 0.0, theta_face + DELTA_HALF),
+            pose_b: (0.0, 0.0, theta_face - DELTA_HALF),
+        }
+    }
 }
 
 /// Phase 1 + Phase 2 for any face in the BA frame.
