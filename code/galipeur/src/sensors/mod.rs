@@ -232,6 +232,11 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
         }
     }
 
+    /// power off ground lidar data for all 3 modules
+    pub fn ground_lidar_power_off(&self) {
+        self.can.send(&CanMessage::SetLidarEnable { enable: false });
+    }
+
     /// Get raw ground lidar data for a robot side (last cached value)
     pub fn ground_lidar(&self, side: RobotSide) -> GroundLidarModule {
         self.can.send(&CanMessage::SetLidarEnable { enable: true });

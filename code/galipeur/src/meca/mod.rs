@@ -72,6 +72,7 @@ impl<B: SabotterBoard> Meca<B> {
             self.proxy.set_clamp_torque(module, ClampServo::Left, false);
             self.proxy.set_clamp_torque(module, ClampServo::Right, false);
             self.proxy.set_clamp_torque(module, ClampServo::Rotate, false);
+            self.primitives.clamp_close(module);
         }
     }
 
@@ -223,6 +224,7 @@ impl<B: SabotterBoard> Meca<B> {
         }
 
         self.primitives.arms_down(module, &[0, 1, 2, 3]);
+        self.primitives.translation_close(module);
         self.primitives.grabs(module, &[0, 1, 2, 3]);
         std::thread::sleep(Duration::from_millis(250));
         self.primitives.arms_up(module, &[0, 1, 2, 3]);

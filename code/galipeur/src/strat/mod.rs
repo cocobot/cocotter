@@ -52,17 +52,22 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     fn run(mut self) {
         self.prepare_match();
+        self.test_movement();
+        //self.run_match();
+        self.end_of_match();
     }
-
 
     //----------
 
     fn prepare_match(&mut self) {
         log::info!("Color selection");
 
-        self.sensors.ground_lidar(RobotSide::Back);
-        
-        
+        self.sensors.ground_lidar_power_off();
+        self.meca.pre_init();
+
+        //start robot with back on the up side of table in the start area
+        self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Up));
+
         //waiting for starter to be inserted
         loop {
             let team = match self.inputs.color.is_high().unwrap_or(false) {
@@ -74,19 +79,17 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             sleep(Duration::from_millis(100));
 
             if self.inputs.starter.is_low().unwrap_or(false) {
-                log::info!("Color selected"); 
+                log::info!("Color selected");
                 self.team = team;
-                self.meca.init(team);       
-                self.sensors.ground_lidar(RobotSide::Back);        
+                self.meca.init(team);
                 break;
-            }                       
+            }
+
+            //TODO : add autoset and go to final position in start area
+            //self.sensors.ground_lidar(RobotSide::Back);
         }
 
         std::thread::sleep(Duration::from_secs(1));
-
-        self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Up));
-        realign::realign(&mut self.asserv, &self.sensors, RobotSide::Back, TableSide::Up).ok();
-        self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
 
         //waiting for starter to be removed
         let mut blink = false;
@@ -104,50 +107,51 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }
         }
 
-        //calibration::ground_lidars(&self.asserv, &self.sensors);
-        
-        //self.test_movement();
 
-        loop {            
-            std::thread::sleep(Duration::from_secs(1));
-        }
     }
 
     fn test_movement(&mut self) {
         let prefered_side = RobotSide::Left;
-                
+        self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Down));
+
         //meca raise drop
         let side = self.meca.prepare_direct_take(Some(prefered_side));
         if side.is_none() {
-            log::warn!("All sides are full, cannot prepare direct take");   
+            log::warn!("All sides are full, cannot prepare direct take");
             return;
         }
         let side = side.unwrap();
-        
-        self.asserv.goto_xya(230.0, 200.0, arfast(side, TableSide::Left)).ok();
-        self.asserv.run_path(&[
-            XY::new(230.0, 200.0),
-            XY::new(200.0, 440.0),
-            XY::new(130.0, 440.0),
-        ]).ok();
 
         //meca take
         self.meca.direct_take(side);
-        self.asserv.goto_a(arfast!(Left, Down)).ok();
+        self.asserv.goto_a(arfast!(Left, Up)).ok();
+        let side = self.meca.prepare_direct_take(Some(prefered_side));
+
+        std::thread::sleep(Duration::from_secs(1));
 
         self.asserv.run_path(&[
-            XY::new(230.0, 200.0),
-            XY::new(200.0, 440.0),
-            XY::new(130.0, 440.0),
+            XY::new(0.0, 200.0),
         ]).ok();
 
         let side = self.meca.prepare_release(Some(prefered_side));
         if side.is_none() {
-            log::warn!("Nothing to release");   
+            log::warn!("Nothing to release");
             return;
         }
         let side = side.unwrap();
         self.meca.release(side);
-        self.asserv.goto_xya(0.0, 100.0, arfast!(Left, Down)).ok();
+
+        self.asserv.goto_xya(0.0, 0.0, arfast!(Back, Down)).ok();
+        std::thread::sleep(Duration::from_secs(1));
+    }
+
+    fn end_of_match(&mut self) {
+        self.sensors.ground_lidar_power_off();
+        self.meca.release(RobotSide::Back);
+        self.meca.release(RobotSide::Left);
+        self.meca.release(RobotSide::Right);
+        loop {
+            std::thread::sleep(Duration::from_secs(1));
+        }
     }
 }

@@ -132,65 +132,67 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         if !rome_messages.is_empty() {
             self.led_sender.send(LedMessage::RomeActivity).ok();
         }
-        //for data in rome_messages {
-        //    match rome::Message::decode(&data) {
-        //        Err(err) => log::error!("ROME RX error: {err:?}"),
-        //        Ok(message) => {
-        //            if !self.on_rome_message(&message) && !self.asserv.on_rome_message(&message) {
-        //                log::warn!("ROME: ignored message: {}", message.message_id());
-        //            }
-        //        },
-        //    }
-        //}
-        
+        for data in rome_messages {
+            match rome::Message::decode(&data) {
+                Err(err) => log::error!("ROME RX error: {err:?}"),
+                Ok(message) => {
+                    if !self.asserv.lock().unwrap().on_rome_message(&message) {
+                        log::warn!("ROME: ignored message: {}", message.message_id());
+                    }
+                },
+            }
+        }
+
         // Update asserv, send asserv telemetry
         if self.asserv_periodicity.update(now) {
             self.asserv.lock().unwrap().update();
         }
-        //if self.asserv_tm_periodicity.update(now) {
-        //    if let Err(err) = self.rome_tx.send(self.asserv.asserv_tm_status().encode()) {
-        //        log::error!("ROME send error: {:?}", err);
-        //    }
-        //    if let Err(err) = self.rome_tx.send(self.asserv.asserv_holo_tm_status().encode()) {
-        //        log::error!("ROME send error: {:?}", err);
-        //    }
-        //    if let Some(message) = self.asserv.asserv_holo_tm_path() {
-        //        if let Err(err) = self.rome_tx.send(message.encode()) {
-        //            log::error!("ROME send error: {:?}", err);
-        //        }
-        //    }
-        //}
+        if self.asserv_tm_periodicity.update(now) {
+            let asserv = self.asserv.lock().unwrap();
+            if let Err(err) = self.rome_tx.send(asserv.asserv_tm_status().encode()) {
+                log::error!("ROME send error: {:?}", err);
+            }
+            if let Err(err) = self.rome_tx.send(asserv.asserv_holo_tm_status().encode()) {
+                log::error!("ROME send error: {:?}", err);
+            }
+            if let Some(message) = asserv.asserv_holo_tm_path() {
+                if let Err(err) = self.rome_tx.send(message.encode()) {
+                    log::error!("ROME send error: {:?}", err);
+                }
+            }
+        }
 
         // Update meca, send meca telemetry
         if self.meca_periodicity.update(now) {
-           //for module in 0..3u8 {
-           //    for arm in 0..4u8 {
-           //        let s = self.meca.proxy.arm_watcher(module, arm).get();
-           //        let _ = self.rome_tx.send(rome::Message::MecaArmTmState {
-           //            module,
-           //            arm,
-           //            position: s.position,
-           //            //TODO: update rome with full telemetry
-           //            color: rome::params::MecaArmTmStateColor::Unknown,
-           //            pump: s.pump,
-           //            valve: s.valve,
-           //            servo_error: s.error,
-           //            torque_enabled: s.flags.torque_enabled,
-           //            moving: s.flags.moving,
-           //            // Note: position_reached == !moving
-           //            pump_current: s.pump_current,
-           //        }.encode());
-           //    }
-           //}
-           //if self.meca_tm_periodicity.update(now) {
-           //    for (i_tr, translation) in meca_state.translations.iter().enumerate() {
-           //        let _ = self.rome_tx.send(rome::Message::MecaArmTmTranslation {
-           //            module: i_tr as u8,
-           //            position: translation.position,
-           //            error: translation.error,
-           //        }.encode());
-           //    }
-           //}
+            for module in 0..3u8 {
+                for arm in 0..4u8 {
+                    let s = self.meca.proxy.arm_watcher(module, arm).get();
+                    let _ = self.rome_tx.send(rome::Message::MecaArmTmState {
+                            module,
+                            arm,
+                            position: s.position,
+                            //TODO: update rome with full telemetry
+                            color: rome::params::MecaArmTmStateColor::Unknown,
+                            pump: s.pump,
+                            valve: s.valve,
+                            servo_error: s.error,
+                            torque_enabled: s.flags.torque_enabled,
+                            moving: s.flags.moving,
+                            // Note: position_reached == !moving
+                            pump_current: s.pump_current,
+                            }.encode());
+                }
+            }
+           /*if self.meca_tm_periodicity.update(now) {
+               for (i_tr, translation) in meca_state.translations.iter().enumerate() {
+                   let _ = self.rome_tx.send(rome::Message::MecaArmTmTranslation {
+                       module: i_tr as u8,
+                       position: translation.position,
+                       error: translation.error,
+                   }.encode());
+               }
+           }
+           */
         }
     }
 
