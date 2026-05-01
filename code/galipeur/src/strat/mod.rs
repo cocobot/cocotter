@@ -27,6 +27,12 @@ pub struct Strat<B: SabotterBoard> {
     asserv: AsservHelper<B>,
 
     inputs: SabotterInputs<B::ExInputPin, B::ExInputPin>,
+
+    robot_main: RobotSide,
+    robot_aux: RobotSide,
+    table_main: TableSide,
+    table_aux: TableSide,
+    kx: f32,
 }
 
 impl<B : SabotterBoard + 'static> Strat<B> {
@@ -37,6 +43,11 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             sensors,
             meca,
             asserv: AsservHelper::new(asserv),
+            robot_main: RobotSide::Left,
+            robot_aux: RobotSide::Right,
+            table_main: TableSide::Right,
+            table_aux: TableSide::Left,
+            kx: 1.0,
 
             inputs: board.inputs().take().unwrap(),
         };
@@ -79,8 +90,22 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             sleep(Duration::from_millis(100));
 
             if self.inputs.starter.is_low().unwrap_or(false) {
-                log::info!("Color selected");
+                log::info!("Color selected: {}", team.name());
                 self.team = team;
+                if self.team == Team::Left {
+                    self.robot_main = RobotSide::Right;
+                    self.robot_aux  = RobotSide::Left;
+                    self.table_main = TableSide::Left;
+                    self.table_aux  = TableSide::Right;
+                    self.kx = -1.0;
+                }
+                else {
+                    self.robot_main = RobotSide::Left;
+                    self.robot_aux  = RobotSide::Right;
+                    self.table_main = TableSide::Right;
+                    self.table_aux  = TableSide::Left;
+                    self.kx = 1.0;
+                }
                 self.meca.init(team);
                 break;
             }
@@ -111,7 +136,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     }
 
     fn test_movement(&mut self) {
-        let prefered_side = RobotSide::Left;
+        let prefered_side = self.robot_main;
         self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Down));
 
         //meca raise drop
@@ -124,13 +149,13 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         //meca take
         self.meca.direct_take(side);
-        self.asserv.goto_a(arfast!(Left, Up)).ok();
+        self.asserv.goto_a(arfast(self.robot_main, TableSide::Up)).ok();
         let side = self.meca.prepare_direct_take(Some(prefered_side));
 
         std::thread::sleep(Duration::from_secs(1));
 
         self.asserv.run_path(&[
-            XY::new(0.0, 200.0),
+            XY::new(self.kx*50.0, 200.0),
         ]).ok();
 
         let side = self.meca.prepare_release(Some(prefered_side));
@@ -138,9 +163,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             log::warn!("Nothing to release");
             return;
         }
-        let side = side.unwrap();
-        self.meca.release(side);
+        else {
+            let side = side.unwrap();
+            self.meca.release(side);
+        }
 
+        self.asserv.goto_xya(0.0, 0.0, arfast(self.robot_main, TableSide::Up)).ok();
         self.asserv.goto_xya(0.0, 0.0, arfast!(Back, Down)).ok();
         std::thread::sleep(Duration::from_secs(1));
     }
