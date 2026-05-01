@@ -92,9 +92,10 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     fn run(mut self) {
         self.prepare_match();
-        self.test_movement();
-        //self.run_match();
+        //self.test_movement();
+        self.test_eirbot();
         self.end_of_match();
+
     }
 
     //----------
@@ -103,6 +104,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         log::info!("Color selection");
 
         self.sensors.ground_lidar_power_off();
+        //self.sensors.ground_lidar(RobotSide::Back);
 
         //waiting for starter to be inserted
         loop {
@@ -146,7 +148,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         //TODO : add autoset and go to final position in start area
         //self.sensors.ground_lidar(RobotSide::Back);
 
-        self.asserv.goto_xya(self.kx*1100.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
+        self.asserv.goto_xya(self.kx*1150.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
 
         //waiting for starter to be removed
         let mut blink = false;
@@ -165,6 +167,32 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
 
 
+    }
+
+    fn test_eirbot(&mut self){
+        // Right side doesn't work well, so for use of left side
+        self.robot_main = RobotSide::Left;
+
+        self.asserv.goto_xya(self.kx * 1200.0, 1600.0, arfast(RobotSide::Back, TableSide::Up)).ok();
+        self.asserv.goto_xya(self.kx * 1200.0, 1500.0, arfast(self.robot_main, self.table_main)).ok();
+        _ = self.meca.prepare_direct_take(Some(self.robot_main));
+        self.asserv.run_path(&[
+            XY::new(self.kx*1000.0, 1400.0),
+            XY::new(self.kx*1000.0, 1300.0),
+            XY::new(self.kx*1000.0, 1200.0),
+        ]).ok();
+        std::thread::sleep(Duration::from_secs(1));
+
+        self.asserv.goto_xya(self.kx * 1150.0, 1200.0, arfast(self.robot_main, self.table_main)).ok();
+        self.meca.direct_take(self.robot_main);
+
+        std::thread::sleep(Duration::from_secs(1));
+
+        self.asserv.goto_xya(self.kx * 1100.0, 800.0, arfast(self.robot_main, self.table_main)).ok();
+        self.meca.release(self.robot_main);
+
+        std::thread::sleep(Duration::from_secs(1));
+        self.asserv.goto_xya(self.kx * 1000.0, 800.0, arfast(self.robot_main, self.table_main)).ok();
     }
 
     fn test_movement(&mut self) {
