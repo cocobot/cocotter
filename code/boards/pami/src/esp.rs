@@ -220,7 +220,7 @@ impl PamiBoard for EspPamiBoard {
         ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();
         ble_server.start_advertising().unwrap();
 
-        Some((rome.sender, rome.receiver))
+        Some((rome.tm_sender, rome.orders_receiver))
     }
 }
 

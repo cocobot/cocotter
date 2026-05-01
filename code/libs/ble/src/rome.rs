@@ -54,7 +54,7 @@ pub(crate) fn logs_attr_handle() -> u16 {
 // Channel for incoming orders (GATT write -> flume)
 // ---------------------------------------------------------------------------
 
-static ROME_RX_SENDER: OnceLock<Sender<Box<[u8]>>> = OnceLock::new();
+static ORDERS_SENDER: OnceLock<Sender<Box<[u8]>>> = OnceLock::new();
 
 // ---------------------------------------------------------------------------
 // GATT service table builder
@@ -194,7 +194,7 @@ extern "C" fn gatt_access_cb(
                         sys::os_mbuf_copydata(om, 0, len as i32, buf.as_mut_ptr() as *mut _)
                     };
                     if rc == 0 {
-                        if let Some(sender) = ROME_RX_SENDER.get() {
+                        if let Some(sender) = ORDERS_SENDER.get() {
                             if let Err(e) = sender.send(buf.into_boxed_slice()) {
                                 log::error!("Failed to push RX data: {e:?}");
                             }
@@ -219,21 +219,21 @@ extern "C" fn gatt_access_cb(
 /// Intermediate state after GATT registration, before host start.
 /// Call `start()` after `server.start_host()` to finalize.
 pub struct RomeRegistration {
-    rome_receiver: Receiver<Box<[u8]>>,
-    rome_sender: Sender<Box<[u8]>>,
-    rome_tx_receiver: Receiver<Box<[u8]>>,
+    orders_receiver: Receiver<Box<[u8]>>,
+    tm_sender: Sender<Box<[u8]>>,
+    tm_receiver: Receiver<Box<[u8]>>,
 }
 
 /// Register Rome GATT service. Must be called before `server.start_host()`.
 pub fn register_gatt() -> RomeRegistration {
-    let (rome_rx_sender, rome_receiver) = flume::unbounded();
-    let (rome_sender, rome_tx_receiver) = flume::unbounded::<Box<[u8]>>();
+    let (orders_sender, orders_receiver) = flume::unbounded();
+    let (tm_sender, tm_receiver) = flume::unbounded::<Box<[u8]>>();
 
     // Store the orders channel sender globally for the GATT callback
-    ROME_RX_SENDER
-        .set(rome_rx_sender)
+    ORDERS_SENDER
+        .set(orders_sender)
         .ok()
-        .expect("ROME_RX_SENDER already set");
+        .expect("ORDERS_SENDER already set");
 
     // Build and register GATT service table
     let svcs = build_gatt_svcs();
@@ -251,9 +251,9 @@ pub fn register_gatt() -> RomeRegistration {
     log::info!("Rome GATT service registered");
 
     RomeRegistration {
-        rome_receiver,
-        rome_sender,
-        rome_tx_receiver,
+        orders_receiver,
+        tm_sender,
+        tm_receiver,
     }
 }
 
@@ -262,8 +262,8 @@ pub fn register_gatt() -> RomeRegistration {
 // ---------------------------------------------------------------------------
 
 pub struct RomePeripheral {
-    pub sender: Sender<Box<[u8]>>,
-    pub receiver: Receiver<Box<[u8]>>,
+    pub tm_sender: Sender<Box<[u8]>>,
+    pub orders_receiver: Receiver<Box<[u8]>>,
 }
 
 impl RomeRegistration {
@@ -274,10 +274,10 @@ impl RomeRegistration {
         copy_handles();
 
         // Spawn notification thread
-        let rome_tx_receiver = self.rome_tx_receiver;
+        let tm_receiver = self.tm_receiver;
         std::thread::spawn(move || {
             loop {
-                if let Ok(data) = rome_tx_receiver.recv() {
+                if let Ok(data) = tm_receiver.recv() {
                     let telemetry_handle = TELEMETRY_HANDLE.load(Ordering::Relaxed);
                     if telemetry_handle == 0 {
                         continue;
@@ -328,8 +328,8 @@ impl RomeRegistration {
         log::info!("ROME peripheral running");
 
         RomePeripheral {
-            sender: self.rome_sender,
-            receiver: self.rome_receiver,
+            tm_sender: self.tm_sender,
+            orders_receiver: self.orders_receiver,
         }
     }
 }
