@@ -24,7 +24,10 @@ pub struct PathObstacle {
     radius2: u32,
 }
 
-/// Graph use for pathfinding
+/// Graph used for pathfinding
+///
+/// The API uses indexes to reference nodes.
+/// This is required to avoid borrowing issues when updating obstacles.
 pub struct PathGraph {
     /// Graph nodes (frozen)
     nodes: Vec<PathNode>,
@@ -178,14 +181,21 @@ impl PathGraphBuilder {
 }
 
 
+/// Node identifier, to be used with `PathGraph` public API
+#[derive(Clone, Copy, Debug)]
+pub struct PathNodeId(usize);
+
 impl PathGraph {
-    /// Get node from given index
-    pub fn get_node(&self, index: usize) -> Option<&PathNode> {
-        self.nodes.get(index)
+    /// Get node from its index
+    pub fn get_node_xy(&self, node: PathNodeId) -> XY {
+        xy_mm_from_internal(&self.get_node_ref(node).xy)
     }
 
     /// Find a path in the graph from `start` to `goal`
-    pub fn find_path(&self, start: &PathNode, goal: &PathNode) -> Option<Vec<&PathNode>> {
+    pub fn find_path(&self, start: PathNodeId, goal: PathNodeId) -> Option<Vec<PathNodeId>> {
+        let start = self.get_node_ref(start);
+        let goal = self.get_node_ref(goal);
+
         // Fail if start node is blocked
         if self.node_is_blocked(start) || self.node_is_blocked(goal) {
             return None;
@@ -241,7 +251,7 @@ impl PathGraph {
             if index == goal_index {
                 // Solution found, rebuild the path
                 let goal_to_start: Vec<usize> = std::iter::successors(Some(index), |i| node_infos[*i].previous_index).collect();
-                let start_to_goal: Vec<&PathNode> = goal_to_start.into_iter().rev().map(|i| &self.nodes[i]).collect();
+                let start_to_goal: Vec<PathNodeId> = goal_to_start.into_iter().rev().map(|i| PathNodeId(i)).collect();
                 return Some(start_to_goal);
             }
 
@@ -280,12 +290,19 @@ impl PathGraph {
     }
 
     /// Return the node closest to the given coordinates and not blocked
-    pub fn nearest_node(&self, xy: XY) -> &PathNode {
+    pub fn nearest_node(&self, xy: &XY) -> PathNodeId {
         let target_xy = (mm_to_internal(xy.x), mm_to_internal(xy.y));
-        self.nodes.iter()
-            .filter(|node| !self.node_is_blocked(node))
-            .min_by_key(|node| internal_distance2(target_xy, node.xy))
-            .unwrap()  // Assume at least 1 node
+        let (index, _) = self.nodes.iter()
+            .enumerate()
+            .filter(|(_, node)| !self.node_is_blocked(node))
+            .min_by_key(|(_, node)| internal_distance2(target_xy, node.xy))
+            .unwrap();
+        PathNodeId(index)
+    }
+
+    /// Internal method to retrieve a node reference from its ID, panic if invalid
+    fn get_node_ref(&self, node_id: PathNodeId) -> &PathNode {
+        self.nodes.get(node_id.0).expect("invalid node ID")
     }
 
     /// Return true if given node is currently blocked by an obstacle
@@ -441,9 +458,9 @@ mod tests {
 
     /// Find a path, convert the result to a vector of plain coordinates
     fn grid_path(graph: &PathGraph, start: usize, goal: usize) -> Option<Vec<(i32, i32)>> {
-        let path = graph.find_path(graph.get_node(start).unwrap(), graph.get_node(goal).unwrap())?;
-        let path = path.into_iter().map(|node| {
-            let XY { x, y } = node.xy();
+        let path = graph.find_path(PathNodeId(start), PathNodeId(goal))?;
+        let path = path.into_iter().map(|node_id| {
+            let XY { x, y } = graph.get_node_xy(node_id);
             ((x / 100.0) as i32, (y / 100.0) as i32)
         }).collect();
         Some(path)
