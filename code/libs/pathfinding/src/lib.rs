@@ -68,6 +68,17 @@ impl PathGraphBuilder {
         self.nodes.get_mut(index_b).expect("invalid node index").1.insert(index_a);
     }
 
+    /// Add a new mirror nodes, return their index
+    pub fn add_mirror_nodes(&mut self, xy: XY) -> (usize, usize) {
+        (self.add_node(xy), self.add_node(xy.xflip()))
+    }
+
+    /// Add a new edge, indexes must be valid
+    pub fn add_mirror_edges(&mut self, indexes_a: (usize, usize), indexes_b: (usize, usize)) {
+        self.add_edge(indexes_a.0, indexes_b.0);
+        self.add_edge(indexes_a.1, indexes_b.1);
+    }
+
     /// Add a triangle grid with an horizontal symmetry
     ///
     /// Grid has the following layout:
