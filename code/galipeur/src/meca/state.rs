@@ -49,11 +49,11 @@ pub struct MecaState {
 }
 
 impl MecaState {
-    pub fn get_side_state(&self, side: u8) -> &MecaSideState {
+    pub fn get_side(&self, side: u8) -> &MecaSideState {
         &self.sides[side as usize]
     }
 
-    pub fn get_side_state_mut(&mut self, side: u8) -> &mut MecaSideState {
+    pub fn get_side_mut(&mut self, side: u8) -> &mut MecaSideState {
         &mut self.sides[side as usize]
     }
 

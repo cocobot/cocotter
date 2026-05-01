@@ -104,7 +104,7 @@ impl<B: SabotterBoard> Meca<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
+            let side_state = state.get_side_mut(module);
             side_state.transfer_to_clamp();
         }
         
@@ -125,7 +125,7 @@ impl<B: SabotterBoard> Meca<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
+            let side_state = state.get_side_mut(module);
             side_state.ready_to_take(true);
         }
 
@@ -139,7 +139,7 @@ impl<B: SabotterBoard> Meca<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
+            let side_state = state.get_side_mut(module);
             side_state.transfer_to_lower_stage();
         }
 
@@ -160,7 +160,7 @@ impl<B: SabotterBoard> Meca<B> {
 
         //check if prefere side is available
         if let Some(prefered_side) = prefered_side {
-            let side_state = state.get_side_state(Self::side_to_module(prefered_side));
+            let side_state = state.get_side(Self::side_to_module(prefered_side));
             if side_state.is_lower_stage_empty() {
                 drop(state);
                 
@@ -177,7 +177,7 @@ impl<B: SabotterBoard> Meca<B> {
         }
 
         for side in [RobotSide::Left, RobotSide::Back, RobotSide::Right] {
-            let side_state = state.get_side_state(Self::side_to_module(side));
+            let side_state = state.get_side(Self::side_to_module(side));
             if side_state.is_lower_stage_empty() {
                 drop(state);
 
@@ -200,7 +200,7 @@ impl<B: SabotterBoard> Meca<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
+            let side_state = state.get_side_mut(module);
 
             let is_lower_empty = side_state.is_lower_stage_empty();
             let is_upper_empty = side_state.is_upper_stage_empty();
@@ -232,7 +232,7 @@ impl<B: SabotterBoard> Meca<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
+            let side_state = state.get_side_mut(module);
             side_state.set_lower_stage(teams);
         }
 
@@ -244,7 +244,7 @@ impl<B: SabotterBoard> Meca<B> {
 
         //check if prefere side is available
         if let Some(prefered_side) = prefered_side {
-            let side_state = state.get_side_state(Self::side_to_module(prefered_side));
+            let side_state = state.get_side(Self::side_to_module(prefered_side));
             if !side_state.is_lower_stage_empty() {
                 return Some(prefered_side);
             }
@@ -257,7 +257,7 @@ impl<B: SabotterBoard> Meca<B> {
         }
 
         for side in [RobotSide::Left, RobotSide::Back, RobotSide::Right] {
-            let side_state = state.get_side_state(Self::side_to_module(side));
+            let side_state = state.get_side(Self::side_to_module(side));
             if !side_state.is_lower_stage_empty() {
                 return Some(side);
             }
@@ -278,7 +278,7 @@ impl<B: SabotterBoard> Meca<B> {
         let (own_color, arm_colors) = {
             let mut state = self.state.lock().unwrap();
             let own_color = state.get_own_color();
-            let side_state = state.get_side_state_mut(module);
+            let side_state = state.get_side_mut(module);
             
             (own_color, side_state.set_lower_stage([Team::None; 4]))
         };
