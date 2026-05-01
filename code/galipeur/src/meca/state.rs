@@ -1,5 +1,6 @@
 use board_common::Team;
 
+#[derive(Default)]
 pub struct MecaSideState {
     ready_to_take: bool,
     lower_stage: [Team; 4],
@@ -41,22 +42,10 @@ impl MecaSideState {
     }
 }
 
+#[derive(Default)]
 pub struct MecaState {
     sides: [MecaSideState; 3],
     own_color: Team,
-}
-
-impl Default for MecaState {
-    fn default() -> Self {
-        Self {
-            own_color: Team::None,
-            sides: [
-                MecaSideState { lower_stage: [Team::None; 4], upper_stage: [Team::None; 4], ready_to_take: false},
-                MecaSideState { lower_stage: [Team::None; 4], upper_stage: [Team::None; 4], ready_to_take: false},
-                MecaSideState { lower_stage: [Team::None; 4], upper_stage: [Team::None; 4], ready_to_take: false},
-            ],
-        }
-    }
 }
 
 impl MecaState {
