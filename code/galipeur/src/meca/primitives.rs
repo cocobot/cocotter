@@ -33,6 +33,8 @@ fn hue_distance(a: u16, b: u16) -> u16 {
 /// All presets for a single arm servo.
 struct ArmCalib {
     pre_grab: u16,
+    pre_grab_left: u16,
+    pre_grab_right: u16,
     down: u16,
     up: u16, // also serves as the rest/idle position
 }
@@ -63,26 +65,25 @@ struct TranslationCalib {
 }
 
 const ARMS: [[ArmCalib; 4]; 3] = [
-    // Module 0 — TODO calibrer
     [
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 420, pre_grab_left: 360, pre_grab: 420, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 360, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 360, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 420, pre_grab: 420, down: 340, up: 746 },
     ],
     // Module 1 — TODO calibrer
     [
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 420, pre_grab_left: 360, pre_grab: 420, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 360, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 360, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 420, pre_grab: 420, down: 340, up: 746 },
     ],
     // Module 2 — TODO calibrer
     [
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 420, pre_grab_left: 360, pre_grab: 420, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 360, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 360, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { pre_grab_right: 360, pre_grab_left: 420, pre_grab: 420, down: 340, up: 746 },
     ],
 ];
 
@@ -193,6 +194,14 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
 
     pub fn arms_pre_grab(&self, module: u8, arms: &[u8]) {
         self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].pre_grab);
+    }
+
+    pub fn arms_pre_grab_left(&self, module: u8, arms: &[u8]) {
+        self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].pre_grab_left);
+    }
+
+    pub fn arms_pre_grab_right(&self, module: u8, arms: &[u8]) {
+        self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].pre_grab_right);
     }
 
     pub fn arms_down(&self, module: u8, arms: &[u8]) {

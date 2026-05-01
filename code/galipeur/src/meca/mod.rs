@@ -164,7 +164,7 @@ impl<B: SabotterBoard> Meca<B> {
             let side_state = state.get_side(Self::side_to_module(prefered_side));
             if side_state.is_lower_stage_empty() {
                 drop(state);
-                
+
                 self.do_prepare_direct_take(prefered_side);
                 return Some(prefered_side);
             }
@@ -196,7 +196,33 @@ impl<B: SabotterBoard> Meca<B> {
         None
     }
 
-    pub fn direct_take(&self, side: RobotSide) -> bool {       
+    pub fn prepare_take_left(&self, side: RobotSide) -> bool {
+        let state = self.state.lock().unwrap();
+        let side_state = state.get_side_state(Self::side_to_module(side));
+        if side_state.is_ready_to_take() {
+            let module = Self::side_to_module(side);
+            self.primitives.translation_spread(module);
+            self.primitives.arms_pre_grab_left(module, &[0, 1, 2, 3]);
+            return true;
+        }
+
+        false
+    }
+
+    pub fn prepare_take_right(&self, side: RobotSide) -> bool {
+        let state = self.state.lock().unwrap();
+        let side_state = state.get_side_state(Self::side_to_module(side));
+        if side_state.is_ready_to_take() {
+            let module = Self::side_to_module(side);
+            self.primitives.translation_spread(module);
+            self.primitives.arms_pre_grab_right(module, &[0, 1, 2, 3]);
+            return true;
+        }
+
+        false
+    }
+
+    pub fn direct_take(&self, side: RobotSide) -> bool {
         let module = Self::side_to_module(side);
 
         {
