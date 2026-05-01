@@ -114,7 +114,7 @@ impl PathGraphBuilder {
         let previous_nodes_len = self.nodes.len();
         self.nodes.reserve(max_grid_count);
         for (ix, iy) in iter_grid_pos() {
-            let xy = XY::new(ix as f32 * dx, iy as f32 * dy);
+            let xy = XY::new(ix as f32 * dx, y0 + iy as f32 * dy);
             // Skip positions close to an existing node
             if self.closest_node(&xy, radius / 2.0).is_none() {
                 added_nodes.insert((ix, iy), self.add_node(xy));
@@ -461,16 +461,17 @@ mod tests {
     /// Print graph builder nodes as SVG
     ///
     /// Can be used with `cargo test -- --nocapture` for visualization.
-    fn print_builder_svg(builder: &PathGraphBuilder) {
-        println!(r#"<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-650 -50 1300 700">"#);
+    fn print_builder_svg(builder: &PathGraphBuilder, viewport: (i32, i32, i32, i32)) {
+        println!(r#"<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{} {} {} {}">"#, viewport.0, viewport.1, viewport.2, viewport.3);
         println!(r#"  <defs>"#);
         println!(r#"    <style type="text/css"><![CDATA["#);
+        println!(r#"      .bg {{ fill: #eee; stroke-none; }}"#);
         println!(r#"      .node {{ fill: black; stroke: none; }}"#);
         println!(r#"      .edge {{ stroke: black; stroke-width: 2px; }}"#);
         println!(r#"    ]]></style>"#);
-        println!(r#"  <defs>"#);
-        println!(r#"]]></style></defs>"#);
+        println!(r#"  </defs>"#);
         println!(r#"<g>"#);
+            println!(r#"<rect class="bg" x="{}" y="{}" width="{}" height="{}" />"#, viewport.0, viewport.1, viewport.2, viewport.3);
         for (xy, _) in &builder.nodes {
             println!(r#"<circle class="node" cx="{}" cy="{}" r="20" />"#, xy.x, xy.y);
         }
@@ -535,6 +536,25 @@ mod tests {
         builder.add_node(XY::new(0.0, 50.0));
         builder.add_node(XY::new(-150.0, 50.0));
         builder.add_triangle_grid(620.0, 0.0, 620.0, 100.0);
-        print_builder_svg(&builder);
+        print_builder_svg(&builder, (-650, -50, 1300, 700));
+    }
+
+    // Generate SVG with
+    //   cargo test test_eurobot_grid -- --show-output | sed -n '/<svg/,/<\/svg>/p' > graph.svg
+    #[test]
+    fn test_eurobot_grid() {
+        let mut builder = PathGraphBuilder::new();
+
+        // Starting zones
+        const STARTING_POS: XY = XY::new(1500.0 - 600.0/2.0, 2000.0 - 450.0/2.0);
+        const STARTING_EXIT_POS: XY = XY::new(1500.0 - 600.0/2.0, 2000.0 - 600.0);
+        let starts = builder.add_mirror_nodes(STARTING_POS);
+        let start_exits = builder.add_mirror_nodes(STARTING_EXIT_POS);
+        builder.add_mirror_edges(starts, start_exits);
+        // Grid
+        const MARGIN: f32 = 200.0;
+        builder.add_triangle_grid(1500.0 - MARGIN, MARGIN, 2000.0 - 450.0 - MARGIN, 300.0);
+
+        print_builder_svg(&builder, (-1500, 0, 3000, 2000));
     }
 }
