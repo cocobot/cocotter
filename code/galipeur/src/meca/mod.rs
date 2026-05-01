@@ -72,7 +72,6 @@ impl<B: SabotterBoard> Meca<B> {
             self.proxy.set_clamp_torque(module, ClampServo::Left, false);
             self.proxy.set_clamp_torque(module, ClampServo::Right, false);
             self.proxy.set_clamp_torque(module, ClampServo::Rotate, false);
-            self.primitives.clamp_close(module);
         }
     }
 
