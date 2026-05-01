@@ -17,13 +17,11 @@ impl MecaSideState {
     }
 
     pub fn transfer_to_clamp(&mut self) {
-        self.upper_stage.copy_from_slice(&self.lower_stage);
-        self.lower_stage.fill(Team::None);
+        self.upper_stage = std::mem::take(&mut self.lower_stage);
     }
 
     pub fn transfer_to_lower_stage(&mut self) {
-        self.lower_stage.copy_from_slice(&self.upper_stage);
-        self.upper_stage.fill(Team::None);
+        self.lower_stage = std::mem::take(&mut self.upper_stage);
     }
 
     pub fn ready_to_take(&mut self, ready: bool) {
@@ -35,10 +33,7 @@ impl MecaSideState {
     }
 
     pub fn set_lower_stage(&mut self, teams: [Team; 4]) -> [Team; 4] {
-        let previous_data = self.lower_stage;
-        self.lower_stage.copy_from_slice(&teams);
-
-        previous_data
+        std::mem::replace(&mut self.lower_stage, teams)
     }
 }
 
