@@ -95,6 +95,11 @@ impl XY {
     pub fn angle(&self) -> f32 {
         self.y.atan2(self.x)
     }
+
+    /// Flip the X axis value
+    pub const fn xflip(&self) -> XY {
+        XY { x: -self.x, y: self.y }
+    }
 }
 
 
@@ -113,6 +118,11 @@ impl XYA {
 
     pub const fn xy(&self) -> XY {
         XY { x: self.x, y: self.y }
+    }
+
+    /// Flip the X axis value
+    pub const fn xflip(&self) -> XYA {
+        XYA { x: -self.x, y: self.y, a: self.a }
     }
 }
 
