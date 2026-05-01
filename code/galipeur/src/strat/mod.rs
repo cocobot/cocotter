@@ -75,7 +75,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         self.sensors.ground_lidar_power_off();
 
-
         //waiting for starter to be inserted
         loop {
             let team = match self.inputs.color.is_high().unwrap_or(false) {
@@ -107,17 +106,18 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                 break;
             }
 
-            //start robot with back on the up side of table in the start area
-            //there's a crate between the robot and up side
-            self.asserv.reset_position(self.kx*(900.0 + 170 + 50.0, 2000.0 - 130.0 - 50.0, arfast(RobotSide::Back, TableSide::Up));
-
-            //TODO : add autoset and go to final position in start area
-            //self.sensors.ground_lidar(RobotSide::Back);
-
-            self.asserv.goto_xy(self.kx*1100.0,1800.0);
         }
 
         std::thread::sleep(Duration::from_secs(1));
+
+        //start robot with back on the up side of table in the start area
+        //there's a crate between the robot and up side
+        self.asserv.reset_position(self.kx*(900.0 + 170.0 + 50.0), 2000.0 - 130.0 - 50.0, arfast(RobotSide::Back, TableSide::Up));
+
+        //TODO : add autoset and go to final position in start area
+        //self.sensors.ground_lidar(RobotSide::Back);
+
+        self.asserv.goto_xya(self.kx*1100.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
 
         //waiting for starter to be removed
         let mut blink = false;

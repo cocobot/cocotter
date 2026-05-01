@@ -111,7 +111,7 @@ impl SabotterBoard for EspSabotterBoard {
         esp_idf_svc::sys::link_patches();
 
         let logger = esp_idf_svc::log::init_from_esp_idf();
-        logger.filter().set_target_level("Nimble", log::LevelFilter::Warn).unwrap();
+        logger.filter().set_target_level("NimBLE", log::LevelFilter::Warn).unwrap();
 
         let _nvs = EspDefaultNvsPartition::take().unwrap();
 

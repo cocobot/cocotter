@@ -197,7 +197,7 @@ impl<B: SabotterBoard> Meca<B> {
 
     pub fn prepare_take_left(&self, side: RobotSide) -> bool {
         let state = self.state.lock().unwrap();
-        let side_state = state.get_side_state(Self::side_to_module(side));
+        let side_state = state.get_side(Self::side_to_module(side));
         if side_state.is_ready_to_take() {
             let module = Self::side_to_module(side);
             self.primitives.translation_spread(module);
@@ -210,7 +210,7 @@ impl<B: SabotterBoard> Meca<B> {
 
     pub fn prepare_take_right(&self, side: RobotSide) -> bool {
         let state = self.state.lock().unwrap();
-        let side_state = state.get_side_state(Self::side_to_module(side));
+        let side_state = state.get_side(Self::side_to_module(side));
         if side_state.is_ready_to_take() {
             let module = Self::side_to_module(side);
             self.primitives.translation_spread(module);
