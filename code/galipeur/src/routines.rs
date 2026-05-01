@@ -25,6 +25,7 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     // ROME sender/receiver
     pub rome_tx: Sender<Box<[u8]>>,
     pub rome_rx: Receiver<Box<[u8]>>,
+    pub rlogger: Sender<String>,
 
     //leds
     led_sender: Sender<LedMessage>,
@@ -91,6 +92,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
             rome_tx,
             rome_rx,
+            rlogger,
 
             led_sender,
 
