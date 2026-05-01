@@ -136,7 +136,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             match rome::Message::decode(&data) {
                 Err(err) => log::error!("ROME RX error: {err:?}"),
                 Ok(message) => {
-                    if !self.asserv.lock().unwrap().on_rome_message(&message) {
+                    if !self.on_rome_message(&message) & !self.asserv.lock().unwrap().on_rome_message(&message) {
                         log::warn!("ROME: ignored message: {}", message.message_id());
                     }
                 },
@@ -208,5 +208,48 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
         now
     }
+
+    fn on_rome_message(&mut self, message: &rome::Message) -> bool {
+        match *message {
+            rome::Message::MecaPrepareTake { side } => {
+                log::info!("ROME: meca prepare take");
+                match side {
+                    rome::params::MecaPrepareTakeSide::Left  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Left)); }
+                    rome::params::MecaPrepareTakeSide::Right => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Right)); }
+                    rome::params::MecaPrepareTakeSide::Back  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Back));  }
+                }
+                true
+            }
+            rome::Message::MecaTake { side } => {
+                log::info!("ROME: meca take");
+                match side {
+                    rome::params::MecaTakeSide::Left  => { self.meca.direct_take(asserv::holonomic::RobotSide::Left); }
+                    rome::params::MecaTakeSide::Right => { self.meca.direct_take(asserv::holonomic::RobotSide::Right); }
+                    rome::params::MecaTakeSide::Back  => { self.meca.direct_take(asserv::holonomic::RobotSide::Back);  }
+                }
+                true
+            }
+            rome::Message::MecaPrepareRelease { side } => {
+                log::info!("ROME: meca prepare release");
+                match side {
+                    rome::params::MecaPrepareReleaseSide::Left  => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Left)); }
+                    rome::params::MecaPrepareReleaseSide::Right => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Right)); }
+                    rome::params::MecaPrepareReleaseSide::Back  => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Back));  }
+                }
+                true
+            }
+            rome::Message::MecaRelease { side } => {
+                log::info!("ROME: meca release");
+                match side {
+                    rome::params::MecaReleaseSide::Left  => { self.meca.release(asserv::holonomic::RobotSide::Left); }
+                    rome::params::MecaReleaseSide::Right => { self.meca.release(asserv::holonomic::RobotSide::Right); }
+                    rome::params::MecaReleaseSide::Back  => { self.meca.release(asserv::holonomic::RobotSide::Back);  }
+                }
+                true
+            }
+            _ => false
+        }
+    }
+
 }
 
