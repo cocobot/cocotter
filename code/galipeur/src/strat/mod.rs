@@ -6,6 +6,7 @@ use board_common::Team;
 use embedded_hal::digital::InputPin;
 use board_sabotter::{SabotterBoard, SabotterInputs};
 use flume::Sender;
+use pathfinding::{PathGraph, PathGraphBuilder};
 
 use crate::arfast;
 use crate::led::LedMessage;
@@ -25,6 +26,7 @@ pub struct Strat<B: SabotterBoard> {
     sensors: Sensors<B>,
     meca: Meca<B>,
     asserv: AsservHelper<B>,
+    rlogger: Sender<String>,
 
     inputs: SabotterInputs<B::ExInputPin, B::ExInputPin>,
 
@@ -33,21 +35,48 @@ pub struct Strat<B: SabotterBoard> {
     table_main: TableSide,
     table_aux: TableSide,
     kx: f32,
+    pathfinder: PathGraph,
 }
 
 impl<B : SabotterBoard + 'static> Strat<B> {
-    pub fn init(board: &mut B, leds: Sender<LedMessage>, sensors: Sensors<B>, meca: Meca<B>, asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>) {
+    pub fn init(
+        board: &mut B,
+        leds: Sender<LedMessage>,
+        sensors: Sensors<B>,
+        meca: Meca<B>,
+        asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>,
+        rlogger: Sender<String>,
+    ) {
+        // Build the pathfinding graph
+        let pathfinder = {
+            let mut builder = PathGraphBuilder::new();
+
+            // Starting zones
+            const STARTING_POS: XY = XY::new(1500.0 - 600.0/2.0, 2000.0 - 450.0/2.0);
+            const STARTING_EXIT_POS: XY = XY::new(1500.0 - 600.0/2.0, 2000.0 - 600.0);
+            let starts = builder.add_mirror_nodes(STARTING_POS);
+            let start_exits = builder.add_mirror_nodes(STARTING_EXIT_POS);
+            builder.add_mirror_edges(starts, start_exits);
+            // Grid
+            const MARGIN: f32 = 200.0;
+            builder.add_triangle_grid(1500.0 - MARGIN, MARGIN, 2000.0 - 450.0 - MARGIN, 300.0);
+
+            builder.build(10.0)
+        };
+
         let instance = Self {
             team: Team::None,
             leds,
             sensors,
             meca,
             asserv: AsservHelper::new(asserv),
+            rlogger,
             robot_main: RobotSide::Left,
             robot_aux: RobotSide::Right,
             table_main: TableSide::Right,
             table_aux: TableSide::Left,
             kx: 1.0,
+            pathfinder,
 
             inputs: board.inputs().take().unwrap(),
         };
@@ -140,7 +169,19 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     fn test_movement(&mut self) {
         let prefered_side = self.robot_main;
+
         self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Down));
+
+        {
+            let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
+            let goal = self.pathfinder.nearest_node(&XY::new(0.0, 0.0));
+            if let Some(path) = self.pathfinder.find_path(start, goal) {
+                let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
+                self.asserv.run_path(&asserv_path).ok();
+            } else {
+                rome::warn!(self.rlogger, "Cannot find a path");
+            }
+        }
 
         //meca raise drop
         let side = self.meca.prepare_direct_take(Some(prefered_side));

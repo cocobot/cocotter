@@ -9,6 +9,7 @@ harness = false # do not use the built in cargo test harness -> resolve rust-ana
 
 [dependencies]
 log = "0.4"
+amatheur = { path = "../libs/amatheur" }
 asserv = { path = "../libs/asserv", features = ["rome"] }
 board-common = { path = "../boards/common" }
 board-sabotter = { path = "../boards/sabotter" }
@@ -16,6 +17,7 @@ embedded-can = "0.4"
 embedded-hal = "1.0"
 flume = { version = "0.11", default-features = false }
 cancaner = { path = "../libs/cancaner" }
+pathfinding = { path = "../libs/pathfinding" }
 rome = { path = "../libs/rome" }
 sch16t = { path = "../libs/sch16t" }
 

@@ -84,7 +84,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         let asserv = Arc::new(Mutex::new(Asserv::new(asserv_hardware)));
 
         // Setup strat
-        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone() ,asserv.clone());
+        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone(), asserv.clone(), rlogger.clone());
 
         Self {
             asserv,
@@ -95,9 +95,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             rlogger,
 
             led_sender,
-
             can: can_interface,
-
             sensors,
 
             lidar_tm_ground: false,
