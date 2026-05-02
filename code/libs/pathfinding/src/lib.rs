@@ -59,6 +59,11 @@ impl PathGraphBuilder {
         Self::default()
     }
 
+    /// Return the node count (i.e. index of the next node)
+    pub fn node_count(&self) -> usize {
+        self.nodes.len()
+    }
+
     /// Add a new node, return its index
     pub fn add_node(&mut self, xy: XY) -> usize {
         self.nodes.push((xy, HashSet::new()));
@@ -137,11 +142,34 @@ impl PathGraphBuilder {
         }
 
         // Add edges for grid nodes close to existing nodes
-        let close_distance2 = (1.5 * radius) * (1.5 * radius);
-        for prev_index in 0..previous_nodes_len {
-            for new_index in previous_nodes_len..self.nodes.len() {
-                if (self.nodes[prev_index].0 - self.nodes[new_index].0).length2() < close_distance2 {
-                    self.add_edge(prev_index, new_index);
+        self.add_edges_between_groups(previous_nodes_len, (1.5 * radius) * (1.5 * radius));
+    }
+
+    /// Add edges between two groups of nodes
+    ///
+    /// Typically used after adding a group of nodes.
+    /// Add edges between nodes `..index` and `index..`, if their squared distance is at most
+    /// `distance2`.
+    pub fn add_edges_between_groups(&mut self, index: usize, distance2: f32) {
+        for index1 in index..self.nodes.len() {
+            for index2 in 0..index {
+                if (self.nodes[index2].0 - self.nodes[index1].0).length2() < distance2 {
+                    self.add_edge(index1, index2);
+                }
+            }
+        }
+    }
+
+    /// Add edges in two groups of nodes
+    ///
+    /// Typically used after adding a group of nodes.
+    /// Add edges between nodes in `index..`, if their squared distance is at most `distance2`.
+    pub fn add_edges_in_group(&mut self, index: usize, distance2: f32) {
+        let n = self.nodes.len();
+        for index1 in index..n - 1 {
+            for index2 in index + 1..n {
+                if (self.nodes[index2].0 - self.nodes[index1].0).length2() < distance2 {
+                    self.add_edge(index1, index2);
                 }
             }
         }
@@ -482,7 +510,7 @@ mod tests {
         println!(r#"<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{} {} {} {}">"#, viewport.0, viewport.1, viewport.2, viewport.3);
         println!(r#"  <defs>"#);
         println!(r#"    <style type="text/css"><![CDATA["#);
-        println!(r#"      .bg {{ fill: #eee; stroke-none; }}"#);
+        println!(r#"      .bg {{ fill: #e0e0e010; stroke-none; }}"#);
         println!(r#"      .node {{ fill: black; stroke: none; }}"#);
         println!(r#"      .edge {{ stroke: black; stroke-width: 2px; }}"#);
         println!(r#"    ]]></style>"#);
@@ -568,9 +596,20 @@ mod tests {
         let starts = builder.add_mirror_nodes(STARTING_POS);
         let start_exits = builder.add_mirror_nodes(STARTING_EXIT_POS);
         builder.add_mirror_edges(starts, start_exits);
-        // Grid
-        const MARGIN: f32 = 200.0;
-        builder.add_triangle_grid(1500.0 - MARGIN, MARGIN, 2000.0 - 450.0 - MARGIN, 300.0);
+
+        let grid_index = builder.node_count();
+        for ix in 0..=3 {
+            for y in [475.0, 800.0, 1125.0] {
+                let xy = XY::new(ix as f32 * 350.0, y);
+                builder.add_node(xy);
+                if ix != 0 {
+                    builder.add_node(xy.xflip());
+                }
+            }
+        }
+
+        builder.add_edges_in_group(grid_index, 1000.0 * 1000.0);
+        builder.add_edges_between_groups(grid_index, 500.0 * 500.0);
 
         print_builder_svg(&builder, (-1500, 0, 3000, 2000));
     }
