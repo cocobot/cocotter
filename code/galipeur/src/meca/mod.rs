@@ -1,6 +1,7 @@
 mod primitives;
 mod proxy;
 mod state;
+mod worker;
 
 use board_common::Team;
 pub use primitives::MecaPrimitives;
@@ -16,6 +17,7 @@ use std::time::Duration;
 use crate::can::GalipeurCan;
 use crate::led::LedMessage;
 use crate::meca::state::MecaState;
+use crate::meca::worker::{MecaAction, MecaWorker};
 
 /// Mapping RobotSide → CAN module index
 pub trait RobotSideModule {
@@ -38,6 +40,7 @@ pub struct Meca<B: SabotterBoard> {
     pub primitives: MecaPrimitives<B>,
     led_tx: Sender<LedMessage>,
     state: Arc<Mutex<MecaState>>,
+    worker_tx: Sender<MecaAction>,
 }
 
 impl<B: SabotterBoard> Clone for Meca<B> {
@@ -47,15 +50,31 @@ impl<B: SabotterBoard> Clone for Meca<B> {
             primitives: self.primitives.clone(),
             led_tx: self.led_tx.clone(),
             state: self.state.clone(),
+            worker_tx: self.worker_tx.clone(),
         }
     }
 }
 
-impl<B: SabotterBoard> Meca<B> {
+impl<B: SabotterBoard + 'static> Meca<B> {
     pub fn new(can: GalipeurCan<B>, led_tx: Sender<LedMessage>) -> Self {
         let proxy = MecaProxy::new(can);
         let primitives = MecaPrimitives::new(proxy.clone());
-        Self { proxy, primitives, led_tx, state: Arc::new(Mutex::new(MecaState::default())) }
+        let state = Arc::new(Mutex::new(MecaState::default()));
+
+        let (worker_tx, worker_rx) = flume::unbounded();
+        let worker = MecaWorker::new(
+            proxy.clone(),
+            primitives.clone(),
+            led_tx.clone(),
+            state.clone(),
+            worker_rx,
+        );
+        std::thread::Builder::new()
+            .name("meca-worker".into())
+            .spawn(move || worker.run())
+            .expect("Failed to spawn meca worker thread");
+
+        Self { proxy, primitives, led_tx, state, worker_tx }
     }
 
     // --- Init ---
@@ -90,208 +109,28 @@ impl<B: SabotterBoard> Meca<B> {
         }
     }
 
-    fn side_to_module(side: RobotSide) -> u8 {
-        match side {
-            RobotSide::Left => 0,
-            RobotSide::Back => 1,
-            RobotSide::Right => 2,
-        }
-    }
-
-    //TODO: move do-* functions to thread to avoid blocking strat while doing meca actions
-    fn do_transfer_to_clamp(&self, side: RobotSide) {
-        let module = Self::side_to_module(side);
-
-        {
-            let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
-            side_state.transfer_to_clamp();
-        }
-        
-        self.primitives.clamp_open(module);
-        self.primitives.clamp_rotate_pickup(module);
-        self.primitives.arms_up(module, &[0, 1, 2, 3]);
-        self.primitives.translation_close(module);
-        
-        self.primitives.clamp_close(module);
-        self.primitives.releases(module, &[0, 1, 2, 3]);
-        std::thread::sleep(Duration::from_millis(250));
-        self.primitives.clamp_rotate_hold(module);
-        self.primitives.end_releases(module, &[0, 1, 2, 3]);
-    }
-
-    fn do_prepare_direct_take(&self, side: RobotSide) {
-        let module = Self::side_to_module(side);
-
-        {
-            let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
-            side_state.ready_to_take(true);
-        }
-
-        self.proxy.set_color_led_pwm(255);
-        self.primitives.translation_spread(module);
-        self.primitives.arms_pre_grab(module, &[0, 1, 2, 3]);
-    }
-
-    fn do_transfer_to_lower_stage(&self, side: RobotSide) {
-        let module = Self::side_to_module(side);
-
-        {
-            let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
-            side_state.transfer_to_lower_stage();
-        }
-
-        self.primitives.arms_up(module, &[0, 1, 2, 3]);
-        self.primitives.grabs(module, &[0, 1, 2, 3]);
-        self.primitives.clamp_rotate_pickup(module);
-        std::thread::sleep(Duration::from_millis(250));
-        self.primitives.clamp_open(module);
-    }
-
-    fn do_idle(&self, module: u8) {
-        self.primitives.translation_spread(module);
-        self.primitives.arms_up(module, &[0, 1, 2, 3]);
-    }
-
     pub fn prepare_direct_take(&self, prefered_side: Option<RobotSide>) -> Option<RobotSide> {
-        let state = self.state.lock().unwrap();
-
-        //check if prefere side is available
-        if let Some(prefered_side) = prefered_side {
-            let side_state = state.get_side_state(Self::side_to_module(prefered_side));
-            if side_state.is_lower_stage_empty() {
-                drop(state);
-                
-                self.do_prepare_direct_take(prefered_side);
-                return Some(prefered_side);
-            }
-            if side_state.is_upper_stage_empty() {
-                drop(state);
-
-                self.do_transfer_to_clamp(prefered_side);
-                self.do_prepare_direct_take(prefered_side);
-                return Some(prefered_side);
-            }
-        }
-
-        for side in [RobotSide::Left, RobotSide::Back, RobotSide::Right] {
-            let side_state = state.get_side_state(Self::side_to_module(side));
-            if side_state.is_lower_stage_empty() {
-                drop(state);
-
-                self.do_prepare_direct_take(side);
-                return Some(side);
-            }
-            if side_state.is_upper_stage_empty() {
-                drop(state);
-                self.do_transfer_to_clamp(side);
-                self.do_prepare_direct_take(side);
-                return Some(side);
-            }
-        }
-
-        None
+        let (tx, rx) = flume::bounded(1);
+        self.worker_tx.send(MecaAction::PrepareDirectTake { prefered_side, reply: tx }).ok();
+        rx.recv().ok().flatten()
     }
 
-    pub fn direct_take(&self, side: RobotSide) -> bool {       
-        let module = Self::side_to_module(side);
-
-        {
-            let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
-
-            let is_lower_empty = side_state.is_lower_stage_empty();
-            let is_upper_empty = side_state.is_upper_stage_empty();
-            let is_ready_to_take = side_state.is_ready_to_take();
-            side_state.ready_to_take(false);
-            drop(state);
-
-            if !is_ready_to_take {
-                log::warn!("Direct take: side {:?} is not ready to take....", side);
-
-                if !is_lower_empty {
-                    if !is_upper_empty {
-                        log::warn!("Direct take: both stages of side {:?} are full, cannot take", side);
-                        return false;
-                    }
-                    self.do_transfer_to_clamp(side);
-                }
-                self.do_prepare_direct_take(side);
-            }
-        }
-
-        self.primitives.arms_down(module, &[0, 1, 2, 3]);
-        self.primitives.grabs(module, &[0, 1, 2, 3]);
-        std::thread::sleep(Duration::from_millis(250));
-        self.primitives.arms_up(module, &[0, 1, 2, 3]);
-
-        let teams = self.primitives.read_arms_teams(module);
-        self.led_tx.send(LedMessage::MecaColors { module, teams }).ok();
-
-        {
-            let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_state_mut(module);
-            side_state.set_lower_stage(teams);
-        }
-
-        true
+    pub fn direct_take(&self, side: RobotSide) -> bool {
+        let (tx, rx) = flume::bounded(1);
+        self.worker_tx.send(MecaAction::DirectTake { side, reply: tx }).ok();
+        rx.recv().unwrap_or(false)
     }
 
     pub fn prepare_release(&self, prefered_side: Option<RobotSide>) -> Option<RobotSide> {
-        let state = self.state.lock().unwrap();
-
-        //check if prefere side is available
-        if let Some(prefered_side) = prefered_side {
-            let side_state = state.get_side_state(Self::side_to_module(prefered_side));
-            if !side_state.is_lower_stage_empty() {
-                return Some(prefered_side);
-            }
-            if !side_state.is_upper_stage_empty() {
-                drop(state);
-
-                self.do_transfer_to_lower_stage(prefered_side);
-                return Some(prefered_side);
-            }
-        }
-
-        for side in [RobotSide::Left, RobotSide::Back, RobotSide::Right] {
-            let side_state = state.get_side_state(Self::side_to_module(side));
-            if !side_state.is_lower_stage_empty() {
-                return Some(side);
-            }
-            if !side_state.is_upper_stage_empty() {
-                drop(state);
-                
-                self.do_transfer_to_lower_stage(side);
-                return Some(side);
-            }
-        }
-
-        None
+        let (tx, rx) = flume::bounded(1);
+        self.worker_tx.send(MecaAction::PrepareRelease { prefered_side, reply: tx }).ok();
+        rx.recv().ok().flatten()
     }
 
     pub fn release(&self, side: RobotSide) {
-        let module = Self::side_to_module(side);
-
-        let (own_color, arm_colors) = {
-            let mut state = self.state.lock().unwrap();
-            let own_color = state.get_own_color();
-            let side_state = state.get_side_state_mut(module);
-            
-            (own_color, side_state.set_lower_stage([Team::None; 4]))
-        };
-
-        let good_color_arms = arm_colors.iter().enumerate().filter_map(|(i, &t)| if t == own_color { Some(i as u8) } else { None }).collect::<Vec<_>>();
-
-        self.primitives.translation_spread(module);  
-        self.primitives.arms_pre_grab(module, &good_color_arms);      
-        self.primitives.releases(module, &[0, 1, 2, 3]);
-        std::thread::sleep(Duration::from_millis(250));
-        self.primitives.end_releases(module, &[0, 1, 2, 3]);
-
-        self.do_idle(module);
+        let (tx, rx) = flume::bounded(1);
+        self.worker_tx.send(MecaAction::Release { side, reply: tx }).ok();
+        rx.recv().ok();
     }
 
 
