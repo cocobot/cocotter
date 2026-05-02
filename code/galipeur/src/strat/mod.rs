@@ -57,9 +57,20 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             let starts = builder.add_mirror_nodes(STARTING_POS);
             let start_exits = builder.add_mirror_nodes(STARTING_EXIT_POS);
             builder.add_mirror_edges(starts, start_exits);
-            // Grid
-            const MARGIN: f32 = 200.0;
-            builder.add_triangle_grid(1500.0 - MARGIN, MARGIN, 2000.0 - 450.0 - MARGIN, 300.0);
+
+            let grid_index = builder.node_count();
+            for ix in 0..=3 {
+                for y in [475.0, 800.0, 1125.0] {
+                    let xy = XY::new(ix as f32 * 350.0, y);
+                    builder.add_node(xy);
+                    if ix != 0 {
+                        builder.add_node(xy.xflip());
+                    }
+                }
+            }
+
+            builder.add_edges_in_group(grid_index, 1000.0 * 1000.0);
+            builder.add_edges_between_groups(grid_index, 500.0 * 500.0);
 
             builder.build(10.0)
         };
