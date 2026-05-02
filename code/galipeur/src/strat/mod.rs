@@ -105,7 +105,9 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.prepare_match();
         //self.pathfinding_test();
         //self.test_movement();
-        self.test_eirbot();
+        self.take_first_crates();
+
+        std::thread::sleep(Duration::from_secs(10));
         self.return_to_start();
         self.end_of_match();
 
@@ -184,6 +186,18 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
 
 
+    }
+
+    fn take_first_crates (&mut self){
+        // Right side doesn't work well, so for use of left side
+        self.robot_main = RobotSide::Left;
+
+        self.asserv.goto_xya(self.kx * 1200.0, 1600.0, arfast(RobotSide::Back, TableSide::Up)).ok();
+        self.asserv.goto_xya(self.kx * 1000.0, 1200.0, arfast(self.robot_main, self.table_main)).ok();
+        _ = self.meca.prepare_direct_take(Some(self.robot_main), CleatSide::Right);
+        self.asserv.goto_xya(self.kx * 1130.0, 1150.0, arfast(self.robot_main, self.table_main)).ok();
+        self.meca.direct_take(self.robot_main);
+        rome::info!(self.rlogger, "first bunch of crates taken !");
     }
 
     fn test_eirbot(&mut self){
