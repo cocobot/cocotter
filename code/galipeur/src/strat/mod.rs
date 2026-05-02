@@ -92,8 +92,10 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     fn run(mut self) {
         self.prepare_match();
+        //self.pathfinding_test();
         //self.test_movement();
         self.test_eirbot();
+        self.return_to_start();
         self.end_of_match();
 
     }
@@ -183,7 +185,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         ]).ok();
         std::thread::sleep(Duration::from_secs(1));
 
-        self.asserv.goto_xya(self.kx * 1150.0, 1200.0, arfast(self.robot_main, self.table_main)).ok();
+        self.asserv.goto_xya(self.kx * 1130.0, 1200.0, arfast(self.robot_main, self.table_main)).ok();
         self.meca.direct_take(self.robot_main);
 
         std::thread::sleep(Duration::from_secs(1));
@@ -195,21 +197,34 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(self.kx * 1000.0, 800.0, arfast(self.robot_main, self.table_main)).ok();
     }
 
+    fn pathfinding_test(&mut self) {
+
+        let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
+        let goal = self.pathfinder.nearest_node(&XY::new(0.0, 1000.0));
+        if let Some(path) = self.pathfinder.find_path(start, goal) {
+            let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
+            self.asserv.run_path(&asserv_path).ok();
+        } else {
+            rome::warn!(self.rlogger, "Cannot find a path");
+        }
+    }
+
+    fn return_to_start(&mut self){
+        self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up));
+        let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
+        let goal = self.pathfinder.nearest_node(&XY::new(self.kx*1200.0, 1700.0));
+        if let Some(path) = self.pathfinder.find_path(start, goal) {
+            let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
+            self.asserv.run_path(&asserv_path).ok();
+        } else {
+            rome::warn!(self.rlogger, "Cannot find a path");
+        }
+    }
+
     fn test_movement(&mut self) {
         let prefered_side = self.robot_main;
 
         self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Down));
-
-        {
-            let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
-            let goal = self.pathfinder.nearest_node(&XY::new(0.0, 0.0));
-            if let Some(path) = self.pathfinder.find_path(start, goal) {
-                let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
-                self.asserv.run_path(&asserv_path).ok();
-            } else {
-                rome::warn!(self.rlogger, "Cannot find a path");
-            }
-        }
 
         //meca raise drop
         let side = self.meca.prepare_direct_take(Some(prefered_side));
