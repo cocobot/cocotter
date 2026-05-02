@@ -22,7 +22,6 @@ rome = { path = "../libs/rome" }
 sch16t = { path = "../libs/sch16t" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
-embedded-hal = "1.0"
 esp-idf-svc = "0.52"
 ble = { path = "../libs/ble" }
 

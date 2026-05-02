@@ -61,6 +61,7 @@ pub const CAL_Y_MM: f32 = 0.0;
 /// Stacking samples gives a 2×2 normal-equation system that's solved
 /// analytically. No `z_L` is recovered — ground lidars share the
 /// same mounting height, fill it in by hand from the CAD.
+#[allow(unused)]
 pub fn ground_lidars<B: SabotterBoard + 'static>(
     asserv: &AsservHelper<B>,
     sensors: &Sensors<B>,

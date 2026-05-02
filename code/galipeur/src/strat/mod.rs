@@ -150,7 +150,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         //TODO : add autoset and go to final position in start area
         //self.sensors.ground_lidar(RobotSide::Back);
 
-        self.asserv.goto_xya(self.kx*1150.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
+        self.asserv.goto_xya(self.kx*1150.0, 1800.0, arfast(RobotSide::Back, TableSide::Up)).ok();
 
         //waiting for starter to be removed
         let mut blink = false;
@@ -237,7 +237,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         //meca take
         self.meca.direct_take(side);
         self.asserv.goto_a(arfast(self.robot_main, TableSide::Up)).ok();
-        let side = self.meca.prepare_direct_take(Some(prefered_side));
+        self.meca.prepare_direct_take(Some(prefered_side));
 
         std::thread::sleep(Duration::from_secs(1));
 

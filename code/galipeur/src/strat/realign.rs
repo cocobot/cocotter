@@ -55,6 +55,7 @@ fn wrap_pi(x: f32) -> f32 {
 /// in mm. The wall-normal coordinate of the body is then the wall's
 /// known coordinate ± `distance`, sign chosen so that the body sits
 /// inside the playing area.
+#[allow(unused)]
 pub fn realign<B: SabotterBoard + 'static>(
     asserv: &AsservHelper<B>,
     sensors: &Sensors<B>,

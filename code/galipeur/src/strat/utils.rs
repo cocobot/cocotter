@@ -41,7 +41,7 @@ impl<B: SabotterBoard> AsservHelper<B> {
         let asserv = self.asserv.lock().unwrap();
         *asserv.cs.position()
     }
-    
+
     pub fn teleport(&self, x: f32, y: f32, a: f32) {
         self.asserv.lock().unwrap().teleport(XYA::new(x, y, a));
     }
@@ -73,7 +73,7 @@ impl<B: SabotterBoard> AsservHelper<B> {
                 return Ok(());
             }
             drop(asserv);
-            
+
             std::thread::sleep(std::time::Duration::from_millis(25));
         }        
     }
