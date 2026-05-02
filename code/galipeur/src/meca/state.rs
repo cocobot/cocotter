@@ -1,10 +1,12 @@
 use board_common::Team;
 
-#[derive(Default)]
+pub type MecaState = [MecaSideState; 3];
+
+#[derive(Default, Clone)]
 pub struct MecaSideState {
-    ready_to_take: bool,
-    lower_stage: [Team; 4],
-    upper_stage: [Team; 4],
+    pub ready_to_take: bool,
+    pub lower_stage: [Team; 4],
+    pub upper_stage: [Team; 4],
 }
 
 impl MecaSideState {
@@ -25,7 +27,7 @@ impl MecaSideState {
     }
 
     pub fn ready_to_take(&mut self, ready: bool) {
-        self.ready_to_take = ready;        
+        self.ready_to_take = ready;
     }
 
     pub fn is_ready_to_take(&self) -> bool {
@@ -34,20 +36,5 @@ impl MecaSideState {
 
     pub fn set_lower_stage(&mut self, teams: [Team; 4]) -> [Team; 4] {
         std::mem::replace(&mut self.lower_stage, teams)
-    }
-}
-
-#[derive(Default)]
-pub struct MecaState {
-    sides: [MecaSideState; 3],
-}
-
-impl MecaState {
-    pub fn get_side(&self, side: u8) -> &MecaSideState {
-        &self.sides[side as usize]
-    }
-
-    pub fn get_side_mut(&mut self, side: u8) -> &mut MecaSideState {
-        &mut self.sides[side as usize]
     }
 }

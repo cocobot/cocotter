@@ -104,7 +104,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         let state = self.state.lock().unwrap();
 
         if let Some(prefered_side) = prefered_side {
-            let side_state = state.get_side(Self::side_to_module(prefered_side));
+            let side_state = &state[Self::side_to_module(prefered_side) as usize];
             if side_state.is_lower_stage_empty() {
                 return Some(prefered_side);
             }
@@ -116,7 +116,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         }
 
         for side in [RobotSide::Left, RobotSide::Back, RobotSide::Right] {
-            let side_state = state.get_side(Self::side_to_module(side));
+            let side_state = &state[Self::side_to_module(side) as usize];
             if side_state.is_lower_stage_empty() {
                 return Some(side);
             }
@@ -134,7 +134,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         let state = self.state.lock().unwrap();
 
         if let Some(prefered_side) = prefered_side {
-            let side_state = state.get_side(Self::side_to_module(prefered_side));
+            let side_state = &state[Self::side_to_module(prefered_side) as usize];
             if !side_state.is_lower_stage_empty() {
                 return Some(prefered_side);
             }
@@ -144,7 +144,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         }
 
         for side in [RobotSide::Left, RobotSide::Back, RobotSide::Right] {
-            let side_state = state.get_side(Self::side_to_module(side));
+            let side_state = &state[Self::side_to_module(side) as usize];
             if !side_state.is_lower_stage_empty() {
                 return Some(side);
             }
@@ -161,8 +161,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_mut(module);
-            side_state.transfer_to_clamp();
+            state[module as usize].transfer_to_clamp();
         }
 
         self.primitives.clamp_open(module);
@@ -182,7 +181,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         let is_upper_empty = {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_mut(module);
+            let side_state = &mut state[module as usize];
             log::info!("SET READY TO TAKE");
             side_state.ready_to_take(true);
 
@@ -218,8 +217,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_mut(module);
-            side_state.transfer_to_lower_stage();
+            state[module as usize].transfer_to_lower_stage();
         }
 
         self.primitives.arms_up(module, &[0, 1, 2, 3]);
@@ -232,7 +230,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
     fn do_transfer_to_lower_stage_if_needed(&self, side: RobotSide) {
         let needs_transfer = {
             let state = self.state.lock().unwrap();
-            let side_state = state.get_side(Self::side_to_module(side));
+            let side_state = &state[Self::side_to_module(side) as usize];
             log::info!("Test {} {}", side_state.is_lower_stage_empty(), side_state.is_upper_stage_empty());
             side_state.is_lower_stage_empty() && !side_state.is_upper_stage_empty()
         };
@@ -246,7 +244,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_mut(module);
+            let side_state = &mut state[Self::side_to_module(side) as usize];
 
             let is_lower_empty = side_state.is_lower_stage_empty();
             let is_upper_empty = side_state.is_upper_stage_empty();
@@ -280,7 +278,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_mut(module);
+            let side_state = &mut state[module as usize];
 
             //Color is not important we will read it later
             side_state.set_lower_stage([Team::Left, Team::Left, Team::Right, Team::Right]);
@@ -297,10 +295,8 @@ impl<B: SabotterBoard> MecaWorker<B> {
         self.led_tx.send(LedMessage::MecaColors { module, teams }).ok();
         {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_mut(module);
-
             //Color is not important we will read it later
-            side_state.set_lower_stage([Team::Left, Team::Left, Team::Right, Team::Right]);
+            state[module as usize].set_lower_stage([Team::Left, Team::Left, Team::Right, Team::Right]);
         }
     }
 
@@ -311,8 +307,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         let arm_colors = {
             let mut state = self.state.lock().unwrap();
-            let side_state = state.get_side_mut(module);
-            side_state.set_lower_stage([Team::None; 4])
+            state[module as usize].set_lower_stage([Team::None; 4])
         };
 
         let good_color_arms: Vec<_> = arm_colors

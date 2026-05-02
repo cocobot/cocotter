@@ -81,16 +81,8 @@ impl<B: SabotterBoard + 'static> Meca<B> {
             .spawn(move || worker.run())
             .expect("Failed to spawn meca worker thread");
 
-        Self {
-            proxy,
-            primitives,
-            led_tx,
-            state,
-            worker_tx,
-        }
+        Self { proxy, primitives, led_tx, state, worker_tx }
     }
-
-    // --- Init ---
 
     pub fn pre_init(&self) {
         if !self.proxy.ping(Duration::from_millis(3000)) {
@@ -108,15 +100,19 @@ impl<B: SabotterBoard + 'static> Meca<B> {
     }
 
     pub fn init(&mut self, team: Team) {
-        self.worker_tx.send(MecaAction::SetOwnColor(team));
+        self.worker_tx.send(MecaAction::SetOwnColor(team)).ok();
 
         // Raise all arms to the rest (up) position on every module.
         for module in 0..3 {
-            self.primitives.arms_up(module, &[0, 1, 2, 3]);     
-            self.primitives.clamp_rotate_pickup(module);     
-            self.primitives.clamp_open(module);  
+            self.primitives.arms_up(module, &[0, 1, 2, 3]);
+            self.primitives.clamp_rotate_pickup(module);
+            self.primitives.clamp_open(module);
             self.primitives.translation_spread(module);
         }
+    }
+
+    pub fn clone_state(&self) -> MecaState {
+        self.state.lock().unwrap().clone()
     }
 
     pub fn prepare_direct_take(&self, prefered_side: Option<RobotSide>, cleat_up: CleatSide) -> Option<RobotSide> {
@@ -145,11 +141,11 @@ impl<B: SabotterBoard + 'static> Meca<B> {
 
 
     #[allow(dead_code)]
-    pub fn calibration_position(&self) {        
+    pub fn calibration_position(&self) {
         for module in 0..3 {
-            self.primitives.arms_down(module, &[0, 1, 2, 3]);     
-            self.primitives.clamp_close(module);  
-            self.primitives.clamp_rotate_hold(module);                   
+            self.primitives.arms_down(module, &[0, 1, 2, 3]);
+            self.primitives.clamp_close(module);
+            self.primitives.clamp_rotate_hold(module);
             self.primitives.translation_spread(0);
         }
 
@@ -166,12 +162,12 @@ impl<B: SabotterBoard + 'static> Meca<B> {
     }
 
     #[allow(dead_code)]
-    pub fn calobration_check_color(&self) {   
-        for module in 0..3 {     
+    pub fn calobration_check_color(&self) {
+        for module in 0..3 {
             let teams = self.primitives.read_arms_teams(module);
             if teams.iter().any(|&t| t != Team::None) {
-                self.led_tx.send(LedMessage::MecaColors { module, teams }).ok();   
-            }        
+                self.led_tx.send(LedMessage::MecaColors { module, teams }).ok();
+            }
         }
     }
 

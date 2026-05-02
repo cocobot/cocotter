@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
-use board_common::Periodicity;
+use board_common::{Periodicity, Team};
 use board_sabotter::SabotterBoard;
 use cancaner::{CanMessage, ClampServo};
 use flume::{Receiver, Sender};
@@ -162,6 +162,31 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
         // Send meca telemetry
         if self.meca_tm_periodicity.update(now) {
+            for (i, side_state) in self.meca.clone_state().into_iter().enumerate() {
+                fn convert_team(team: Team) -> u8 {
+                    match team {
+                        Team::None => 0,
+                        Team::Left => 1,
+                        Team::Right => 2,
+                    }
+                }
+                fn convert_stage(teams: &[Team; 4]) -> [u8; 4] {
+                    [
+                        convert_team(teams[0]),
+                        convert_team(teams[1]),
+                        convert_team(teams[2]),
+                        convert_team(teams[3]),
+                    ]
+                }
+
+                let _ = self.rome_tx.send(rome::Message::MecaTmSideState {
+                    side: i as u8,
+                    ready_to_take: side_state.ready_to_take,
+                    lower_stage: convert_stage(&side_state.lower_stage),
+                    upper_stage: convert_stage(&side_state.upper_stage),
+                }.encode());
+            }
+
             for side in 0..3u8 {
                 for arm in 0..4u8 {
                     let s = self.meca.proxy.arm_watcher(side, arm).get();
