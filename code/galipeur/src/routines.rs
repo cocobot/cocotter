@@ -9,7 +9,7 @@ use flume::{Receiver, Sender};
 use sch16t::Sch16t;
 use crate::led::{LedMessage, Leds};
 use crate::movement::MovementLowLevelHardware;
-use crate::meca::Meca;
+use crate::meca::{CleatSide, Meca};
 use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
 use crate::strat::Strat;
 use crate::sensors::{Sensors, TopLidarConf};
@@ -211,12 +211,18 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
     fn on_rome_message(&mut self, message: &rome::Message) -> bool {
         match *message {
-            rome::Message::MecaPrepareTake { side } => {
+            rome::Message::MecaPrepareTake { side, cleat_up } => {
                 log::info!("ROME: meca prepare take");
+                let cleat_up = match cleat_up {
+                    rome::params::MecaPrepareTakeCleatUp::None => CleatSide::None,
+                    rome::params::MecaPrepareTakeCleatUp::Left => CleatSide::Left,
+                    rome::params::MecaPrepareTakeCleatUp::Right => CleatSide::Right,
+                    rome::params::MecaPrepareTakeCleatUp::Both => CleatSide::Both,
+                };
                 match side {
-                    rome::params::MecaPrepareTakeSide::Left  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Left)); }
-                    rome::params::MecaPrepareTakeSide::Right => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Right)); }
-                    rome::params::MecaPrepareTakeSide::Back  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Back));  }
+                    rome::params::MecaPrepareTakeSide::Left  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Left), cleat_up); }
+                    rome::params::MecaPrepareTakeSide::Right => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Right), cleat_up); }
+                    rome::params::MecaPrepareTakeSide::Back  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Back), cleat_up);  }
                 }
                 true
             }

@@ -10,7 +10,7 @@ use pathfinding::{PathGraph, PathGraphBuilder};
 
 use crate::arfast;
 use crate::led::LedMessage;
-use crate::meca::Meca;
+use crate::meca::{Meca, CleatSide};
 use crate::movement::MovementLowLevelHardware;
 use crate::sensors::Sensors;
 use crate::strat::utils::{AsservHelper, arfast};
@@ -152,6 +152,11 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         }
 
+        self.meca.calibration_position();
+        loop {
+            std::thread::sleep(Duration::from_secs(1));
+        }
+
         std::thread::sleep(Duration::from_secs(1));
 
         //start robot with back on the up side of table in the start area
@@ -188,7 +193,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         self.asserv.goto_xya(self.kx * 1200.0, 1600.0, arfast(RobotSide::Back, TableSide::Up)).ok();
         self.asserv.goto_xya(self.kx * 1200.0, 1500.0, arfast(self.robot_main, self.table_main)).ok();
-        _ = self.meca.prepare_direct_take(Some(self.robot_main));
+        _ = self.meca.prepare_direct_take(Some(self.robot_main), CleatSide::Both);
         self.asserv.run_path(&[
             XY::new(self.kx*1000.0, 1400.0),
             XY::new(self.kx*1000.0, 1300.0),
@@ -238,7 +243,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Down));
 
         //meca raise drop
-        let side = self.meca.prepare_direct_take(Some(prefered_side));
+        let side = self.meca.prepare_direct_take(Some(prefered_side), CleatSide::None);
         if side.is_none() {
             log::warn!("All sides are full, cannot prepare direct take");
             return;
@@ -248,7 +253,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         //meca take
         self.meca.direct_take(side);
         self.asserv.goto_a(arfast(self.robot_main, TableSide::Up)).ok();
-        self.meca.prepare_direct_take(Some(prefered_side));
+        self.meca.prepare_direct_take(Some(prefered_side), CleatSide::Both);
 
         std::thread::sleep(Duration::from_secs(1));
 

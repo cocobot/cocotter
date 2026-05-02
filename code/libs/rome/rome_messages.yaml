@@ -167,6 +167,7 @@
 
   MecaPrepareTake:
     side: [left,right,back]
+    cleat_up: [none,left,right,both]
 
   MecaTake:
     side: [left,right,back]
