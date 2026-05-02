@@ -55,9 +55,14 @@ impl<H: AsservHardware> AsservRome for Asserv<H> {
                 log::info!("ROME: goto_xya is not implemented");
                 self.goto_xya(x, y, a);
             }
-            // Common messages not (yet) implemented
-            Message::AsservActivate(_) => {
-                log::error!("ROME: AsservActivate is not implemented");
+            Message::AsservActivate(activate) => {
+                if activate {
+                    log::error!("ROME: activate asserv");
+                    self.cs.enable_motor_control();
+                } else {
+                    log::error!("ROME: deactivate asserv");
+                    self.cs.disable_motor_control();
+                }
             }
             // AsservHolo messages
             Message::AsservHoloAutoset { robot_side, table_side, target_x, target_y } => {
