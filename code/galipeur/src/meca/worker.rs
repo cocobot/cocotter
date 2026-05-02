@@ -29,6 +29,8 @@ pub enum MecaAction {
         side: RobotSide,
         reply: Sender<()>,
     },
+    // Not a direct action, change worker's state
+    SetOwnColor(Team),
 }
 
 pub struct MecaWorker<B: SabotterBoard> {
@@ -37,6 +39,7 @@ pub struct MecaWorker<B: SabotterBoard> {
     led_tx: Sender<LedMessage>,
     state: Arc<Mutex<MecaState>>,
     rx: Receiver<MecaAction>,
+    own_color: Team,
 }
 
 impl<B: SabotterBoard> MecaWorker<B> {
@@ -47,17 +50,17 @@ impl<B: SabotterBoard> MecaWorker<B> {
         state: Arc<Mutex<MecaState>>,
         rx: Receiver<MecaAction>,
     ) -> Self {
-        Self { proxy, primitives, led_tx, state, rx }
+        Self { proxy, primitives, led_tx, state, rx, own_color: Team::None }
     }
 
-    pub fn run(self) {
+    pub fn run(mut self) {
         loop {
             let Ok(action) = self.rx.recv() else { break };
             self.handle(action);
         }
     }
 
-    fn handle(&self, action: MecaAction) {
+    fn handle(&mut self, action: MecaAction) {
         match action {
             MecaAction::PrepareDirectTake { prefered_side, reply , cleat_up} => {
                 let chosen = self.compute_prepare_direct_take(prefered_side);
@@ -82,6 +85,9 @@ impl<B: SabotterBoard> MecaWorker<B> {
             MecaAction::Release { side, reply } => {
                 self.do_release(side);
                 reply.send(()).ok();
+            }
+            MecaAction::SetOwnColor(color) => {
+                self.own_color = color;
             }
         }
     }
@@ -303,18 +309,17 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         self.do_transfer_to_lower_stage_if_needed(side);
 
-        let (own_color, arm_colors) = {
+        let arm_colors = {
             let mut state = self.state.lock().unwrap();
-            let own_color = state.get_own_color();
             let side_state = state.get_side_mut(module);
-            (own_color, side_state.set_lower_stage([Team::None; 4]))
+            side_state.set_lower_stage([Team::None; 4])
         };
 
-        let good_color_arms = arm_colors
+        let good_color_arms: Vec<_> = arm_colors
             .iter()
             .enumerate()
-            .filter_map(|(i, &t)| if t == own_color { Some(i as u8) } else { None })
-            .collect::<Vec<_>>();
+            .filter_map(|(i, &t)| if t == self.own_color { Some(i as u8) } else { None })
+            .collect();
 
         self.primitives.translation_spread(module);
         self.primitives.arms_pre_grab(module, &good_color_arms);

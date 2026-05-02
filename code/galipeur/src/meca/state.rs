@@ -40,7 +40,6 @@ impl MecaSideState {
 #[derive(Default)]
 pub struct MecaState {
     sides: [MecaSideState; 3],
-    own_color: Team,
 }
 
 impl MecaState {
@@ -50,13 +49,5 @@ impl MecaState {
 
     pub fn get_side_mut(&mut self, side: u8) -> &mut MecaSideState {
         &mut self.sides[side as usize]
-    }
-
-    pub fn set_own_color(&mut self, color: Team) {
-        self.own_color = color;
-    }
-
-    pub fn get_own_color(&self) -> Team {
-        self.own_color
     }
 }

@@ -147,9 +147,16 @@
     tick_to_rad: f32
 
 # Galipeur meca
+# Colors: 0=unknown, 1=yellow, 2=blue
 60:
-  MecaArmTmState:
-    module: u8
+  MecaTmSideState:
+    side: u8
+    ready_to_take: bool
+    lower_stage: "[u8; 4]"
+    upper_stage: "[u8; 4]"
+
+  MecaTmArmFullState:
+    side: u8
     arm: u8
     position: u16
     color: [unknown, yellow, blue]
@@ -160,23 +167,23 @@
     moving: bool
     pump_current: u8
 
-  MecaArmTmTranslation:
-    module: u8
+  MecaTmSideTranslation:
+    side: u8
     position: u16
     error: u8
 
   MecaPrepareTake:
-    side: [left,right,back]
-    cleat_up: [none,left,right,both]
+    side: [left, right, back]
+    cleat_up: [none, left, right, both]
 
   MecaTake:
-    side: [left,right,back]
+    side: [left, right, back]
 
   MecaPrepareRelease:
-    side: [left,right,back]
+    side: [left, right, back]
 
   MecaRelease:
-    side: [left,right,back]
+    side: [left, right, back]
 
   MecaRawSetServo:
     module: u8

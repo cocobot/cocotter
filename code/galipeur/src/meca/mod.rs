@@ -81,7 +81,13 @@ impl<B: SabotterBoard + 'static> Meca<B> {
             .spawn(move || worker.run())
             .expect("Failed to spawn meca worker thread");
 
-        Self { proxy, primitives, led_tx, state, worker_tx }
+        Self {
+            proxy,
+            primitives,
+            led_tx,
+            state,
+            worker_tx,
+        }
     }
 
     // --- Init ---
@@ -101,11 +107,8 @@ impl<B: SabotterBoard + 'static> Meca<B> {
         }
     }
 
-    pub fn init(&self, team: Team) {
-        {
-            let mut state = self.state.lock().unwrap();
-            state.set_own_color(team);
-        }
+    pub fn init(&mut self, team: Team) {
+        self.worker_tx.send(MecaAction::SetOwnColor(team));
 
         // Raise all arms to the rest (up) position on every module.
         for module in 0..3 {

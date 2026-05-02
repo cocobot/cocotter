@@ -43,7 +43,6 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     // Periodicity states
     asserv_periodicity: Periodicity,
     asserv_tm_periodicity: Periodicity,
-    meca_periodicity: Periodicity,
     meca_tm_periodicity: Periodicity,
     lidar_tm_periodicity: Periodicity,
 }
@@ -103,7 +102,6 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
             asserv_periodicity: Periodicity::new(Duration::from_millis(10)),
             asserv_tm_periodicity: Periodicity::new(Duration::from_millis(500)),
-            meca_periodicity: Periodicity::new(Duration::from_millis(1000)),
             meca_tm_periodicity: Periodicity::new(Duration::from_millis(1000)),
             lidar_tm_periodicity: Periodicity::new(Duration::from_millis(2000)),
         }
@@ -162,37 +160,33 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             }
         }
 
-        // Update meca, send meca telemetry
-        if self.meca_periodicity.update(now) {
-            for module in 0..3u8 {
+        // Send meca telemetry
+        if self.meca_tm_periodicity.update(now) {
+            for side in 0..3u8 {
                 for arm in 0..4u8 {
-                    let s = self.meca.proxy.arm_watcher(module, arm).get();
-                    let _ = self.rome_tx.send(rome::Message::MecaArmTmState {
-                            module,
-                            arm,
-                            position: s.position,
-                            //TODO: update rome with full telemetry
-                            color: rome::params::MecaArmTmStateColor::Unknown,
-                            pump: s.pump,
-                            valve: s.valve,
-                            servo_error: s.error,
-                            torque_enabled: s.flags.torque_enabled,
-                            moving: s.flags.moving,
-                            // Note: position_reached == !moving
-                            pump_current: s.pump_current,
-                            }.encode());
+                    let s = self.meca.proxy.arm_watcher(side, arm).get();
+                    let _ = self.rome_tx.send(rome::Message::MecaTmArmFullState {
+                        side,
+                        arm,
+                        position: s.position,
+                        color: rome::params::MecaTmArmFullStateColor::Unknown,
+                        pump: s.pump,
+                        valve: s.valve,
+                        servo_error: s.error,
+                        torque_enabled: s.flags.torque_enabled,
+                        moving: s.flags.moving,
+                        // Note: position_reached == !moving
+                        pump_current: s.pump_current,
+                    }.encode());
                 }
+
+                let watcher = self.meca.proxy.translation_watcher(side).get();
+                let _ = self.rome_tx.send(rome::Message::MecaTmSideTranslation {
+                    side: side as u8,
+                    position: watcher.position,
+                    error: watcher.error,
+                }.encode());
             }
-           /*if self.meca_tm_periodicity.update(now) {
-               for (i_tr, translation) in meca_state.translations.iter().enumerate() {
-                   let _ = self.rome_tx.send(rome::Message::MecaArmTmTranslation {
-                       module: i_tr as u8,
-                       position: translation.position,
-                       error: translation.error,
-                   }.encode());
-               }
-           }
-           */
         }
     }
 
