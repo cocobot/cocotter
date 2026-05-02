@@ -24,7 +24,10 @@ pub struct PathObstacle {
     radius2: u32,
 }
 
-/// Graph use for pathfinding
+/// Graph used for pathfinding
+///
+/// The API uses indexes to reference nodes.
+/// This is required to avoid borrowing issues when updating obstacles.
 pub struct PathGraph {
     /// Graph nodes (frozen)
     nodes: Vec<PathNode>,
@@ -56,6 +59,11 @@ impl PathGraphBuilder {
         Self::default()
     }
 
+    /// Return the node count (i.e. index of the next node)
+    pub fn node_count(&self) -> usize {
+        self.nodes.len()
+    }
+
     /// Add a new node, return its index
     pub fn add_node(&mut self, xy: XY) -> usize {
         self.nodes.push((xy, HashSet::new()));
@@ -66,6 +74,17 @@ impl PathGraphBuilder {
     pub fn add_edge(&mut self, index_a: usize, index_b: usize) {
         self.nodes.get_mut(index_a).expect("invalid node index").1.insert(index_b);
         self.nodes.get_mut(index_b).expect("invalid node index").1.insert(index_a);
+    }
+
+    /// Add a new mirror nodes, return their index
+    pub fn add_mirror_nodes(&mut self, xy: XY) -> (usize, usize) {
+        (self.add_node(xy), self.add_node(xy.xflip()))
+    }
+
+    /// Add a new edge, indexes must be valid
+    pub fn add_mirror_edges(&mut self, indexes_a: (usize, usize), indexes_b: (usize, usize)) {
+        self.add_edge(indexes_a.0, indexes_b.0);
+        self.add_edge(indexes_a.1, indexes_b.1);
     }
 
     /// Add a triangle grid with an horizontal symmetry
@@ -103,7 +122,7 @@ impl PathGraphBuilder {
         let previous_nodes_len = self.nodes.len();
         self.nodes.reserve(max_grid_count);
         for (ix, iy) in iter_grid_pos() {
-            let xy = XY::new(ix as f32 * dx, iy as f32 * dy);
+            let xy = XY::new(ix as f32 * dx, y0 + iy as f32 * dy);
             // Skip positions close to an existing node
             if self.closest_node(&xy, radius / 2.0).is_none() {
                 added_nodes.insert((ix, iy), self.add_node(xy));
@@ -123,11 +142,34 @@ impl PathGraphBuilder {
         }
 
         // Add edges for grid nodes close to existing nodes
-        let close_distance2 = (1.5 * radius) * (1.5 * radius);
-        for prev_index in 0..previous_nodes_len {
-            for new_index in previous_nodes_len..self.nodes.len() {
-                if (self.nodes[prev_index].0 - self.nodes[new_index].0).length2() < close_distance2 {
-                    self.add_edge(prev_index, new_index);
+        self.add_edges_between_groups(previous_nodes_len, (1.5 * radius) * (1.5 * radius));
+    }
+
+    /// Add edges between two groups of nodes
+    ///
+    /// Typically used after adding a group of nodes.
+    /// Add edges between nodes `..index` and `index..`, if their squared distance is at most
+    /// `distance2`.
+    pub fn add_edges_between_groups(&mut self, index: usize, distance2: f32) {
+        for index1 in index..self.nodes.len() {
+            for index2 in 0..index {
+                if (self.nodes[index2].0 - self.nodes[index1].0).length2() < distance2 {
+                    self.add_edge(index1, index2);
+                }
+            }
+        }
+    }
+
+    /// Add edges in two groups of nodes
+    ///
+    /// Typically used after adding a group of nodes.
+    /// Add edges between nodes in `index..`, if their squared distance is at most `distance2`.
+    pub fn add_edges_in_group(&mut self, index: usize, distance2: f32) {
+        let n = self.nodes.len();
+        for index1 in index..n - 1 {
+            for index2 in index + 1..n {
+                if (self.nodes[index2].0 - self.nodes[index1].0).length2() < distance2 {
+                    self.add_edge(index1, index2);
                 }
             }
         }
@@ -167,14 +209,21 @@ impl PathGraphBuilder {
 }
 
 
+/// Node identifier, to be used with `PathGraph` public API
+#[derive(Clone, Copy, Debug)]
+pub struct PathNodeId(usize);
+
 impl PathGraph {
-    /// Get node from given index
-    pub fn get_node(&self, index: usize) -> Option<&PathNode> {
-        self.nodes.get(index)
+    /// Get node from its index
+    pub fn get_node_xy(&self, node: PathNodeId) -> XY {
+        xy_mm_from_internal(&self.get_node_ref(node).xy)
     }
 
     /// Find a path in the graph from `start` to `goal`
-    pub fn find_path(&self, start: &PathNode, goal: &PathNode) -> Option<Vec<&PathNode>> {
+    pub fn find_path(&self, start: PathNodeId, goal: PathNodeId) -> Option<Vec<PathNodeId>> {
+        let start = self.get_node_ref(start);
+        let goal = self.get_node_ref(goal);
+
         // Fail if start node is blocked
         if self.node_is_blocked(start) || self.node_is_blocked(goal) {
             return None;
@@ -230,7 +279,7 @@ impl PathGraph {
             if index == goal_index {
                 // Solution found, rebuild the path
                 let goal_to_start: Vec<usize> = std::iter::successors(Some(index), |i| node_infos[*i].previous_index).collect();
-                let start_to_goal: Vec<&PathNode> = goal_to_start.into_iter().rev().map(|i| &self.nodes[i]).collect();
+                let start_to_goal: Vec<PathNodeId> = goal_to_start.into_iter().rev().map(|i| PathNodeId(i)).collect();
                 return Some(start_to_goal);
             }
 
@@ -269,12 +318,19 @@ impl PathGraph {
     }
 
     /// Return the node closest to the given coordinates and not blocked
-    pub fn nearest_node(&self, xy: XY) -> &PathNode {
+    pub fn nearest_node(&self, xy: &XY) -> PathNodeId {
         let target_xy = (mm_to_internal(xy.x), mm_to_internal(xy.y));
-        self.nodes.iter()
-            .filter(|node| !self.node_is_blocked(node))
-            .min_by_key(|node| internal_distance2(target_xy, node.xy))
-            .unwrap()  // Assume at least 1 node
+        let (index, _) = self.nodes.iter()
+            .enumerate()
+            .filter(|(_, node)| !self.node_is_blocked(node))
+            .min_by_key(|(_, node)| internal_distance2(target_xy, node.xy))
+            .unwrap();
+        PathNodeId(index)
+    }
+
+    /// Internal method to retrieve a node reference from its ID, panic if invalid
+    fn get_node_ref(&self, node_id: PathNodeId) -> &PathNode {
+        self.nodes.get(node_id.0).expect("invalid node ID")
     }
 
     /// Return true if given node is currently blocked by an obstacle
@@ -430,9 +486,9 @@ mod tests {
 
     /// Find a path, convert the result to a vector of plain coordinates
     fn grid_path(graph: &PathGraph, start: usize, goal: usize) -> Option<Vec<(i32, i32)>> {
-        let path = graph.find_path(graph.get_node(start).unwrap(), graph.get_node(goal).unwrap())?;
-        let path = path.into_iter().map(|node| {
-            let XY { x, y } = node.xy();
+        let path = graph.find_path(PathNodeId(start), PathNodeId(goal))?;
+        let path = path.into_iter().map(|node_id| {
+            let XY { x, y } = graph.get_node_xy(node_id);
             ((x / 100.0) as i32, (y / 100.0) as i32)
         }).collect();
         Some(path)
@@ -450,16 +506,17 @@ mod tests {
     /// Print graph builder nodes as SVG
     ///
     /// Can be used with `cargo test -- --nocapture` for visualization.
-    fn print_builder_svg(builder: &PathGraphBuilder) {
-        println!(r#"<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-650 -50 1300 700">"#);
+    fn print_builder_svg(builder: &PathGraphBuilder, viewport: (i32, i32, i32, i32)) {
+        println!(r#"<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="{} {} {} {}">"#, viewport.0, viewport.1, viewport.2, viewport.3);
         println!(r#"  <defs>"#);
         println!(r#"    <style type="text/css"><![CDATA["#);
+        println!(r#"      .bg {{ fill: #e0e0e010; stroke-none; }}"#);
         println!(r#"      .node {{ fill: black; stroke: none; }}"#);
         println!(r#"      .edge {{ stroke: black; stroke-width: 2px; }}"#);
         println!(r#"    ]]></style>"#);
-        println!(r#"  <defs>"#);
-        println!(r#"]]></style></defs>"#);
+        println!(r#"  </defs>"#);
         println!(r#"<g>"#);
+            println!(r#"<rect class="bg" x="{}" y="{}" width="{}" height="{}" />"#, viewport.0, viewport.1, viewport.2, viewport.3);
         for (xy, _) in &builder.nodes {
             println!(r#"<circle class="node" cx="{}" cy="{}" r="20" />"#, xy.x, xy.y);
         }
@@ -524,6 +581,36 @@ mod tests {
         builder.add_node(XY::new(0.0, 50.0));
         builder.add_node(XY::new(-150.0, 50.0));
         builder.add_triangle_grid(620.0, 0.0, 620.0, 100.0);
-        print_builder_svg(&builder);
+        print_builder_svg(&builder, (-650, -50, 1300, 700));
+    }
+
+    // Generate SVG with
+    //   cargo test test_eurobot_grid -- --show-output | sed -n '/<svg/,/<\/svg>/p' > graph.svg
+    #[test]
+    fn test_eurobot_grid() {
+        let mut builder = PathGraphBuilder::new();
+
+        // Starting zones
+        const STARTING_POS: XY = XY::new(1500.0 - 600.0/2.0, 2000.0 - 450.0/2.0);
+        const STARTING_EXIT_POS: XY = XY::new(1500.0 - 600.0/2.0, 2000.0 - 600.0);
+        let starts = builder.add_mirror_nodes(STARTING_POS);
+        let start_exits = builder.add_mirror_nodes(STARTING_EXIT_POS);
+        builder.add_mirror_edges(starts, start_exits);
+
+        let grid_index = builder.node_count();
+        for ix in 0..=3 {
+            for y in [475.0, 800.0, 1125.0] {
+                let xy = XY::new(ix as f32 * 350.0, y);
+                builder.add_node(xy);
+                if ix != 0 {
+                    builder.add_node(xy.xflip());
+                }
+            }
+        }
+
+        builder.add_edges_in_group(grid_index, 1000.0 * 1000.0);
+        builder.add_edges_between_groups(grid_index, 500.0 * 500.0);
+
+        print_builder_svg(&builder, (-1500, 0, 3000, 2000));
     }
 }

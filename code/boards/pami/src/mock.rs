@@ -81,7 +81,7 @@ impl PamiBoard for MockPamiBoard {
         None
     }
 
-    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, _device_name: String, _passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
+    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, _device_name: String, _passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Sender<String>, Receiver<Box<[u8]>>)> {
         None
     }
 }

@@ -25,6 +25,7 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     // ROME sender/receiver
     pub rome_tx: Sender<Box<[u8]>>,
     pub rome_rx: Receiver<Box<[u8]>>,
+    pub rlogger: Sender<String>,
 
     //leds
     led_sender: Sender<LedMessage>,
@@ -66,8 +67,8 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
         // Setup Rome
         let picotter_ota = CanOtaRelayHandler::new(can_interface.clone());
-        let (rome_tx, rome_rx) = board.rome("Galipeur".into(), vec![Box::new(picotter_ota)]).unwrap();
-
+        let (rome_tx, rlogger, rome_rx) = board.rome("Galipeur".into(), vec![Box::new(picotter_ota)]).unwrap();
+        rome::info!(rlogger, "ROME initialized");
 
         // Setup Led feedback
         let leds = Leds::new::<B>(board);
@@ -83,7 +84,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         let asserv = Arc::new(Mutex::new(Asserv::new(asserv_hardware)));
 
         // Setup strat
-        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone() ,asserv.clone());
+        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone(), asserv.clone(), rlogger.clone());
 
         Self {
             asserv,
@@ -91,11 +92,10 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
             rome_tx,
             rome_rx,
+            rlogger,
 
             led_sender,
-
             can: can_interface,
-
             sensors,
 
             lidar_tm_ground: false,
@@ -132,65 +132,67 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         if !rome_messages.is_empty() {
             self.led_sender.send(LedMessage::RomeActivity).ok();
         }
-        //for data in rome_messages {
-        //    match rome::Message::decode(&data) {
-        //        Err(err) => log::error!("ROME RX error: {err:?}"),
-        //        Ok(message) => {
-        //            if !self.on_rome_message(&message) && !self.asserv.on_rome_message(&message) {
-        //                log::warn!("ROME: ignored message: {}", message.message_id());
-        //            }
-        //        },
-        //    }
-        //}
-        
+        for data in rome_messages {
+            match rome::Message::decode(&data) {
+                Err(err) => log::error!("ROME RX error: {err:?}"),
+                Ok(message) => {
+                    if !self.on_rome_message(&message) & !self.asserv.lock().unwrap().on_rome_message(&message) {
+                        log::warn!("ROME: ignored message: {}", message.message_id());
+                    }
+                },
+            }
+        }
+
         // Update asserv, send asserv telemetry
         if self.asserv_periodicity.update(now) {
             self.asserv.lock().unwrap().update();
         }
-        //if self.asserv_tm_periodicity.update(now) {
-        //    if let Err(err) = self.rome_tx.send(self.asserv.asserv_tm_status().encode()) {
-        //        log::error!("ROME send error: {:?}", err);
-        //    }
-        //    if let Err(err) = self.rome_tx.send(self.asserv.asserv_holo_tm_status().encode()) {
-        //        log::error!("ROME send error: {:?}", err);
-        //    }
-        //    if let Some(message) = self.asserv.asserv_holo_tm_path() {
-        //        if let Err(err) = self.rome_tx.send(message.encode()) {
-        //            log::error!("ROME send error: {:?}", err);
-        //        }
-        //    }
-        //}
+        if self.asserv_tm_periodicity.update(now) {
+            let asserv = self.asserv.lock().unwrap();
+            if let Err(err) = self.rome_tx.send(asserv.asserv_tm_status().encode()) {
+                log::error!("ROME send error: {:?}", err);
+            }
+            if let Err(err) = self.rome_tx.send(asserv.asserv_holo_tm_status().encode()) {
+                log::error!("ROME send error: {:?}", err);
+            }
+            if let Some(message) = asserv.asserv_holo_tm_path() {
+                if let Err(err) = self.rome_tx.send(message.encode()) {
+                    log::error!("ROME send error: {:?}", err);
+                }
+            }
+        }
 
         // Update meca, send meca telemetry
         if self.meca_periodicity.update(now) {
-           //for module in 0..3u8 {
-           //    for arm in 0..4u8 {
-           //        let s = self.meca.proxy.arm_watcher(module, arm).get();
-           //        let _ = self.rome_tx.send(rome::Message::MecaArmTmState {
-           //            module,
-           //            arm,
-           //            position: s.position,
-           //            //TODO: update rome with full telemetry
-           //            color: rome::params::MecaArmTmStateColor::Unknown,
-           //            pump: s.pump,
-           //            valve: s.valve,
-           //            servo_error: s.error,
-           //            torque_enabled: s.flags.torque_enabled,
-           //            moving: s.flags.moving,
-           //            // Note: position_reached == !moving
-           //            pump_current: s.pump_current,
-           //        }.encode());
-           //    }
-           //}
-           //if self.meca_tm_periodicity.update(now) {
-           //    for (i_tr, translation) in meca_state.translations.iter().enumerate() {
-           //        let _ = self.rome_tx.send(rome::Message::MecaArmTmTranslation {
-           //            module: i_tr as u8,
-           //            position: translation.position,
-           //            error: translation.error,
-           //        }.encode());
-           //    }
-           //}
+            for module in 0..3u8 {
+                for arm in 0..4u8 {
+                    let s = self.meca.proxy.arm_watcher(module, arm).get();
+                    let _ = self.rome_tx.send(rome::Message::MecaArmTmState {
+                            module,
+                            arm,
+                            position: s.position,
+                            //TODO: update rome with full telemetry
+                            color: rome::params::MecaArmTmStateColor::Unknown,
+                            pump: s.pump,
+                            valve: s.valve,
+                            servo_error: s.error,
+                            torque_enabled: s.flags.torque_enabled,
+                            moving: s.flags.moving,
+                            // Note: position_reached == !moving
+                            pump_current: s.pump_current,
+                            }.encode());
+                }
+            }
+           /*if self.meca_tm_periodicity.update(now) {
+               for (i_tr, translation) in meca_state.translations.iter().enumerate() {
+                   let _ = self.rome_tx.send(rome::Message::MecaArmTmTranslation {
+                       module: i_tr as u8,
+                       position: translation.position,
+                       error: translation.error,
+                   }.encode());
+               }
+           }
+           */
         }
     }
 
@@ -206,5 +208,48 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
         now
     }
+
+    fn on_rome_message(&mut self, message: &rome::Message) -> bool {
+        match *message {
+            rome::Message::MecaPrepareTake { side } => {
+                log::info!("ROME: meca prepare take");
+                match side {
+                    rome::params::MecaPrepareTakeSide::Left  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Left)); }
+                    rome::params::MecaPrepareTakeSide::Right => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Right)); }
+                    rome::params::MecaPrepareTakeSide::Back  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Back));  }
+                }
+                true
+            }
+            rome::Message::MecaTake { side } => {
+                log::info!("ROME: meca take");
+                match side {
+                    rome::params::MecaTakeSide::Left  => { self.meca.direct_take(asserv::holonomic::RobotSide::Left); }
+                    rome::params::MecaTakeSide::Right => { self.meca.direct_take(asserv::holonomic::RobotSide::Right); }
+                    rome::params::MecaTakeSide::Back  => { self.meca.direct_take(asserv::holonomic::RobotSide::Back);  }
+                }
+                true
+            }
+            rome::Message::MecaPrepareRelease { side } => {
+                log::info!("ROME: meca prepare release");
+                match side {
+                    rome::params::MecaPrepareReleaseSide::Left  => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Left)); }
+                    rome::params::MecaPrepareReleaseSide::Right => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Right)); }
+                    rome::params::MecaPrepareReleaseSide::Back  => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Back));  }
+                }
+                true
+            }
+            rome::Message::MecaRelease { side } => {
+                log::info!("ROME: meca release");
+                match side {
+                    rome::params::MecaReleaseSide::Left  => { self.meca.release(asserv::holonomic::RobotSide::Left); }
+                    rome::params::MecaReleaseSide::Right => { self.meca.release(asserv::holonomic::RobotSide::Right); }
+                    rome::params::MecaReleaseSide::Back  => { self.meca.release(asserv::holonomic::RobotSide::Back);  }
+                }
+                true
+            }
+            _ => false
+        }
+    }
+
 }
 

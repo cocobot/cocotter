@@ -1,5 +1,6 @@
 use board_common::Team;
 
+#[derive(Default)]
 pub struct MecaSideState {
     ready_to_take: bool,
     lower_stage: [Team; 4],
@@ -16,13 +17,11 @@ impl MecaSideState {
     }
 
     pub fn transfer_to_clamp(&mut self) {
-        self.upper_stage.copy_from_slice(&self.lower_stage);
-        self.lower_stage.fill(Team::None);
+        self.upper_stage = std::mem::take(&mut self.lower_stage);
     }
 
     pub fn transfer_to_lower_stage(&mut self) {
-        self.lower_stage.copy_from_slice(&self.upper_stage);
-        self.upper_stage.fill(Team::None);
+        self.lower_stage = std::mem::take(&mut self.upper_stage);
     }
 
     pub fn ready_to_take(&mut self, ready: bool) {
@@ -34,37 +33,22 @@ impl MecaSideState {
     }
 
     pub fn set_lower_stage(&mut self, teams: [Team; 4]) -> [Team; 4] {
-        let previous_data = self.lower_stage;
-        self.lower_stage.copy_from_slice(&teams);
-
-        previous_data
+        std::mem::replace(&mut self.lower_stage, teams)
     }
 }
 
+#[derive(Default)]
 pub struct MecaState {
     sides: [MecaSideState; 3],
     own_color: Team,
 }
 
-impl Default for MecaState {
-    fn default() -> Self {
-        Self {
-            own_color: Team::None,
-            sides: [
-                MecaSideState { lower_stage: [Team::None; 4], upper_stage: [Team::None; 4], ready_to_take: false},
-                MecaSideState { lower_stage: [Team::None; 4], upper_stage: [Team::None; 4], ready_to_take: false},
-                MecaSideState { lower_stage: [Team::None; 4], upper_stage: [Team::None; 4], ready_to_take: false},
-            ],
-        }
-    }
-}
-
 impl MecaState {
-    pub fn get_side_state(&self, side: u8) -> &MecaSideState {
+    pub fn get_side(&self, side: u8) -> &MecaSideState {
         &self.sides[side as usize]
     }
 
-    pub fn get_side_state_mut(&mut self, side: u8) -> &mut MecaSideState {
+    pub fn get_side_mut(&mut self, side: u8) -> &mut MecaSideState {
         &mut self.sides[side as usize]
     }
 

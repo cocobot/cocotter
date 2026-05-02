@@ -32,6 +32,7 @@ pub struct PamiRoutines<B: PamiBoard> {
     // ROME sender/receiver
     pub rome_tx: Sender<Box<[u8]>>,
     pub rome_rx: Receiver<Box<[u8]>>,
+    pub rlogger: Sender<String>,
     // UI sender/receiver
     pub ui_events: Sender<UiEvent>,
     pub ui_triggers: Receiver<UiTrigger>,
@@ -51,9 +52,11 @@ impl<B: PamiBoard> PamiRoutines<B> {
     /// The asserv must be configured manually, using `asserv.set_conf()`.
     pub fn new(
         board: &mut B,
-        (rome_tx, rome_rx): (Sender<Box<[u8]>>, Receiver<Box<[u8]>>),
+        (rome_tx, rlogger, rome_rx): (Sender<Box<[u8]>>, Sender<String>, Receiver<Box<[u8]>>),
         (ui_events, ui_triggers): (Sender<UiEvent>, Receiver<UiTrigger>),
     ) -> Self {
+        rome::info!(rlogger, "Initializing PAMI routines");
+
         let mut vlx = board.vlx_sensor().unwrap();
         log::info!("Initialize VLX");
         if let Err(err) = vlx.init() {
@@ -77,6 +80,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
 
             rome_tx,
             rome_rx,
+            rlogger,
             ui_events,
             ui_triggers,
 

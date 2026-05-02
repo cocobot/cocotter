@@ -135,7 +135,7 @@ impl<B: SabotterBoard> LedsInternal<B> {
             } else {
                 pixels[0] = self.game_color;
 
-                for i in 0..41 {
+                for i in 1..41 {
                     pixels[i] = BLACK
                 }
 

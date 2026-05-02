@@ -208,7 +208,7 @@ impl PamiBoard for EspPamiBoard {
         self.pwm_controller.take()
     }
 
-    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {       
+    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Sender<String>, Receiver<Box<[u8]>>)> {
         let (ble_server, _ble_client) = BleBuilder::new()
             .with_passkey_notifier(passkey_notifier)
             .run();
@@ -220,7 +220,7 @@ impl PamiBoard for EspPamiBoard {
         ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();
         ble_server.start_advertising().unwrap();
 
-        Some((rome.sender, rome.receiver))
+        Some((rome.tm_sender, rome.logs_sender, rome.orders_receiver))
     }
 }
 

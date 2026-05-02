@@ -19,6 +19,13 @@ use crate::led::LedMessage;
 use crate::meca::state::MecaState;
 use crate::meca::worker::{MecaAction, MecaWorker};
 
+pub enum CleatSide {
+    None,
+    Left,
+    Right,
+    Both,
+}
+
 /// Mapping RobotSide → CAN module index
 pub trait RobotSideModule {
     fn module(self) -> u8;
@@ -109,9 +116,9 @@ impl<B: SabotterBoard + 'static> Meca<B> {
         }
     }
 
-    pub fn prepare_direct_take(&self, prefered_side: Option<RobotSide>) -> Option<RobotSide> {
+    pub fn prepare_direct_take(&self, prefered_side: Option<RobotSide>, cleat_up: CleatSide) -> Option<RobotSide> {
         let (tx, rx) = flume::bounded(1);
-        self.worker_tx.send(MecaAction::PrepareDirectTake { prefered_side, reply: tx }).ok();
+        self.worker_tx.send(MecaAction::PrepareDirectTake { prefered_side, reply: tx, cleat_up: cleat_up }).ok();
         rx.recv().ok().flatten()
     }
 

@@ -109,7 +109,10 @@ impl SabotterBoard for EspSabotterBoard {
 
     fn init() -> Self {
         esp_idf_svc::sys::link_patches();
-        esp_idf_svc::log::EspLogger::initialize_default();
+
+        let logger = esp_idf_svc::log::init_from_esp_idf();
+        logger.filter().set_target_level("NimBLE", log::LevelFilter::Warn).unwrap();
+
         let _nvs = EspDefaultNvsPartition::take().unwrap();
 
         let peripherals = Peripherals::take().unwrap();
@@ -357,7 +360,7 @@ impl SabotterBoard for EspSabotterBoard {
         self.motors.take()
     }
 
-    fn rome(&mut self, device_name: String, mut other_ota_handlers: Vec<Box<dyn OtaHandler>>) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)> {
+    fn rome(&mut self, device_name: String, mut other_ota_handlers: Vec<Box<dyn OtaHandler>>) -> Option<(Sender<Box<[u8]>>, Sender<String>, Receiver<Box<[u8]>>)> {
         // Note: for now, client is not used, so we can easily initialize both server and client
         // and drop the client. But if the client (and `.with_scanner()`) are needed,
         // another approach must be implemented. Maybe by changing the BLE API.
@@ -377,7 +380,7 @@ impl SabotterBoard for EspSabotterBoard {
         ble_server.setup_advertising(&device_name, &ble::rome::SERVICE_UUID_BYTES).unwrap();
         ble_server.start_advertising().unwrap();
 
-        Some((rome.sender, rome.receiver))
+        Some((rome.tm_sender, rome.logs_sender, rome.orders_receiver))
     }
 }
 

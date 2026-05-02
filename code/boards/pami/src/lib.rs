@@ -60,7 +60,7 @@ pub trait PamiBoard {
     fn pwm_controller(&mut self) -> Option<PamiPwmController<Self::I2c>>;
 
     /// Configure and return ROME interface
-    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Receiver<Box<[u8]>>)>;
+    fn rome<F: Fn([u8; 6], u32) + Send + Sync +'static>(&mut self, device_name: String, passkey_notifier: F) -> Option<(Sender<Box<[u8]>>, Sender<String>, Receiver<Box<[u8]>>)>;
 }
 
 

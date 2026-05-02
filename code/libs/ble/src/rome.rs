@@ -54,7 +54,7 @@ pub(crate) fn logs_attr_handle() -> u16 {
 // Channel for incoming orders (GATT write -> flume)
 // ---------------------------------------------------------------------------
 
-static ROME_RX_SENDER: OnceLock<Sender<Box<[u8]>>> = OnceLock::new();
+static ORDERS_SENDER: OnceLock<Sender<Box<[u8]>>> = OnceLock::new();
 
 // ---------------------------------------------------------------------------
 // GATT service table builder
@@ -194,7 +194,7 @@ extern "C" fn gatt_access_cb(
                         sys::os_mbuf_copydata(om, 0, len as i32, buf.as_mut_ptr() as *mut _)
                     };
                     if rc == 0 {
-                        if let Some(sender) = ROME_RX_SENDER.get() {
+                        if let Some(sender) = ORDERS_SENDER.get() {
                             if let Err(e) = sender.send(buf.into_boxed_slice()) {
                                 log::error!("Failed to push RX data: {e:?}");
                             }
@@ -219,21 +219,24 @@ extern "C" fn gatt_access_cb(
 /// Intermediate state after GATT registration, before host start.
 /// Call `start()` after `server.start_host()` to finalize.
 pub struct RomeRegistration {
-    rome_receiver: Receiver<Box<[u8]>>,
-    rome_sender: Sender<Box<[u8]>>,
-    rome_tx_receiver: Receiver<Box<[u8]>>,
+    orders_receiver: Receiver<Box<[u8]>>,
+    tm_sender: Sender<Box<[u8]>>,
+    tm_receiver: Receiver<Box<[u8]>>,
+    logs_sender: Sender<String>,
+    logs_receiver: Receiver<String>,
 }
 
 /// Register Rome GATT service. Must be called before `server.start_host()`.
 pub fn register_gatt() -> RomeRegistration {
-    let (rome_rx_sender, rome_receiver) = flume::unbounded();
-    let (rome_sender, rome_tx_receiver) = flume::unbounded::<Box<[u8]>>();
+    let (orders_sender, orders_receiver) = flume::unbounded();
+    let (tm_sender, tm_receiver) = flume::unbounded::<Box<[u8]>>();
+    let (logs_sender, logs_receiver) = flume::unbounded::<String>();
 
     // Store the orders channel sender globally for the GATT callback
-    ROME_RX_SENDER
-        .set(rome_rx_sender)
+    ORDERS_SENDER
+        .set(orders_sender)
         .ok()
-        .expect("ROME_RX_SENDER already set");
+        .expect("ORDERS_SENDER already set");
 
     // Build and register GATT service table
     let svcs = build_gatt_svcs();
@@ -251,9 +254,11 @@ pub fn register_gatt() -> RomeRegistration {
     log::info!("Rome GATT service registered");
 
     RomeRegistration {
-        rome_receiver,
-        rome_sender,
-        rome_tx_receiver,
+        orders_receiver,
+        tm_sender,
+        tm_receiver,
+        logs_sender,
+        logs_receiver,
     }
 }
 
@@ -262,22 +267,23 @@ pub fn register_gatt() -> RomeRegistration {
 // ---------------------------------------------------------------------------
 
 pub struct RomePeripheral {
-    pub sender: Sender<Box<[u8]>>,
-    pub receiver: Receiver<Box<[u8]>>,
+    pub tm_sender: Sender<Box<[u8]>>,
+    pub logs_sender: Sender<String>,
+    pub orders_receiver: Receiver<Box<[u8]>>,
 }
 
 impl RomeRegistration {
     /// Finalize Rome service after host has started.
-    /// Copies GATT handles and spawns the notification thread.
+    /// Copies GATT handles and spawns the notification threads.
     pub fn start(self) -> RomePeripheral {
         // Copy handles now that the host has started and assigned them
         copy_handles();
 
-        // Spawn notification thread
-        let rome_tx_receiver = self.rome_tx_receiver;
+        // Spawn telemetry notification thread
+        let tm_receiver = self.tm_receiver;
         std::thread::spawn(move || {
             loop {
-                if let Ok(data) = rome_tx_receiver.recv() {
+                if let Ok(data) = tm_receiver.recv() {
                     let telemetry_handle = TELEMETRY_HANDLE.load(Ordering::Relaxed);
                     if telemetry_handle == 0 {
                         continue;
@@ -286,40 +292,36 @@ impl RomeRegistration {
                     crate::with_connections(|conns| {
                         for conn in conns {
                             if conn.subscribed_telemetry {
-                                // Build mbuf for notification
-                                let om = unsafe {
-                                    sys::os_msys_get_pkthdr(data.len() as u16, 0)
-                                };
-                                if om.is_null() {
-                                    log::warn!("Failed to get mbuf for notification");
-                                    continue;
-                                }
-                                let rc = unsafe {
-                                    sys::os_mbuf_append(
-                                        om,
-                                        data.as_ptr() as *const _,
-                                        data.len() as u16,
-                                    )
-                                };
-                                if rc != 0 {
-                                    unsafe { sys::os_mbuf_free_chain(om) };
-                                    continue;
-                                }
-                                let rc = unsafe {
-                                    sys::ble_gatts_notify_custom(
-                                        conn.conn_handle,
-                                        telemetry_handle,
-                                        om,
-                                    )
-                                };
-                                if rc != 0 {
-                                    log::warn!("Notify failed for conn {}: {rc}", conn.conn_handle);
-                                }
+                                send_ble_notification(conn.conn_handle, telemetry_handle, &data);
                             }
                         }
                     });
                 } else {
-                    log::warn!("No data recv on rome TX");
+                    log::warn!("No data received on rome telemetry queue");
+                    std::thread::sleep(Duration::from_millis(1000));
+                }
+            }
+        });
+
+        // Spawn log notification thread
+        let logs_receiver = self.logs_receiver;
+        std::thread::spawn(move || {
+            loop {
+                if let Ok(data) = logs_receiver.recv() {
+                    let logs_handle = LOGS_HANDLE.load(Ordering::Relaxed);
+                    if logs_handle == 0 {
+                        continue;
+                    }
+
+                    crate::with_connections(|conns| {
+                        for conn in conns {
+                            if conn.subscribed_logs {
+                                send_ble_notification(conn.conn_handle, logs_handle, data.as_bytes());
+                            }
+                        }
+                    });
+                } else {
+                    log::warn!("No data received on rome log queue");
                     std::thread::sleep(Duration::from_millis(1000));
                 }
             }
@@ -328,8 +330,40 @@ impl RomeRegistration {
         log::info!("ROME peripheral running");
 
         RomePeripheral {
-            sender: self.rome_sender,
-            receiver: self.rome_receiver,
+            tm_sender: self.tm_sender,
+            logs_sender: self.logs_sender,
+            orders_receiver: self.orders_receiver,
         }
     }
 }
+
+
+/// Build and send a notification
+fn send_ble_notification(conn_handle: u16, attr_handle: u16, data: &[u8]) {
+    // Build mbuf for notification
+    let om = unsafe {
+        sys::os_msys_get_pkthdr(data.len() as u16, 0)
+    };
+    if om.is_null() {
+        log::warn!("Failed to get mbuf for notification");
+        return;
+    }
+    let rc = unsafe {
+        sys::os_mbuf_append(
+            om,
+            data.as_ptr() as *const _,
+            data.len() as u16,
+        )
+    };
+    if rc != 0 {
+        unsafe { sys::os_mbuf_free_chain(om) };
+        return;
+    }
+    let rc = unsafe {
+        sys::ble_gatts_notify_custom(conn_handle, attr_handle, om)
+    };
+    if rc != 0 {
+        log::warn!("Notify failed for conn {}: {rc}", conn_handle);
+    }
+}
+

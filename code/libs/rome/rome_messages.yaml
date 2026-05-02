@@ -165,6 +165,18 @@
     position: u16
     error: u8
 
+  MecaPrepareTake:
+    side: [left,right,back]
+
+  MecaTake:
+    side: [left,right,back]
+
+  MecaPrepareRelease:
+    side: [left,right,back]
+
+  MecaRelease:
+    side: [left,right,back]
+
 # Galipeur sensors
 70:
   # Enable/disable lidar telemetry streaming
