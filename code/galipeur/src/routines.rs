@@ -36,7 +36,8 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     // Sensors
     pub sensors: Sensors<B>,
 
-    // Lidar telemetry flags
+    // Flags to eneable or disable telemetry
+    meca_tm_full: bool,
     lidar_tm_ground: bool,
     lidar_tm_top: bool,
 
@@ -97,6 +98,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             can: can_interface,
             sensors,
 
+            meca_tm_full: false,
             lidar_tm_ground: false,
             lidar_tm_top: false,
 
@@ -162,55 +164,57 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
         // Send meca telemetry
         if self.meca_tm_periodicity.update(now) {
-            for (i, side_state) in self.meca.clone_state().into_iter().enumerate() {
-                fn convert_team(team: Team) -> u8 {
-                    match team {
-                        Team::None => 0,
-                        Team::Left => 1,
-                        Team::Right => 2,
+            if self.meca_tm_full {
+                for side in 0..3u8 {
+                    for arm in 0..4u8 {
+                        let s = self.meca.proxy.arm_watcher(side, arm).get();
+                        let _ = self.rome_tx.send(rome::Message::MecaTmArmFullState {
+                            side,
+                            arm,
+                            position: s.position,
+                            color: rome::params::MecaTmArmFullStateColor::Unknown,
+                            pump: s.pump,
+                            valve: s.valve,
+                            servo_error: s.error,
+                            torque_enabled: s.flags.torque_enabled,
+                            moving: s.flags.moving,
+                            // Note: position_reached == !moving
+                            pump_current: s.pump_current,
+                        }.encode());
                     }
-                }
-                fn convert_stage(teams: &[Team; 4]) -> [u8; 4] {
-                    [
-                        convert_team(teams[0]),
-                        convert_team(teams[1]),
-                        convert_team(teams[2]),
-                        convert_team(teams[3]),
-                    ]
-                }
 
-                let _ = self.rome_tx.send(rome::Message::MecaTmSideState {
-                    side: i as u8,
-                    ready_to_take: side_state.ready_to_take,
-                    lower_stage: convert_stage(&side_state.lower_stage),
-                    upper_stage: convert_stage(&side_state.upper_stage),
-                }.encode());
-            }
-
-            for side in 0..3u8 {
-                for arm in 0..4u8 {
-                    let s = self.meca.proxy.arm_watcher(side, arm).get();
-                    let _ = self.rome_tx.send(rome::Message::MecaTmArmFullState {
-                        side,
-                        arm,
-                        position: s.position,
-                        color: rome::params::MecaTmArmFullStateColor::Unknown,
-                        pump: s.pump,
-                        valve: s.valve,
-                        servo_error: s.error,
-                        torque_enabled: s.flags.torque_enabled,
-                        moving: s.flags.moving,
-                        // Note: position_reached == !moving
-                        pump_current: s.pump_current,
+                    let watcher = self.meca.proxy.translation_watcher(side).get();
+                    let _ = self.rome_tx.send(rome::Message::MecaTmSideTranslation {
+                        side: side as u8,
+                        position: watcher.position,
+                        error: watcher.error,
                     }.encode());
                 }
+            } else {
+                for (i, side_state) in self.meca.clone_state().into_iter().enumerate() {
+                    fn convert_team(team: Team) -> u8 {
+                        match team {
+                            Team::None => 0,
+                            Team::Left => 1,
+                            Team::Right => 2,
+                        }
+                    }
+                    fn convert_stage(teams: &[Team; 4]) -> [u8; 4] {
+                        [
+                            convert_team(teams[0]),
+                            convert_team(teams[1]),
+                            convert_team(teams[2]),
+                            convert_team(teams[3]),
+                        ]
+                    }
 
-                let watcher = self.meca.proxy.translation_watcher(side).get();
-                let _ = self.rome_tx.send(rome::Message::MecaTmSideTranslation {
-                    side: side as u8,
-                    position: watcher.position,
-                    error: watcher.error,
-                }.encode());
+                    let _ = self.rome_tx.send(rome::Message::MecaTmSideState {
+                        side: i as u8,
+                        ready_to_take: side_state.ready_to_take,
+                        lower_stage: convert_stage(&side_state.lower_stage),
+                        upper_stage: convert_stage(&side_state.upper_stage),
+                    }.encode());
+                }
             }
         }
     }
@@ -230,6 +234,13 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
     fn on_rome_message(&mut self, message: &rome::Message) -> bool {
         match *message {
+            rome::Message::MecaSetTmLevel(level) => {
+                match level {
+                    rome::params::MecaSetTmLevelParam::Default => { self.meca_tm_full = false; },
+                    rome::params::MecaSetTmLevelParam::Full => { self.meca_tm_full = true; },
+                }
+                true
+            }
             rome::Message::MecaPrepareTake { side, cleat_up } => {
                 log::info!("ROME: meca prepare take");
                 let cleat_up = match cleat_up {

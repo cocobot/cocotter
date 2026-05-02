@@ -149,6 +149,10 @@
 # Galipeur meca
 # Colors: 0=unknown, 1=yellow, 2=blue
 60:
+  MecaSetTmLevel:
+    - - default
+      - full
+
   MecaTmSideState:
     side: u8
     ready_to_take: bool
