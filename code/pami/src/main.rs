@@ -1,6 +1,8 @@
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use asserv::differential::conf::*;
+use asserv::differential::MovementDirection;
+use asserv::maths::XYA;
 use board_pami::PamiBoard;
 use pami::config::PamiConfig;
 use pami::events::*;
@@ -18,7 +20,6 @@ fn flush_display(display: &mut board_pami::esp::PamiDisplay) {
 }
 #[cfg(not(target_os = "espidf"))]
 fn flush_display(_display: &mut board_pami::mock::PamiDisplay) {}
-
 
 fn main() {
     let mut board = PamiBoardImpl::init();
@@ -85,6 +86,18 @@ fn main() {
     passkey_enabled.store(false, Ordering::Relaxed);
     //TODO Match starts! Trigger events (UI, etc.)
 
+    let flipped_x = match_conf.team == Team::Left;
+    macro_rules! xflip {
+        ($e:expr) => { if flipped_x { $e.xflip() } else { $e } }
+    }
+
+    let start_position = match match_conf.role {
+        PamiRole::None => XYA::default(),
+        PamiRole::Ninja => XYA::new(800.0,1950.0,0.0),
+        PamiRole::Paninja(n) => XYA::new(1500.0-50.0*n as f32,1950.0, -core::f32::consts::FRAC_PI_2)
+    };
+    routines.asserv.reset_position(xflip!(start_position));
+
     routines.wait_match_start(&match_conf);
 
     routines.ui_events.send(UiEvent::ShowMessage("MATCH")).unwrap();
@@ -105,8 +118,16 @@ fn main() {
     }
 
     //TODO It's your time PAMI, move!
+
+    routines.asserv.set_movement_direction(MovementDirection::Backward);
+    if match_conf.role == PamiRole::None {
+        routines.got_to_xy_with_detection(0.0, 500.0);
+    }
+
     loop {
         let now = routines.step_idle();
+
+
         match routines.match_step(now) {
             // Should never happen (previous step)
             MatchStep::WaitingMatchStart => {},

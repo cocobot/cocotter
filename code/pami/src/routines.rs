@@ -228,6 +228,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
         match_conf
     }
 
+
     /// Wait for match start
     pub fn wait_match_start(&mut self, match_conf: &MatchConf) {
         let mut ground_led_color = BlinkingColor::new(Duration::from_millis(1000));
@@ -360,6 +361,31 @@ impl<B: PamiBoard> PamiRoutines<B> {
             Color::new(0.5, 0.2, 0.0)
         } else {
             Color::BLACK
+        }
+    }
+
+    pub fn got_to_xy_with_detection(&mut self, x:f32, y:f32) -> bool {
+        'order: loop {
+            self.asserv.goto_xy(x,y);
+            while !self.obstacle_detected(){
+                if self.asserv.idle() {
+                    break 'order;
+                }
+                self.step_idle();
+            }
+            self.asserv.goto_xy_rel(0.0 , 0.0);
+            while self.obstacle_detected(){
+                self.step_idle();
+            }
+        }
+        true
+    }
+
+    fn obstacle_detected(&mut self) -> bool {
+        let vlx_distances = self.vlx_data.lock().unwrap().clone();
+        match vlx_distances{
+            Some(d) => return d.all_distances().iter().any(|&v| v < 10),
+            None => return false,
         }
     }
 }
