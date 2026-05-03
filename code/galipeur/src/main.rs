@@ -96,9 +96,12 @@ fn main() {
         },
     );
 
+    routines.init();
     //routines.ground_sensor_calibration();
 
     loop {
-        routines.step_idle();
+        let now = std::time::Instant::now();
+        routines.idle(&now);
+        std::thread::sleep(std::time::Duration::from_millis(50));
     }
 }

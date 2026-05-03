@@ -42,7 +42,6 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
     lidar_tm_top: bool,
 
     // Periodicity states
-    asserv_periodicity: Periodicity,
     asserv_tm_periodicity: Periodicity,
     meca_tm_periodicity: Periodicity,
     lidar_tm_periodicity: Periodicity,
@@ -102,15 +101,24 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             lidar_tm_ground: false,
             lidar_tm_top: false,
 
-            asserv_periodicity: Periodicity::new(Duration::from_millis(10)),
             asserv_tm_periodicity: Periodicity::new(Duration::from_millis(500)),
             meca_tm_periodicity: Periodicity::new(Duration::from_millis(1000)),
             lidar_tm_periodicity: Periodicity::new(Duration::from_millis(2000)),
         }
     }
 
-    /// Intialize states and peripherals
+    /// Intialize states, spawn asserv thread
     pub fn init(&mut self) {
+        let asserv = self.asserv.clone();
+        std::thread::Builder::new()
+            .name("asserv".into())
+            .spawn(move || {
+                loop {
+                    asserv.lock().unwrap().update();
+                    std::thread::sleep(Duration::from_millis(10));
+                }
+            })
+            .expect("spawn asserv");
     }
 
     #[allow(dead_code)]
@@ -143,10 +151,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             }
         }
 
-        // Update asserv, send asserv telemetry
-        if self.asserv_periodicity.update(now) {
-            self.asserv.lock().unwrap().update();
-        }
+        // Send asserv telemetry
         if self.asserv_tm_periodicity.update(now) {
             let asserv = self.asserv.lock().unwrap();
             if let Err(err) = self.rome_tx.send(asserv.asserv_tm_status().encode()) {
@@ -217,19 +222,6 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                 }
             }
         }
-    }
-
-    /// Wait for the next asserv step, the run `idle()` and return the associated instant
-    pub fn step_idle(&mut self) -> Instant {
-        let mut now = Instant::now();
-        let next_instant = self.asserv_periodicity.next();
-        if let Some(duration) = next_instant.checked_duration_since(now) {
-            std::thread::sleep(duration);
-            now = *next_instant;
-        }
-        self.idle(&now);
-
-        now
     }
 
     fn on_rome_message(&mut self, message: &rome::Message) -> bool {
