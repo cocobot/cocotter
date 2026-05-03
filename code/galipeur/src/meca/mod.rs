@@ -149,6 +149,17 @@ impl<B: SabotterBoard + 'static> Meca<B> {
             self.primitives.clamp_rotate_hold(module);                   
             self.primitives.translation_spread(0);
         }
+
+        std::thread::sleep(Duration::from_secs(2));
+
+        for module in 0..3 {
+            for arm in 0..4 {
+                self.proxy.set_torque(module, arm, false);
+            }
+        self.proxy.set_clamp_torque(module, ClampServo::Left, false);
+        self.proxy.set_clamp_torque(module, ClampServo::Right, false);
+        self.proxy.set_clamp_torque(module, ClampServo::Rotate, false);
+        }
     }
 
     #[allow(dead_code)]

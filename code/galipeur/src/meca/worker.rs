@@ -69,6 +69,8 @@ impl<B: SabotterBoard> MecaWorker<B> {
             MecaAction::DirectTake { side, reply } => {
                 let result = self.do_direct_take(side);
                 reply.send(result).ok();
+
+                self.do_read_color(side);
             }
             MecaAction::PrepareRelease { prefered_side, reply } => {
                 let chosen = self.compute_prepare_release(prefered_side);
@@ -172,10 +174,18 @@ impl<B: SabotterBoard> MecaWorker<B> {
     fn do_prepare_direct_take(&self, side: RobotSide, cleat_up: CleatSide) {
         let module = Self::side_to_module(side);
 
-        {
+        let is_upper_empty = {
             let mut state = self.state.lock().unwrap();
             let side_state = state.get_side_mut(module);
+            log::info!("SET READY TO TAKE");
             side_state.ready_to_take(true);
+
+            side_state.is_upper_stage_empty()
+        };
+
+        if is_upper_empty {
+            self.primitives.clamp_rotate_pickup(module);
+            self.primitives.clamp_open(module);
         }
 
         self.proxy.set_color_led_pwm(255);
@@ -217,6 +227,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         let needs_transfer = {
             let state = self.state.lock().unwrap();
             let side_state = state.get_side(Self::side_to_module(side));
+            log::info!("Test {} {}", side_state.is_lower_stage_empty(), side_state.is_upper_stage_empty());
             side_state.is_lower_stage_empty() && !side_state.is_upper_stage_empty()
         };
         if needs_transfer {
@@ -234,10 +245,13 @@ impl<B: SabotterBoard> MecaWorker<B> {
             let is_lower_empty = side_state.is_lower_stage_empty();
             let is_upper_empty = side_state.is_upper_stage_empty();
             let is_ready_to_take = side_state.is_ready_to_take();
+            log::info!("RESET READY TO TAKE");
             side_state.ready_to_take(false);
             drop(state);
 
-            if !is_ready_to_take {
+            log::info!("Test {} {} {}", is_lower_empty, is_upper_empty, is_ready_to_take);
+
+            if !is_ready_to_take || !is_lower_empty {
                 log::warn!("Direct take: side {:?} is not ready to take....", side);
 
                 if !is_lower_empty {
@@ -255,22 +269,39 @@ impl<B: SabotterBoard> MecaWorker<B> {
         self.primitives.translation_close(module);
         self.primitives.grabs(module, &[0, 1, 2, 3]);
         std::thread::sleep(Duration::from_millis(250));
-        self.primitives.arms_up(module, &[0, 1, 2, 3]);
 
-        let teams = self.primitives.read_arms_teams(module);
-        self.led_tx.send(LedMessage::MecaColors { module, teams }).ok();
+        self.primitives.arms_up(module, &[0, 1, 2, 3]);
 
         {
             let mut state = self.state.lock().unwrap();
             let side_state = state.get_side_mut(module);
-            side_state.set_lower_stage(teams);
+
+            //Color is not important we will read it later
+            side_state.set_lower_stage([Team::Left, Team::Left, Team::Right, Team::Right]);
         }
 
         true
     }
 
+    fn do_read_color(&self, side: RobotSide) {
+        let module = Self::side_to_module(side);
+
+        std::thread::sleep(Duration::from_millis(1000));
+        let teams = self.primitives.read_arms_teams(module);
+        self.led_tx.send(LedMessage::MecaColors { module, teams }).ok();
+        {
+            let mut state = self.state.lock().unwrap();
+            let side_state = state.get_side_mut(module);
+
+            //Color is not important we will read it later
+            side_state.set_lower_stage([Team::Left, Team::Left, Team::Right, Team::Right]);
+        }
+    }
+
     fn do_release(&self, side: RobotSide) {
         let module = Self::side_to_module(side);
+
+        self.do_transfer_to_lower_stage_if_needed(side);
 
         let (own_color, arm_colors) = {
             let mut state = self.state.lock().unwrap();

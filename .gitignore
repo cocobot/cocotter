@@ -15,3 +15,7 @@ _autosave*
 
 #LLM
 .claude
+
+
+#python
+*.pyc

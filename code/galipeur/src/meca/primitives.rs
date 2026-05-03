@@ -71,17 +71,17 @@ const ARMS: [[ArmCalib; 4]; 3] = [
         ArmCalib { cleat_up: 360, pre_grab: 360, down: 340, up: 746 },
         ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 746 },
     ],
-    // Module 1 — Tcleat_up: 420
+    // Module 1
     [
-        ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { cleat_up: 360, pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { cleat_up: 360, pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { cleat_up: 405, pre_grab: 355, down: 335, up: 741 },
+        ArmCalib { cleat_up: 380, pre_grab: 380, down: 360, up: 766 },
+        ArmCalib { cleat_up: 340, pre_grab: 340, down: 320, up: 726 },
+        ArmCalib { cleat_up: 375, pre_grab: 325, down: 305, up: 711 },
     ],
     // Module 2
     [
         ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 730 },
-        ArmCalib { cleat_up: 360, pre_grab: 360, down: 340, up: 750 },
+        ArmCalib { cleat_up: 350, pre_grab: 350, down: 330, up: 720 },
         ArmCalib { cleat_up: 360, pre_grab: 380, down: 360, up: 760 },
         ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 746 },
     ],
@@ -96,22 +96,22 @@ const CLAMPS: [ClampCalib; 3] = [
     },
     // Module 1 — TODO calibrer
     ClampCalib {
-        rotate: RotateCalib { pickup: 820, hold: 610 },
+        rotate: RotateCalib { pickup: 830, hold: 610 },
         left:  GripCalib { open: 316, close: 654 },
         right: GripCalib { open: 618, close: 280 },
     },
     // Module 2
     ClampCalib {
         rotate: RotateCalib { pickup: 820, hold: 610 },
-        left:  GripCalib { open: 316, close: 654 },
-        right: GripCalib { open: 618, close: 280 },
+        left:  GripCalib { open: 316, close: 590 },
+        right: GripCalib { open: 618, close: 300 },
     },
 ];
 
 const TRANSLATIONS: [TranslationCalib; 3] = [
     TranslationCalib { spread: 640, close: 910 }, // Module 0
     TranslationCalib { spread: 640, close: 910 }, // Module 1
-    TranslationCalib { spread: 640, close: 910 }, // Module 2
+    TranslationCalib { spread: 340, close: 710 }, // Module 2
 ];
 
 const MOVE_TIME_MS: u16 = 50;

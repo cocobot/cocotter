@@ -152,7 +152,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         }
 
-        self.meca.calibration_position();
         loop {
             std::thread::sleep(Duration::from_secs(1));
         }

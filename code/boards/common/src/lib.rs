@@ -17,7 +17,7 @@ pub struct BatteryLevel {
 
 
 /// Robot team
-#[derive(Clone, Copy, Default, PartialEq, Eq)]
+#[derive(Clone, Copy, Default, PartialEq, Eq, Debug)]
 pub enum Team {
     #[default]
     None,

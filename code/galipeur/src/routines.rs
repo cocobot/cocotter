@@ -4,7 +4,7 @@ use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
 use board_common::Periodicity;
 use board_sabotter::SabotterBoard;
-use cancaner::CanMessage;
+use cancaner::{CanMessage, ClampServo};
 use flume::{Receiver, Sender};
 use sch16t::Sch16t;
 use crate::led::{LedMessage, Leds};
@@ -250,6 +250,31 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                     rome::params::MecaReleaseSide::Left  => { self.meca.release(asserv::holonomic::RobotSide::Left); }
                     rome::params::MecaReleaseSide::Right => { self.meca.release(asserv::holonomic::RobotSide::Right); }
                     rome::params::MecaReleaseSide::Back  => { self.meca.release(asserv::holonomic::RobotSide::Back);  }
+                }
+                true
+            }
+            rome::Message::MecaRawSetServo { module, id, position } => {
+                match id {
+                    10..=14 => {
+                        self.meca.proxy.set_torque(module, id -10, true);
+                        self.meca.proxy.set_arm_position(module, id - 10, position, 50);
+                    }
+                    20 => {
+                        self.meca.proxy.set_clamp_torque(module, ClampServo::Rotate, true);
+                        self.meca.proxy.set_clamp_position(module, ClampServo::Rotate, position, 50);
+                    }
+                    21 => {
+                        self.meca.proxy.set_clamp_torque(module, ClampServo::Left, true);
+                        self.meca.proxy.set_clamp_position(module, ClampServo::Left, position, 50);
+                    }
+                    22 => {
+                        self.meca.proxy.set_clamp_torque(module, ClampServo::Right, true);
+                        self.meca.proxy.set_clamp_position(module, ClampServo::Right, position, 50);
+                    }
+                    30 => {
+                        self.meca.proxy.set_translation(module, position, 50);
+                    }
+                    _ =>  {}
                 }
                 true
             }

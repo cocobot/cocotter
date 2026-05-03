@@ -178,6 +178,11 @@
   MecaRelease:
     side: [left,right,back]
 
+  MecaRawSetServo:
+    module: u8
+    id: u8
+    position: u16
+
 # Galipeur sensors
 70:
   # Enable/disable lidar telemetry streaming
