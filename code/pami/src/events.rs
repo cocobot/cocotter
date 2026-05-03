@@ -5,8 +5,8 @@ pub use board_pami::DpadState;
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum PamiRole {
     None,
-    Granary,
-    Land,
+    Ninja,
+    Paninja(u8),
 }
 
 /// Event to sent to UI to update its state

@@ -139,22 +139,24 @@ impl<B: PamiBoard> PamiRoutines<B> {
                 false => Team::Left,
                 true => Team::Right,
             },
-            start_delay: match buttons.switch(1) {
-                false => 90,
-                true => 3,
-            },
-            role: match (buttons.switch(2), buttons.switch(3)) {
-                (_, true) => PamiRole::None,
-                (false, false) => PamiRole::Granary,
-                (true, false) => PamiRole::Land,
+            start_delay: 90,
+            role: match (buttons.switch(1), buttons.switch(2), buttons.switch(3)) {
+                (false, false, false) => PamiRole::None,
+                (true,  false, false) => PamiRole::Paninja(1),
+                (false,  true, false) => PamiRole::Paninja(2),
+                (true,   true, false) => PamiRole::Paninja(3),
+                (false, false,  true) => PamiRole::Paninja(4),
+                (true,  false,  true) => PamiRole::Paninja(5),
+                (false,  true,  true) => PamiRole::Paninja(6),
+                (true,   true,  true) => PamiRole::Ninja,
             },
         };
 
         const fn role_color(role: PamiRole) -> Color {
             match role {
                 PamiRole::None => Color::BLACK,
-                PamiRole::Granary => Color::GREEN,
-                PamiRole::Land => Color::MAGENTA,
+                PamiRole::Ninja => Color::GREEN,
+                PamiRole::Paninja(_) => Color::MAGENTA,
             }
         }
 
@@ -232,7 +234,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
 
         log::info!("Match starts!");
         let now = Instant::now();
-        if match_conf.role == PamiRole::Granary {
+        if match_conf.role == PamiRole::Ninja {
             let active_time = now + Duration::from_secs(match_conf.start_delay as u64);
             let match_end = active_time + PANINJA_ACTIVE_DURATION;
             self.match_instants = Some((active_time, match_end));

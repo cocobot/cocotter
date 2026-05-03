@@ -363,8 +363,9 @@ impl MatchConfScreen {
     fn pami_role_label(&self) -> &'static str {
         match self.conf.role {
             PamiRole::None => "none",
-            PamiRole::Granary => "GRENIER",
-            PamiRole::Land => "TERRAIN",
+            PamiRole::Ninja => "NINJA !",
+            //TODO add all pananinjas
+            PamiRole::Paninja(_) => "PANINJA",
         }
     }
 
@@ -388,9 +389,10 @@ impl MatchConfScreen {
             2 => {
                 let role = match self.conf.role {
                     // Note: Cannot switch back to None
-                    PamiRole::None => PamiRole::Land,
-                    PamiRole::Granary => PamiRole::Land,
-                    PamiRole::Land => PamiRole::Granary,
+                    // TODO add all Paninjas
+                    PamiRole::None => PamiRole::Paninja(1),
+                    PamiRole::Ninja => PamiRole::Paninja(1),
+                    PamiRole::Paninja(_) => PamiRole::Ninja,
                 };
                 ScreenEventResult::Trigger(UiTrigger::ChangeRole(role))
             },
