@@ -23,8 +23,6 @@ const MECA_COLOR_PIXELS: [[usize; 8]; 3] = [
     [16, 15, 14, 13, 12, 11, 10,  9], // Module 2 (Right)
 ];
 
-const MECA_COLORS_DISPLAY: Duration = Duration::from_millis(4000);
-
 pub struct Leds {
     tx: Sender<LedMessage>,
 }
@@ -56,7 +54,7 @@ struct LedsInternal<B: SabotterBoard> {
     low_logic_battery: bool,
     low_power_battery: bool,
     ground_detected: (bool, bool, bool),
-    meca_colors: Option<(u8, [Team; 4], Instant)>,
+    meca_colors: Option<(u8, [Team; 4])>,
 }
 
 impl<B: SabotterBoard> LedsInternal<B> {
@@ -111,7 +109,7 @@ impl<B: SabotterBoard> LedsInternal<B> {
                         self.ground_detected = (s0, s1, s2);
                     }
                     LedMessage::MecaColors { module, teams } => {
-                        self.meca_colors = Some((module, teams, Instant::now() + MECA_COLORS_DISPLAY));
+                        self.meca_colors = Some((module, teams));
                     }
                     LedMessage::IdleLoopTooSlow => {
                         slow_idle_loop = true;
@@ -162,32 +160,15 @@ impl<B: SabotterBoard> LedsInternal<B> {
                 }
             }
 
-            if let Some((module, teams, expiry)) = self.meca_colors {
-                if Instant::now() < expiry {
-                    if let Some(slots) = MECA_COLOR_PIXELS.get(module as usize) {
-                        for arm in 0..4 {
-                            let rgb = Self::color_to_rgb8(teams[arm].color());
-                            pixels[slots[arm * 2]]     = rgb;
-                            pixels[slots[arm * 2 + 1]] = rgb;
-                        }
+            if let Some((module, teams)) = self.meca_colors {
+                if let Some(slots) = MECA_COLOR_PIXELS.get(module as usize) {
+                    for arm in 0..4 {
+                        let rgb = Self::color_to_rgb8(teams[arm].color());
+                        pixels[slots[arm * 2]]     = rgb;
+                        pixels[slots[arm * 2 + 1]] = rgb;
                     }
-                } else {
-                    self.meca_colors = None;
                 }
-            }
-
-            if let Some((module, teams, expiry)) = self.meca_colors {
-                if Instant::now() < expiry {
-                    if let Some(slots) = MECA_COLOR_PIXELS.get(module as usize) {
-                        for arm in 0..4 {
-                            let rgb = Self::color_to_rgb8(teams[arm].color());
-                            pixels[slots[arm * 2]]     = rgb;
-                            pixels[slots[arm * 2 + 1]] = rgb;
-                        }
-                    }
-                } else {
-                    self.meca_colors = None;
-                }
+                    
             }
 
             self.leds.rgba.write(pixels).ok();
