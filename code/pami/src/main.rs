@@ -52,11 +52,13 @@ fn main() {
         pid_dist: PidConf {
             gain_p: 10,
             gain_i: 1,
+            max_i: 1000,
             .. Default::default()
         },
         pid_angle: PidConf {
-            gain_p: 200,
-            gain_i: 5,
+            gain_p: 500,
+            gain_i: 10,
+            max_i: 1000,
             .. Default::default()
         },
         trajectory: TrajectoryConf {
