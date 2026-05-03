@@ -11,13 +11,14 @@ use std::time::Duration;
 
 use board_common::Team;
 use board_sabotter::SabotterBoard;
-use cancaner::ClampServo;
+use cancaner::{ClampServo, ValveMode};
 
 use super::proxy::{ArmStatus, ClampStatus, MecaProxy, TranslationStatus, Watcher};
 
 // Reference hues for team colors (degrees, 0..360).
 const HUE_YELLOW: u16 = 60;
 const HUE_BLUE: u16 = 240;
+pub const ALL_ARMS : &[u8] = &[0, 1, 2, 3];
 
 fn hue_distance(a: u16, b: u16) -> u16 {
     let d = a.abs_diff(b) % 360;
@@ -115,6 +116,7 @@ const TRANSLATIONS: [TranslationCalib; 3] = [
 ];
 
 const MOVE_TIME_MS: u16 = 50;
+const SLOW_MOVE_TIME_MS: u16 = 500;
 const WAIT_TIMEOUT: Duration = Duration::from_millis(250);
 
 // ==================== MecaPrimitives ====================
@@ -131,6 +133,7 @@ impl<B: SabotterBoard> Clone for MecaPrimitives<B> {
 }
 
 impl<B: SabotterBoard> MecaPrimitives<B> {
+
     pub fn new(proxy: MecaProxy<B>) -> Self {
         Self { proxy }
     }
@@ -198,10 +201,41 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         }
     }
 
+    fn arms_move_slow<F>(&self, module: u8, arms: &[u8], pos_for: F)
+    where
+        F: Fn(u8) -> u16,
+    {
+        // Capture seq + send commands first, then wait — true parallelism.
+        let mut seqs = [0u64; 4];
+        for &arm in arms {
+            let w = self.proxy.arm_watcher(module, arm);
+            seqs[arm as usize] = w.seq();
+            self.proxy.set_arm_position(module, arm, pos_for(arm), SLOW_MOVE_TIME_MS);
+        }
+        for &arm in arms {
+            let w = self.proxy.arm_watcher(module, arm);
+            if !Self::wait_not_moving_arm(w, seqs[arm as usize], pos_for(arm)) {
+                log::warn!("arms_move timeout: module={} arm={} target={}", module, arm, pos_for(arm));
+            }
+        }
+    }
+
     pub fn arms_pre_grab(&self, module: u8, arms: &[u8]) {
         self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].pre_grab);
     }
 
+    pub fn arms_give_space_from_clamp_rotation(&self, module: u8, arms: &[u8]) {
+        self.arms_move_slow(module, arms, |a| ARMS[module as usize][a as usize].pre_grab + 250);
+    }
+
+    pub fn arms_pre_release_good_color(&self, module: u8, arms: &[u8]) {
+        self.arms_move_slow(module, arms, |a| ARMS[module as usize][a as usize].pre_grab + 100);
+    }
+
+    pub fn arms_pre_release_bad_color(&self, module: u8, arms: &[u8]) {
+        self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].up + 30);
+    }
+    
     pub fn arms_cleat_up(&self, module: u8, arms: &[u8]) {
         self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].cleat_up);
     }
@@ -291,24 +325,33 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
     /// Enable pump, close valve.
     pub fn grab(&self, module: u8, arm: u8) {
         self.proxy.set_pump(module, arm, true);
-        self.proxy.set_valve(module, arm, false);
+        self.proxy.set_valve(module, arm, ValveMode::Off);
     }
 
     /// Open valve, disable pump.
     pub fn release(&self, module: u8, arm: u8) {
-        self.proxy.set_valve(module, arm, true);
+        self.proxy.set_valve(module, arm, ValveMode::On);
         self.proxy.set_pump(module, arm, false);
     }
 
     /// Close valve after release — call ~250 ms after `release`.
     pub fn end_release(&self, module: u8, arm: u8) {
-        self.proxy.set_valve(module, arm, false);
+        self.proxy.set_valve(module, arm, ValveMode::Off);
     }
 
     pub fn grabs(&self, module: u8, arms: &[u8]) {
         for &arm in arms {
             self.grab(module, arm);
         }
+    }
+
+    /// Toggle valves at half_period_ms for `duration`, then fully release.
+    pub fn slow_releases(&self, module: u8, arms: &[u8], duration: Duration) {
+        for &arm in arms {
+            self.proxy.set_valve(module, arm, ValveMode::Toggle { half_period_ms: 10 });
+        }
+        std::thread::sleep(duration);
+        self.releases(module, arms);
     }
 
     pub fn releases(&self, module: u8, arms: &[u8]) {

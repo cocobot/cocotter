@@ -310,6 +310,18 @@ where
             .map_err(|_| ArmError::I2cError)
     }
 
+    /// Toggle valve state for arm (0-3)
+    pub async fn toggle_valve(&mut self, arm: u8) -> Result<(), ArmError> {
+        if arm as usize >= ARMS_PER_MODULE {
+            return Err(ArmError::ServoError(0xFF));
+        }
+        let pin = VALVE_PINS[arm as usize];
+        self.i2c_devices
+            .pca_pin_toggle(VALVE_BANK, pin)
+            .await
+            .map_err(|_| ArmError::I2cError)
+    }
+
     /// Toggle LED
     pub async fn toggle_led(&mut self) -> Result<(), ArmError> {
         self.i2c_devices
@@ -535,14 +547,8 @@ where
                         .await
                 }
             }
-            CanMessage::SetValve { enable, .. } => {
-                if target.is_arm_broadcast() {
-                    self.execute_target(target, ArmCommand::SetValve(*enable))
-                        .await
-                } else {
-                    self.execute_arm(target.arm, ArmCommand::SetValve(*enable))
-                        .await
-                }
+            CanMessage::SetValve { .. } => {
+                return None;
             }
             CanMessage::RequestArmStatus { .. } => {
                 if target.is_arm_broadcast() {

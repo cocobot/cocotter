@@ -314,6 +314,17 @@ impl OtaResultStatus {
     }
 }
 
+/// Valve control mode
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ValveMode {
+    /// Valve off (also stops any toggle)
+    Off,
+    /// Valve on (also stops any toggle)
+    On,
+    /// Toggle at given half-period in ms (min 5ms). Send half_period_ms=0 to stop.
+    Toggle { half_period_ms: u16 },
+}
+
 /// Reboot mode
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]

@@ -332,8 +332,10 @@ Data[0]: 0=OFF, 1=ON
 
 ### 0x15T - SET_VALVE
 
-Commande électrovanne seule.
+Commande électrovanne seule. Supporte trois modes : on/off direct et toggle
+périodique côté picotter (demi-période min 5 ms).
 
+**Mode ON/OFF (1 octet) :**
 ```
 ID: 0x15[target]
 Longueur: 1 octet
@@ -341,6 +343,19 @@ Direction: P→S
 
 Data[0]: 0=OFF, 1=ON
 ```
+Un OFF ou ON arrête aussi un toggle en cours.
+
+**Mode TOGGLE (3 octets) :**
+```
+ID: 0x15[target]
+Longueur: 3 octets
+Direction: P→S
+
+Data[0]:   2 (= Toggle)
+Data[1-2]: Demi-période en ms (u16, LE) — min 5 ms, 0 = arrêt du toggle
+```
+La dernière demi-période reçue s'applique globalement à toutes les valves en
+toggle. Le toggle s'exécute côté picotter (pas de trafic CAN continu).
 
 ### 0x16M - SET_TRANSLATION
 

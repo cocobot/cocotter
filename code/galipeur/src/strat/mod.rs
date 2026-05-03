@@ -155,7 +155,10 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
 
         loop {
+           // self.meca.direct_take(RobotSide::Left);
             std::thread::sleep(Duration::from_secs(1));
+           // self.meca.release(RobotSide::Left);
+            std::thread::sleep(Duration::from_secs(3));
         }
 
         std::thread::sleep(Duration::from_secs(1));

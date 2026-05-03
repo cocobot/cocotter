@@ -86,7 +86,7 @@ pub enum ArmCommand {
     SetTorque(bool),
     /// Set pump only
     SetPump(bool),
-    /// Set valve only
+    /// Set valve only (on/off, not toggle — toggle is handled by valve_toggle_task)
     SetValve(bool),
 }
 

@@ -111,7 +111,7 @@ pub enum CanMessage {
     SetPump { target: ArmTarget, enable: bool },
 
     /// Set valve only (ID: 0x15T)
-    SetValve { target: ArmTarget, enable: bool },
+    SetValve { target: ArmTarget, mode: ValveMode },
 
     /// Set translation position (ID: 0x16M) - M is module index
     /// Controls the translation servo (shared bus for all 3 modules)
@@ -452,10 +452,17 @@ impl CanMessage {
                 }
             }
             ArmCmd::SetValve => {
-                if !data.is_empty() {
+                if data.len() >= 3 && data[0] == 2 {
                     Some(CanMessage::SetValve {
                         target,
-                        enable: data[0] != 0,
+                        mode: ValveMode::Toggle {
+                            half_period_ms: u16::from_le_bytes([data[1], data[2]]),
+                        },
+                    })
+                } else if !data.is_empty() {
+                    Some(CanMessage::SetValve {
+                        target,
+                        mode: if data[0] != 0 { ValveMode::On } else { ValveMode::Off },
                     })
                 } else {
                     None
@@ -870,11 +877,19 @@ impl CanMessage {
                 data[0] = *enable as u8;
                 EncodedMessage { id, data, len: 1 }
             }
-            CanMessage::SetValve { target, enable } => {
+            CanMessage::SetValve { target, mode } => {
                 let id = Self::build_id(Domain::Arm, ArmCmd::SetValve as u8, target.to_u8());
                 let mut data = [0u8; MAX_DATA_LEN];
-                data[0] = *enable as u8;
-                EncodedMessage { id, data, len: 1 }
+                let len = match mode {
+                    ValveMode::Off => { data[0] = 0; 1 }
+                    ValveMode::On => { data[0] = 1; 1 }
+                    ValveMode::Toggle { half_period_ms } => {
+                        data[0] = 2;
+                        data[1..3].copy_from_slice(&half_period_ms.to_le_bytes());
+                        3
+                    }
+                };
+                EncodedMessage { id, data, len }
             }
             CanMessage::SetTranslation { module, position, time_ms } => {
                 let id = Self::build_id(Domain::Arm, ArmCmd::SetTranslation as u8, *module);
@@ -1356,7 +1371,15 @@ mod tests {
         });
         roundtrip(&CanMessage::SetValve {
             target: ArmTarget::new(0, 0),
-            enable: false,
+            mode: ValveMode::Off,
+        });
+        roundtrip(&CanMessage::SetValve {
+            target: ArmTarget::new(1, 2),
+            mode: ValveMode::On,
+        });
+        roundtrip(&CanMessage::SetValve {
+            target: ArmTarget::new(2, 3),
+            mode: ValveMode::Toggle { half_period_ms: 5 },
         });
         roundtrip(&CanMessage::RequestArmStatus {
             target: ArmTarget::new(1, 2),

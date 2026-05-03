@@ -5,6 +5,7 @@ pub type MecaState = [MecaSideState; 3];
 #[derive(Default, Clone)]
 pub struct MecaSideState {
     pub ready_to_take: bool,
+    pub upper_stage_up: bool,
     pub lower_stage: [Team; 4],
     pub upper_stage: [Team; 4],
 }
@@ -30,10 +31,20 @@ impl MecaSideState {
 
     pub fn ready_to_take(&mut self, ready: bool) {
         self.ready_to_take = ready;
+        log::info!("READY TO TAKE SET TO {}", ready);
     }
 
     pub fn is_ready_to_take(&self) -> bool {
         self.ready_to_take
+    }
+
+    pub fn upper_stage_up(&mut self, up: bool) {
+        self.upper_stage_up = up;
+        log::info!("Set clamp up {}", up)
+    }
+
+    pub fn is_upper_stage_up(&self) -> bool {
+        self.upper_stage_up
     }
 
     pub fn set_lower_stage(&mut self, teams: [Team; 4]) -> [Team; 4] {

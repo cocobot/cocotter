@@ -104,6 +104,20 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     /// Intialize states, spawn asserv thread
     pub fn init(&mut self) {
         let asserv = self.asserv.clone();
+
+        #[cfg(target_os = "espidf")]
+        {
+            use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
+            use esp_idf_svc::hal::cpu::Core;
+            ThreadSpawnConfiguration {
+                priority: 20,
+                pin_to_core: Some(Core::Core1),
+                ..Default::default()
+            }
+            .set()
+            .unwrap();
+        }
+
         std::thread::Builder::new()
             .name("asserv".into())
             .spawn(move || {
@@ -113,6 +127,12 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                 }
             })
             .expect("spawn asserv");
+
+        #[cfg(target_os = "espidf")]
+        {
+            use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
+            ThreadSpawnConfiguration::default().set().unwrap();
+        }
     }
 
     #[allow(dead_code)]

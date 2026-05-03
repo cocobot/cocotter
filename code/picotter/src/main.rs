@@ -102,7 +102,7 @@ impl core::fmt::Write for PanicBuf {
 
 
 use can_handler::{cmd_receiver, log_sender, status_sender};
-use can_protocol::{ArmFlags, ArmTarget, CanMessage, ClampTarget, Domain, ServoBus};
+use can_protocol::{ArmFlags, ArmTarget, CanMessage, ClampTarget, Domain, ServoBus, ValveMode};
 use i2c_devices::I2cDevices;
 use module::Module;
 use scs0009::Scs0009;
@@ -155,6 +155,12 @@ const TRANSLATION_SERVO_IDS: [u8; 3] = [30, 31, 32];
 // Translation target positions (set by SetTranslation, read by periodic update)
 static TRANSLATION_TARGETS: [AtomicU16; 3] = [AtomicU16::new(0), AtomicU16::new(0), AtomicU16::new(0)];
 static TRANSLATION_MOVING: [AtomicU8; 3] = [AtomicU8::new(0), AtomicU8::new(0), AtomicU8::new(0)];
+
+// Valve toggle state: bitmask of 12 valves (bit = module*4+arm), half-period in ms
+static VALVE_TOGGLE_MASK: AtomicU16 = AtomicU16::new(0);
+static VALVE_TOGGLE_HALF_PERIOD_MS: AtomicU16 = AtomicU16::new(5);
+static VALVE_TOGGLE_SIGNAL: embassy_sync::signal::Signal<CriticalSectionRawMutex, ()> =
+    embassy_sync::signal::Signal::new();
 
 // Concrete types
 type I2cType = I2c<'static, Async, i2c::Master>;
@@ -435,6 +441,44 @@ async fn scan_servo_bus<TX: embedded_io_async::Write, RX: embedded_io_async::Rea
     }
 }
 
+/// Valve toggle task: toggles GPIOs for valves in toggle mode.
+/// Woken by Signal when a valve enters toggle mode; sleeps when mask is 0.
+#[embassy_executor::task]
+async fn valve_toggle_task(
+    module0: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
+    module1: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
+    module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
+) {
+    let modules: [&Mutex<CriticalSectionRawMutex, ModuleType>; 3] = [module0, module1, module2];
+    loop {
+        let mask = VALVE_TOGGLE_MASK.load(Ordering::Relaxed);
+        if mask == 0 {
+            VALVE_TOGGLE_SIGNAL.wait().await;
+            continue;
+        }
+
+        let half_period = VALVE_TOGGLE_HALF_PERIOD_MS.load(Ordering::Relaxed).max(5);
+
+        // Toggle all valves in the mask.
+        // Re-read mask after acquiring each module lock to avoid TOCTOU race
+        // with cmd_task clearing bits (it clears before locking the module).
+        for module_idx in 0..3u8 {
+            if (mask >> (module_idx * 4)) & 0x0F == 0 {
+                continue;
+            }
+            let mut m = modules[module_idx as usize].lock().await;
+            let fresh_bits = (VALVE_TOGGLE_MASK.load(Ordering::Relaxed) >> (module_idx * 4)) & 0x0F;
+            for arm in 0..4u8 {
+                if fresh_bits & (1 << arm) != 0 {
+                    let _ = m.toggle_valve(arm).await;
+                }
+            }
+        }
+
+        Timer::after(Duration::from_millis(half_period as u64)).await;
+    }
+}
+
 /// CAN command receiver task
 #[embassy_executor::task]
 async fn cmd_task(
@@ -671,6 +715,79 @@ async fn cmd_task(
                 let m2 = module2.lock().await;
                 if let Some(resp) = m2.get_color_delta(target.arm) {
                     status_tx.try_send(resp).ok();
+                }
+            }
+            continue;
+        }
+
+        // Handle valve commands (on/off/toggle)
+        if let CanMessage::SetValve { target, mode } = &msg {
+            let modules: [&Mutex<CriticalSectionRawMutex, ModuleType>; 3] =
+                [module0, module1, module2];
+            match mode {
+                ValveMode::Off | ValveMode::On => {
+                    let enable = matches!(mode, ValveMode::On);
+                    // Clear toggle bits for targeted valves
+                    for module_idx in 0..3u8 {
+                        if !target.match_module(module_idx) {
+                            continue;
+                        }
+                        for arm in 0..4u8 {
+                            if target.matches(module_idx, arm) {
+                                let bit = 1u16 << (module_idx * 4 + arm);
+                                VALVE_TOGGLE_MASK.fetch_and(!bit, Ordering::Relaxed);
+                            }
+                        }
+                        // Set GPIO
+                        let mut m = modules[module_idx as usize].lock().await;
+                        if target.is_arm_broadcast() {
+                            for arm in 0..4u8 {
+                                let _ = m.set_valve(arm, enable).await;
+                                m.get_arm_state(arm); // just to keep state in sync
+                            }
+                        } else {
+                            let _ = m.set_valve(target.arm, enable).await;
+                        }
+                    }
+                }
+                ValveMode::Toggle { half_period_ms } => {
+                    if *half_period_ms == 0 {
+                        // Stop toggle = same as Off
+                        for module_idx in 0..3u8 {
+                            if !target.match_module(module_idx) {
+                                continue;
+                            }
+                            for arm in 0..4u8 {
+                                if target.matches(module_idx, arm) {
+                                    let bit = 1u16 << (module_idx * 4 + arm);
+                                    VALVE_TOGGLE_MASK.fetch_and(!bit, Ordering::Relaxed);
+                                }
+                            }
+                            let mut m = modules[module_idx as usize].lock().await;
+                            if target.is_arm_broadcast() {
+                                for arm in 0..4u8 {
+                                    let _ = m.set_valve(arm, false).await;
+                                }
+                            } else {
+                                let _ = m.set_valve(target.arm, false).await;
+                            }
+                        }
+                    } else {
+                        // Set toggle bits and half-period
+                        VALVE_TOGGLE_HALF_PERIOD_MS.store(*half_period_ms, Ordering::Relaxed);
+                        for module_idx in 0..3u8 {
+                            if !target.match_module(module_idx) {
+                                continue;
+                            }
+                            for arm in 0..4u8 {
+                                if target.matches(module_idx, arm) {
+                                    let bit = 1u16 << (module_idx * 4 + arm);
+                                    VALVE_TOGGLE_MASK.fetch_or(bit, Ordering::Relaxed);
+                                }
+                            }
+                        }
+                        VALVE_TOGGLE_SIGNAL.signal(());
+                    }
                 }
             }
             continue;
@@ -1051,6 +1168,7 @@ async fn main(spawner: Spawner) {
 
     spawner.spawn(led_status_task(led, module0, module1, module2, translation_bus, color_led_ch3).unwrap());
     spawner.spawn(cmd_task(module0, module1, module2, translation_bus).unwrap());
+    spawner.spawn(valve_toggle_task(module0, module1, module2).unwrap());
 
     // Main task idles
     loop {

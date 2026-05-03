@@ -317,10 +317,10 @@ impl<B: SabotterBoard> MecaProxy<B> {
         });
     }
 
-    pub fn set_valve(&self, module: u8, arm: u8, enable: bool) {
+    pub fn set_valve(&self, module: u8, arm: u8, mode: cancaner::ValveMode) {
         self.can.send(&CanMessage::SetValve {
             target: ArmTarget::new(module, arm),
-            enable,
+            mode,
         });
     }
 
