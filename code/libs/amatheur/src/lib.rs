@@ -120,9 +120,13 @@ impl XYA {
         XY { x: self.x, y: self.y }
     }
 
-    /// Flip the X axis value
+    /// Flip the X axis value, and the angle accordingly
     pub const fn xflip(&self) -> XYA {
-        XYA { x: -self.x, y: self.y, a: self.a }
+        XYA {
+            x: -self.x,
+            y: self.y,
+            a: normalize_radians_pi_pi(core::f32::consts::PI - self.a),
+        }
     }
 }
 
