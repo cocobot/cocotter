@@ -55,6 +55,14 @@ pub struct Asserv<H: AsservHardware> {
 
     // Trajectory order
     order: TrajectoryOrder,
+
+    // Movement direction
+    forward : bool,
+}
+
+pub enum MovementDirection {
+    Forward,
+    Backward,
 }
 
 impl<H: AsservHardware> Asserv<H> {
@@ -66,6 +74,7 @@ impl<H: AsservHardware> Asserv<H> {
             update_period_secs: update_period.as_secs_f32(),
             conf: Default::default(),
             order: TrajectoryOrder::Idle,
+            forward: true,
         }
     }
 
@@ -203,6 +212,12 @@ impl<H: AsservHardware> Asserv<H> {
         self.cs.reset_position(xya);
     }
 
+    pub fn set_movement_direction(&mut self, dir : MovementDirection) {
+        match dir {
+            MovementDirection::Forward =>  self.forward = true,
+            MovementDirection::Backward => self.forward = false,
+        }
+    }
 
     //
     // Internal methods
@@ -230,7 +245,7 @@ impl<H: AsservHardware> Asserv<H> {
 
             TrajectoryOrder::Xy { xy, aiming, stopping: false } => {
                 let dxy = xy - &self.cs.position().xy();
-                let angle_to_target = dxy.angle();
+                let angle_to_target = if self.forward { dxy.angle() } else { dxy.angle() - core::f32::consts::PI };
                 let current_a = self.cs.position().a;
                 let da = normalize_radians_pi_pi(angle_to_target - current_a );
 
@@ -257,7 +272,7 @@ impl<H: AsservHardware> Asserv<H> {
                     if len > self.conf.xy_approach_window {
                         self.cs.set_target_a(current_a + da);
                     }
-                    self.cs.set_target_dist(self.cs.dist() + len);
+                    self.cs.set_target_dist(if self.forward {self.cs.dist() + len} else {self.cs.dist() - len} );
                 }
             },
 

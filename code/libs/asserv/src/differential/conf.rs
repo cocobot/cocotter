@@ -3,6 +3,7 @@ pub use crate::conf::PidConf;
 
 /// Implement asserv hardware behavior
 ///
+/// In arrays first item is left motor second item is right motor.
 /// [get_motor_offsets()] and [get_gyro_offset()] are called exactly once per aserv update.
 pub trait AsservHardware {
     /// Return true if emergency stop is active

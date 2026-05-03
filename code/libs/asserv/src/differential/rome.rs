@@ -1,5 +1,5 @@
 use rome::{Message, params};
-use super::{Asserv, AsservHardware, TrajectoryOrder};
+use super::{Asserv, AsservHardware, TrajectoryOrder, MovementDirection};
 use super::conf::*;
 use crate::rome::AsservRome;
 use crate::maths::XYA;
@@ -60,6 +60,12 @@ impl<H: AsservHardware> AsservRome for Asserv<H> {
                 log::info!("ROME: set motors conf");
                 let conf = MotorsConf { tick_to_mm, tick_to_rad };
                 self.set_motors_conf(conf);
+            }
+            Message::AsservDiffSetMovementDirection { dir } => {
+                match dir{
+                    params::AsservDiffSetMovementDirectionDir::Forward  => self.set_movement_direction(MovementDirection::Forward),
+                    params::AsservDiffSetMovementDirectionDir::Backward => self.set_movement_direction(MovementDirection::Backward),
+                }
             }
             // Non-asserv messages, not handled
             _ => {

@@ -146,6 +146,9 @@
     tick_to_mm: f32
     tick_to_rad: f32
 
+  AsservDiffSetMovementDirection:
+    dir: [forward, backward]
+
 # Galipeur meca
 # Colors: 0=unknown, 1=yellow, 2=blue
 60:
