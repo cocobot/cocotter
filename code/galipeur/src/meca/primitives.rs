@@ -67,9 +67,9 @@ const ARMS: [[ArmCalib; 4]; 3] = [
     // Module 0
     [
         ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { cleat_up: 360, pre_grab: 360, down: 340, up: 746 },
-        ArmCalib { cleat_up: 360, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { cleat_up: 417, pre_grab: 357, down: 337, up: 743 },
         ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { cleat_up: 408, pre_grab: 348, down: 328, up: 740 },
     ],
     // Module 1
     [
@@ -90,9 +90,9 @@ const ARMS: [[ArmCalib; 4]; 3] = [
 const CLAMPS: [ClampCalib; 3] = [
     // Module 0
     ClampCalib {
-        rotate: RotateCalib { pickup: 820, hold: 610 },
-        left:  GripCalib { open: 316, close: 654 },
-        right: GripCalib { open: 618, close: 280 },
+        rotate: RotateCalib { pickup: 830, hold: 650 - 40 },  //hold = horizontal - 40
+        left:  GripCalib { open: 316, close: 660 },
+        right: GripCalib { open: 618, close: 275 },
     },
     // Module 1 — TODO calibrer
     ClampCalib {
@@ -137,16 +137,22 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
 
     // ---------- internal helpers ----------
 
-    fn wait_not_moving_arm(w: &Watcher<ArmStatus>, seq_before: u64) -> bool {
-        w.wait_until(seq_before, |s| !s.flags.moving, WAIT_TIMEOUT)
+    fn wait_not_moving_arm(w: &Watcher<ArmStatus>, seq_before: u64, target: u16) -> bool {
+        w.wait_until(seq_before, |s| {
+            !s.flags.moving || s.position.abs_diff(target) < 25 
+        }, WAIT_TIMEOUT)
     }
 
-    fn wait_not_moving_clamp(w: &Watcher<ClampStatus>, seq_before: u64) -> bool {
-        w.wait_until(seq_before, |s| !s.flags.moving, WAIT_TIMEOUT)
+    fn wait_not_moving_clamp(w: &Watcher<ClampStatus>, seq_before: u64, target: u16) -> bool {
+        w.wait_until(seq_before, |s| {
+            !s.flags.moving || s.position.abs_diff(target) < 25
+        }, WAIT_TIMEOUT)
     }
 
-    fn wait_not_moving_translation(w: &Watcher<TranslationStatus>, seq_before: u64) -> bool {
-        w.wait_until(seq_before, |s| !s.flags.moving, WAIT_TIMEOUT)
+    fn wait_not_moving_translation(w: &Watcher<TranslationStatus>, seq_before: u64, target: u16) -> bool {
+        w.wait_until(seq_before, |s| {
+            !s.flags.moving || s.position.abs_diff(target) < 25
+        }, WAIT_TIMEOUT)
     }
 
     // ---------- Arm movements ----------
@@ -155,7 +161,7 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         let w = self.proxy.arm_watcher(module, arm);
         let seq = w.seq();
         self.proxy.set_arm_position(module, arm, position, MOVE_TIME_MS);
-        if !Self::wait_not_moving_arm(w, seq) {
+        if !Self::wait_not_moving_arm(w, seq, position) {
             log::warn!("arm_move timeout: module={} arm={}", module, arm);
         }
     }
@@ -186,8 +192,8 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         }
         for &arm in arms {
             let w = self.proxy.arm_watcher(module, arm);
-            if !Self::wait_not_moving_arm(w, seqs[arm as usize]) {
-                log::warn!("arms_move timeout: module={} arm={}", module, arm);
+            if !Self::wait_not_moving_arm(w, seqs[arm as usize], pos_for(arm)) {
+                log::warn!("arms_move timeout: module={} arm={} target={}", module, arm, pos_for(arm));
             }
         }
     }
@@ -208,6 +214,11 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].up);
     }
 
+    pub fn arms_up_for_clamp_release(&self, module: u8, arms: &[u8]) {
+        self.arms_move(module, arms, |a| ARMS[module as usize][a as usize].up + 10);
+    }
+
+
     // ---------- Clamp movements ----------
 
     fn clamp_rotate_move(&self, module: u8, position: u16) {
@@ -215,7 +226,7 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         let seq = w.seq();
         self.proxy
             .set_clamp_position(module, ClampServo::Rotate, position, MOVE_TIME_MS);
-        if !Self::wait_not_moving_clamp(w, seq) {
+        if !Self::wait_not_moving_clamp(w, seq, position) {
             log::warn!("clamp_rotate timeout: module={}", module);
         }
     }
@@ -238,10 +249,10 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
             .set_clamp_position(module, ClampServo::Left, left_pos, MOVE_TIME_MS);
         self.proxy
             .set_clamp_position(module, ClampServo::Right, right_pos, MOVE_TIME_MS);
-        if !Self::wait_not_moving_clamp(wl, seq_l) {
+        if !Self::wait_not_moving_clamp(wl, seq_l, left_pos) {
             log::warn!("clamp_left timeout: module={}", module);
         }
-        if !Self::wait_not_moving_clamp(wr, seq_r) {
+        if !Self::wait_not_moving_clamp(wr, seq_r, right_pos) {
             log::warn!("clamp_right timeout: module={}", module);
         }
     }
@@ -262,7 +273,7 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         let w = self.proxy.translation_watcher(module);
         let seq = w.seq();
         self.proxy.set_translation(module, position, MOVE_TIME_MS);
-        if !Self::wait_not_moving_translation(w, seq) {
+        if !Self::wait_not_moving_translation(w, seq, position) {
             log::warn!("translation timeout: module={}", module);
         }
     }
@@ -315,13 +326,9 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
     // ---------- Color classification ----------
 
     /// Read the arm's current hue and classify it as a `Team`.
-    /// Returns `Team::None` if the color sensor reports no detection.
     /// Otherwise picks the closest reference hue (Left=yellow, Right=blue).
     pub fn read_arm_team(&self, module: u8, arm: u8) -> Team {
         let s = self.proxy.arm_watcher(module, arm).get();
-        if !s.color_detected {
-            return Team::None;
-        }
         let h = s.hue % 360;
         if hue_distance(h, HUE_YELLOW) <= hue_distance(h, HUE_BLUE) {
             Team::Left

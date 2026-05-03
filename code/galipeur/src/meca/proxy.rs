@@ -268,7 +268,9 @@ impl<B: SabotterBoard> MecaProxy<B> {
             CanMessage::BatteryStatus { voltage_mv, .. } => {
                 cb_battery.set(Some(*voltage_mv));
             }
-            _ => {}
+            other => {
+                log::trace!("CAN RX unhandled: {:?}", other);
+            }
             }
         });
 

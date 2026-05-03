@@ -170,9 +170,12 @@ impl<B: SabotterBoard> MecaWorker<B> {
         self.primitives.translation_close(module);
 
         self.primitives.clamp_close(module);
-        self.primitives.releases(module, &[0, 1, 2, 3]);
         std::thread::sleep(Duration::from_millis(250));
+        self.primitives.arms_up_for_clamp_release(module, &[0, 1, 2, 3]);
+        self.primitives.releases(module, &[0, 1, 2, 3]);
+        std::thread::sleep(Duration::from_millis(500));
         self.primitives.clamp_rotate_hold(module);
+        std::thread::sleep(Duration::from_millis(500));
         self.primitives.end_releases(module, &[0, 1, 2, 3]);
     }
 
@@ -215,10 +218,11 @@ impl<B: SabotterBoard> MecaWorker<B> {
     fn do_transfer_to_lower_stage(&self, side: RobotSide) {
         let module = Self::side_to_module(side);
 
-        {
+        let teams = {
             let mut state = self.state.lock().unwrap();
-            state[module as usize].transfer_to_lower_stage();
-        }
+            state[module as usize].transfer_to_lower_stage()
+        };
+        self.led_tx.send(LedMessage::MecaColors { module, teams: teams }).ok();
 
         self.primitives.arms_up(module, &[0, 1, 2, 3]);
         self.primitives.grabs(module, &[0, 1, 2, 3]);
@@ -296,7 +300,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         {
             let mut state = self.state.lock().unwrap();
             //Color is not important we will read it later
-            state[module as usize].set_lower_stage([Team::Left, Team::Left, Team::Right, Team::Right]);
+            state[module as usize].set_lower_stage(teams);
         }
     }
 
@@ -309,6 +313,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
             let mut state = self.state.lock().unwrap();
             state[module as usize].set_lower_stage([Team::None; 4])
         };
+        self.led_tx.send(LedMessage::MecaColors { module, teams: [Team::None; 4] }).ok();
 
         let good_color_arms: Vec<_> = arm_colors
             .iter()

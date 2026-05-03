@@ -22,8 +22,10 @@ impl MecaSideState {
         self.upper_stage = std::mem::take(&mut self.lower_stage);
     }
 
-    pub fn transfer_to_lower_stage(&mut self) {
+    pub fn transfer_to_lower_stage(&mut self) -> [Team; 4]{
         self.lower_stage = std::mem::take(&mut self.upper_stage);
+    
+        self.lower_stage
     }
 
     pub fn ready_to_take(&mut self, ready: bool) {
