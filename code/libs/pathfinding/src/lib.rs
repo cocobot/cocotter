@@ -279,7 +279,7 @@ impl PathGraph {
             if index == goal_index {
                 // Solution found, rebuild the path
                 let goal_to_start: Vec<usize> = std::iter::successors(Some(index), |i| node_infos[*i].previous_index).collect();
-                let start_to_goal: Vec<PathNodeId> = goal_to_start.into_iter().rev().map(|i| PathNodeId(i)).collect();
+                let start_to_goal: Vec<PathNodeId> = goal_to_start.into_iter().rev().map(PathNodeId).collect();
                 return Some(start_to_goal);
             }
 

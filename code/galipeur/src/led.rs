@@ -1,4 +1,4 @@
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use board_common::{Color, Team};
 use board_sabotter::{SabotterBoard, SabotterLeds};
 use flume::{Receiver, Sender};

@@ -123,7 +123,6 @@ fn build_ota_gatt_svcs(num_targets: usize) -> &'static [sys::ble_gatt_svc_def] {
 
     OTA_CHR_UUIDS
         .set(chr_uuid_ptrs)
-        .ok()
         .expect("OTA_CHR_UUIDS already set");
 
     // Build characteristic definitions
@@ -350,7 +349,7 @@ impl OtaRegistration {
         // Spawn one handler thread per target
         for (i, (mut handler, cmd_rx)) in handlers
             .into_iter()
-            .zip(self.cmd_receivers.into_iter())
+            .zip(self.cmd_receivers)
             .enumerate()
         {
             let attr_handle = state.targets[i].handle.load(Ordering::Relaxed);

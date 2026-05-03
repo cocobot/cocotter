@@ -97,7 +97,7 @@ impl<T: DrawTarget<Color = BinaryColor>> Ui<T> where T::Error: std::fmt::Debug {
             trigger_sender,
         };
         instance.draw_init().unwrap();
-        instance.push_screen(Box::new(MessageScreen::new(&"\\_o<"))).unwrap();
+        instance.push_screen(Box::new(MessageScreen::new("\\_o<"))).unwrap();
         instance
     }
 

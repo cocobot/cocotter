@@ -235,7 +235,6 @@ pub fn register_gatt() -> RomeRegistration {
     // Store the orders channel sender globally for the GATT callback
     ORDERS_SENDER
         .set(orders_sender)
-        .ok()
         .expect("ORDERS_SENDER already set");
 
     // Build and register GATT service table

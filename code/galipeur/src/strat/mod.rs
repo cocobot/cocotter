@@ -200,6 +200,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         rome::info!(self.rlogger, "first bunch of crates taken !");
     }
 
+    #[allow(dead_code)]
     fn test_eirbot(&mut self){
         // Right side doesn't work well, so for use of left side
         self.robot_main = RobotSide::Left;
@@ -226,8 +227,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(self.kx * 1000.0, 800.0, arfast(self.robot_main, self.table_main)).ok();
     }
 
+    #[allow(dead_code)]
     fn pathfinding_test(&mut self) {
-
         let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
         let goal = self.pathfinder.nearest_node(&XY::new(0.0, 1000.0));
         if let Some(path) = self.pathfinder.find_path(start, goal) {
@@ -239,7 +240,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     }
 
     fn return_to_start(&mut self){
-        self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up));
+        self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
         let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
         let goal = self.pathfinder.nearest_node(&XY::new(self.kx*1200.0, 1700.0));
         if let Some(path) = self.pathfinder.find_path(start, goal) {
@@ -250,6 +251,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
     }
 
+    #[allow(dead_code)]
     fn test_movement(&mut self) {
         let prefered_side = self.robot_main;
 

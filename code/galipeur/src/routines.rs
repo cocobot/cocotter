@@ -38,13 +38,10 @@ pub struct GalipeurRoutines<B: SabotterBoard> {
 
     // Flags to eneable or disable telemetry
     meca_tm_full: bool,
-    lidar_tm_ground: bool,
-    lidar_tm_top: bool,
 
     // Periodicity states
     asserv_tm_periodicity: Periodicity,
     meca_tm_periodicity: Periodicity,
-    lidar_tm_periodicity: Periodicity,
 }
 
 impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
@@ -98,12 +95,9 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             sensors,
 
             meca_tm_full: false,
-            lidar_tm_ground: false,
-            lidar_tm_top: false,
 
             asserv_tm_periodicity: Periodicity::new(Duration::from_millis(500)),
             meca_tm_periodicity: Periodicity::new(Duration::from_millis(1000)),
-            lidar_tm_periodicity: Periodicity::new(Duration::from_millis(2000)),
         }
     }
 

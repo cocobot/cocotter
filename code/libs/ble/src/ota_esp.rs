@@ -58,7 +58,7 @@ impl OtaHandler for EspSelfOtaHandler {
 
         // Check partition size
         let part_size = unsafe { (*partition).size };
-        if size as u32 > part_size {
+        if size > part_size {
             log::error!("ESP OTA: firmware {size} bytes exceeds partition {part_size} bytes");
             return 2; // no_space
         }

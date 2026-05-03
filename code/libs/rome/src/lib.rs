@@ -15,7 +15,7 @@ pub enum DecodeError {
     /// Unknown message ID
     UnknownMessage(u8),
     /// Some data has not been read, message is probably corrupted
-    UnparsedData(Message, usize),
+    UnparsedData(u8, usize),
     /// Invalid choice value
     BadChoiceValue(u8),
 }
@@ -35,7 +35,7 @@ impl Message {
         data.read(&mut buffer)?;
         let message = Self::deserialize_with_id(buffer[0], &mut data)?;
         if !data.is_empty() {
-            Err(DecodeError::UnparsedData(message, data.len()))
+            Err(DecodeError::UnparsedData(buffer[0], data.len()))
         } else {
             Ok(message)
         }
