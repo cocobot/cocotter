@@ -96,9 +96,9 @@ fn main() {
             // Should never happen (previous step)
             MatchStep::WaitingMatchStart => {},
             // Still waiting...
-            MatchStep::WaitingPamiStart => {},
+            MatchStep::WaitingPamiStart(_) => {},
             // Finally, we can move!
-            MatchStep::PamiActive => break,
+            MatchStep::PamiActive(_) => break,
             // Should never happen at this stage
             MatchStep::MatchEnded => break,
         }
@@ -110,8 +110,8 @@ fn main() {
         match routines.match_step(now) {
             // Should never happen (previous step)
             MatchStep::WaitingMatchStart => {},
-            MatchStep::WaitingPamiStart => {},
-            MatchStep::PamiActive => {},
+            MatchStep::WaitingPamiStart(_) => {},
+            MatchStep::PamiActive(_) => {},
             // Match ended, stop now!
             MatchStep::MatchEnded => break,
         }

@@ -35,7 +35,7 @@ pub enum UiTrigger {
 #[derive(Clone)]
 pub struct MatchConf {
     pub team: Team,
-    pub start_delay: u8,
+    pub start_delay: u8,  // Only relevant for paninja
     pub role: PamiRole,
 }
 

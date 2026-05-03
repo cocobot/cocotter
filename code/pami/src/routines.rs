@@ -20,8 +20,8 @@ pub struct PamiRoutines<B: PamiBoard> {
     // Current state of various updated values
     pub emergency_stop: bool,
     pub battery_level: BatteryLevel,
-    // End of match instant, unset if match has not started yet
-    match_end: Option<Instant>,
+    // Instants for when PAMI can starts moving, and match end; unset if match has not started yet
+    match_instants: Option<(Instant, Instant)>,
 
     // Peripherals
     pub pami_leds: PamiLeds<B::Led>,
@@ -46,16 +46,18 @@ pub struct PamiRoutines<B: PamiBoard> {
 }
 
 
-/// Duration during which a PAMI can move
-const PAMI_ACTIVE_DURATION: Duration = Duration::from_secs(10);
+/// Duration during which a paninja PAMI can move
+const PANINJA_ACTIVE_DURATION: Duration = Duration::from_secs(10);
+/// Total match duration
+const MATCH_DURATION: Duration = Duration::from_secs(100);
 
 pub enum MatchStep {
     /// Waiting for match to start
     WaitingMatchStart,
-    /// Waiting PAMI start time (90s), value duration is duration until PAMI can move
-    WaitingPamiStart,
+    /// Waiting PAMI start time (90s except for ninja), value is duration until next step
+    WaitingPamiStart(Duration),
     /// PAMI can move, value is duration until end of match
-    PamiActive,
+    PamiActive(Duration),
     /// Match ended
     MatchEnded,
 }
@@ -88,7 +90,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
             asserv: Asserv::new(PamiAsservHardware::new(board), ASSERV_PERIOD),
             emergency_stop: false,
             battery_level: Default::default(),
-            match_end: None,
+            match_instants: None,
 
             pami_leds: board.leds().unwrap(),
             pami_buttons: board.buttons().unwrap(),
@@ -229,8 +231,14 @@ impl<B: PamiBoard> PamiRoutines<B> {
         }
 
         log::info!("Match starts!");
-        let match_duration = Duration::from_secs(match_conf.start_delay as u64) + PAMI_ACTIVE_DURATION;
-        self.match_end = Some(Instant::now() + match_duration);
+        let now = Instant::now();
+        if match_conf.role == PamiRole::Granary {
+            let active_time = now + Duration::from_secs(match_conf.start_delay as u64);
+            let match_end = active_time + PANINJA_ACTIVE_DURATION;
+            self.match_instants = Some((active_time, match_end));
+        } else {
+            self.match_instants = Some((now, now + MATCH_DURATION));
+        }
         self.set_ground_led_color(&Color::BLACK);
     }
 
@@ -309,14 +317,13 @@ impl<B: PamiBoard> PamiRoutines<B> {
 
     /// Return current match step
     pub fn match_step(&self, now: Instant) -> MatchStep {
-        if let Some(end) = self.match_end {
-            let remaining = end.saturating_duration_since(now);
-            if remaining.is_zero() {
+        if let Some((active, end)) = self.match_instants {
+            if now >= end {
                 MatchStep::MatchEnded
-            } else if remaining >= PAMI_ACTIVE_DURATION {
-                MatchStep::WaitingPamiStart
+            } else if now >= active {
+                MatchStep::PamiActive(end.saturating_duration_since(now))
             } else {
-                MatchStep::PamiActive
+                MatchStep::WaitingPamiStart(active.saturating_duration_since(now))
             }
         } else {
             MatchStep::WaitingMatchStart
