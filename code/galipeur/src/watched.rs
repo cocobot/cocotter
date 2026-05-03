@@ -51,7 +51,7 @@ impl<T> Watched<T> {
     /// Get the current value (copy).
     pub fn get(&self) -> T where T: Copy {
         let (lock, _) = &*self.inner;
-        lock.lock().map(|inner| inner.value).unwrap()
+        lock.lock().unwrap().value
     }
 
     /// Block until the next update (timeout 3s), then return the new value.
@@ -71,7 +71,7 @@ impl<T> Watched<T> {
     /// Get the current value (clone).
     pub fn get_clone(&self) -> T where T: Clone {
         let (lock, _) = &*self.inner;
-        lock.lock().map(|inner| inner.value.clone()).unwrap()
+        lock.lock().unwrap().value.clone()
     }
 
     /// Block until the next update (timeout 3s), then return the new value (clone).

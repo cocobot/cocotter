@@ -19,13 +19,14 @@ struct WatcherInner<T> {
 /// wakes any thread waiting in `wait_until()`. `wait_until()` blocks until
 /// both (a) a set has happened since the captured `seq_before` and (b) the
 /// predicate matches the current value.
+#[derive(Clone)]
 pub struct Watcher<T: Clone> {
     inner: Arc<(Mutex<WatcherInner<T>>, Condvar)>,
 }
 
-impl<T: Clone> Clone for Watcher<T> {
-    fn clone(&self) -> Self {
-        Self { inner: self.inner.clone() }
+impl<T: Clone + Default> Default for Watcher<T> {
+    fn default() -> Self {
+        Self::new(T::default())
     }
 }
 
@@ -147,28 +148,12 @@ impl<B: SabotterBoard> Clone for MecaProxy<B> {
     }
 }
 
-fn new_arm_watchers() -> [[Watcher<ArmStatus>; 4]; 3] {
-    std::array::from_fn(|_| std::array::from_fn(|_| Watcher::new(ArmStatus::default())))
-}
-
-fn new_clamp_watchers() -> [[Watcher<ClampStatus>; 3]; 3] {
-    std::array::from_fn(|_| std::array::from_fn(|_| Watcher::new(ClampStatus::default())))
-}
-
-fn new_translation_watchers() -> [Watcher<TranslationStatus>; 3] {
-    std::array::from_fn(|_| Watcher::new(TranslationStatus::default()))
-}
-
-fn new_color_raw_watchers() -> [[Watcher<ColorRawStatus>; 4]; 3] {
-    std::array::from_fn(|_| std::array::from_fn(|_| Watcher::new(ColorRawStatus::default())))
-}
-
 impl<B: SabotterBoard> MecaProxy<B> {
     pub fn new(can: GalipeurCan<B>) -> Self {
-        let arms = new_arm_watchers();
-        let clamps = new_clamp_watchers();
-        let translations = new_translation_watchers();
-        let color_raw = new_color_raw_watchers();
+        let arms: [[Watcher<ArmStatus>; 4]; 3] = Default::default();
+        let clamps: [[Watcher<ClampStatus>; 3]; 3] = Default::default();
+        let translations: [Watcher<TranslationStatus>; 3] = Default::default();
+        let color_raw: [[Watcher<ColorRawStatus>; 4]; 3] = Default::default();
         let battery_voltage_mv = Watcher::new(None);
         let last_ping = Arc::new(AtomicU8::new(0));
 
@@ -186,91 +171,91 @@ impl<B: SabotterBoard> MecaProxy<B> {
                 return;
             }
             match msg {
-            CanMessage::Ping { value } => {
-                cb_last_ping.store(*value, Ordering::Relaxed);
-            }
-            CanMessage::ArmStatus {
-                target,
-                position,
-                color,
-                pump,
-                valve,
-                error,
-                flags,
-                pump_current,
-            } => {
-                if let Some(w) = cb_arms
-                    .get(target.module as usize)
-                    .and_then(|m| m.get(target.arm as usize))
-                {
-                    w.set(ArmStatus {
-                        position: *position,
-                        hue: (color & 0x7F) as u16 * 360 / 128,
-                        color_detected: color & 0x80 != 0,
-                        pump: *pump,
-                        valve: *valve,
-                        error: *error,
-                        flags: *flags,
-                        pump_current: *pump_current,
-                    });
+                CanMessage::Ping { value } => {
+                    cb_last_ping.store(*value, Ordering::Relaxed);
                 }
-            }
-            CanMessage::TranslationStatus {
-                module,
-                position,
-                error,
-                flags,
-            } => {
-                if let Some(w) = cb_translations.get(*module as usize) {
-                    w.set(TranslationStatus {
-                        position: *position,
-                        error: *error,
-                        flags: *flags,
-                    });
+                CanMessage::ArmStatus {
+                    target,
+                    position,
+                    color,
+                    pump,
+                    valve,
+                    error,
+                    flags,
+                    pump_current,
+                } => {
+                    if let Some(w) = cb_arms
+                        .get(target.module as usize)
+                        .and_then(|m| m.get(target.arm as usize))
+                    {
+                        w.set(ArmStatus {
+                            position: *position,
+                            hue: (color & 0x7F) as u16 * 360 / 128,
+                            color_detected: color & 0x80 != 0,
+                            pump: *pump,
+                            valve: *valve,
+                            error: *error,
+                            flags: *flags,
+                            pump_current: *pump_current,
+                        });
+                    }
                 }
-            }
-            CanMessage::ClampStatus {
-                target,
-                position,
-                error,
-                flags,
-            } => {
-                if let Some(w) = cb_clamps
-                    .get(target.module as usize)
-                    .and_then(|m| m.get(target.servo as usize))
-                {
-                    w.set(ClampStatus {
-                        position: *position,
-                        error: *error,
-                        flags: *flags,
-                    });
+                CanMessage::TranslationStatus {
+                    module,
+                    position,
+                    error,
+                    flags,
+                } => {
+                    if let Some(w) = cb_translations.get(*module as usize) {
+                        w.set(TranslationStatus {
+                            position: *position,
+                            error: *error,
+                            flags: *flags,
+                        });
+                    }
                 }
-            }
-            CanMessage::ColorSensorRaw {
-                target,
-                clear,
-                red,
-                green,
-                blue,
-            } => {
-                if let Some(w) = cb_color_raw
-                    .get(target.module as usize)
-                    .and_then(|m| m.get(target.arm as usize))
-                {
-                    w.set(ColorRawStatus {
-                        clear: *clear,
-                        red: *red,
-                        green: *green,
-                        blue: *blue,
-                    });
+                CanMessage::ClampStatus {
+                    target,
+                    position,
+                    error,
+                    flags,
+                } => {
+                    if let Some(w) = cb_clamps
+                        .get(target.module as usize)
+                        .and_then(|m| m.get(target.servo as usize))
+                    {
+                        w.set(ClampStatus {
+                            position: *position,
+                            error: *error,
+                            flags: *flags,
+                        });
+                    }
                 }
-            }
-            CanMessage::BatteryStatus { voltage_mv, .. } => {
-                cb_battery.set(Some(*voltage_mv));
-            }
-            other => {
-                log::trace!("CAN RX unhandled: {:?}", other);
-            }
+                CanMessage::ColorSensorRaw {
+                    target,
+                    clear,
+                    red,
+                    green,
+                    blue,
+                } => {
+                    if let Some(w) = cb_color_raw
+                        .get(target.module as usize)
+                        .and_then(|m| m.get(target.arm as usize))
+                    {
+                        w.set(ColorRawStatus {
+                            clear: *clear,
+                            red: *red,
+                            green: *green,
+                            blue: *blue,
+                        });
+                    }
+                }
+                CanMessage::BatteryStatus { voltage_mv, .. } => {
+                    cb_battery.set(Some(*voltage_mv));
+                }
+                other => {
+                    log::trace!("CAN RX unhandled: {:?}", other);
+                }
             }
         });
 
