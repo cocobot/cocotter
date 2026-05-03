@@ -13,6 +13,7 @@ pub struct PamiAsservHardware<B: PamiBoard> {
     emergency_stop: Box<dyn FnMut() -> bool>,
     motors: PamiMotorsImpl<B>,
     last_encoder_reads: [i32; 2],
+    force_stop: bool,
 }
 
 impl<B: PamiBoard> PamiAsservHardware<B> {
@@ -21,6 +22,7 @@ impl<B: PamiBoard> PamiAsservHardware<B> {
             emergency_stop: board.emergency_stop().unwrap(),
             motors: board.motors().unwrap(),
             last_encoder_reads: [0; 2],
+            force_stop: true,
         }
     }
 
@@ -48,6 +50,11 @@ impl<B: PamiBoard> PamiAsservHardware<B> {
         let delta = -new_read.wrapping_sub(*last_read);
         *last_read = new_read;
         delta as f32
+    }
+
+    /// If true, force an emergency stop to stop asserv
+    pub fn force_stop(&mut self, stop: bool) {
+        self.force_stop = stop;
     }
 }
 

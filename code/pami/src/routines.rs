@@ -20,6 +20,8 @@ pub struct PamiRoutines<B: PamiBoard> {
     // Current state of various updated values
     pub emergency_stop: bool,
     pub battery_level: BatteryLevel,
+    // End of match instant, unset if match has not started yet
+    match_end: Option<Instant>,
 
     // Peripherals
     pub pami_leds: PamiLeds<B::Led>,
@@ -42,6 +44,22 @@ pub struct PamiRoutines<B: PamiBoard> {
     asserv_tm_periodicity: Periodicity,
     battery_level_periodicity: Periodicity,
 }
+
+
+/// Duration during which a PAMI can move
+const PAMI_ACTIVE_DURATION: Duration = Duration::from_secs(10);
+
+pub enum MatchStep {
+    /// Waiting for match to start
+    WaitingMatchStart,
+    /// Waiting PAMI start time (90s), value duration is duration until PAMI can move
+    WaitingPamiStart,
+    /// PAMI can move, value is duration until end of match
+    PamiActive,
+    /// Match ended
+    MatchEnded,
+}
+
 
 impl<B: PamiBoard> PamiRoutines<B> {
     const EMERGENCY_STOP_COLOR: Color = Color::RED;
@@ -70,6 +88,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
             asserv: Asserv::new(PamiAsservHardware::new(board), ASSERV_PERIOD),
             emergency_stop: false,
             battery_level: Default::default(),
+            match_end: None,
 
             pami_leds: board.leds().unwrap(),
             pami_buttons: board.buttons().unwrap(),
@@ -210,6 +229,8 @@ impl<B: PamiBoard> PamiRoutines<B> {
         }
 
         log::info!("Match starts!");
+        let match_duration = Duration::from_secs(match_conf.start_delay as u64) + PAMI_ACTIVE_DURATION;
+        self.match_end = Some(Instant::now() + match_duration);
         self.set_ground_led_color(&Color::BLACK);
     }
 
@@ -284,6 +305,22 @@ impl<B: PamiBoard> PamiRoutines<B> {
         }
         self.idle(&now);
         now
+    }
+
+    /// Return current match step
+    pub fn match_step(&self, now: Instant) -> MatchStep {
+        if let Some(end) = self.match_end {
+            let remaining = end.saturating_duration_since(now);
+            if remaining.is_zero() {
+                MatchStep::MatchEnded
+            } else if remaining >= PAMI_ACTIVE_DURATION {
+                MatchStep::WaitingPamiStart
+            } else {
+                MatchStep::PamiActive
+            }
+        } else {
+            MatchStep::WaitingMatchStart
+        }
     }
 
     /// Update ground led color, override with red if emergency stop is active

@@ -4,7 +4,7 @@ use asserv::differential::conf::*;
 use board_pami::PamiBoard;
 use pami::config::PamiConfig;
 use pami::events::*;
-use pami::routines::PamiRoutines;
+use pami::routines::{PamiRoutines, MatchStep};
 use pami::ui::Ui;
 
 #[cfg(target_os = "espidf")]
@@ -88,9 +88,42 @@ fn main() {
     routines.wait_match_start(&match_conf);
 
     routines.ui_events.send(UiEvent::ShowMessage("MATCH")).unwrap();
+
+    // Wait for PAMI to be allowed to move
+    loop {
+        let now = routines.step_idle();
+        match routines.match_step(now) {
+            // Should never happen (previous step)
+            MatchStep::WaitingMatchStart => {},
+            // Still waiting...
+            MatchStep::WaitingPamiStart => {},
+            // Finally, we can move!
+            MatchStep::PamiActive => break,
+            // Should never happen at this stage
+            MatchStep::MatchEnded => break,
+        }
+    }
+
+    //TODO It's your time PAMI, move!
+    loop {
+        let now = routines.step_idle();
+        match routines.match_step(now) {
+            // Should never happen (previous step)
+            MatchStep::WaitingMatchStart => {},
+            MatchStep::WaitingPamiStart => {},
+            MatchStep::PamiActive => {},
+            // Match ended, stop now!
+            MatchStep::MatchEnded => break,
+        }
+    }
+
+    // Match or strategy routine ended
+    routines.asserv.hardware_mut().force_stop(true);
+    //TODO Start the fan, update some LED, ...
+
+    // Wait indefinitely
     loop {
         let _ = routines.step_idle();
-        //XXX Not match strat for now
     }
 }
 
