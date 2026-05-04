@@ -77,7 +77,7 @@ const ARMS: [[ArmCalib; 4]; 3] = [
         ArmCalib { cleat_up: 405, pre_grab: 355, down: 335, up: 741 },
         ArmCalib { cleat_up: 380, pre_grab: 380, down: 360, up: 766 },
         ArmCalib { cleat_up: 340, pre_grab: 340, down: 320, up: 726 },
-        ArmCalib { cleat_up: 375, pre_grab: 325, down: 305, up: 711 },
+        ArmCalib { cleat_up: 375, pre_grab: 325, down: 305, up: 700 },
     ],
     // Module 2
     [
@@ -97,9 +97,9 @@ const CLAMPS: [ClampCalib; 3] = [
     },
     // Module 1 — TODO calibrer
     ClampCalib {
-        rotate: RotateCalib { pickup: 830, hold: 610 },
-        left:  GripCalib { open: 316, close: 654 },
-        right: GripCalib { open: 618, close: 280 },
+        rotate: RotateCalib { pickup: 870, hold: 670 - 40 },
+        left:  GripCalib { open: 420, close: 654 },
+        right: GripCalib { open: 540, close: 280 },
     },
     // Module 2
     ClampCalib {
