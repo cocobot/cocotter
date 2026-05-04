@@ -133,6 +133,12 @@ impl<B: SabotterBoard + 'static> Meca<B> {
         rx.recv().ok();
     }
 
+    pub fn end_of_match(&self) {
+        let (tx, rx) = flume::bounded(1);
+        self.worker_tx.send(MecaAction::EndOfMatch { reply: tx }).ok();
+        rx.recv().ok();
+    }
+
 
     #[allow(dead_code)]
     pub fn calibration_position(&self) {

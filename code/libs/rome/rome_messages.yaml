@@ -192,6 +192,8 @@
   MecaRelease:
     side: [left, right, back]
 
+  MecaEndOfMatch:
+
   MecaRawSetServo:
     module: u8
     id: u8

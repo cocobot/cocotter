@@ -29,6 +29,9 @@ pub enum MecaAction {
         side: RobotSide,
         reply: Sender<()>,
     },
+    EndOfMatch {
+        reply: Sender<()>,
+    },
     // Not a direct action, change worker's state
     SetOwnColor(Team),
 }
@@ -92,6 +95,10 @@ impl<B: SabotterBoard> MecaWorker<B> {
             }
             MecaAction::Release { side, reply } => {
                 self.do_release(side);
+                reply.send(()).ok();
+            }
+            MecaAction::EndOfMatch { reply } => {
+                self.do_end_of_match();
                 reply.send(()).ok();
             }
             MecaAction::SetOwnColor(color) => {
@@ -417,5 +424,19 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         self.primitives.translation_spread(module);
         self.primitives.arms_up(module, &[0, 1, 2, 3]);
+    }
+
+    fn do_end_of_match(&self) {
+        for module in 0..3u8 {
+            self.primitives.drop_lower_stage(module);
+        }
+        std::thread::sleep(Duration::from_millis(250));
+        for module in 0..3u8 {
+            self.primitives.drop_upper_stage(module);
+        }
+        std::thread::sleep(Duration::from_millis(250));
+        for module in 0..3u8 {
+            self.primitives.end_releases(module, ALL_ARMS);
+        }
     }
 }

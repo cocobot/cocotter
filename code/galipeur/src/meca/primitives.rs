@@ -415,6 +415,22 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         self.translation_spread(module);
     }
 
+    /// Drop everything in the lower stage (arms): release vacuum and move arms up (no wait).
+    pub fn drop_lower_stage(&self, module: u8) {
+        self.releases(module, ALL_ARMS);
+        for arm in 0..4u8 {
+            self.proxy.set_arm_position(module, arm, ARMS[module as usize][arm as usize].up, MOVE_TIME_MS);
+        }
+    }
+
+    /// Drop everything in the upper stage (clamp): rotate to pickup and open (no wait).
+    pub fn drop_upper_stage(&self, module: u8) {
+        let c = &CLAMPS[module as usize];
+        self.proxy.set_clamp_position(module, ClampServo::Rotate, c.rotate.pickup, MOVE_TIME_MS);
+        self.proxy.set_clamp_position(module, ClampServo::Left, c.left.open, MOVE_TIME_MS);
+        self.proxy.set_clamp_position(module, ClampServo::Right, c.right.open, MOVE_TIME_MS);
+    }
+
     // ---------- Color classification ----------
 
     /// Read the arm's current hue and classify it as a `Team`.

@@ -289,6 +289,11 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                 }
                 true
             }
+            rome::Message::MecaEndOfMatch  => {
+                log::info!("ROME: meca end of match");
+                self.meca.end_of_match();
+                true
+            }
             rome::Message::MecaRawSetServo { module, id, position } => {
                 match id {
                     10..14 => {
