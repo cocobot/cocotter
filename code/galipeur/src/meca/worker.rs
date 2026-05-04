@@ -350,8 +350,9 @@ impl<B: SabotterBoard> MecaWorker<B> {
             }
         }
 
-        self.primitives.arms_down(module, ALL_ARMS);
+        self.primitives.arms_pre_grab(module, ALL_ARMS);
         self.primitives.translation_close(module);
+        self.primitives.arms_down(module, ALL_ARMS);
         self.primitives.grabs(module, ALL_ARMS);
         std::thread::sleep(Duration::from_millis(300));
 

@@ -81,10 +81,10 @@ const ARMS: [[ArmCalib; 4]; 3] = [
     ],
     // Module 2
     [
-        ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 730 },
-        ArmCalib { cleat_up: 350, pre_grab: 350, down: 330, up: 720 },
-        ArmCalib { cleat_up: 360, pre_grab: 380, down: 360, up: 760 },
-        ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 746 },
+        ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 740 },
+        ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 735 },
+        ArmCalib { cleat_up: 420, pre_grab: 375, down: 355, up: 760 },
+        ArmCalib { cleat_up: 415, pre_grab: 355, down: 335, up: 746 },
     ],
 ];
 
@@ -103,9 +103,9 @@ const CLAMPS: [ClampCalib; 3] = [
     },
     // Module 2
     ClampCalib {
-        rotate: RotateCalib { pickup: 820, hold: 610 },
-        left:  GripCalib { open: 316, close: 590 },
-        right: GripCalib { open: 618, close: 300 },
+        rotate: RotateCalib { pickup: 840, hold: 660 - 40 },
+        left:  GripCalib { open: 375, close: 590 },
+        right: GripCalib { open: 535, close: 300 },
     },
 ];
 
@@ -348,7 +348,7 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
     /// PWM-toggle valves (5 ms ON / 15 ms OFF, ~25% duty) for `duration`, then fully release.
     pub fn slow_releases(&self, module: u8, arms: &[u8], duration: Duration) {
         for &arm in arms {
-            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 5, off_ms: 20 });
+            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 5, off_ms: 15 });
         }
         std::thread::sleep(duration);
         self.releases(module, arms);
