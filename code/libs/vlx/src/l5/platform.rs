@@ -2,7 +2,6 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-use core::ffi::c_void;
 use std::{thread, time::Duration};
 use crate::VlxI2cDriver;
 
@@ -12,9 +11,6 @@ pub const VL53L5CX_NB_TARGET_PER_ZONE: u8 = 1;
 #[repr(C)]
 pub struct VL53L5CX_Platform {
     pub address: u16,
-    pub self_ptr: *mut c_void,
-    pub write_i2c: fn (self_ptr: *mut c_void, reg_addr: u16, data: *const u8, size: usize) -> bool,
-    pub read_i2c: fn (self_ptr: *mut c_void, reg_addr: u16, data: *mut u8, size: usize) -> bool,
 }
 
 
