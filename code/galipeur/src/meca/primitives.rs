@@ -366,6 +366,55 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         }
     }
 
+    // ---------- Reset to neutral position ----------
+
+    /// Test all actuators across all modules, then move to neutral position.
+    pub fn init_all_modules(&self) {
+        // Test all pumps
+        for module in 0..3 {
+            for arm in 0..4 {
+                self.proxy.set_pump(module, arm, true);
+                std::thread::sleep(Duration::from_millis(50));
+                self.proxy.set_pump(module, arm, false);
+                std::thread::sleep(Duration::from_millis(50));
+            }
+        }
+
+        // Test all valves
+        for module in 0..3 {
+            for arm in 0..4 {
+                self.proxy.set_valve(module, arm, ValveMode::On);
+                std::thread::sleep(Duration::from_millis(20));
+                self.proxy.set_valve(module, arm, ValveMode::Off);
+                std::thread::sleep(Duration::from_millis(20));
+            }
+        }
+
+        // Wiggle arms down slightly
+        for module in 0..3 {
+            for arm in 0..4 {
+                self.proxy.set_arm_position(module, arm, ARMS[module as usize][arm as usize].up - 100, 50);
+            }
+            self.proxy.set_translation(module, TRANSLATIONS[module as usize].close, 50);
+            self.proxy.set_clamp_position(module, ClampServo::Rotate, CLAMPS[module as usize].rotate.hold, 50);
+            self.proxy.set_clamp_position(module, ClampServo::Left, CLAMPS[module as usize].left.close, 50);
+            self.proxy.set_clamp_position(module, ClampServo::Right, CLAMPS[module as usize].right.close, 50);
+        }
+        std::thread::sleep(Duration::from_millis(500));
+
+        // Move all modules to neutral
+        for module in 0..3 {
+            self.reset_module(module);
+        }
+    }
+
+    pub fn reset_module(&self, module: u8) {
+        self.arms_up(module, ALL_ARMS);
+        self.clamp_rotate_pickup(module);
+        self.clamp_open(module);
+        self.translation_spread(module);
+    }
+
     // ---------- Color classification ----------
 
     /// Read the arm's current hue and classify it as a `Team`.

@@ -291,7 +291,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             }
             rome::Message::MecaRawSetServo { module, id, position } => {
                 match id {
-                    10..=14 => {
+                    10..14 => {
                         self.meca.proxy.set_torque(module, id -10, true);
                         self.meca.proxy.set_arm_position(module, id - 10, position, 50);
                     }

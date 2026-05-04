@@ -102,13 +102,7 @@ impl<B: SabotterBoard + 'static> Meca<B> {
     pub fn init(&mut self, team: Team) {
         self.worker_tx.send(MecaAction::SetOwnColor(team)).ok();
 
-        // Raise all arms to the rest (up) position on every module.
-        for module in 0..3 {
-            self.primitives.arms_up(module, &[0, 1, 2, 3]);
-            self.primitives.clamp_rotate_pickup(module);
-            self.primitives.clamp_open(module);
-            self.primitives.translation_spread(module);
-        }
+        self.primitives.init_all_modules();
     }
 
     pub fn clone_state(&self) -> MecaState {
