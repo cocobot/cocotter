@@ -79,7 +79,9 @@ impl<B: SabotterBoard> MecaWorker<B> {
                 let result = self.do_direct_take(side);
                 reply.send(result).ok();
 
-                self.do_read_color(side);
+                if result {
+                    self.do_read_color(side);
+                }
             }
             MecaAction::PrepareRelease { prefered_side, reply } => {
                 let chosen = self.compute_prepare_release(prefered_side);
@@ -196,39 +198,34 @@ impl<B: SabotterBoard> MecaWorker<B> {
         self.primitives.end_releases(module, ALL_ARMS);
     }
 
+    fn reset_ready_to_take_sides(&self, active_module: u8) {
+        let sides_to_reset: Vec<u8> = {
+            let state = self.state.lock().unwrap();
+            (0..3u8)
+                .filter(|&i| i != active_module && state[i as usize].is_ready_to_take())
+                .collect()
+        };
+        for side in sides_to_reset {
+            self.primitives.arms_up(side, &[0, 1, 2, 3]);
+            self.primitives.translation_close(side);
+            let mut state = self.state.lock().unwrap();
+            state[side as usize].ready_to_take(false);
+        }
+    }
+
     fn do_prepare_direct_take(&self, side: RobotSide, cleat_up: CleatSide) {
         let module = Self::side_to_module(side);
         log::info!("Prepare DT {}", module);
 
-        let (is_upper_empty, side_to_reset) = {
-            let mut state = self.state.lock().unwrap();
-            
-            let mut side_to_reset = None;
-            for i in 0..3 {
-                if module != i {
-                    let other_side_state = &mut state[i as usize];
-                    if other_side_state.is_ready_to_take() {
-                        side_to_reset = Some(i);
-                    }
-                }
-            }
+        self.reset_ready_to_take_sides(module);
 
+        let is_upper_empty = {
+            let mut state = self.state.lock().unwrap();
             let side_state = &mut state[module as usize];
             side_state.ready_to_take(true);
-
-            (side_state.is_upper_stage_empty(), side_to_reset)
+            side_state.is_upper_stage_empty()
         };
-        log::info!("UE {} TR {:?}", is_upper_empty, side_to_reset);
-
-        if let Some(side_to_reset) = side_to_reset {
-            self.primitives.arms_up(side_to_reset, &[0, 1, 2, 3]);
-            self.primitives.translation_close(side_to_reset);
-            {
-                let mut state = self.state.lock().unwrap();
-                let side_to_reset_state = &mut state[side_to_reset as usize];
-                side_to_reset_state.ready_to_take(false);
-            }
-        }
+        log::info!("UE {}", is_upper_empty);
 
         self.proxy.set_color_led_pwm(255);
         self.primitives.translation_spread(module);
@@ -243,7 +240,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
                 self.primitives.arms_cleat_up(module, &[0]);
             }
             CleatSide::Right => {
-                self.primitives.arms_pre_grab(module, &[0, 1, 2, 3]);
+                self.primitives.arms_pre_grab(module, &[0, 1, 2]);
                 self.primitives.arms_cleat_up(module, &[3]);
             }
         }
@@ -280,17 +277,23 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
     fn do_prepare_release_angle(&self, side: RobotSide) {
         let module = Self::side_to_module(side);
+        self.reset_ready_to_take_sides(module);
 
-        let (needs_transfer, upper_stage_empty, upper_stage_is_up) = {
+        let needs_transfer = {
             let state = self.state.lock().unwrap();
-            let side_state = &state[Self::side_to_module(side) as usize];
+            let side_state = &state[module as usize];
             log::info!("Test {} {}", side_state.is_lower_stage_empty(), side_state.is_upper_stage_empty());
-            (side_state.is_lower_stage_empty() && !side_state.is_upper_stage_empty(), side_state.is_upper_stage_empty(), side_state.is_upper_stage_up())
+            side_state.is_lower_stage_empty() && !side_state.is_upper_stage_empty()
         };
         if needs_transfer {
             self.do_transfer_to_lower_stage(side);
         }
 
+        let (upper_stage_empty, upper_stage_is_up) = {
+            let state = self.state.lock().unwrap();
+            let side_state = &state[module as usize];
+            (side_state.is_upper_stage_empty(), side_state.is_upper_stage_up())
+        };
         log::info!("Give space to arm ? {} {}", upper_stage_empty, upper_stage_is_up);
 
         if upper_stage_empty || !upper_stage_is_up {
@@ -312,6 +315,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
     fn do_direct_take(&self, side: RobotSide) -> bool {
         let module = Self::side_to_module(side);
+        self.reset_ready_to_take_sides(module);
 
         {
             let mut state = self.state.lock().unwrap();
@@ -379,6 +383,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
     fn do_release(&self, side: RobotSide) {
         let module = Self::side_to_module(side);
+        self.reset_ready_to_take_sides(module);
 
         self.do_prepare_release_angle(side);
 
