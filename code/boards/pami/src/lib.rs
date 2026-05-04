@@ -34,7 +34,7 @@ pub trait PamiBoard {
     type Led: StatefulOutputPin;
     type Buttons: PamiButtons;
     type Display: DrawTarget<Color=BinaryColor>;
-    type Vlx: VlxSensor;
+    type Vlx: VlxSensor + Send + Sync + 'static;
     type MotorEncoder: Encoder<i32>;
     type MotorPwm: SetDutyCycle;
 

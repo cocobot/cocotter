@@ -1,3 +1,4 @@
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 use asserv::differential::{conf::*, Asserv, rome::AsservDiffRome};
 use asserv::rome::AsservRome;
@@ -28,7 +29,7 @@ pub struct PamiRoutines<B: PamiBoard> {
     pub pami_buttons: B::Buttons,
     pub battery_reader: B::BatteryReader,
     pub pwm_controller: PamiPwmController<B::I2c>,
-    pub vlx: B::Vlx,
+    pub vlx_data: Arc<Mutex<Option<vlx::DistanceData>>>,
     starting_cord_read: Box<dyn FnMut() -> bool>,
 
     // ROME sender/receiver
@@ -77,11 +78,30 @@ impl<B: PamiBoard> PamiRoutines<B> {
     ) -> Self {
         rome::info!(rlogger, "Initializing PAMI routines");
 
+        // Start VLX thread
+        let vlx_data: Arc<Mutex<Option<vlx::DistanceData>>> = Default::default();
+        let vlx_data_clone = vlx_data.clone();
         let mut vlx = board.vlx_sensor().unwrap();
-        log::info!("Initialize VLX");
-        if let Err(err) = vlx.init() {
-            log::error!("VLX initalization failed: {err:?}");
-        }
+        std::thread::Builder::new()
+            .name("VLX".to_string())
+            .stack_size(8192)
+            .spawn(move || {
+                log::info!("Initialize VLX");
+                if let Err(err) = vlx.init() {
+                    log::error!("VLX initalization failed, abort VLX thread: {err:?}");
+                    return;
+                }
+
+                loop {
+                    match vlx.get_distance() {
+                        Ok(distance) => *vlx_data_clone.lock().unwrap() = Some(distance),
+                        Err(err) => log::error!("Failed to get VLX sensor distance: {err:?}"),
+                    }
+
+                    std::thread::sleep(Duration::from_millis(200));
+                }
+            })
+            .expect("Failed to spawn VLX thread");
 
         let mut pwm_controller = board.pwm_controller().unwrap();
         pwm_controller.init().unwrap();
@@ -96,7 +116,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
             pami_buttons: board.buttons().unwrap(),
             battery_reader: board.battery_reader().unwrap(),
             pwm_controller,
-            vlx,
+            vlx_data,
             starting_cord_read: board.starting_cord().unwrap(),
 
             rome_tx,
@@ -164,7 +184,6 @@ impl<B: PamiBoard> PamiRoutines<B> {
         self.ui_events.send(UiEvent::ShowMatchConf(match_conf.clone())).unwrap();
 
         let mut buttons_periodicity = Periodicity::new(Duration::from_millis(200));
-        let mut vlx_period = Periodicity::new(Duration::from_millis(2000));
         //TODO Use the other color for role
         ground_led_color.set_colors(role_color(match_conf.role), match_conf.team.color());
 
@@ -201,14 +220,6 @@ impl<B: PamiBoard> PamiRoutines<B> {
                         self.ui_events.send(UiEvent::ChangeRole(value)).unwrap();
                         ground_led_color.set_colors(role_color(match_conf.role), match_conf.team.color());
                     }
-                }
-            }
-
-            // VLX capture
-            if vlx_period.update(&now) {
-                match self.vlx.get_distance() {
-                    Ok(distance) => log::info!("VLX sensor distance: {distance:?}"),
-                    Err(err) => log::error!("Failed to get VLX sensor distance: {err:?}"),
                 }
             }
         }
