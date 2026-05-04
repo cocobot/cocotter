@@ -25,6 +25,11 @@ pub struct VL53L5CX {
     conf: Box<VL53L5CX_Configuration>,
 }
 
+//SAFETY VL53L5CX_Configuration is unsafe because of `default_configuration` and `default_xtalk`
+// These fields are set to global `const` members, and thus are safe to pass around.
+unsafe impl Send for VL53L5CX {}
+unsafe impl Sync for VL53L5CX {}
+
 impl VL53L5CX {
     pub fn new(_driver: &VlxI2cDriver, address: u8) -> Self {
         let address = address as u16;
