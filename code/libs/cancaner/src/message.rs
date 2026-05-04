@@ -452,14 +452,15 @@ impl CanMessage {
                 }
             }
             ArmCmd::SetValve => {
-                if data.len() >= 3 && data[0] == 2 {
+                if data.len() >= 5 && data[0] == 2 {
                     Some(CanMessage::SetValve {
                         target,
                         mode: ValveMode::Toggle {
-                            half_period_ms: u16::from_le_bytes([data[1], data[2]]),
+                            on_ms: u16::from_le_bytes([data[1], data[2]]),
+                            off_ms: u16::from_le_bytes([data[3], data[4]]),
                         },
                     })
-                } else if !data.is_empty() {
+                } else if !data.is_empty() && data[0] < 2 {
                     Some(CanMessage::SetValve {
                         target,
                         mode: if data[0] != 0 { ValveMode::On } else { ValveMode::Off },
@@ -883,10 +884,11 @@ impl CanMessage {
                 let len = match mode {
                     ValveMode::Off => { data[0] = 0; 1 }
                     ValveMode::On => { data[0] = 1; 1 }
-                    ValveMode::Toggle { half_period_ms } => {
+                    ValveMode::Toggle { on_ms, off_ms } => {
                         data[0] = 2;
-                        data[1..3].copy_from_slice(&half_period_ms.to_le_bytes());
-                        3
+                        data[1..3].copy_from_slice(&on_ms.to_le_bytes());
+                        data[3..5].copy_from_slice(&off_ms.to_le_bytes());
+                        5
                     }
                 };
                 EncodedMessage { id, data, len }
@@ -1379,7 +1381,7 @@ mod tests {
         });
         roundtrip(&CanMessage::SetValve {
             target: ArmTarget::new(2, 3),
-            mode: ValveMode::Toggle { half_period_ms: 5 },
+            mode: ValveMode::Toggle { on_ms: 5, off_ms: 15 },
         });
         roundtrip(&CanMessage::RequestArmStatus {
             target: ArmTarget::new(1, 2),

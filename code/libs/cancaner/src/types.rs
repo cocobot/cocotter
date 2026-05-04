@@ -321,8 +321,16 @@ pub enum ValveMode {
     Off,
     /// Valve on (also stops any toggle)
     On,
-    /// Toggle at given half-period in ms (min 5ms). Send half_period_ms=0 to stop.
-    Toggle { half_period_ms: u16 },
+    /// Asymmetric PWM toggle: `on_ms` ON then `off_ms` OFF, repeating.
+    /// Min 5 ms per phase (clamped picotter-side). `on_ms == 0 || off_ms == 0` stops the toggle.
+    Toggle { on_ms: u16, off_ms: u16 },
+}
+
+impl ValveMode {
+    /// Symmetric toggle (50% duty cycle) at the given half-period.
+    pub fn toggle_symmetric(half_period_ms: u16) -> Self {
+        Self::Toggle { on_ms: half_period_ms, off_ms: half_period_ms }
+    }
 }
 
 /// Reboot mode

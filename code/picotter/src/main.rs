@@ -156,9 +156,10 @@ const TRANSLATION_SERVO_IDS: [u8; 3] = [30, 31, 32];
 static TRANSLATION_TARGETS: [AtomicU16; 3] = [AtomicU16::new(0), AtomicU16::new(0), AtomicU16::new(0)];
 static TRANSLATION_MOVING: [AtomicU8; 3] = [AtomicU8::new(0), AtomicU8::new(0), AtomicU8::new(0)];
 
-// Valve toggle state: bitmask of 12 valves (bit = module*4+arm), half-period in ms
+// Valve toggle state: bitmask of 12 valves (bit = module*4+arm), asymmetric on/off durations in ms
 static VALVE_TOGGLE_MASK: AtomicU16 = AtomicU16::new(0);
-static VALVE_TOGGLE_HALF_PERIOD_MS: AtomicU16 = AtomicU16::new(5);
+static VALVE_TOGGLE_ON_MS: AtomicU16 = AtomicU16::new(5);
+static VALVE_TOGGLE_OFF_MS: AtomicU16 = AtomicU16::new(5);
 static VALVE_TOGGLE_SIGNAL: embassy_sync::signal::Signal<CriticalSectionRawMutex, ()> =
     embassy_sync::signal::Signal::new();
 
@@ -441,8 +442,8 @@ async fn scan_servo_bus<TX: embedded_io_async::Write, RX: embedded_io_async::Rea
     }
 }
 
-/// Valve toggle task: toggles GPIOs for valves in toggle mode.
-/// Woken by Signal when a valve enters toggle mode; sleeps when mask is 0.
+/// Valve toggle task: drives valve GPIOs in PWM toggle mode (asymmetric on/off).
+/// Phase shared across all valves in toggle mode. Woken by Signal; sleeps when mask is 0.
 #[embassy_executor::task]
 async fn valve_toggle_task(
     module0: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
@@ -450,18 +451,24 @@ async fn valve_toggle_task(
     module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
 ) {
     let modules: [&Mutex<CriticalSectionRawMutex, ModuleType>; 3] = [module0, module1, module2];
+    let mut phase_on = false;
     loop {
         let mask = VALVE_TOGGLE_MASK.load(Ordering::Relaxed);
         if mask == 0 {
+            phase_on = false;
             VALVE_TOGGLE_SIGNAL.wait().await;
             continue;
         }
 
-        let half_period = VALVE_TOGGLE_HALF_PERIOD_MS.load(Ordering::Relaxed).max(5);
+        phase_on = !phase_on;
+        let delay = if phase_on {
+            VALVE_TOGGLE_ON_MS.load(Ordering::Relaxed).max(5)
+        } else {
+            VALVE_TOGGLE_OFF_MS.load(Ordering::Relaxed).max(5)
+        };
 
-        // Toggle all valves in the mask.
-        // Re-read mask after acquiring each module lock to avoid TOCTOU race
-        // with cmd_task clearing bits (it clears before locking the module).
+        // Drive GPIOs explicitly to phase. Re-read mask after acquiring each module
+        // lock to avoid TOCTOU race with cmd_task clearing bits (it clears before locking).
         for module_idx in 0..3u8 {
             if (mask >> (module_idx * 4)) & 0x0F == 0 {
                 continue;
@@ -470,12 +477,12 @@ async fn valve_toggle_task(
             let fresh_bits = (VALVE_TOGGLE_MASK.load(Ordering::Relaxed) >> (module_idx * 4)) & 0x0F;
             for arm in 0..4u8 {
                 if fresh_bits & (1 << arm) != 0 {
-                    let _ = m.toggle_valve(arm).await;
+                    let _ = m.set_valve(arm, phase_on).await;
                 }
             }
         }
 
-        Timer::after(Duration::from_millis(half_period as u64)).await;
+        Timer::after(Duration::from_millis(delay as u64)).await;
     }
 }
 
@@ -750,8 +757,8 @@ async fn cmd_task(
                         }
                     }
                 }
-                ValveMode::Toggle { half_period_ms } => {
-                    if *half_period_ms == 0 {
+                ValveMode::Toggle { on_ms, off_ms } => {
+                    if *on_ms == 0 || *off_ms == 0 {
                         // Stop toggle = same as Off
                         for module_idx in 0..3u8 {
                             if !target.match_module(module_idx) {
@@ -773,8 +780,9 @@ async fn cmd_task(
                             }
                         }
                     } else {
-                        // Set toggle bits and half-period
-                        VALVE_TOGGLE_HALF_PERIOD_MS.store(*half_period_ms, Ordering::Relaxed);
+                        // Set toggle bits and on/off durations (last write wins, shared phase)
+                        VALVE_TOGGLE_ON_MS.store(*on_ms, Ordering::Relaxed);
+                        VALVE_TOGGLE_OFF_MS.store(*off_ms, Ordering::Relaxed);
                         for module_idx in 0..3u8 {
                             if !target.match_module(module_idx) {
                                 continue;

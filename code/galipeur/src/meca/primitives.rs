@@ -225,7 +225,7 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
     }
 
     pub fn arms_give_space_from_clamp_rotation(&self, module: u8, arms: &[u8]) {
-        self.arms_move_slow(module, arms, |a| ARMS[module as usize][a as usize].pre_grab + 250);
+        self.arms_move_slow(module, arms, |a| ARMS[module as usize][a as usize].pre_grab + 300);
     }
 
     pub fn arms_pre_release_good_color(&self, module: u8, arms: &[u8]) {
@@ -345,10 +345,10 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         }
     }
 
-    /// Toggle valves at half_period_ms for `duration`, then fully release.
+    /// PWM-toggle valves (5 ms ON / 15 ms OFF, ~25% duty) for `duration`, then fully release.
     pub fn slow_releases(&self, module: u8, arms: &[u8], duration: Duration) {
         for &arm in arms {
-            self.proxy.set_valve(module, arm, ValveMode::Toggle { half_period_ms: 10 });
+            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 5, off_ms: 20 });
         }
         std::thread::sleep(duration);
         self.releases(module, arms);

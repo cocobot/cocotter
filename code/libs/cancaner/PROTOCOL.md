@@ -333,7 +333,7 @@ Data[0]: 0=OFF, 1=ON
 ### 0x15T - SET_VALVE
 
 Commande électrovanne seule. Supporte trois modes : on/off direct et toggle
-périodique côté picotter (demi-période min 5 ms).
+PWM asymétrique côté picotter (min 5 ms par phase).
 
 **Mode ON/OFF (1 octet) :**
 ```
@@ -345,17 +345,23 @@ Data[0]: 0=OFF, 1=ON
 ```
 Un OFF ou ON arrête aussi un toggle en cours.
 
-**Mode TOGGLE (3 octets) :**
+**Mode TOGGLE (5 octets) :**
 ```
 ID: 0x15[target]
-Longueur: 3 octets
+Longueur: 5 octets
 Direction: P→S
 
 Data[0]:   2 (= Toggle)
-Data[1-2]: Demi-période en ms (u16, LE) — min 5 ms, 0 = arrêt du toggle
+Data[1-2]: on_ms  (u16, LE) — durée à l'état ON
+Data[3-4]: off_ms (u16, LE) — durée à l'état OFF
 ```
-La dernière demi-période reçue s'applique globalement à toutes les valves en
-toggle. Le toggle s'exécute côté picotter (pas de trafic CAN continu).
+- Min 5 ms par phase (clampé côté picotter).
+- `on_ms == 0` ou `off_ms == 0` → arrêt du toggle (équivalent à OFF).
+- Les dernières valeurs reçues s'appliquent globalement à toutes les valves en
+  toggle (phase partagée, dernier write wins).
+- Exemples : `(on=5, off=15)` = duty 25% ; `(on=15, off=5)` = duty 75%.
+
+Le toggle s'exécute côté picotter (pas de trafic CAN continu).
 
 ### 0x16M - SET_TRANSLATION
 
