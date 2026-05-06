@@ -1,5 +1,6 @@
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
+use asserv::holonomic::{RobotSide, TableSide};
 use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
 use board_common::{Periodicity, Team};
@@ -13,6 +14,7 @@ use crate::meca::{CleatSide, Meca};
 use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
 use crate::strat::Strat;
 use crate::sensors::{Sensors, TopLidarConf};
+use crate::strat::utils::arfast;
 
 /// Everything needed for PAMI routines
 ///
@@ -317,6 +319,35 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                     }
                     _ =>  {}
                 }
+                true
+            }
+            rome::Message::GotoXY {x, y} => {
+                let mut asserv = self.asserv.lock().unwrap();
+                asserv.goto_xy(x, y);
+
+                true
+            }
+            rome::Message::GotoXYRel {x, y} => {
+                let mut asserv = self.asserv.lock().unwrap();
+                asserv.goto_xy_rel(x, y);
+
+                true
+            }
+            rome::Message::GotoASide { robot, table } => {
+                let robot_side = match robot {
+                    rome::params::GotoASideRobot::Back => RobotSide::Back,
+                    rome::params::GotoASideRobot::Left => RobotSide::Left,
+                    rome::params::GotoASideRobot::Right => RobotSide::Right,                    
+                };
+                let table_side = match table {
+                    rome::params::GotoASideTable::Up => TableSide::Up,
+                    rome::params::GotoASideTable::Left => TableSide::Left,
+                    rome::params::GotoASideTable::Right => TableSide::Right, 
+                    rome::params::GotoASideTable::Down => TableSide::Down,
+                };
+                let mut asserv = self.asserv.lock().unwrap();
+                asserv.goto_a(arfast(robot_side, table_side));
+
                 true
             }
             _ => false

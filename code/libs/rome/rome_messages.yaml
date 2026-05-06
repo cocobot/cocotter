@@ -104,6 +104,18 @@
     # 3x3 matrixes, row major order
     velocities_to_consigns: "[f32; 9]"
     encoders_to_position: "[f32; 9]"
+
+  GotoASide:
+    robot: [left, right, back]
+    table: [up, left, down, right]
+
+  GotoXY:
+    x: f32
+    y: f32
+
+  GotoXYRel:
+    x: f32
+    y: f32
   
 
 # Differential asserv (PAMI)
