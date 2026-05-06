@@ -107,7 +107,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         //self.test_movement();
         self.take_first_crates();
 
-        std::thread::sleep(Duration::from_secs(10));
         self.return_to_start();
         self.end_of_match();
 
@@ -154,13 +153,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         }
 
-        loop {
-           // self.meca.direct_take(RobotSide::Left);
-            std::thread::sleep(Duration::from_secs(1));
-           // self.meca.release(RobotSide::Left);
-            std::thread::sleep(Duration::from_secs(3));
-        }
-
         std::thread::sleep(Duration::from_secs(1));
 
         //start robot with back on the up side of table in the start area
@@ -189,18 +181,41 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
 
 
+
     }
 
     fn take_first_crates (&mut self){
         // Right side doesn't work well, so for use of left side
-        self.robot_main = RobotSide::Left;
+        self.robot_main = RobotSide::Right;
 
-        self.asserv.goto_xya(self.kx * 1200.0, 1600.0, arfast(RobotSide::Back, TableSide::Up)).ok();
+        self.asserv.goto_xya(self.kx * 1180.0, 1600.0,arfast(RobotSide::Back, TableSide::Up)).ok();
         self.asserv.goto_xya(self.kx * 1000.0, 1200.0, arfast(self.robot_main, self.table_main)).ok();
-        _ = self.meca.prepare_direct_take(Some(self.robot_main), CleatSide::Right);
-        self.asserv.goto_xya(self.kx * 1130.0, 1150.0, arfast(self.robot_main, self.table_main)).ok();
-        self.meca.direct_take(self.robot_main);
+        let side = self.meca.prepare_direct_take(Some(self.robot_main), CleatSide::Right).unwrap();
+        self.asserv.goto_xya(self.kx * 1130.0, 1200.0, arfast(side, self.table_main)).ok();
+        self.meca.direct_take(side);
         rome::info!(self.rlogger, "first bunch of crates taken !");
+   
+        let side = self.meca.prepare_direct_take(Some(self.robot_main), CleatSide::Right).unwrap();
+        self.asserv.goto_xya(self.kx * 1000.0, 380.0, arfast(self.robot_main, self.table_main)).ok();
+        self.asserv.goto_xya(self.kx * 1130.0, 380.0, arfast(self.robot_main, self.table_main)).ok();
+        self.meca.direct_take(side);
+        rome::info!(self.rlogger, "first bunch of crates taken !");
+        
+        let prefered_side = RobotSide::Back;
+        let side = self.meca.prepare_direct_take(Some(prefered_side), CleatSide::Right).unwrap();
+        self.asserv.goto_xya(self.kx * 315.0, 500.0, arfast(side, TableSide::Down)).ok();
+        self.asserv.goto_xya(self.kx * 315.0, 400.0, arfast(side, TableSide::Down)).ok();
+        self.meca.direct_take(side);
+
+        self.asserv.goto_xya(self.kx * 315.0, 500.0, arfast(side, TableSide::Up)).ok();        
+        let side = self.meca.prepare_direct_take(Some(prefered_side), CleatSide::Right).unwrap();
+        self.asserv.goto_xya(self.kx * 290.0, 610.0, arfast(side, TableSide::Up)).ok();        
+        self.meca.direct_take(side);
+
+        std::thread::sleep(Duration::from_secs(5));
+
+        self.meca.end_of_match();
+   
     }
 
     #[allow(dead_code)]
