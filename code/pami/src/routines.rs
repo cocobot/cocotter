@@ -100,7 +100,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
                         Err(err) => log::error!("Failed to get VLX sensor distance: {err:?}"),
                     }
 
-                    std::thread::sleep(Duration::from_millis(200));
+                    std::thread::sleep(Duration::from_secs(1));
                 }
             })
             .expect("Failed to spawn VLX thread");
@@ -375,19 +375,27 @@ impl<B: PamiBoard> PamiRoutines<B> {
                 }
                 self.step_idle();
             }
-            self.asserv.goto_xy_rel(0.0 , 0.0);
+            self.asserv.stop();
+            log::info!("Obstacle detected");
             while self.obstacle_detected(){
                 self.step_idle();
             }
+            log::info!("Obstacle gone, resume movement");
         }
         true
     }
 
     fn obstacle_detected(&mut self) -> bool {
-        let vlx_distances = self.vlx_data.lock().unwrap().clone();
-        match vlx_distances{
-            Some(d) => return d.all_distances().iter().any(|&v| v < 10),
-            None => return false,
+        loop {
+            let vlx_distances = self.vlx_data.lock().unwrap().take();
+            match vlx_distances{
+                Some(d) => {
+                    let distances = d.all_distances();
+                    log::info!("Obstacle {:?}", distances);
+                    return distances.iter().any(|&v| v < 100 && v != 0);
+                }
+                None => { self.step_idle(); }
+            }
         }
     }
 }

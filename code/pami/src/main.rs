@@ -92,7 +92,7 @@ fn main() {
     }
 
     let start_position = match match_conf.role {
-        PamiRole::None => XYA::default(),
+        PamiRole::None => XYA::new(0.0, 0.0 ,0.0),
         PamiRole::Ninja => XYA::new(800.0,1950.0,0.0),
         PamiRole::Paninja(n) => XYA::new(1500.0-50.0*n as f32,1950.0, -core::f32::consts::FRAC_PI_2)
     };
@@ -119,8 +119,8 @@ fn main() {
 
     //TODO It's your time PAMI, move!
 
-    routines.asserv.set_movement_direction(MovementDirection::Backward);
     if match_conf.role == PamiRole::None {
+        routines.asserv.set_movement_direction(MovementDirection::Backward);
         routines.got_to_xy_with_detection(0.0, 500.0);
     }
 

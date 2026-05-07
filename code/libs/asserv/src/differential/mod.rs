@@ -177,6 +177,9 @@ impl<H: AsservHardware> Asserv<H> {
         self.goto_a(self.cs.position().a + da);
     }
 
+    pub fn stop(&mut self) {
+        self.order = TrajectoryOrder::Stop;
+    }
 
     //
     // Configuration setters
