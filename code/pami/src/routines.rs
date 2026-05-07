@@ -91,6 +91,8 @@ impl<B: PamiBoard> PamiRoutines<B> {
                     log::error!("VLX initalization failed, abort VLX thread: {err:?}");
                     return;
                 }
+                //wait before first measure
+                std::thread::sleep(Duration::from_millis(500));
 
                 loop {
                     match vlx.get_distance() {
