@@ -53,10 +53,9 @@ impl<B: SabotterBoard> AsservHardware for MovementLowLevelHardware<B> {
     }
 
     fn teleport(&mut self, xya: XYA) {
-        // Sim world frame is now asserv-aligned (X = Down→Up, Y centered
-        // on the Down wall midpoint), so the asserv pose can flow
-        // through unchanged. The previous mirror/rotate/translate shim
-        // was needed when the sim used a corner-origin frame.
+        // Sim world frame matches the strat convention (X = lateral,
+        // Y = longitudinal toward Up wall), so the asserv pose flows
+        // through unchanged.
         let _ = self.sim.send(SimMsgC2S::Teleport {
             pose: Pose2D {
                 x_mm: xya.x,

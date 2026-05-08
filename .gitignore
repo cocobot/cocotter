@@ -16,6 +16,8 @@ _autosave*
 #LLM
 .claude
 
-
 #python
 *.pyc
+
+#sim
+code/sim/assets/robots

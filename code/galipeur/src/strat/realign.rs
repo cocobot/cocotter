@@ -17,14 +17,14 @@ use crate::strat::errors::StrategyError;
 use crate::strat::utils::{arfast, AsservHelper};
 
 ///TODO Damien: This should be moved in a shared crate between pami and galipeur
-/// Asserv-frame coordinates of the four table edges. In the asserv
-/// frame: `+X` points from the Down wall toward the Up wall (table
-/// length 2000 mm), `+Y` points from the Right wall toward the Left
-/// wall (table width 3000 mm).
-const ASSERV_X_AT_UP_WALL: f32 = 2000.0;
-const ASSERV_X_AT_DOWN_WALL: f32 = 0.0;
-const ASSERV_Y_AT_LEFT_WALL: f32 = 1500.0;
-const ASSERV_Y_AT_RIGHT_WALL: f32 = -1500.0;
+/// Strat-frame coordinates of the four table edges. In the strat
+/// frame: `+X` points toward the Right wall (lateral, table width
+/// 3000 mm), `+Y` points toward the Up wall (longitudinal, table
+/// length 2000 mm).
+const ASSERV_Y_AT_UP_WALL: f32 = 2000.0;
+const ASSERV_Y_AT_DOWN_WALL: f32 = 0.0;
+const ASSERV_X_AT_LEFT_WALL: f32 = -1500.0;
+const ASSERV_X_AT_RIGHT_WALL: f32 = 1500.0;
 
 fn wrap_pi(x: f32) -> f32 {
     ((x + core::f32::consts::PI).rem_euclid(core::f32::consts::TAU))
@@ -70,10 +70,10 @@ pub fn realign<B: SabotterBoard + 'static>(
     let new_theta = wrap_pi(arfast(face, wall) - po.angle);
 
     let (new_x, new_y) = match wall {
-        TableSide::Up => (ASSERV_X_AT_UP_WALL - po.distance, current.y),
-        TableSide::Down => (ASSERV_X_AT_DOWN_WALL + po.distance, current.y),
-        TableSide::Left => (current.x, ASSERV_Y_AT_LEFT_WALL - po.distance),
-        TableSide::Right => (current.x, ASSERV_Y_AT_RIGHT_WALL + po.distance),
+        TableSide::Up => (current.x, ASSERV_Y_AT_UP_WALL - po.distance),
+        TableSide::Down => (current.x, ASSERV_Y_AT_DOWN_WALL + po.distance),
+        TableSide::Left => (ASSERV_X_AT_LEFT_WALL + po.distance, current.y),
+        TableSide::Right => (ASSERV_X_AT_RIGHT_WALL - po.distance, current.y),
     };
 
     log::info!(
