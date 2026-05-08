@@ -8,7 +8,7 @@
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 
-pub const PROTOCOL_VERSION: u16 = 2;
+pub const PROTOCOL_VERSION: u16 = 1;
 pub const DEFAULT_SOCKET_PATH: &str = "/tmp/meca_sim.sock";
 
 #[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -54,22 +54,31 @@ bitflags! {
     }
 }
 
+/// Reference frame for debug volume coordinates.
+#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Default)]
+pub enum DebugVolumeFrame {
+    /// Body-relative: parented to the robot entity, follows its pose.
+    Body,
+    /// Table-absolute: fixed in the world, does not follow the robot.
+    Table,
+}
+
 /// Translucent debug volume the robot asks the sim to render. Pure
 /// visualisation — the sim treats them as overlays toggled by the
 /// operator (V key), no physics, no raycast contribution.
 ///
-/// Coordinates are in the robot's body frame (mm): `+X` forward,
-/// `+Y` left, `+Z` up. The sim parents the volume entity to the
-/// robot's entity so the volume tracks pose updates automatically.
-#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq)]
+/// Coordinates are in mm. The `frame` field selects the reference:
+/// - `Body`: `+X` forward, `+Y` left, `+Z` up, parented to the robot.
+/// - `Table`: world-absolute, `+X`/`+Y` match the table axes.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum DebugVolume {
-    /// Oriented box, centre + half-extents + yaw around the body Z
-    /// axis. Use for face danger rectangles, swept arm reach, etc.
+    /// Oriented box, centre + half-extents + yaw around Z axis.
     Box {
         center_mm: [f32; 3],
         half_size_mm: [f32; 3],
         yaw_rad: f32,
         rgba: [f32; 4],
+        frame: DebugVolumeFrame,
     },
     /// Vertical cylinder, base centre + radius + height.
     Cylinder {
@@ -77,6 +86,15 @@ pub enum DebugVolume {
         radius_mm: f32,
         height_mm: f32,
         rgba: [f32; 4],
+        frame: DebugVolumeFrame,
+    },
+    /// 3D text label at a given position.
+    Text {
+        position_mm: [f32; 3],
+        text: String,
+        size_mm: f32,
+        rgba: [f32; 4],
+        frame: DebugVolumeFrame,
     },
 }
 
