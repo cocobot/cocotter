@@ -1,8 +1,13 @@
 use crate::{BatteryLevel, hal::{BatteryReader, Encoder}};
 
 
-#[derive(Default)]
 pub struct MockBatteryReader(BatteryLevel);
+
+impl Default for MockBatteryReader {
+    fn default() -> Self {
+        Self(BatteryLevel { mv: 16_000, percent: 100 })
+    }
+}
 
 impl BatteryReader for MockBatteryReader {
     fn read_vbatt(&mut self) -> BatteryLevel {

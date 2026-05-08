@@ -23,4 +23,7 @@ ws2812-esp32-rmt-driver = { git = "https://github.com/DamienEspitallier/ws2812-e
 
 [target.'cfg(not(target_os = "espidf"))'.dependencies]
 embedded-hal-mock = { version = "0.11", features = ["eh1"] }
+sim_client = { path = "../../libs/sim_client" }
+sim_protocol = { path = "../../libs/sim_protocol" }
+env_logger = "0.11"
 

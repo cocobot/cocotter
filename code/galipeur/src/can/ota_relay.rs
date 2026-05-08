@@ -2,7 +2,7 @@
 
 use std::time::Duration;
 
-use ble::OtaHandler;
+use board_common::hal::OtaHandler;
 use board_sabotter::SabotterBoard;
 use cancaner::{CanMessage, OtaReadyStatus, OtaResultStatus, RebootMode};
 
