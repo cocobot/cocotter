@@ -12,6 +12,7 @@ use asserv::holonomic::RobotSide;
 use crate::can::GalipeurCan;
 use crate::led::LedMessage;
 use crate::meca::RobotSideModule;
+use crate::opponent_detection::OpponentDetection;
 use crate::watched::Watched;
 
 const BATTERY_LOW_MV: u16 = 14_830; // 4S LiPo discharged threshold
@@ -79,7 +80,7 @@ impl<B: SabotterBoard> Clone for Sensors<B> {
 }
 
 impl<B: SabotterBoard + 'static> Sensors<B> {
-    pub fn new(board: &mut B, can: GalipeurCan<B>, led_sender: Sender<LedMessage>, top_lidar_conf: TopLidarConf) -> Self {
+    pub fn new(board: &mut B, can: GalipeurCan<B>, led_sender: Sender<LedMessage>, top_lidar_conf: TopLidarConf, opponent_detection: OpponentDetection) -> Self {
         let ground_lidar_modules: [Watched<GroundLidarModule>; NUM_MODULES] = [
             Watched::default(),
             Watched::default(),
@@ -183,7 +184,11 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
                     // Full buffer: check sync
                     if buffer[0] == 0x54 && ld06::verify_crc(&buffer) {
                         if let Some(packet) = ld06::parse_packet(&buffer) {
-                            if let Some(snapshot) = ld06_scan.process_packet(&packet) {                                
+                            // Feed opponent detection on every packet (~40Hz)
+                            let chunk = ld06::packet_points(&packet, top_lidar_conf.angle_offset);
+                            opponent_detection.feed(&chunk);
+
+                            if let Some(snapshot) = ld06_scan.process_packet(&packet) {
                                 top_lidar_thread.update(|s| *s = snapshot);
                             }
                         }

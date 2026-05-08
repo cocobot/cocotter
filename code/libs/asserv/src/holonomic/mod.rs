@@ -8,6 +8,18 @@ use crate::maths::{XY, XYA, normalize_radians_pi_pi};
 use conf::*;
 use control_system::ControlSystem;
 
+/// Trajectory change events sent to the optional callback.
+#[derive(Debug, Clone, Copy)]
+pub enum TrajectoryEvent {
+    /// Translation: goto_xy, goto_xya, run_path, or next point in path.
+    /// `robot_a` is the current robot heading in table frame (radians).
+    Translation { from: XY, to: XY, robot_a: f32 },
+    /// Pure rotation (goto_a with no XY movement in flight).
+    Rotation,
+    /// Trajectory reached idle.
+    Done,
+}
+
 
 // This struct is very similar to `conf::TrajectoryConf`.
 // Field names are different (mostly historical).
@@ -208,6 +220,11 @@ pub struct Asserv<H: AsservHardware> {
 
     // Set for synced angle movement
     synced_angle: Option<SyncedAngleData>,
+
+    /// Optional callback fired on trajectory changes (zone updates, etc.)
+    /// Returns `true` to accept the trajectory, `false` to reject it.
+    /// Only meaningful for Translation events (preflight check).
+    pub trajectory_callback: Option<Box<dyn Fn(TrajectoryEvent) -> bool + Send>>,
 }
 
 impl<H: AsservHardware> Asserv<H> {
@@ -221,6 +238,15 @@ impl<H: AsservHardware> Asserv<H> {
             carrot: Default::default(),
             carrot_a: 0.0,
             synced_angle: None,
+            trajectory_callback: None,
+        }
+    }
+
+    fn fire_trajectory_event(&self, event: TrajectoryEvent) -> bool {
+        if let Some(cb) = &self.trajectory_callback {
+            cb(event)
+        } else {
+            true
         }
     }
 
@@ -329,59 +355,82 @@ impl<H: AsservHardware> Asserv<H> {
         self.order = TrajectoryOrder::Autoset(autoset_data.into());
     }
 
-    /// Load and run a trajectory path
-    pub fn run_path(&mut self, path: &[XY]) {
+    /// Load and run a trajectory path.
+    /// Returns `false` if the trajectory was rejected by the callback (preflight check).
+    pub fn run_path(&mut self, path: &[XY]) -> bool {
         if path.is_empty() {
             // Empty path: stop to current position
+            self.fire_trajectory_event(TrajectoryEvent::Done);
             self.set_carrot_xy_consign(self.cs.position().xy());
             self.order = TrajectoryOrder::Idle;
-        } else {
-            // Truncate path len if needed
-            let n = (TRAJECTORY_MAX_POINTS as usize).min(path.len());
-            let mut path_data = PathData {
-                points: Default::default(),
-                size: n as u8,
-                index: 0,
-                carrot_speed: 0.0,
-            };
-            path_data.points[0..n].copy_from_slice(path);
-            self.set_carrot_xy_consign(*path_data.next_point());
-            self.order = TrajectoryOrder::Path(path_data.into());
+            return true;
         }
 
+        // Truncate path len if needed
+        let n = (TRAJECTORY_MAX_POINTS as usize).min(path.len());
+        let mut path_data = PathData {
+            points: Default::default(),
+            size: n as u8,
+            index: 0,
+            carrot_speed: 0.0,
+        };
+        path_data.points[0..n].copy_from_slice(path);
+        let from = self.cs.position().xy();
+        let to = *path_data.next_point();
+        let robot_a = self.cs.position().a;
+
+        // Preflight: fire Translation before committing the order
+        if !self.fire_trajectory_event(TrajectoryEvent::Translation { from, to, robot_a }) {
+            return false;
+        }
+
+        self.set_carrot_xy_consign(to);
+        self.order = TrajectoryOrder::Path(path_data.into());
+        true
     }
 
     /// Go to given angle, don't change linear target
-    pub fn goto_a(&mut self, a: f32) {
+    /// Returns `false` if pure rotation was rejected by preflight check.
+    /// When called during an XY movement, rotation is always accepted (no preflight).
+    pub fn goto_a(&mut self, a: f32) -> bool {
+        let is_idle = matches!(self.order, TrajectoryOrder::Idle);
+        // Preflight for pure rotation only
+        if is_idle && !self.fire_trajectory_event(TrajectoryEvent::Rotation) {
+            return false;
+        }
         let robot_a = self.cs.position().a;
-        // Compute distance between consign and position modulo 2pi
         let da = normalize_radians_pi_pi(a - robot_a);
-        // Update consign
         self.carrot_a = robot_a + da;
         self.cs.set_target_a(self.carrot_a);
+        true
     }
 
     /// Same as [goto_a()] but angle is relative to current one
-    pub fn goto_a_rel(&mut self, da: f32) {
-        self.goto_a(self.cs.position().a + da);
+    pub fn goto_a_rel(&mut self, da: f32) -> bool {
+        self.goto_a(self.cs.position().a + da)
     }
 
-    /// Go to given linear position, don't change angular target
-    pub fn goto_xy(&mut self, x: f32, y: f32) {
-        // Create and run a one point path
-        self.run_path(&[XY::new(x, y)]);
+    /// Go to given linear position, don't change angular target.
+    /// Returns `false` if rejected by preflight check.
+    pub fn goto_xy(&mut self, x: f32, y: f32) -> bool {
+        self.run_path(&[XY::new(x, y)])
     }
 
-    /// Same as [goto_xy()] but position is relative to current one
-    pub fn goto_xy_rel(&mut self, dx: f32, dy: f32) {
+    /// Same as [goto_xy()] but position is relative to current one.
+    /// Returns `false` if rejected by preflight check.
+    pub fn goto_xy_rel(&mut self, dx: f32, dy: f32) -> bool {
         let current = self.cs.position();
-        self.goto_xy(current.x + dx, current.y + dy);
+        self.goto_xy(current.x + dx, current.y + dy)
     }
 
-    /// Got to given linear position and angle
-    pub fn goto_xya(&mut self, x: f32, y: f32, a: f32) {
-        self.goto_xy(x, y);
+    /// Go to given linear position and angle.
+    /// Returns `false` if the XY part was rejected by preflight check.
+    pub fn goto_xya(&mut self, x: f32, y: f32, a: f32) -> bool {
+        if !self.goto_xy(x, y) {
+            return false;
+        }
         self.goto_a(a);
+        true
     }
 
     /// Go to given position and angle, synchronize angle with movement
@@ -488,14 +537,24 @@ impl<H: AsservHardware> Asserv<H> {
                 if in_window_xy {
                     if is_last_point {
                         // Last point reached: full stop
-                        // Set carrot to last position
                         let next_point = *path_data.borrow().next_point();
+                        self.fire_trajectory_event(TrajectoryEvent::Done);
                         self.set_carrot_xy_consign(next_point);
                         self.order = TrajectoryOrder::Idle;
                         return;
                     }
-                    // Switch to next point
+                    // Switch to next point — preflight check
+                    let pos = self.cs.position();
+                    let from = pos.xy();
+                    let robot_a = pos.a;
                     path_data.borrow_mut().index += 1;
+                    let to = *path_data.borrow().next_point();
+                    if !self.fire_trajectory_event(TrajectoryEvent::Translation { from, to, robot_a }) {
+                        // Rejected: stop at current position, keep must_stop latched
+                        self.set_carrot_xy_consign(from);
+                        self.order = TrajectoryOrder::Idle;
+                        return;
+                    }
                 }
 
                 let point = *path_data.borrow().next_point();
@@ -587,6 +646,7 @@ impl<H: AsservHardware> Asserv<H> {
                         } else {
                             // Autoset done
                             let target = autoset_data.borrow().target();
+                            self.fire_trajectory_event(TrajectoryEvent::Done);
                             self.reset_position(target);
                             self.cs.enable_motor_control();
                             self.order = TrajectoryOrder::Idle;

@@ -6,3 +6,4 @@ pub mod can;
 pub mod strat;
 pub mod led;
 pub mod sensors;
+pub mod opponent_detection;

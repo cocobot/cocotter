@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 use asserv::{holonomic::{Asserv, RobotSide, TableSide}, maths::{XY, XYA}};
 use board_sabotter::SabotterBoard;
 
-use crate::{movement::MovementLowLevelHardware, strat::errors::StrategyError};
+use crate::{movement::MovementLowLevelHardware, opponent_detection::OpponentDetection, strat::errors::StrategyError};
 
 pub const fn arfast(face: RobotSide, side: TableSide) -> f32 {
     match (face, side) {
@@ -30,11 +30,12 @@ macro_rules! arfast {
 #[derive(Clone)]
 pub struct AsservHelper<B: SabotterBoard> {
     asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>,
+    opponent_detection: OpponentDetection,
 }
 
 impl<B: SabotterBoard> AsservHelper<B> {
-    pub fn new(asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>) -> Self {
-        Self { asserv }
+    pub fn new(asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>, opponent_detection: OpponentDetection) -> Self {
+        Self { asserv, opponent_detection }
     }
 
     pub fn position(&self) -> XYA {
@@ -51,23 +52,32 @@ impl<B: SabotterBoard> AsservHelper<B> {
     }
 
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
-        self.asserv.lock().unwrap().goto_xya(x, y, a);
+        if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
+            return Err(StrategyError::OpponentDetected);
+        }
         self.wait()
     }
 
     pub fn goto_a(&self, a: f32) -> Result<(), StrategyError> {
-        self.asserv.lock().unwrap().goto_a(a);
+        if !self.asserv.lock().unwrap().goto_a(a) {
+            return Err(StrategyError::OpponentDetected);
+        }
         self.wait()
     }
 
     pub fn run_path(&self, path: &[XY]) -> Result<(), StrategyError> {
-        self.asserv.lock().unwrap().run_path(path);
+        if !self.asserv.lock().unwrap().run_path(path) {
+            return Err(StrategyError::OpponentDetected);
+        }
         self.wait()
     }
 
     fn wait(&self) -> Result<(), StrategyError> {
         //TODO damien use passive waiting with Sender/Receiver
         loop {
+            if self.opponent_detection.must_stop() {
+                return Err(StrategyError::OpponentDetected);
+            }
             let asserv = self.asserv.lock().unwrap();
             if asserv.done_xy() && asserv.done_a() {
                 return Ok(());
@@ -75,6 +85,6 @@ impl<B: SabotterBoard> AsservHelper<B> {
             drop(asserv);
 
             std::thread::sleep(std::time::Duration::from_millis(25));
-        }        
+        }
     }
 }

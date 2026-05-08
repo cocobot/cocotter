@@ -1,7 +1,6 @@
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
-use asserv::holonomic::{RobotSide, TableSide};
-use asserv::holonomic::{Asserv, rome::AsservHoloRome};
+use asserv::holonomic::{Asserv, RobotSide, TableSide, TrajectoryEvent, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
 use board_common::{Periodicity, Team};
 use board_sabotter::SabotterBoard;
@@ -12,6 +11,7 @@ use crate::led::{LedMessage, Leds};
 use crate::movement::MovementLowLevelHardware;
 use crate::meca::{CleatSide, Meca};
 use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
+use crate::opponent_detection::{OpponentDetection, OpponentDetectionConf, Zone};
 use crate::strat::Strat;
 use crate::sensors::{Sensors, TopLidarConf};
 use crate::strat::utils::arfast;
@@ -22,6 +22,7 @@ use crate::strat::utils::arfast;
 /// States are updated when calling `idle()` or `step_idle()`.
 pub struct GalipeurRoutines<B: SabotterBoard> {
     pub asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>,
+    pub opponent_detection: OpponentDetection,
     pub meca: Meca<B>,
 
     // ROME sender/receiver
@@ -54,6 +55,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     pub fn new(
         board: &mut B,
         top_lidar_conf: TopLidarConf,
+        opponent_detection_conf: OpponentDetectionConf,
     ) -> Self {
         // Setup gyro, asserv
         let mut gyro = Sch16t::new(board.imu_spi().unwrap(), 0);
@@ -75,17 +77,60 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         // Setup meca
         let meca = Meca::new(can_interface.clone(), led_sender.clone());
 
+        // Setup opponent detection
+        let opponent_detection = OpponentDetection::new(opponent_detection_conf, led_sender.clone());
+
         // Setup sensors
-        let sensors = Sensors::new(board, can_interface.clone(), led_sender.clone(), top_lidar_conf);
+        let sensors = Sensors::new(board, can_interface.clone(), led_sender.clone(), top_lidar_conf, opponent_detection.clone());
 
         // Setup asserv
         let asserv = Arc::new(Mutex::new(Asserv::new(asserv_hardware)));
 
+        // Setup trajectory callback for opponent detection
+        {
+            let od = opponent_detection.clone();
+            asserv.lock().unwrap().trajectory_callback = Some(Box::new(move |event| {
+                match event {
+                    TrajectoryEvent::Translation { from, to, robot_a } => {
+                        let dx = to.x - from.x;
+                        let dy = to.y - from.y;
+                        let length = (dx * dx + dy * dy).sqrt();
+                        let direction = dy.atan2(dx) - robot_a;
+                        let conf = od.conf();
+                        let zone = Zone::Corridor {
+                            half_width_mm: conf.corridor_half_width_mm,
+                            length_mm: length,
+                            direction_rad: direction,
+                            stop_until_mm: conf.corridor_stop_until_mm,
+                        };
+                        if !od.preflight(zone) {
+                            return false;
+                        }
+                        od.update_zone(zone);
+                        true
+                    }
+                    TrajectoryEvent::Rotation => {
+                        let zone = Zone::Cylinder { radius_mm: od.conf().rotation_radius_mm };
+                        if !od.preflight(zone) {
+                            return false;
+                        }
+                        od.update_zone(zone);
+                        true
+                    }
+                    TrajectoryEvent::Done => {
+                        od.update_zone(Zone::Inactive);
+                        true
+                    }
+                }
+            }));
+        }
+
         // Setup strat
-        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone(), asserv.clone(), rlogger.clone());
+        Strat::init(board, led_sender.clone(), sensors.clone(), meca.clone(), asserv.clone(), rlogger.clone(), opponent_detection.clone());
 
         Self {
             asserv,
+            opponent_detection,
             meca,
 
             rome_tx,
@@ -106,6 +151,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
     /// Intialize states, spawn asserv thread
     pub fn init(&mut self) {
         let asserv = self.asserv.clone();
+        let od = self.opponent_detection.clone();
 
         #[cfg(target_os = "espidf")]
         {
@@ -124,7 +170,12 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
             .name("asserv".into())
             .spawn(move || {
                 loop {
-                    asserv.lock().unwrap().update();
+                    let pos = {
+                        let mut a = asserv.lock().unwrap();
+                        a.update();
+                        *a.cs.position()
+                    };
+                    od.update_robot_position(pos);
                     std::thread::sleep(Duration::from_millis(10));
                 }
             })

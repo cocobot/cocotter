@@ -6,6 +6,20 @@ use embedded_hal::digital::OutputPin;
 use board_sabotter::{SmartLedsWrite, RGB8};
 
 
+/// Per-LED state for the opponent detection overlay (40 ring LEDs).
+#[derive(Clone, Copy, PartialEq, Default)]
+#[repr(u8)]
+pub enum OpponentLedPixel {
+    #[default]
+    Off = 0,
+    /// Zone boundary indicator (dim green for corridor, 1/3 for cylinder)
+    Zone = 1,
+    /// Lidar point detected on table in this direction (purple)
+    Detected = 2,
+    /// Lidar point triggered a stop hit (purple blink)
+    Hit = 3,
+}
+
 pub enum LedMessage {
     GameTeam { team: Team },
     RomeActivity,
@@ -14,6 +28,7 @@ pub enum LedMessage {
     GroundSensor(bool, bool, bool),
     IdleLoopTooSlow,
     MecaColors { module: u8, teams: [Team; 4] },
+    OpponentOverlay([OpponentLedPixel; 40]),
 }
 
 /// Per-module pixel slots for the meca color display.
@@ -55,6 +70,7 @@ struct LedsInternal<B: SabotterBoard> {
     low_power_battery: bool,
     ground_detected: (bool, bool, bool),
     meca_colors: Option<(u8, [Team; 4])>,
+    opponent_overlay: [OpponentLedPixel; 40],
 }
 
 impl<B: SabotterBoard> LedsInternal<B> {
@@ -67,6 +83,7 @@ impl<B: SabotterBoard> LedsInternal<B> {
             low_power_battery: false,
             ground_detected: (false, false, false),
             meca_colors: None,
+            opponent_overlay: [OpponentLedPixel::Off; 40],
         }
     }
 
@@ -114,6 +131,9 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     LedMessage::IdleLoopTooSlow => {
                         slow_idle_loop = true;
                     }
+                    LedMessage::OpponentOverlay(overlay) => {
+                        self.opponent_overlay = overlay;
+                    }
                 }
             }
 
@@ -135,6 +155,27 @@ impl<B: SabotterBoard> LedsInternal<B> {
 
                 for i in 1..41 {
                     pixels[i] = BLACK
+                }
+
+                // Opponent detection overlay (lowest priority, overridden by ground/meca)
+                {
+                    const DIM_GREEN: RGB8 = RGB8 { r: 0, g: 20, b: 0 };
+                    const PURPLE: RGB8 = RGB8 { r: 40, g: 0, b: 40 };
+                    const PURPLE_BRIGHT: RGB8 = RGB8 { r: 120, g: 0, b: 120 };
+                    let hit_blink_on = (start.elapsed().subsec_millis() % 100) < 50;
+                    for i in 0..40 {
+                        let px = self.opponent_overlay[i];
+                        if px != OpponentLedPixel::Off {
+                            pixels[i + 1] = match px {
+                                OpponentLedPixel::Zone => DIM_GREEN,
+                                OpponentLedPixel::Detected => PURPLE,
+                                OpponentLedPixel::Hit => {
+                                    if hit_blink_on { PURPLE_BRIGHT } else { BLACK }
+                                }
+                                OpponentLedPixel::Off => unreachable!(),
+                            };
+                        }
+                    }
                 }
 
                 let ground_blink_on = (start.elapsed().subsec_millis() % 100) < 50;

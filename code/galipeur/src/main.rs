@@ -2,6 +2,7 @@ use asserv::holonomic::{conf::*};
 use board_sabotter::SabotterBoard;
 use galipeur::routines::GalipeurRoutines;
 use galipeur::sensors::{GroundConf, GroundLidarConf, GroundLidarPose, TopLidarConf};
+use galipeur::opponent_detection::{OpponentDetectionConf, TableConfig};
 
 #[cfg(target_os = "espidf")]
 type SabotterBoardImpl = board_sabotter::EspSabotterBoard;
@@ -12,7 +13,17 @@ use board_sabotter::MockSabotterBoard as SabotterBoardImpl;
 fn main() {
     let mut board = SabotterBoardImpl::init();
 
-    let mut routines = GalipeurRoutines::new(&mut board, TopLidarConf { angle_offset: 0.0 });
+    let mut routines = GalipeurRoutines::new(
+        &mut board,
+        TopLidarConf { angle_offset: 0.0 },
+        OpponentDetectionConf {
+            table: TableConfig { width_mm: 3000.0, height_mm: 2000.0, margin_mm: 150.0 },
+            led_angle_offset: 0.0,
+            corridor_half_width_mm: 250.0,
+            corridor_stop_until_mm: 600.0,
+            rotation_radius_mm: 400.0,
+        },
+    );
     routines.asserv.lock().unwrap().set_conf(AsservConf {
         pid_x: PidConf {
             gain_p: 50,

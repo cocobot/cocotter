@@ -74,6 +74,23 @@ impl TopLidarScan {
     }
 }
 
+/// Extract (angle_deg, distance_mm, intensity) tuples from a single packet.
+/// Applies the same angle offset as TopLidarScan.
+pub fn packet_points(packet: &LidarPacket, angle_offset: f32) -> [(f32, u16, u8); 12] {
+    let angle_step = if packet.end_angle >= packet.start_angle {
+        (packet.end_angle - packet.start_angle) / 11.0
+    } else {
+        (packet.end_angle + 360.0 - packet.start_angle) / 11.0
+    };
+
+    let mut out = [(0.0f32, 0u16, 0u8); 12];
+    for (i, point) in packet.points.iter().enumerate() {
+        let angle = (packet.start_angle + angle_step * i as f32 + angle_offset) % 360.0;
+        out[i] = (angle, point.distance, point.intensity);
+    }
+    out
+}
+
 /// CRC8 lookup table for polynomial 0x4D
 const CRC_TABLE: [u8; 256] = [
     0x00, 0x4d, 0x9a, 0xd7, 0x79, 0x34, 0xe3, 0xae, 0xf2, 0xbf, 0x68, 0x25, 0x8b, 0xc6, 0x11, 0x5c,

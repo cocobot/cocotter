@@ -12,6 +12,7 @@ use crate::arfast;
 use crate::led::LedMessage;
 use crate::meca::{Meca, CleatSide};
 use crate::movement::MovementLowLevelHardware;
+use crate::opponent_detection::OpponentDetection;
 use crate::sensors::Sensors;
 use crate::strat::utils::{AsservHelper, arfast};
 
@@ -26,6 +27,7 @@ pub struct Strat<B: SabotterBoard> {
     sensors: Sensors<B>,
     meca: Meca<B>,
     asserv: AsservHelper<B>,
+    opponent_detection: OpponentDetection,
     rlogger: Sender<String>,
 
     inputs: SabotterInputs<B::ExInputPin, B::ExInputPin>,
@@ -46,6 +48,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         meca: Meca<B>,
         asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>,
         rlogger: Sender<String>,
+        opponent_detection: OpponentDetection,
     ) {
         // Build the pathfinding graph
         let pathfinder = {
@@ -80,7 +83,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             leds,
             sensors,
             meca,
-            asserv: AsservHelper::new(asserv),
+            asserv: AsservHelper::new(asserv, opponent_detection.clone()),
+            opponent_detection,
             rlogger,
             robot_main: RobotSide::Left,
             robot_aux: RobotSide::Right,
