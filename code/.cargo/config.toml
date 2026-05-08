@@ -3,9 +3,6 @@ linker = "ldproxy"
 runner = "espflash flash --monitor --flash-size 8mb --partition-table partitions.csv --erase-data-parts ota"
 rustflags = [ "--cfg",  "espidf_time64"]
 
-[unstable]
-build-std = ["std", "panic_abort"]
-
 [alias]
 rpami = "run -p pami"
 spami = "run -p pami --target x86_64-unknown-linux-gnu"
