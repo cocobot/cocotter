@@ -7,15 +7,14 @@
 
 [field]
 # Coupe de France de Robotique standard table (2026 placeholder).
-# Asserv-aligned frame:
-#   X axis: Down→Up wall, range  [0, x_max_mm]      (length 2000 mm).
-#   Y axis: Right→Left wall, range [-y_half_mm, +y_half_mm]
-#                                              centered (length 3000 mm).
-# Origin (0, 0) sits at the centre of the Down wall. Matches the
-# galipeur strat's `realign.rs` convention so the sim and the firmware
-# speak the same coordinates without any frame translation.
-x_max_mm  = 2000
-y_half_mm = 1500
+# Strat-aligned frame (matches galipeur asserv convention):
+#   X axis: lateral, range [-x_half_mm, +x_half_mm] (length 3000 mm).
+#           +X = toward Right wall.
+#   Y axis: longitudinal, range [0, y_max_mm]        (length 2000 mm).
+#           +Y = toward Up wall.
+# Origin (0, 0) sits at the centre of the Down wall.
+x_half_mm = 1500
+y_max_mm  = 2000
 # Visual elevation of the table above the floor. Lets spectators walk
 # around without clipping through the playing area.
 stand_height_mm = 1000
@@ -24,7 +23,7 @@ stand_height_mm = 1000
 # itself is declared as a `height_mm = 0` obstacle carrying the playmat
 # texture — this unifies the field with every other raised surface.
 #
-# aabb_mm    = [x_min, y_min, x_max, y_max] in the asserv-aligned frame.
+# aabb_mm    = [x_min, y_min, x_max, y_max] in the strat-aligned frame.
 # height_mm  = vertical extent (0 = flat ground tile).
 # color      = optional sRGB hex "#RRGGBB". Defaults to RAL 7032 (Kieselgrau).
 # finish     = "smooth" (default) or "wood" (procedural grain).
@@ -39,56 +38,56 @@ path = "sim/assets/table.png"
 
 [[field.obstacles]]
 name = "ground"
-aabb_mm = [0, -1500, 2000, 1500]
+aabb_mm = [-1500, 0, 1500, 2000]
 height_mm = 0
 use_playmat = true
 
-# wall_down: along the Down wall (X = 0 line)
+# wall_down: along the Down wall (Y = 0 line)
 [[field.obstacles]]
 name = "wall_down"
-aabb_mm = [-22, -1522, 0, 1522]
+aabb_mm = [-1522, -22, 1522, 0]
 height_mm = 70
 finish = "wood"
 
-# wall_up: along the Up wall (X = 2000 line)
+# wall_up: along the Up wall (Y = 2000 line)
 [[field.obstacles]]
 name = "wall_up"
-aabb_mm = [2000, -1522, 2022, 1522]
+aabb_mm = [-1522, 2000, 1522, 2022]
 height_mm = 70
 finish = "wood"
 
-# wall_left: along the Left wall (Y = +1500 line)
+# wall_left: along the Left wall (X = -1500 line)
 [[field.obstacles]]
 name = "wall_left"
-aabb_mm = [0, 1500, 2000, 1522]
+aabb_mm = [-1522, 0, -1500, 2000]
 height_mm = 70
 finish = "wood"
 
-# wall_right: along the Right wall (Y = -1500 line)
+# wall_right: along the Right wall (X = +1500 line)
 [[field.obstacles]]
 name = "wall_right"
-aabb_mm = [0, -1522, 2000, -1500]
+aabb_mm = [1500, 0, 1522, 2000]
 height_mm = 70
 finish = "wood"
 
-# Granary side rails — short uprights along the Up wall (X = 2000 side).
-# Both rails are 15 mm thick along Y, 450 mm long along X (perpendicular
+# Granary side rails — short uprights along the Up wall (Y = 2000 side).
+# Both rails are 15 mm thick along X, 450 mm long along Y (perpendicular
 # to Up wall, extending inward into the play area).
 [[field.obstacles]]
 name = "granary_right"
-aabb_mm = [1550, -900, 2000, -885]
+aabb_mm = [885, 1550, 900, 2000]
 height_mm = 70
 finish = "wood"
 
 [[field.obstacles]]
 name = "granary_left"
-aabb_mm = [1550, 885, 2000, 900]
+aabb_mm = [-900, 1550, -885, 2000]
 height_mm = 70
 finish = "wood"
 
 [[field.obstacles]]
 name = "granary_ground"
-aabb_mm = [1550, -885, 2000, 885]
+aabb_mm = [-885, 1550, 885, 2000]
 height_mm = 55
 use_playmat = true
 finish = "wood"
@@ -96,27 +95,27 @@ finish = "wood"
 # Start poses are keyed by "left" / "right" — which side of the table
 # the robot starts on. The colour mapping (left = blue or yellow) is
 # decided by the strat each year, not by the sim.
-# All coordinates are in the asserv-aligned frame: X ∈ [0, 2000]
-# (Down→Up), Y ∈ [-1500, +1500] (Right→Left, centered). theta_rad = 0
-# means body forward along +X (toward the Up wall).
+# All coordinates in the strat-aligned frame: X ∈ [-1500, +1500]
+# (lateral, +X = Right), Y ∈ [0, 2000] (longitudinal, +Y = Up).
+# theta_rad = 0 means body forward along +Y (toward the Up wall).
 [start_poses.galipeur.left]
-x_mm = 1500
-y_mm = 1200
+x_mm = -1200
+y_mm = 1500
 theta_rad = 3.14
 
 [start_poses.galipeur.right]
-x_mm = 1600
-y_mm = -1250
+x_mm = 1250
+y_mm = 1600
 theta_rad = 2.95
 
 [start_poses.pami.left]
-x_mm = 200
-y_mm = -1000
+x_mm = 1000
+y_mm = 200
 theta_rad = 1.5708
 
 [start_poses.pami.right]
-x_mm = 200
-y_mm = 1000
+x_mm = -1000
+y_mm = 200
 theta_rad = -1.5708
 
 # Year-specific colour → side mapping. Flip this each year based on the
@@ -267,9 +266,9 @@ lidar_height_mm = 390
 [[galipeur.neopixels]]
 shape = "single"
 name = "status"
-# Asserv body frame, with an additional +120° rotation around Z on top
-# of the OLD-sim → asserv conversion. Aligns the body-frame positions
-# with the firmware's `RobotSide → module` mapping.
+# Asserv body frame, with an additional +120° rotation around Z.
+# Aligns the body-frame positions with the firmware's
+# `RobotSide → module` mapping.
 position_mm = [-85.059, -116.471, 208.5]
 pixel_size_mm = 10
 
@@ -352,8 +351,8 @@ max_wheel_speed_mm_s = 500.0
 # entirely (useful for CI / headless).
 [humans]
 enabled = true
-count_min = 3
-count_max = 6
+count_min = 7
+count_max = 15
 body_height_min_mm = 1600
 body_height_max_mm = 1950
 walk_speed_min_mm_s = 400

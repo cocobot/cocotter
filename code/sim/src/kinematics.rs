@@ -115,6 +115,9 @@ impl HoloState {
 
         let c = self.pose.theta_rad.cos();
         let s = self.pose.theta_rad.sin();
+        // Motor body frame: slot 0 aligns with world X at θ=0, slot 1
+        // with world Y. Standard rotation — must match the firmware's
+        // `update_position` in control_system.rs.
         let world_dx = c * dx_r - s * dy_r;
         let world_dy = s * dx_r + c * dy_r;
 
@@ -195,8 +198,9 @@ impl DiffState {
 
         let c = self.pose.theta_rad.cos();
         let s = self.pose.theta_rad.sin();
-        let world_dx = c * v_body * dt_s;
-        let world_dy = s * v_body * dt_s;
+        // Strat convention: θ=0 → facing +Y.
+        let world_dx = -s * v_body * dt_s;
+        let world_dy =  c * v_body * dt_s;
 
         let t = crate::collide::sweep_max_fraction(
             (self.pose.x_mm, self.pose.y_mm, self.pose.theta_rad),
@@ -247,10 +251,11 @@ mod tests {
     }
 
     #[test]
-    fn forward_motion_produces_positive_x() {
-        // Construct consigns that correspond to pure vx (no vy, no va).
-        // consigns = VEL2CONS @ [100, 0, 0]
-        let consigns = mat_vec3(VEL2CONS, [100.0, 0.0, 0.0]);
+    fn forward_motion_produces_positive_y() {
+        // Motor body frame: slot 0 = world X (right) at θ=0,
+        //                   slot 1 = world Y (forward) at θ=0.
+        // Pure vy (slot 1 = 100 mm/s) at θ=0 → world +Y.
+        let consigns = mat_vec3(VEL2CONS, [0.0, 100.0, 0.0]);
         let mut state = HoloState::new(
             Pose2D { x_mm: 0.0, y_mm: 0.0, theta_rad: 0.0 },
             VEL2CONS,
@@ -261,9 +266,9 @@ mod tests {
         for _ in 0..100 {
             state.step(consigns, 0.010, &[], &shape);
         }
-        // Should have moved ~100mm forward in x direction.
-        assert!((state.pose.x_mm - 100.0).abs() < 1.0, "x = {}", state.pose.x_mm);
-        assert!(state.pose.y_mm.abs() < 1.0, "y drift = {}", state.pose.y_mm);
+        // Should have moved ~100mm forward in y direction.
+        assert!((state.pose.y_mm - 100.0).abs() < 1.0, "y = {}", state.pose.y_mm);
+        assert!(state.pose.x_mm.abs() < 1.0, "x drift = {}", state.pose.x_mm);
         assert!(state.pose.theta_rad.abs() < 0.01);
     }
 

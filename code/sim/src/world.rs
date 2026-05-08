@@ -130,11 +130,12 @@ impl World {
 }
 
 /// Rotate + translate a robot-local segment into world coordinates.
+/// Strat convention: θ=0 → facing +Y. Body (bx=fwd, by=left).
 fn transform_segment(seg: [f32; 4], pose: Pose2D) -> [f32; 4] {
     let c = pose.theta_rad.cos();
     let s = pose.theta_rad.sin();
     let tx = |x: f32, y: f32| -> (f32, f32) {
-        (pose.x_mm + x * c - y * s, pose.y_mm + x * s + y * c)
+        (pose.x_mm - s * x - c * y, pose.y_mm + c * x - s * y)
     };
     let (ax, ay) = tx(seg[0], seg[1]);
     let (bx, by) = tx(seg[2], seg[3]);
@@ -147,7 +148,7 @@ fn push_bbox_segments(walls: &mut Vec<[f32; 4]>, pose: Pose2D, w: f32, l: f32) {
     let c = pose.theta_rad.cos();
     let s = pose.theta_rad.sin();
     let corner = |dx: f32, dy: f32| -> (f32, f32) {
-        (pose.x_mm + dx * c - dy * s, pose.y_mm + dx * s + dy * c)
+        (pose.x_mm - s * dx - c * dy, pose.y_mm + c * dx - s * dy)
     };
     let p0 = corner(hx, hy);
     let p1 = corner(hx, -hy);

@@ -36,8 +36,9 @@ pub fn raycast(
     max_dist: f32,
     walls: &[[f32; 4]],
 ) -> f32 {
-    let dx = angle_rad.cos();
-    let dy = angle_rad.sin();
+    // Strat convention: angle = 0 → +Y (forward toward Up wall).
+    let dx = -angle_rad.sin();
+    let dy = angle_rad.cos();
     let mut best = max_dist;
     for &[ax, ay, bx, by] in walls {
         if let Some(s) = ray_segment_dist(origin.0, origin.1, dx, dy, ax, ay, bx, by) {
@@ -55,16 +56,17 @@ mod tests {
 
     #[test]
     fn ray_hits_wall_in_front() {
-        // Room 3000 wide. Robot at (1500, 1000), facing +x. Wall at x=3000.
-        let walls = [[3000.0, 0.0, 3000.0, 2000.0]];
-        let d = raycast((1500.0, 1000.0), 0.0, 10_000.0, &walls);
-        assert!((d - 1500.0).abs() < 0.1, "d={d}");
+        // Robot at (0, 1000), facing +Y (angle=0). Wall at y=2000.
+        let walls = [[-1500.0, 2000.0, 1500.0, 2000.0]];
+        let d = raycast((0.0, 1000.0), 0.0, 10_000.0, &walls);
+        assert!((d - 1000.0).abs() < 0.1, "d={d}");
     }
 
     #[test]
     fn ray_misses_returns_max() {
-        let walls = [[3000.0, 0.0, 3000.0, 2000.0]];
-        let d = raycast((1500.0, 1000.0), std::f32::consts::PI, 10_000.0, &walls);
+        // Wall at y=2000, ray facing -Y (angle=π) → misses.
+        let walls = [[-1500.0, 2000.0, 1500.0, 2000.0]];
+        let d = raycast((0.0, 1000.0), std::f32::consts::PI, 10_000.0, &walls);
         assert!((d - 10_000.0).abs() < 0.1);
     }
 }

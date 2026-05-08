@@ -386,12 +386,12 @@ fn handle_galipeur(
                         if !gl.enabled {
                             continue;
                         }
-                        // Body (x, y) rotated into world by robot θ,
-                        // then translated by the robot's pose.
+                        // Body (bx=fwd, by=left) rotated into strat
+                        // world by robot θ (θ=0 → facing +Y).
                         let bx = gl.position_mm[0];
                         let by = gl.position_mm[1];
-                        let world_x = state.pose.x_mm + cos_t * bx - sin_t * by;
-                        let world_y = state.pose.y_mm + sin_t * bx + cos_t * by;
+                        let world_x = state.pose.x_mm - sin_t * bx - cos_t * by;
+                        let world_y = state.pose.y_mm + cos_t * bx - sin_t * by;
                         let world_theta = state.pose.theta_rad + gl.theta_rad;
                         let d = raycast::raycast(
                             (world_x, world_y),
@@ -583,7 +583,10 @@ impl Ld06Emitter {
         let intensities = [200u8; 12];
         for i in 0..12 {
             let local_deg = start + step * i as f32;
-            let world_angle = pose.theta_rad + local_deg.to_radians();
+            // The LD06 packet angles use math convention (0° = body +X),
+            // but `raycast` uses strat convention (0° = +Y). Subtract
+            // π/2 so that LD06 angle 0° raycasts along body +X.
+            let world_angle = pose.theta_rad + local_deg.to_radians() - std::f32::consts::FRAC_PI_2;
             let d = raycast::raycast(
                 (pose.x_mm, pose.y_mm),
                 world_angle,

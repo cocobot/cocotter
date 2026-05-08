@@ -89,19 +89,19 @@ fn default_margin() -> f32 { 1500.0 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct FieldConfig {
-    /// Asserv-aligned playing area. **X axis** runs Down→Up (length 2000 mm),
-    /// `x ∈ [0, x_max_mm]`. **Y axis** runs Right→Left (length 3000 mm),
-    /// centered: `y ∈ [-y_half_mm, +y_half_mm]`. Origin (0, 0) sits at the
-    /// centre of the Down wall — same convention as the galipeur asserv
-    /// (see `galipeur/src/strat/realign.rs`).
-    pub x_max_mm: u32,
-    pub y_half_mm: u32,
+    /// Strat-aligned playing area. **X axis** is lateral (length 3000 mm),
+    /// `x ∈ [-x_half_mm, +x_half_mm]`, +X = toward Right wall.
+    /// **Y axis** is longitudinal (length 2000 mm),
+    /// `y ∈ [0, y_max_mm]`, +Y = toward Up wall.
+    /// Origin (0, 0) sits at the centre of the Down wall.
+    pub x_half_mm: u32,
+    pub y_max_mm: u32,
     /// Height of the table above the real floor. Purely visual — it does
     /// not shift the simulation coordinate frame.
     #[serde(default)]
     pub stand_height_mm: f32,
     /// Optional "wallpaper" texture that covers the entire field
-    /// `[0, -y_half] — [x_max, +y_half]`. Obstacles with `use_playmat = true`
+    /// `[-x_half, 0] — [+x_half, y_max]`. Obstacles with `use_playmat = true`
     /// show the crop of this texture that matches their AABB.
     #[serde(default)]
     pub playmat: Option<Playmat>,
@@ -711,8 +711,8 @@ impl Config {
             // start pose. Operator drives it from ZQSD/gamepad.
             RobotKind::Adversary => {
                 return Pose2D {
-                    x_mm: self.field.x_max_mm as f32 * 0.5,
-                    y_mm: 0.0,
+                    x_mm: 0.0,
+                    y_mm: self.field.y_max_mm as f32 * 0.5,
                     theta_rad: 0.0,
                 };
             }

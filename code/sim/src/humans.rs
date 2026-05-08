@@ -63,17 +63,17 @@ fn run(
     };
 
     // "Roaming" outer rectangle that extends `margin_mm` past the table.
-    // Asserv-aligned frame: X ∈ [0, x_max_mm], Y ∈ [-y_half_mm, +y_half_mm].
+    // Strat-aligned frame: X ∈ [-x_half, +x_half], Y ∈ [0, y_max].
     let margin = cfg.margin_mm;
-    let x_max = field.x_max_mm as f32;
-    let y_half = field.y_half_mm as f32;
+    let x_half = field.x_half_mm as f32;
+    let y_max = field.y_max_mm as f32;
     let outer = [
+        -x_half - margin,
         -margin,
-        -y_half - margin,
-        x_max + margin,
-        y_half + margin,
+        x_half + margin,
+        y_max + margin,
     ];
-    let table = [0.0, -y_half, x_max, y_half];
+    let table = [-x_half, 0.0, x_half, y_max];
 
     let mut walkers: Vec<Walker> = (0..count)
         .map(|i| {

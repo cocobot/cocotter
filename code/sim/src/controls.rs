@@ -527,11 +527,11 @@ pub fn spawn_adversary(
         return;
     }
     let id = "adversary".to_string();
-    // Centre of the table in the asserv-aligned frame: X = x_max / 2,
-    // Y = 0 (Y axis is centered around the Down-wall midpoint).
+    // Centre of the table in the strat-aligned frame: X = 0 (lateral
+    // centre), Y = y_max / 2 (longitudinal centre).
     let pose = Pose2D {
-        x_mm: config.field.x_max_mm as f32 * 0.5,
-        y_mm: 0.0,
+        x_mm: 0.0,
+        y_mm: config.field.y_max_mm as f32 * 0.5,
         theta_rad: 0.0,
     };
     // Two-stage opponent silhouette: a wide base with a thin antenna on
@@ -789,21 +789,20 @@ pub fn drive_adversary(
     };
 
     // Compose the camera-relative move in Bevy world XZ, then map to
-    // sim world XY. After the asserv-aligned refactor the sim ↔ bevy
-    // mapping is a proper rotation: sim.x = bevy.x, sim.y = −bevy.z
-    // (matches `body_pos_to_bevy`). Normalising first keeps "Z + D"
-    // diagonals at the same speed as a single axis press.
+    // strat world XY. Strat-aligned mapping: strat.x = bevy.z,
+    // strat.y = bevy.x (matches `body_pos_to_bevy`). Normalising first
+    // keeps diagonals at the same speed as a single axis press.
     let bevy_dir = (forward_xz * forward + right_xz * right).normalize_or_zero();
     let dt = time.delta_secs();
     let theta = adversary.pose.theta_rad;
-    let dx = bevy_dir.x * lin_speed * dt;
-    let dy = -bevy_dir.z * lin_speed * dt;
+    let dx = bevy_dir.z * lin_speed * dt;
+    let dy = bevy_dir.x * lin_speed * dt;
     let dt_theta = vt * ang_speed * dt;
 
-    let x_max = config.0.field.x_max_mm as f32;
-    let y_half = config.0.field.y_half_mm as f32;
-    let new_x = (adversary.pose.x_mm + dx).clamp(0.0, x_max);
-    let new_y = (adversary.pose.y_mm + dy).clamp(-y_half, y_half);
+    let x_half = config.0.field.x_half_mm as f32;
+    let y_max = config.0.field.y_max_mm as f32;
+    let new_x = (adversary.pose.x_mm + dx).clamp(-x_half, x_half);
+    let new_y = (adversary.pose.y_mm + dy).clamp(0.0, y_max);
     let new_theta = wrap_pi(theta + dt_theta);
 
     adversary.pose.x_mm = new_x;

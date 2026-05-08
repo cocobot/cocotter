@@ -476,18 +476,18 @@ fn setup_world(
     };
 
     let stand_h = stand_height_m(&config.0);
-    // Asserv-aligned frame: X span is `x_max_mm` (Bevy x axis), Y span is
-    // `2 * y_half_mm` (Bevy z axis, centered around 0). Table centre on
-    // Bevy sits at (x_max/2, _, 0).
-    let x_span_m = config.0.field.x_max_mm as f32 * MM;
-    let y_span_m = (config.0.field.y_half_mm as f32 * 2.0) * MM;
-    let cx_world_m = x_span_m * 0.5;
-    let cz_world_m = 0.0;
+    // Strat-aligned frame: X is lateral (2 * x_half_mm → Bevy Z),
+    // Y is longitudinal (y_max_mm → Bevy X). Table centre on Bevy
+    // sits at (y_max/2, _, 0).
+    let x_span_m = (config.0.field.x_half_mm as f32 * 2.0) * MM; // lateral → bevy Z
+    let y_span_m = config.0.field.y_max_mm as f32 * MM;           // longitudinal → bevy X
+    let cx_world_m = y_span_m * 0.5;  // bevy X centre
+    let cz_world_m = 0.0;             // bevy Z centre (symmetric)
 
     // Table stand (visual only, rendered from y=0 up to y=stand_h).
     if stand_h > 1e-4 {
         commands.spawn((
-            Mesh3d(meshes.add(Cuboid::new(x_span_m, stand_h, y_span_m))),
+            Mesh3d(meshes.add(Cuboid::new(y_span_m, stand_h, x_span_m))),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: Color::srgb(0.35, 0.33, 0.30),
                 perceptual_roughness: 0.95,
@@ -510,36 +510,34 @@ fn setup_world(
         ));
     }
 
-    // Asserv-axis gizmo at sim (0, 0) (Down-wall centre), rendered through
-    // the proper sim→bevy rotation. RGB = XYZ asserv. With the proper
-    // mapping the gizmo visually reads as right-handed: sim +X × sim +Y
-    // = sim +Z (forward × left = up).
+    // Strat-axis gizmo at sim (0, 0) (Down-wall centre). RGB = XYZ strat.
+    // Strat frame is right-handed: +X (right) × +Y (forward) = +Z (up).
     let axis_len_m = 1.0_f32;
     let axis_thickness_m = 0.04_f32;
     let axis_y_off = stand_h + 0.05;
-    // Sim +X (red, toward Up wall) → bevy +X.
+    // Strat +X (red, toward Right wall) → bevy +Z.
     commands.spawn((
-        Mesh3d(meshes.add(Cuboid::new(axis_len_m, axis_thickness_m, axis_thickness_m))),
+        Mesh3d(meshes.add(Cuboid::new(axis_thickness_m, axis_thickness_m, axis_len_m))),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::srgb(1.0, 0.0, 0.0),
             emissive: LinearRgba::new(2.0, 0.0, 0.0, 1.0),
             unlit: true,
             ..default()
         })),
-        Transform::from_xyz(axis_len_m * 0.5, axis_y_off, 0.0),
+        Transform::from_xyz(0.0, axis_y_off, axis_len_m * 0.5),
     ));
-    // Sim +Y (green, toward Left wall) → bevy -Z.
+    // Strat +Y (green, toward Up wall) → bevy +X.
     commands.spawn((
-        Mesh3d(meshes.add(Cuboid::new(axis_thickness_m, axis_thickness_m, axis_len_m))),
+        Mesh3d(meshes.add(Cuboid::new(axis_len_m, axis_thickness_m, axis_thickness_m))),
         MeshMaterial3d(materials.add(StandardMaterial {
             base_color: Color::srgb(0.0, 1.0, 0.0),
             emissive: LinearRgba::new(0.0, 2.0, 0.0, 1.0),
             unlit: true,
             ..default()
         })),
-        Transform::from_xyz(0.0, axis_y_off, -axis_len_m * 0.5),
+        Transform::from_xyz(axis_len_m * 0.5, axis_y_off, 0.0),
     ));
-    // Sim +Z (blue, up) → bevy +Y.
+    // Strat +Z (blue, up) → bevy +Y.
     commands.spawn((
         Mesh3d(meshes.add(Cuboid::new(axis_thickness_m, axis_len_m, axis_thickness_m))),
         MeshMaterial3d(materials.add(StandardMaterial {
@@ -568,11 +566,11 @@ fn setup_world(
     let mut texture_cache: std::collections::HashMap<String, Handle<Image>> =
         std::collections::HashMap::new();
 
-    // Playmat normalization helpers: u maps sim X (0..x_max) to texture
-    // (0..1); v maps sim Y (-y_half..+y_half) to texture (0..1).
-    let x_max_mm = config.0.field.x_max_mm as f32;
-    let y_half_mm = config.0.field.y_half_mm as f32;
-    let y_span_mm = y_half_mm * 2.0;
+    // Playmat normalization helpers: u maps strat Y (0..y_max) to texture
+    // (0..1); v maps strat X (-x_half..+x_half) to texture (0..1).
+    let x_half_mm = config.0.field.x_half_mm as f32;
+    let y_max_mm = config.0.field.y_max_mm as f32;
+    let x_span_mm = x_half_mm * 2.0;
     let playmat_handle: Option<Handle<Image>> = config
         .0
         .field
@@ -588,15 +586,15 @@ fn setup_world(
 
     for obs in &config.0.field.obstacles {
         let [x0, y0, x1, y1] = obs.aabb_mm;
-        let w = ((x1 - x0) * MM).abs();
-        let d = ((y1 - y0) * MM).abs();
+        let w = ((x1 - x0) * MM).abs();  // lateral extent → bevy Z
+        let d = ((y1 - y0) * MM).abs();  // longitudinal extent → bevy X
         let h = obs.height_mm * MM;
         if w < 1e-4 || d < 1e-4 {
             continue;
         }
-        // sim_x → bevy_x (no sign change). sim_y → -bevy_z (proper rotation).
-        let cx = (x0 + x1) * 0.5 * MM;
-        let cz = -(y0 + y1) * 0.5 * MM;
+        // strat_x (lateral) → bevy +Z.  strat_y (longitudinal) → bevy +X.
+        let cx = (y0 + y1) * 0.5 * MM;
+        let cz = (x0 + x1) * 0.5 * MM;
 
         // Material for the body (sides + bottom). The playmat is *not*
         // used here even when `use_playmat = true` — it only belongs on
@@ -644,8 +642,9 @@ fn setup_world(
         // other obstacle (same cuboid path, playmat visible on top).
         const GROUND_VISUAL_H_M: f32 = 0.001;
         let visual_h = if h < 1e-4 { GROUND_VISUAL_H_M } else { h };
+        // Cuboid: bevy (X=d=longitudinal, Y=h, Z=w=lateral)
         commands.spawn((
-            Mesh3d(meshes.add(Cuboid::new(w, visual_h, d))),
+            Mesh3d(meshes.add(Cuboid::new(d, visual_h, w))),
             MeshMaterial3d(materials.add(body_material)),
             Transform::from_xyz(cx, stand_h + visual_h * 0.5, cz),
         ));
@@ -658,19 +657,19 @@ fn setup_world(
             if let Some(handle) = playmat_handle.as_ref() {
                 // The texture is authored in landscape (long axis = U,
                 // short axis = V) with the granary near the TOP of the
-                // image (v ≈ 0). The asserv-aligned field has its long
-                // axis along Y (sim_y) and short axis along X (sim_x).
-                // Mirror across Y so the image's left side (yellow
-                // burrow) lands on the Left wall (sim_y > 0):
-                //   texture_u = (y_half - sim_y) / y_span
-                //   texture_v = (x_max - sim_x) / x_max   (granary at Up wall)
+                // image (v ≈ 0). The strat-aligned field has its long
+                // axis along X (lateral) and short axis along Y (longitudinal).
+                // Mirror across X so the image's left side (yellow
+                // burrow) lands on the Left wall (strat_x < 0):
+                //   texture_u = (x_half - strat_x) / x_span  (left→right across image)
+                //   texture_v = (y_max - strat_y) / y_max     (granary at Up wall)
                 let scale = Vec2::new(
-                    /* sx */ (x1 - x0) / x_max_mm,
-                    /* sy */ (y1 - y0) / y_span_mm,
+                    /* sx */ (y1 - y0) / y_max_mm,
+                    /* sy */ (x1 - x0) / x_span_mm,
                 );
                 let trans = Vec2::new(
-                    /* tu */ (y_half_mm - y1) / y_span_mm,
-                    /* tv */ (x_max_mm - x0) / x_max_mm,
+                    /* tu */ (x_half_mm - x1) / x_span_mm,
+                    /* tv */ (y_max_mm - y0) / y_max_mm,
                 );
                 let pm_material = StandardMaterial {
                     base_color: Color::WHITE,
@@ -683,8 +682,9 @@ fn setup_world(
                     ),
                     ..default()
                 };
+                // Plane half-extents: bevy X=d/2 (longitudinal), bevy Z=w/2 (lateral)
                 commands.spawn((
-                    Mesh3d(meshes.add(Plane3d::new(Vec3::Y, Vec2::new(w * 0.5, d * 0.5)))),
+                    Mesh3d(meshes.add(Plane3d::new(Vec3::Y, Vec2::new(d * 0.5, w * 0.5)))),
                     MeshMaterial3d(materials.add(pm_material)),
                     Transform::from_xyz(cx, stand_h + visual_h + 0.001, cz),
                 ));
@@ -701,12 +701,12 @@ fn setup_camera_and_light(
     if headless.0 {
         return;
     }
-    let x_span_m = config.0.field.x_max_mm as f32 * MM;
-    let y_span_m = (config.0.field.y_half_mm as f32 * 2.0) * MM;
+    let x_span_m = (config.0.field.x_half_mm as f32 * 2.0) * MM; // lateral
+    let y_span_m = config.0.field.y_max_mm as f32 * MM;          // longitudinal
     let stand_h = stand_height_m(&config.0);
-    // Asserv-aligned frame: table centre is (x_max/2, 0) in sim coords
-    // → (x_max/2, _, 0) in Bevy.
-    let cx = x_span_m / 2.0;
+    // Strat frame: table centre is (0, y_max/2) in sim coords
+    // → (y_max/2, _, 0) in Bevy.
+    let cx = y_span_m / 2.0;
     let cy = 0.0;
 
     // Initial framing: "3/4 view" at pitch ≈ 35°, distance ≈ 1.2 × diagonal.
@@ -1441,23 +1441,22 @@ fn team_outline_color(robot_id: &str, teams: &crate::config::TeamSides) -> Color
 }
 
 fn body_pos_to_bevy(pos_mm: [f32; 3], parent_y_off_m: f32) -> Vec3 {
-    // Sim frame is (x_forward, y_left, z_up), right-handed. Bevy world
-    // is (x_right, y_up, z_out_of_screen), right-handed. The proper
-    // rotation from sim to Bevy is -90° around X:
-    //   sim +X (forward) → bevy +X
-    //   sim +Y (left)    → bevy -Z
-    //   sim +Z (up)      → bevy +Y
+    // Strat frame is (x_right, y_forward, z_up), right-handed.
+    // Bevy world is right-handed Y-up. Mapping:
+    //   strat +X (right)   → bevy +Z
+    //   strat +Y (forward) → bevy +X
+    //   strat +Z (up)      → bevy +Y
     Vec3::new(
-        pos_mm[0] * MM,
+        pos_mm[1] * MM,
         parent_y_off_m + pos_mm[2] * MM,
-        -pos_mm[1] * MM,
+        pos_mm[0] * MM,
     )
 }
 
-/// Convert a body-frame unit direction `(x_fwd, y_left, z_up)` into
+/// Convert a body-frame unit direction `(x_right, y_fwd, z_up)` into
 /// the same Bevy axis mapping used for positions.
 fn body_dir_to_bevy(dir: [f32; 3]) -> Vec3 {
-    Vec3::new(dir[0], dir[2], -dir[1]).normalize_or_zero()
+    Vec3::new(dir[1], dir[2], dir[0]).normalize_or_zero()
 }
 
 /// Intermediate representation for a debug volume ready to spawn.
@@ -1475,10 +1474,12 @@ fn debug_vol_bundle(
 ) -> DebugVolBundle {
     match vol {
         DebugVolume::Box { half_size_mm, rgba, .. } => {
+            // half_size_mm is [strat_x, strat_y, strat_z].
+            // Mapping: strat +X → bevy +Z, strat +Y → bevy +X, strat +Z → bevy +Y.
             let size_m = Vec3::new(
-                half_size_mm[0] * 2.0 * MM,
-                half_size_mm[2] * 2.0 * MM,
                 half_size_mm[1] * 2.0 * MM,
+                half_size_mm[2] * 2.0 * MM,
+                half_size_mm[0] * 2.0 * MM,
             );
             DebugVolBundle {
                 mesh: Mesh3d(meshes.add(Cuboid::new(size_m.x, size_m.y, size_m.z))),
@@ -1528,14 +1529,14 @@ fn debug_vol_transform(vol: &DebugVolume, y_off: f32) -> Transform {
     }
 }
 
-/// Body-frame (x_forward, y_left, z_up) pose → Bevy local transform.
+/// Body-frame (x_right, y_forward, z_up) pose → Bevy local transform.
 /// Single source of truth for the sim↔Bevy convention used across
 /// every body-relative entity (robot pose, collision overlays, lidar
 /// beams, `WorldUpdate::DebugVolumes`, etc).
 ///
-/// The sim→Bevy mapping is a -90° rotation around the X axis (proper,
-/// handedness-preserving). A CCW yaw around sim +Z is therefore a CCW
-/// rotation around bevy +Y as well — no sign flip needed.
+/// The strat→Bevy mapping is: strat +X → bevy +Z, strat +Y → bevy +X,
+/// strat +Z → bevy +Y (proper rotation, det = 1). A CCW yaw around
+/// strat +Z is a CCW rotation around bevy +Y — no sign flip needed.
 ///
 /// `y_off_m` is the parent-anchor correction: 0 for bottom-anchored
 /// scenes (glb robots, adversary cylinder stack) and `-half_h` for

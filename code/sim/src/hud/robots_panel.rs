@@ -395,13 +395,12 @@ fn _suppress(_: HudMockData) {} // keep import path stable
 /// existing one).
 pub fn bind_robots(
     world: Res<crate::controls::SharedWorld>,
-    config: Res<crate::app::SimConfigRes>,
+    _config: Res<crate::app::SimConfigRes>,
     mut state: ResMut<super::HudRobotsState>,
 ) {
     use crate::world::EntityKind;
     use sim_protocol::RobotKind;
 
-    let x_max_mm = config.0.field.x_max_mm as f32;
     let mut next: Vec<super::HudRobot> = Vec::new();
     for (id, snap) in world.0.entries() {
         let kind = match snap.kind {
@@ -416,9 +415,8 @@ pub fn bind_robots(
         // rather than inferring from position (which is wrong for
         // robots that have crossed the midline).
         let side = parse_side_from_id(&id).unwrap_or_else(|| {
-            // Fallback: position-based. Used by the adversary (id
-            // "adversary" with no suffix).
-            if snap.pose.x_mm < x_max_mm / 2.0 {
+            // Fallback: position-based (strat X is lateral, -X = left).
+            if snap.pose.x_mm < 0.0 {
                 Side::Left
             } else {
                 Side::Right
