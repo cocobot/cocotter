@@ -19,7 +19,6 @@ flume = { version = "0.11", default-features = false }
 cancaner = { path = "../libs/cancaner" }
 pathfinding = { path = "../libs/pathfinding" }
 rome = { path = "../libs/rome" }
-sch16t = { path = "../libs/sch16t" }
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = "0.52"

@@ -1,0 +1,726 @@
+//! Field + robot configuration loaded from `table.toml`.
+//!
+//! Many fields exist only to make the deserialised TOML useful for
+//! human readers (names, references back to the Onshape source, …)
+//! without ever being consumed by the runtime. Silence the resulting
+//! dead-code noise at module level.
+#![allow(dead_code)]
+
+use serde::Deserialize;
+use sim_protocol::{Pose2D, RobotKind};
+
+// Re-export so callers that already do `use crate::config::Side`
+// don't need to learn that the enum now lives in `sim_protocol`.
+pub use sim_protocol::Side;
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Config {
+    pub field: FieldConfig,
+    pub start_poses: StartPosesConfig,
+    pub galipeur: RobotConfig,
+    pub pami: RobotConfig,
+    #[serde(default)]
+    pub humans: HumansConfig,
+    /// Year-specific team colour → table side mapping.
+    pub teams: TeamSides,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct HumansConfig {
+    /// Off by default. Turn on via `--humans` on the CLI or `enabled = true`
+    /// in the TOML.
+    #[serde(default)]
+    pub enabled: bool,
+    /// Spawn count picked uniformly in `[count_min, count_max]` at startup.
+    #[serde(default = "default_count_min")]
+    pub count_min: usize,
+    #[serde(default = "default_count_max")]
+    pub count_max: usize,
+    /// Body height range (mm), picked uniformly per human.
+    #[serde(default = "default_height_min")]
+    pub body_height_min_mm: f32,
+    #[serde(default = "default_height_max")]
+    pub body_height_max_mm: f32,
+    /// Walking speed range (mm/s), picked uniformly per human.
+    #[serde(default = "default_speed_min")]
+    pub walk_speed_min_mm_s: f32,
+    #[serde(default = "default_speed_max")]
+    pub walk_speed_max_mm_s: f32,
+    /// Footprint bounds (mm) — width and length of the bbox.
+    #[serde(default = "default_width_min")]
+    pub width_min_mm: f32,
+    #[serde(default = "default_width_max")]
+    pub width_max_mm: f32,
+    /// Margin outside the table in which humans can roam (mm).
+    #[serde(default = "default_margin")]
+    pub margin_mm: f32,
+    /// RNG seed. `0` → non-deterministic (use wall-clock).
+    #[serde(default)]
+    pub seed: u64,
+}
+
+impl Default for HumansConfig {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            count_min: default_count_min(),
+            count_max: default_count_max(),
+            body_height_min_mm: default_height_min(),
+            body_height_max_mm: default_height_max(),
+            walk_speed_min_mm_s: default_speed_min(),
+            walk_speed_max_mm_s: default_speed_max(),
+            width_min_mm: default_width_min(),
+            width_max_mm: default_width_max(),
+            margin_mm: default_margin(),
+            seed: 0,
+        }
+    }
+}
+
+fn default_count_min() -> usize { 6 }
+fn default_count_max() -> usize { 12 }
+fn default_height_min() -> f32 { 1600.0 }
+fn default_height_max() -> f32 { 1950.0 }
+fn default_speed_min() -> f32 { 400.0 }
+fn default_speed_max() -> f32 { 1200.0 }
+fn default_width_min() -> f32 { 350.0 }
+fn default_width_max() -> f32 { 550.0 }
+fn default_margin() -> f32 { 1500.0 }
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct FieldConfig {
+    /// Asserv-aligned playing area. **X axis** runs Down→Up (length 2000 mm),
+    /// `x ∈ [0, x_max_mm]`. **Y axis** runs Right→Left (length 3000 mm),
+    /// centered: `y ∈ [-y_half_mm, +y_half_mm]`. Origin (0, 0) sits at the
+    /// centre of the Down wall — same convention as the galipeur asserv
+    /// (see `galipeur/src/strat/realign.rs`).
+    pub x_max_mm: u32,
+    pub y_half_mm: u32,
+    /// Height of the table above the real floor. Purely visual — it does
+    /// not shift the simulation coordinate frame.
+    #[serde(default)]
+    pub stand_height_mm: f32,
+    /// Optional "wallpaper" texture that covers the entire field
+    /// `[0, -y_half] — [x_max, +y_half]`. Obstacles with `use_playmat = true`
+    /// show the crop of this texture that matches their AABB.
+    #[serde(default)]
+    pub playmat: Option<Playmat>,
+    /// Axis-aligned rectangular obstacles with a vertical height. The
+    /// ground itself is expected to be declared as an obstacle with
+    /// `height_mm = 0` and `use_playmat = true`.
+    #[serde(default)]
+    pub obstacles: Vec<Obstacle>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Playmat {
+    pub path: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Obstacle {
+    #[serde(default)]
+    pub name: String,
+    /// `[x_min, y_min, x_max, y_max]` in millimeters.
+    pub aabb_mm: [f32; 4],
+    /// Vertical extent from the ground plane. `0.0` means a flat ground
+    /// tile (rendered as a plane, invisible to any sensor above it).
+    pub height_mm: f32,
+    /// sRGB hex color `"#RRGGBB"` (leading `#` optional). Defaults to RAL 7032
+    /// ("Kieselgrau"), the usual table-wall color.
+    #[serde(default)]
+    pub color: Option<String>,
+    /// Surface finish. `"smooth"` (default) uses a flat color material;
+    /// `"wood"` applies a procedurally-generated wood-grain texture
+    /// modulated on the base color. Ignored if `texture` is set.
+    #[serde(default)]
+    pub finish: Finish,
+    /// Optional path to a PNG image used as the surface texture. Path is
+    /// relative to the cwd (typically the workspace root). Overrides `finish`.
+    #[serde(default)]
+    pub texture: Option<String>,
+    /// If `true`, render this obstacle with the crop of `[field.playmat]`
+    /// matching its AABB. Overrides `texture` and `finish`.
+    #[serde(default)]
+    pub use_playmat: bool,
+}
+
+#[derive(Debug, Deserialize, Clone, Copy, Default, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum Finish {
+    #[default]
+    Smooth,
+    Wood,
+}
+
+/// RAL 7032 ≈ sRGB #CBC4B0 (203, 196, 176).
+const RAL_7032: [f32; 3] = [203.0 / 255.0, 196.0 / 255.0, 176.0 / 255.0];
+
+impl Obstacle {
+    /// Return the 4 perimeter segments of the AABB as `[ax, ay, bx, by]`
+    /// tuples suitable for ray-vs-segment raycasting.
+    pub fn segments(&self) -> [[f32; 4]; 4] {
+        let [x0, y0, x1, y1] = self.aabb_mm;
+        [
+            [x0, y0, x1, y0],
+            [x1, y0, x1, y1],
+            [x1, y1, x0, y1],
+            [x0, y1, x0, y0],
+        ]
+    }
+
+    /// Resolved sRGB color in [0.0, 1.0] per channel.
+    pub fn srgb_color(&self) -> [f32; 3] {
+        self.color
+            .as_deref()
+            .and_then(parse_hex_color)
+            .unwrap_or(RAL_7032)
+    }
+}
+
+fn parse_hex_color(s: &str) -> Option<[f32; 3]> {
+    let s = s.strip_prefix('#').unwrap_or(s);
+    if s.len() != 6 {
+        return None;
+    }
+    let r = u8::from_str_radix(&s[0..2], 16).ok()?;
+    let g = u8::from_str_radix(&s[2..4], 16).ok()?;
+    let b = u8::from_str_radix(&s[4..6], 16).ok()?;
+    Some([r as f32 / 255.0, g as f32 / 255.0, b as f32 / 255.0])
+}
+
+impl FieldConfig {
+    /// Segments visible to a horizontal beam at `sensor_height_mm`: an
+    /// obstacle contributes its 4 perimeter segments iff its vertical
+    /// extent reaches the beam (`height_mm >= sensor_height_mm`).
+    pub fn obstacle_segments_visible_from(&self, sensor_height_mm: f32) -> Vec<[f32; 4]> {
+        let mut out = Vec::with_capacity(self.obstacles.len() * 4);
+        for o in &self.obstacles {
+            if o.height_mm >= sensor_height_mm && sensor_height_mm > 0.0 {
+                out.extend_from_slice(&o.segments());
+            } else if sensor_height_mm == 0.0 && o.height_mm > 0.0 {
+                // Fallback for sensors with unspecified (0) height — still
+                // exclude flat ground tiles (height_mm == 0).
+                out.extend_from_slice(&o.segments());
+            }
+        }
+        out
+    }
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct StartPosesConfig {
+    pub galipeur: TeamPoses,
+    pub pami: TeamPoses,
+}
+
+/// Year-specific mapping from team colour to table side. The strat
+/// draws colours each year, so this translation lives in config
+/// rather than in the code. Example `[teams] blue = "left", yellow
+/// = "right"` matches a year where the blue team starts on the left.
+#[derive(Debug, Deserialize, Clone)]
+#[serde(rename_all = "lowercase")]
+pub struct TeamSides {
+    pub blue: Side,
+    pub yellow: Side,
+}
+
+impl TeamSides {
+    pub fn side_of(&self, colour: &str) -> Option<Side> {
+        match colour.to_ascii_lowercase().as_str() {
+            "blue" => Some(self.blue),
+            "yellow" => Some(self.yellow),
+            _ => None,
+        }
+    }
+
+    /// Inverse of `side_of`: which colour ("blue" / "yellow") plays
+    /// the given side this year. Used when a launcher only knows the
+    /// `Side` (chord, CLI) but still wants to set the `TEAM=` env so
+    /// the strat can read it directly.
+    pub fn team_of(&self, side: Side) -> Option<&'static str> {
+        if self.blue == side {
+            Some("blue")
+        } else if self.yellow == side {
+            Some("yellow")
+        } else {
+            None
+        }
+    }
+}
+
+/// Start poses keyed by side, using the generic "left/right" naming
+/// (which side of the table the robot is on). The mapping of left/right
+/// onto the current year's team colour (`blue` / `yellow`) is part of
+/// the strat config, not the sim.
+#[derive(Debug, Deserialize, Clone)]
+pub struct TeamPoses {
+    pub left: Pose2DToml,
+    pub right: Pose2DToml,
+}
+
+impl TeamPoses {
+    pub fn pose_for(&self, side: Side) -> &Pose2DToml {
+        match side {
+            Side::Left => &self.left,
+            Side::Right => &self.right,
+        }
+    }
+}
+
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Pose2DToml {
+    pub x_mm: f32,
+    pub y_mm: f32,
+    pub theta_rad: f32,
+}
+
+impl From<Pose2DToml> for Pose2D {
+    fn from(p: Pose2DToml) -> Self {
+        Pose2D { x_mm: p.x_mm, y_mm: p.y_mm, theta_rad: p.theta_rad }
+    }
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct RobotConfig {
+    #[serde(default)]
+    pub kinematics: Option<KinematicsConfig>,
+    pub bbox: BBoxConfig,
+    /// Height above the ground of the robot's main distance sensor
+    /// (top lidar for galipeur, VLX for pami). Used to filter obstacles
+    /// in the raycast — the sensor only "sees" obstacles at least this
+    /// tall.
+    #[serde(default)]
+    pub lidar_height_mm: f32,
+    /// Optional 3D model (visual glb + simplified collision primitives).
+    /// When absent the robot renders as its `bbox` cuboid and the raycast
+    /// uses the AABB silhouette.
+    #[serde(default)]
+    pub model: Option<RobotModel>,
+    /// Neopixel fixtures wired to the robot's LED output. The order of
+    /// this list defines the wire order (the first fixture's LEDs start
+    /// at strip index 0, the next picks up where it left off, etc.).
+    #[serde(default)]
+    pub neopixels: Vec<NeopixelFixture>,
+    /// Ground-facing distance sensors mounted on the chassis. For now
+    /// we only visualise the beam as a red cylinder — no raytracing
+    /// yet, so the beam just extends `max_range_mm` in the configured
+    /// direction without stopping on obstacles.
+    #[serde(default)]
+    pub ground_lidars: Vec<GroundLidar>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct GroundLidar {
+    #[serde(default)]
+    pub name: String,
+    /// `[x_forward, y_left, z_up]` in mm (body frame) — emitter origin.
+    /// Ground lidars sit just above the chassis base; Z stays small.
+    pub position_mm: [f32; 3],
+    /// Beam heading in the body's horizontal plane (rad). 0 = +X
+    /// forward, positive = CCW toward +Y (left). Beam is parallel to
+    /// the ground — no pitch.
+    pub theta_rad: f32,
+    #[serde(default = "default_ground_lidar_range")]
+    pub max_range_mm: f32,
+    #[serde(default = "default_ground_lidar_radius")]
+    pub beam_radius_mm: f32,
+    /// When `false`, the lidar is treated as physically absent: no
+    /// beam visual, no raycast, distance reported as 0 (which the
+    /// firmware skips). Useful to isolate a subset during calibration.
+    #[serde(default = "default_true")]
+    pub enabled: bool,
+}
+
+fn default_true() -> bool {
+    true
+}
+
+fn default_ground_lidar_range() -> f32 {
+    1000.0
+}
+
+fn default_ground_lidar_radius() -> f32 {
+    1.5
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(tag = "shape", rename_all = "snake_case")]
+pub enum NeopixelFixture {
+    /// Single LED at a robot-local position.
+    Single {
+        #[serde(default)]
+        name: String,
+        /// `[x_forward, y_left, z_up]` in robot body frame (mm).
+        position_mm: [f32; 3],
+        /// Visual size of the pixel (mm diameter).
+        #[serde(default = "default_pixel_size_mm")]
+        pixel_size_mm: f32,
+    },
+    /// Ring of `count` LEDs, evenly spaced around `center_mm` in the
+    /// robot's XY plane (Y-forward convention matches the rest of the
+    /// robot body frame).
+    Ring {
+        #[serde(default)]
+        name: String,
+        /// `[x_forward, y_left, z_up]` — centre of the ring (mm).
+        center_mm: [f32; 3],
+        radius_mm: f32,
+        count: u32,
+        /// Pixel 0 starts at this angle (rad, 0 = +X forward), rotating
+        /// counter-clockwise (toward +Y).
+        #[serde(default)]
+        start_angle_rad: f32,
+        #[serde(default = "default_pixel_size_mm")]
+        pixel_size_mm: f32,
+    },
+}
+
+fn default_pixel_size_mm() -> f32 {
+    8.0
+}
+
+impl NeopixelFixture {
+    pub fn count(&self) -> usize {
+        match self {
+            Self::Single { .. } => 1,
+            Self::Ring { count, .. } => *count as usize,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct RobotModel {
+    /// PNG/glb path relative to the workspace cwd — loaded as a Bevy scene.
+    #[serde(default)]
+    pub visual: Option<String>,
+    /// Union of 2D polygons (extruded) and cylinders forming the simplified
+    /// collision / raycast shape.
+    #[serde(default)]
+    pub collision: Vec<CollisionPrimitive>,
+    /// Reference to the Onshape source for regeneration. Informational at
+    /// runtime; consumed by the `onshape_fetch` CLI.
+    #[serde(default)]
+    pub onshape: Option<OnshapeSource>,
+    /// Optional `[x_forward, y_up, z_side]` translation (mm, robot body
+    /// frame) applied to the visual scene on spawn. Use the `y_up` slot
+    /// when the Onshape origin is below the chassis (wheel axle etc.) and
+    /// the model ends up floating under the table.
+    #[serde(default)]
+    pub visual_offset_mm: [f32; 3],
+    /// Optional yaw correction (rad) applied to the visual scene only.
+    /// Compensates an Onshape-vs-asserv heading mismatch (e.g. the model
+    /// was authored with motor 0 along +X while the asserv calls it
+    /// `+30°`). Affects visual alignment, never collision/kinematics.
+    #[serde(default)]
+    pub visual_yaw_rad: f32,
+    /// Optional articulated joints. Each entry adds a child entity
+    /// parented to either the robot's `base` (the visual scene) or
+    /// another joint by `name`. The joint's `Transform` is driven by
+    /// the actuator state forwarded by `picotter_emu`. Empty / absent
+    /// → the robot renders as the static `visual` glb only.
+    #[serde(default)]
+    pub joints: Vec<JointSpec>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct JointSpec {
+    /// Unique within a `RobotModel`. Used both as the parent reference
+    /// for child joints and as the lookup key in the renderer's joint
+    /// registry.
+    pub name: String,
+    /// `"base"` (the robot's `visual` scene) or another joint's `name`.
+    #[serde(default = "default_joint_parent")]
+    pub parent: String,
+    /// Path to the joint's own .glb (relative to the workspace cwd).
+    pub file: String,
+    pub kind: JointKind,
+    /// Joint axis in the parent's body frame. Unit vector recommended
+    /// — sim normalises before use.
+    pub axis: [f32; 3],
+    /// Range mapped from the actuator's raw `u16` in `[0, 65535]` →
+    /// `[range_mm[0], range_mm[1]]` for translation joints (mm).
+    #[serde(default)]
+    pub range_mm: Option<[f32; 2]>,
+    /// Same for rotation joints (radians).
+    #[serde(default)]
+    pub range_rad: Option<[f32; 2]>,
+    /// Static offset from the parent's origin to the joint's pivot,
+    /// applied before the actuator-driven delta. Body-frame mm.
+    #[serde(default)]
+    pub pivot_offset_mm: [f32; 3],
+    pub state: JointStateBinding,
+}
+
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum JointKind {
+    Rotation,
+    Translation,
+}
+
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum JointActuator {
+    Translation,
+    Arm,
+    Clamp,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct JointStateBinding {
+    /// `"left"`, `"back"`, or `"right"` (= `RobotSide`). Indexed
+    /// 0/1/2 in `ModuleActuators` arrays.
+    pub module: JointModule,
+    /// Which actuator on that module.
+    pub actuator: JointActuator,
+    /// 0..4 for `arm`, 0..3 for `clamp`. Ignored for `translation`.
+    #[serde(default)]
+    pub index: u8,
+}
+
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum JointModule {
+    Left,
+    Back,
+    Right,
+}
+
+impl JointModule {
+    /// Index used in `ModuleActuators[3]` arrays (matches
+    /// `RobotSide::module()`).
+    pub fn idx(self) -> usize {
+        match self {
+            Self::Left => 0,
+            Self::Back => 1,
+            Self::Right => 2,
+        }
+    }
+}
+
+fn default_joint_parent() -> String {
+    "base".into()
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct OnshapeSource {
+    pub url: String,
+    #[serde(default)]
+    pub exclude: Vec<String>,
+    #[serde(default)]
+    pub include: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(tag = "shape", rename_all = "snake_case")]
+pub enum CollisionPrimitive {
+    Polygon {
+        /// Vertices in robot-local millimetres, counter-clockwise.
+        points_mm: Vec<[f32; 2]>,
+        #[serde(default)]
+        z_base_mm: f32,
+        height_mm: f32,
+    },
+    Cylinder {
+        center_mm: [f32; 2],
+        radius_mm: f32,
+        #[serde(default)]
+        z_base_mm: f32,
+        height_mm: f32,
+    },
+}
+
+impl CollisionPrimitive {
+    /// Whether a horizontal sensor beam at `sensor_z_mm` intersects this
+    /// primitive vertically.
+    pub fn visible_at(&self, sensor_z_mm: f32) -> bool {
+        let (z0, h) = match self {
+            Self::Polygon { z_base_mm, height_mm, .. } => (*z_base_mm, *height_mm),
+            Self::Cylinder { z_base_mm, height_mm, .. } => (*z_base_mm, *height_mm),
+        };
+        sensor_z_mm >= z0 && sensor_z_mm <= z0 + h
+    }
+
+    /// 2D silhouette as `[ax, ay, bx, by]` segments in robot-local
+    /// millimetres. Cylinders are approximated with an inscribed regular
+    /// polygon with `cyl_n` sides (err on the side of slightly
+    /// undersizing, so the raycast doesn't shoot through).
+    pub fn to_segments_local(&self, cyl_n: usize) -> Vec<[f32; 4]> {
+        match self {
+            Self::Polygon { points_mm, .. } => {
+                let n = points_mm.len();
+                if n < 2 {
+                    return Vec::new();
+                }
+                let mut out = Vec::with_capacity(n);
+                for i in 0..n {
+                    let [ax, ay] = points_mm[i];
+                    let [bx, by] = points_mm[(i + 1) % n];
+                    out.push([ax, ay, bx, by]);
+                }
+                out
+            }
+            Self::Cylinder { center_mm, radius_mm, .. } => {
+                let n = cyl_n.max(3);
+                let mut pts = Vec::with_capacity(n);
+                for i in 0..n {
+                    let a = (i as f32) * std::f32::consts::TAU / (n as f32);
+                    pts.push([
+                        center_mm[0] + radius_mm * a.cos(),
+                        center_mm[1] + radius_mm * a.sin(),
+                    ]);
+                }
+                let mut out = Vec::with_capacity(n);
+                for i in 0..n {
+                    let [ax, ay] = pts[i];
+                    let [bx, by] = pts[(i + 1) % n];
+                    out.push([ax, ay, bx, by]);
+                }
+                out
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn polygon_segments_square() {
+        let p = CollisionPrimitive::Polygon {
+            points_mm: vec![[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]],
+            z_base_mm: 0.0,
+            height_mm: 10.0,
+        };
+        let segs = p.to_segments_local(16);
+        assert_eq!(segs.len(), 4);
+        assert_eq!(segs[0], [-1.0, -1.0, 1.0, -1.0]);
+    }
+
+    #[test]
+    fn cylinder_produces_n_segments() {
+        let c = CollisionPrimitive::Cylinder {
+            center_mm: [0.0, 0.0],
+            radius_mm: 10.0,
+            z_base_mm: 0.0,
+            height_mm: 10.0,
+        };
+        let segs = c.to_segments_local(16);
+        assert_eq!(segs.len(), 16);
+    }
+
+    #[test]
+    fn visible_at_is_within_z_range() {
+        let c = CollisionPrimitive::Cylinder {
+            center_mm: [0.0, 0.0],
+            radius_mm: 1.0,
+            z_base_mm: 50.0,
+            height_mm: 100.0,
+        };
+        assert!(!c.visible_at(0.0));
+        assert!(c.visible_at(100.0));
+        assert!(!c.visible_at(200.0));
+    }
+
+    #[test]
+    fn parse_joint_block() {
+        let toml_str = r#"
+            visual = "x.glb"
+            visual_offset_mm = [0, 0, 0]
+
+            [[joints]]
+            name = "translation_back"
+            file = "trans.glb"
+            kind = "translation"
+            axis = [0, 1, 0]
+            range_mm = [0.0, 100.0]
+            state = { module = "back", actuator = "translation" }
+
+            [[joints]]
+            name = "arm_back_0"
+            parent = "translation_back"
+            file = "arm.glb"
+            kind = "rotation"
+            axis = [1, 0, 0]
+            range_rad = [0.0, 1.5708]
+            pivot_offset_mm = [0, 0, 30]
+            state = { module = "back", actuator = "arm", index = 0 }
+        "#;
+        let m: RobotModel = toml::from_str(toml_str).expect("parse RobotModel");
+        assert_eq!(m.joints.len(), 2);
+        let t = &m.joints[0];
+        assert_eq!(t.name, "translation_back");
+        assert_eq!(t.parent, "base");
+        assert_eq!(t.kind, JointKind::Translation);
+        assert_eq!(t.state.module, JointModule::Back);
+        assert_eq!(t.state.actuator, JointActuator::Translation);
+        let a = &m.joints[1];
+        assert_eq!(a.parent, "translation_back");
+        assert_eq!(a.kind, JointKind::Rotation);
+        assert_eq!(a.state.actuator, JointActuator::Arm);
+        assert_eq!(a.state.index, 0);
+        assert_eq!(a.pivot_offset_mm, [0.0, 0.0, 30.0]);
+    }
+}
+
+#[derive(Debug, Deserialize, Clone)]
+#[serde(untagged)]
+pub enum KinematicsConfig {
+    Holo {
+        velocities_to_consigns: [[f32; 3]; 3],
+        encoders_to_position: [[f32; 3]; 3],
+    },
+    Diff {
+        wheel_base_mm: f32,
+        wheel_diameter_mm: f32,
+        encoder_ticks_per_rev: u32,
+        max_wheel_speed_mm_s: f32,
+    },
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct BBoxConfig {
+    pub width_mm: f32,
+    pub length_mm: f32,
+    /// Height above the table top. Used for raycast filtering (so tall
+    /// robots remain visible to high-mounted lidars of other robots).
+    #[serde(default = "default_robot_height")]
+    pub height_mm: f32,
+}
+
+fn default_robot_height() -> f32 { 300.0 }
+
+
+impl Config {
+    pub fn load(path: &str) -> std::io::Result<Self> {
+        let text = std::fs::read_to_string(path)?;
+        toml::from_str(&text)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+    }
+
+    /// Return the start pose for a given robot kind and side. Falls back
+    /// to the `Left` side when the caller doesn't specify one.
+    pub fn start_pose(&self, kind: RobotKind, side: Side) -> Pose2D {
+        let poses = match kind {
+            RobotKind::Galipeur => &self.start_poses.galipeur,
+            RobotKind::Pami => &self.start_poses.pami,
+            // Adversary spawns at the table centre — no team-specific
+            // start pose. Operator drives it from ZQSD/gamepad.
+            RobotKind::Adversary => {
+                return Pose2D {
+                    x_mm: self.field.x_max_mm as f32 * 0.5,
+                    y_mm: 0.0,
+                    theta_rad: 0.0,
+                };
+            }
+        };
+        poses.pose_for(side).clone().into()
+    }
+
+    pub fn default_start_for(&self, kind: RobotKind) -> Pose2D {
+        self.start_pose(kind, Side::Left)
+    }
+}

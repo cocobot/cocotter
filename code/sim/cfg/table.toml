@@ -1,0 +1,365 @@
+# Simulator field + robot configuration.
+#
+# Units: millimeters for lengths, radians for angles.
+# The kinematics matrices below are intentionally duplicated from the
+# robot source code so that a mismatch can be used to validate calibration
+# routines. Keep in sync by default.
+
+[field]
+# Coupe de France de Robotique standard table (2026 placeholder).
+# Asserv-aligned frame:
+#   X axis: Down→Up wall, range  [0, x_max_mm]      (length 2000 mm).
+#   Y axis: Right→Left wall, range [-y_half_mm, +y_half_mm]
+#                                              centered (length 3000 mm).
+# Origin (0, 0) sits at the centre of the Down wall. Matches the
+# galipeur strat's `realign.rs` convention so the sim and the firmware
+# speak the same coordinates without any frame translation.
+x_max_mm  = 2000
+y_half_mm = 1500
+# Visual elevation of the table above the floor. Lets spectators walk
+# around without clipping through the playing area.
+stand_height_mm = 1000
+
+# Obstacles are axis-aligned rectangles with a vertical height. The ground
+# itself is declared as a `height_mm = 0` obstacle carrying the playmat
+# texture — this unifies the field with every other raised surface.
+#
+# aabb_mm    = [x_min, y_min, x_max, y_max] in the asserv-aligned frame.
+# height_mm  = vertical extent (0 = flat ground tile).
+# color      = optional sRGB hex "#RRGGBB". Defaults to RAL 7032 (Kieselgrau).
+# finish     = "smooth" (default) or "wood" (procedural grain).
+# texture    = optional PNG path (relative to cwd). Overrides `finish`.
+#
+# Raycast visibility is filtered per-robot by `lidar_height_mm`: a sensor
+# at height H only sees obstacles whose height_mm >= H. Flat ground tiles
+# (height 0) are never seen.
+
+[field.playmat]
+path = "sim/assets/table.png"
+
+[[field.obstacles]]
+name = "ground"
+aabb_mm = [0, -1500, 2000, 1500]
+height_mm = 0
+use_playmat = true
+
+# wall_down: along the Down wall (X = 0 line)
+[[field.obstacles]]
+name = "wall_down"
+aabb_mm = [-22, -1522, 0, 1522]
+height_mm = 70
+finish = "wood"
+
+# wall_up: along the Up wall (X = 2000 line)
+[[field.obstacles]]
+name = "wall_up"
+aabb_mm = [2000, -1522, 2022, 1522]
+height_mm = 70
+finish = "wood"
+
+# wall_left: along the Left wall (Y = +1500 line)
+[[field.obstacles]]
+name = "wall_left"
+aabb_mm = [0, 1500, 2000, 1522]
+height_mm = 70
+finish = "wood"
+
+# wall_right: along the Right wall (Y = -1500 line)
+[[field.obstacles]]
+name = "wall_right"
+aabb_mm = [0, -1522, 2000, -1500]
+height_mm = 70
+finish = "wood"
+
+# Granary side rails — short uprights along the Up wall (X = 2000 side).
+# Both rails are 15 mm thick along Y, 450 mm long along X (perpendicular
+# to Up wall, extending inward into the play area).
+[[field.obstacles]]
+name = "granary_right"
+aabb_mm = [1550, -900, 2000, -885]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "granary_left"
+aabb_mm = [1550, 885, 2000, 900]
+height_mm = 70
+finish = "wood"
+
+[[field.obstacles]]
+name = "granary_ground"
+aabb_mm = [1550, -885, 2000, 885]
+height_mm = 55
+use_playmat = true
+finish = "wood"
+
+# Start poses are keyed by "left" / "right" — which side of the table
+# the robot starts on. The colour mapping (left = blue or yellow) is
+# decided by the strat each year, not by the sim.
+# All coordinates are in the asserv-aligned frame: X ∈ [0, 2000]
+# (Down→Up), Y ∈ [-1500, +1500] (Right→Left, centered). theta_rad = 0
+# means body forward along +X (toward the Up wall).
+[start_poses.galipeur.left]
+x_mm = 1500
+y_mm = 1200
+theta_rad = 3.14
+
+[start_poses.galipeur.right]
+x_mm = 1600
+y_mm = -1250
+theta_rad = 2.95
+
+[start_poses.pami.left]
+x_mm = 200
+y_mm = -1000
+theta_rad = 1.5708
+
+[start_poses.pami.right]
+x_mm = 200
+y_mm = 1000
+theta_rad = -1.5708
+
+# Year-specific colour → side mapping. Flip this each year based on the
+# strat convention (which colour ends up on which side of the table).
+[teams]
+blue = "right"
+yellow = "left"
+
+# Galipeur holonomic kinematics — mirrors galipeur/src/main.rs.
+# velocities_to_consigns[i][j]: motor i consign contribution from body axis j (vx, vy, va).
+[galipeur.kinematics]
+velocities_to_consigns = [
+    [ 0.137193775559, -0.227742535811,   32.7587578324 ],
+    [-0.267514745628,  0.000225842067981, 32.2910980339],
+    [ 0.138273262887,  0.235015679279,   32.2670974911 ],
+]
+encoders_to_position = [
+    [-1.24627114282,   2.4735001584,  -1.21007913871],
+    [ 2.15287736186, -0.0169008404017, -2.16876778164],
+    [-0.0103397573436, -0.010476522571, -0.0100097003094],
+]
+
+# Optional 3D model: visual `.glb` (e.g. produced by `tool/onshape_fetch/`)
+# + simplified collision shape (union of extruded polygons + cylinders).
+# Press `H` in the window to toggle a transparent red overlay of the
+# collision shape, useful to verify dimensions against the visual model.
+# Without `[galipeur.model]` the sim falls back to a blue cuboid based on
+# `[galipeur.bbox]`.
+#
+[galipeur.model]
+# `base.glb` is the chassis with every actuator subtracted; the
+# articulated parts (translation_back, arm_back_*, …) load via the
+# `[[galipeur.model.joints]]` block below.
+visual = "sim/assets/robots/galipeur/base.glb"
+# Raise the Onshape model 62mm above the table surface — the export's
+# origin sits at the wheel axle, not the chassis base.
+visual_offset_mm = [0, 62, 0]
+# The Onshape model was authored with motor 0 along its +X axis; the
+# asserv body frame uses +X = "between motors 0 and 2" (30° offset
+# from motor 0). Visual-only correction so the chassis "tip" lines up
+# with the body forward direction. Tune sign if the front ends up
+# rotated the wrong way.
+visual_yaw_rad = 0.5235988
+
+# Simplified collision / raycast shape — union of primitives in the robot
+# body frame (X forward, Y left, Z up). Used both for the 2D swept
+# collision against obstacles and, projected to 2D, for the lidar
+# raytracing silhouette. Press H in the sim window to toggle a translucent
+# red overlay showing these primitives on top of the visual model.
+
+## Triangular footprint pointing forward (+X), chassis level.
+## Truncated-triangle hexagon: tip (short edge) at +X, base (long edge)
+## at -X, parallel to the Y axis. Converted from the legacy OLD-sim
+## frame via new_x = -old_y, new_y = -old_x.
+[[galipeur.model.collision]]
+shape = "polygon"
+points_mm = [
+    [ 178.338,   51.019],   # front-left tip vertex
+    [ 178.338,  -50.660],   # front-right tip vertex
+    [ -45.960, -179.778],   # right side, lower
+    [-133.042, -129.115],   # right side, upper
+    [-133.353,  128.935],   # left side, upper
+    [ -45.296,  179.775],   # left side, lower
+]
+z_base_mm = 0
+height_mm = 342
+
+# Lidar/tower cylinder centred on the robot, sitting on top of the chassis.
+[[galipeur.model.collision]]
+shape = "cylinder"
+center_mm = [0, 0]
+radius_mm = 45
+z_base_mm = 340
+height_mm = 110
+
+# Articulated joints (M13). Uncomment after running
+# `tool/onshape_fetch/scripts/fetch-galipeur.sh` so the per-part .glb
+# files exist under sim/assets/robots/galipeur/. Until then the sim
+# falls back to the static `visual` glb above.
+#
+# axis & range_* values below are placeholders — tune them once you
+# can see the glbs in place by toggling H to compare with the
+# collision overlay.
+#
+# [[galipeur.model.joints]]
+# name = "translation_back"
+# parent = "base"
+# file = "sim/assets/robots/galipeur/translation_back.glb"
+# kind = "translation"
+# axis = [0, 1, 0]                # +Y in chassis body frame (placeholder)
+# range_mm = [0.0, 100.0]
+# state = { module = "back", actuator = "translation" }
+#
+# [[galipeur.model.joints]]
+# name = "arm_back_0"
+# parent = "translation_back"
+# file = "sim/assets/robots/galipeur/arm_back_0.glb"
+# kind = "rotation"
+# axis = [1, 0, 0]
+# range_rad = [0.0, 1.5708]
+# pivot_offset_mm = [0, 0, 30]
+# state = { module = "back", actuator = "arm", index = 0 }
+#
+# [[galipeur.model.joints]]
+# name = "arm_back_1"
+# parent = "translation_back"
+# file = "sim/assets/robots/galipeur/arm_back_1.glb"
+# kind = "rotation"
+# axis = [1, 0, 0]
+# range_rad = [0.0, 1.5708]
+# pivot_offset_mm = [0, 0, 30]
+# state = { module = "back", actuator = "arm", index = 1 }
+#
+# [[galipeur.model.joints]]
+# name = "arm_back_2"
+# parent = "translation_back"
+# file = "sim/assets/robots/galipeur/arm_back_2.glb"
+# kind = "rotation"
+# axis = [1, 0, 0]
+# range_rad = [0.0, 1.5708]
+# pivot_offset_mm = [0, 0, 30]
+# state = { module = "back", actuator = "arm", index = 2 }
+#
+# [[galipeur.model.joints]]
+# name = "arm_back_3"
+# parent = "translation_back"
+# file = "sim/assets/robots/galipeur/arm_back_3.glb"
+# kind = "rotation"
+# axis = [1, 0, 0]
+# range_rad = [0.0, 1.5708]
+# pivot_offset_mm = [0, 0, 30]
+# state = { module = "back", actuator = "arm", index = 3 }
+
+# Robot bounding box — width/length are the footprint, height is the body
+# size (used to let other robots' lidars see this robot).
+[galipeur.bbox]
+width_mm  = 300
+length_mm = 300
+height_mm = 300
+# Height of galipeur's top LD06 above the table surface. Measured on
+# the chassis: emitter sits 390 mm above the table top.
+[galipeur]
+lidar_height_mm = 390
+
+# Neopixel fixtures wired to sabotter's single ws2812 output. Order of
+# the list defines strip order: the `single` below consumes pixel 0, the
+# ring consumes pixels 1..42. Total = 42 LEDs.
+[[galipeur.neopixels]]
+shape = "single"
+name = "status"
+# Asserv body frame, with an additional +120° rotation around Z on top
+# of the OLD-sim → asserv conversion. Aligns the body-frame positions
+# with the firmware's `RobotSide → module` mapping.
+position_mm = [-85.059, -116.471, 208.5]
+pixel_size_mm = 10
+
+[[galipeur.neopixels]]
+shape = "ring"
+name = "ring"
+center_mm = [0, 0, 351]
+radius_mm = 45
+count = 41
+# +120° rotation applied to the start angle as well.
+start_angle_rad = -0.1066610
+pixel_size_mm = 8
+
+# Ground-level lidars: mounted under the chassis, beams parallel to
+# the ground. `position_mm = [x_fwd, y_left, z_up]` (asserv body
+# frame, Z-up). `theta_rad` = heading in body XY plane (0 = +X,
+# +pi/2 = +Y).
+# Six ground lidars in two trios (gl0/gl1/gl2 + gl3/gl4/gl5), 120°
+# apart around the robot Z axis. An additional +120° rotation is
+# applied here (compared to the firmware-paste reference) so the
+# sim's `i % 3` packing lines up with the firmware modules.
+
+[[galipeur.ground_lidars]]
+name = "gl0"
+position_mm = [170.131, 39.998, 25.850]
+theta_rad = 1.5707963            # +90°
+enabled = true
+
+[[galipeur.ground_lidars]]
+name = "gl1"
+position_mm = [-117.029, 125.654, 25.850]
+theta_rad = -2.6179938           # -150°
+
+[[galipeur.ground_lidars]]
+name = "gl2"
+position_mm = [-50.430, -164.111, 25.850]
+theta_rad = -0.5235988           # -30°
+enabled = true
+
+[[galipeur.ground_lidars]]
+name = "gl3"
+position_mm = [-50.309, 164.176, 38.522]
+theta_rad = 0.5235988            # +30°
+enabled = true
+
+[[galipeur.ground_lidars]]
+name = "gl4"
+position_mm = [-119.701, -127.340, 38.522]
+theta_rad = 2.6179938            # +150°
+
+[[galipeur.ground_lidars]]
+name = "gl5"
+position_mm = [167.341, -38.377, 38.522]
+theta_rad = -1.5707963           # -90°
+enabled = true
+
+[pami.bbox]
+width_mm  = 150
+length_mm = 150
+height_mm = 150
+# VLX forward-facing ToF height above the table surface.
+[pami]
+lidar_height_mm = 30
+
+# Pami differential kinematics.
+# wheel_base_mm matches pami/src/main.rs (MotorsConf::from_dimensions first arg = 75mm).
+# wheel_diameter_mm matches the second arg (30 mm).
+# encoder_ticks_per_rev matches the third arg (256).
+# max_wheel_speed_mm_s: sim choice — consign ±1000 corresponds to ±this speed.
+[pami.kinematics]
+wheel_base_mm = 75.0
+wheel_diameter_mm = 30.0
+encoder_ticks_per_rev = 256
+max_wheel_speed_mm_s = 500.0
+
+# Random spectators walking around the table (outside the play area) to
+# exercise the lidars with moving external perturbations. Always spawned
+# when `enabled = true`; use the `C` shortcut in the 3D view to toggle
+# their visibility at runtime. Set `enabled = false` to skip them
+# entirely (useful for CI / headless).
+[humans]
+enabled = true
+count_min = 3
+count_max = 6
+body_height_min_mm = 1600
+body_height_max_mm = 1950
+walk_speed_min_mm_s = 400
+walk_speed_max_mm_s = 1200
+width_min_mm = 350
+width_max_mm = 550
+margin_mm = 1500
+# `seed = 0` → non-deterministic; set a non-zero value for reproducible runs.
+seed = 0

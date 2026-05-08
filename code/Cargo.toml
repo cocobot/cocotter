@@ -5,6 +5,8 @@ members = [
     "picotter",
     "picotter-bootloader",
 
+    "sim",
+
     "libs/amatheur",
     "libs/asserv",
     "libs/ble",
@@ -15,6 +17,8 @@ members = [
     "libs/sch16t",
     "libs/tca6408",
     "libs/vlx",
+    "libs/sim_protocol",
+    "libs/sim_client",
 
     "boards/common",
     "boards/pami",

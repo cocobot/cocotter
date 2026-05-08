@@ -370,8 +370,7 @@ impl SabotterBoard for MockSabotterBoard {
     }
 
     fn imu_spi(&mut self) -> Option<Self::Spi> {
-        // Sim variant of MovementLowLevelHardware does not call this.
-        None
+        Some(SpiMock::new(&[]))
     }
 
     fn battery_reader(&mut self) -> Option<Self::BatteryReader> {
@@ -399,11 +398,12 @@ impl SabotterBoard for MockSabotterBoard {
         thread::Builder::new()
             .name("mock-rome-drain".into())
             .spawn(move || {
-                while out_rx.try_recv().is_ok() {}
-                while str_rx.try_recv().is_ok() {}
-
-                out_rx.recv_timeout(Duration::from_millis(100)).ok();
-                str_rx.recv_timeout(Duration::from_millis(100)).ok();
+                loop {
+                    flume::Selector::new()
+                        .recv(&out_rx, |_| {})
+                        .recv(&str_rx, |_| {})
+                        .wait();
+                }
             })
             .expect("spawn mock-rome-drain");
         Some((out_tx, str_tx, in_rx))

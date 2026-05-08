@@ -3,7 +3,7 @@ name = "board-sabotter"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies] 
+[dependencies]
 embedded-hal = "1.0"
 embedded-hal-bus = { version = "0.3", features = ["std"] }
 embedded-can = { version = "0.4" }
@@ -11,6 +11,7 @@ flume = { version = "0.11", default-features = false }
 log = "0.4"
 board-common = { path = "../common" }
 cancaner = { path = "../../libs/cancaner" }
+asserv = { path = "../../libs/asserv" }
 pca9535 = { version = "2.0", features = ["std"] }
 smart-leds-trait = "0.3.2"
 
@@ -19,6 +20,7 @@ esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }
 ble = { path = "../../libs/ble" }
 esp32_encoder = { path = "../../libs/esp32_encoder" }
 ws2812-esp32-rmt-driver = { git = "https://github.com/DamienEspitallier/ws2812-esp32-rmt-driver", rev = "ae05c19", features = ["smart-leds-trait"] }
+sch16t = { path = "../../libs/sch16t" }
 
 
 [target.'cfg(not(target_os = "espidf"))'.dependencies]

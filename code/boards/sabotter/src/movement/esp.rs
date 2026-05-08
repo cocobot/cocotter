@@ -1,11 +1,8 @@
-use std::time::Duration;
-use asserv::{holonomic::conf::*, maths::XYA};
-use board_sabotter::{Encoder, SabotterBoard, SabotterMotor};
+use asserv::holonomic::conf::*;
+use asserv::maths::XYA;
+use crate::{Encoder, SabotterBoard, SabotterMotor};
 use embedded_hal::pwm::SetDutyCycle;
 use sch16t::Sch16t;
-
-pub const ASSERV_PERIOD: Duration = Duration::from_millis(15);
-
 
 pub struct MovementLowLevelHardware<B: SabotterBoard> {
     gyro: Sch16t<B::Spi>,
@@ -17,7 +14,11 @@ pub struct MovementLowLevelHardware<B: SabotterBoard> {
 }
 
 impl<B: SabotterBoard> MovementLowLevelHardware<B> {
-    pub fn new(gyro: Sch16t<B::Spi>, motors: [SabotterMotor<B::MotorEncoder, B::MotorPwm>; 3]) -> Self {
+    /// Build from the board: take its SPI for the gyro and its motors.
+    pub fn new(board: &mut B) -> Self {
+        let mut gyro = Sch16t::new(board.imu_spi().unwrap(), 0);
+        gyro.init().unwrap();
+        let motors = board.motors().unwrap();
         Self {
             gyro,
             gyro_last_angle: None,
@@ -69,12 +70,19 @@ impl<B: SabotterBoard> AsservHardware for MovementLowLevelHardware<B> {
                 (new_offsets[2] - last_values[2]) as f32,
             ]
         } else {
-            //first read
             [0.0, 0.0, 0.0]
         };
         self.last_encoder_values = Some(new_offsets);
 
         delta_offsets
+    }
+
+    fn teleport(&mut self, _xya: XYA) {
+        log::error!(
+            "teleport() called on the real galipeur. You can't teleport \
+             a 6 kg chassis through sheer willpower — use the sim for \
+             that. Ignoring."
+        );
     }
 
     fn get_gyro_offset(&mut self) -> f32 {
@@ -94,19 +102,11 @@ impl<B: SabotterBoard> AsservHardware for MovementLowLevelHardware<B> {
                 let offset = new_angle - last_angle;
                 self.gyro_last_angle = Some(new_angle);
                 offset.to_radians()
-            },
+            }
             None => {
                 self.gyro_last_angle = Some(new_angle);
                 0.0
             }
         }
-    }
-
-    fn teleport(&mut self, _xya: XYA) {
-        log::error!(
-            "teleport() called on the real galipeur. You can't teleport \
-             a 6 kg chassis through sheer willpower — use the sim for \
-             that. Ignoring."
-        );
     }
 }

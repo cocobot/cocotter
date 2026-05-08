@@ -9,7 +9,7 @@ use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 
 pub const PROTOCOL_VERSION: u16 = 1;
-pub const DEFAULT_SOCKET_PATH: &str = "/tmp/meca_sim.sock";
+pub const DEFAULT_SOCKET_PATH: &str = "/tmp/cocotter_sim.sock";
 
 #[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum RobotKind {
@@ -55,7 +55,7 @@ bitflags! {
 }
 
 /// Reference frame for debug volume coordinates.
-#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Default)]
+#[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq)]
 pub enum DebugVolumeFrame {
     /// Body-relative: parented to the robot entity, follows its pose.
     Body,
@@ -96,6 +96,16 @@ pub enum DebugVolume {
         rgba: [f32; 4],
         frame: DebugVolumeFrame,
     },
+}
+
+impl DebugVolume {
+    pub fn frame(&self) -> DebugVolumeFrame {
+        match self {
+            Self::Box { frame, .. }
+            | Self::Cylinder { frame, .. }
+            | Self::Text { frame, .. } => *frame,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

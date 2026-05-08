@@ -6,9 +6,9 @@ use board_common::{Periodicity, Team};
 use board_sabotter::SabotterBoard;
 use cancaner::{CanMessage, ClampServo};
 use flume::{Receiver, Sender};
-use sch16t::Sch16t;
+
 use crate::led::{LedMessage, Leds};
-use crate::movement::MovementLowLevelHardware;
+use board_sabotter::movement::MovementLowLevelHardware;
 use crate::meca::{CleatSide, Meca};
 use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
 use crate::opponent_detection::{OpponentDetection, OpponentDetectionConf, Zone};
@@ -57,10 +57,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
         top_lidar_conf: TopLidarConf,
         opponent_detection_conf: OpponentDetectionConf,
     ) -> Self {
-        // Setup gyro, asserv
-        let mut gyro = Sch16t::new(board.imu_spi().unwrap(), 0);
-        gyro.init().unwrap();
-        let asserv_hardware = MovementLowLevelHardware::new(gyro, board.motors().unwrap());
+        let asserv_hardware = MovementLowLevelHardware::new(board);
 
         // Setup CAN interface
         let can_interface = GalipeurCan::new(board.can().unwrap());

@@ -3,7 +3,8 @@ use std::sync::{Arc, Mutex};
 use asserv::{holonomic::{Asserv, RobotSide, TableSide}, maths::{XY, XYA}};
 use board_sabotter::SabotterBoard;
 
-use crate::{movement::MovementLowLevelHardware, opponent_detection::OpponentDetection, strat::errors::StrategyError};
+use board_sabotter::movement::MovementLowLevelHardware;
+use crate::{opponent_detection::OpponentDetection, strat::errors::StrategyError};
 
 pub const fn arfast(face: RobotSide, side: TableSide) -> f32 {
     match (face, side) {

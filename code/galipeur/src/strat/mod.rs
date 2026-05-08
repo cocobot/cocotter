@@ -11,7 +11,7 @@ use pathfinding::{PathGraph, PathGraphBuilder};
 use crate::arfast;
 use crate::led::LedMessage;
 use crate::meca::{Meca, CleatSide};
-use crate::movement::MovementLowLevelHardware;
+use board_sabotter::movement::MovementLowLevelHardware;
 use crate::opponent_detection::OpponentDetection;
 use crate::sensors::Sensors;
 use crate::strat::utils::{AsservHelper, arfast};

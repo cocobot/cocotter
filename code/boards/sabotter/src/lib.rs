@@ -3,6 +3,8 @@ pub mod esp;
 #[cfg(not(target_os = "espidf"))]
 pub mod mock;
 
+pub mod movement;
+
 use embedded_hal::{
     digital::{StatefulOutputPin, InputPin},
     i2c::I2c,
