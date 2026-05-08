@@ -3,7 +3,6 @@ use std::sync::{Arc, Mutex};
 
 use asserv::maths::XYA;
 use flume::Sender;
-use log::info;
 use crate::led::{LedMessage, OpponentLedPixel};
 
 /// Conservative adversary footprint. Eurobot opponent is Ø450mm;
@@ -505,7 +504,6 @@ impl SlowRevTracker {
             } else {
                 self.clean_revs = self.clean_revs.saturating_add(1);
             }
-            log::info!("SlowRev: revolution boundary, had_slow={had_slow}, clean_revs={}", self.clean_revs);
             let should_clear = !had_slow && self.clean_revs >= SLOW_CLEAR_REVOLUTIONS;
             self.rev_had_slow = false;
             self.last_angle = angle_deg;
@@ -676,21 +674,14 @@ impl OpponentDetection {
 
             if matches!(compiled.trip_state(bx, by), TripState::Stop) {
                 hits += 1;
-                log::info!(
-                    "Preflight hit {}/{}: table=({:.0},{:.0}) body=({:.0},{:.0}) ang={:.1}° dist={} robot=({:.0},{:.0},{:.2})",
-                    hits, TRIP_THRESHOLD, tx, ty, bx, by,
-                    pt.angle_deg, pt.distance_mm,
-                    robot_pos.x, robot_pos.y, robot_pos.a,
-                );
+
                 if hits >= TRIP_THRESHOLD as u32 {
                     self.inner.must_stop.store(true, Ordering::Relaxed);
-                    log::info!("Preflight: NOPE ! {:?}", zone);
                     return false;
                 }
             }
         }
 
-        log::info!("preflight OK hits={hits} {:?}", zone);
         true
     }
 
@@ -743,7 +734,6 @@ impl OpponentDetection {
                     self.inner.must_slow.store(false, Ordering::Relaxed);
                     slow_count = 0;
                     self.inner.slow_count.store(0, Ordering::Relaxed);
-                    log::warn!("Slow auto-cleared after {SLOW_CLEAR_REVOLUTIONS} clean revolutions");
                 }
             }
 
@@ -799,14 +789,10 @@ impl OpponentDetection {
                     let sin_a = robot_pos.a.sin();
                     let tx = robot_pos.x + bx * cos_a - by * sin_a;
                     let ty = robot_pos.y + bx * sin_a + by * cos_a;
-                    log::info!(
-                        "Slow hit: trip={trip:?} ang={angle_deg:.1}° dist={distance_mm} body=({bx:.0},{by:.0}) table=({tx:.0},{ty:.0}) slow_count={slow_count}"
-                    );
                 } else {
                     slow_count = slow_count.saturating_sub(1);
                 }
                 if slow_count >= TRIP_THRESHOLD && !self.inner.must_slow.load(Ordering::Relaxed) {
-                    log::warn!("Slow TRIGGERED (slow_count={slow_count})");
                     self.inner.must_slow.store(true, Ordering::Relaxed);
                 }
 
