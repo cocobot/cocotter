@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>glTF categorizer — cocotter</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #202024; color: #ddd; font-family: ui-sans-serif, system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; }
+
+  /* ─── left info panel ─── */
+  #info {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(0,0,0,0.6); padding: 10px 12px; border-radius: 6px;
+    font-size: 12px; line-height: 1.5; max-width: 360px; pointer-events: auto;
+  }
+  #info code { background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 3px; }
+  #info .hint { color: #888; }
+  #info .stats { margin-top: 8px; border-top: 1px solid #444; padding-top: 6px; }
+  #info .picked { margin-top: 8px; border-top: 1px solid #444; padding-top: 6px; }
+  button {
+    background: #333; color: #ddd; border: 1px solid #555; border-radius: 4px;
+    padding: 3px 8px; font: inherit; cursor: pointer; margin-right: 4px;
+  }
+  button:hover { background: #444; }
+  button.active { background: #2a5; border-color: #4c7; }
+
+  #drop { position: absolute; inset: 0; border: 2px dashed transparent; pointer-events: none; }
+  #drop.dragging { border-color: #7cd; background: rgba(124,204,221,0.08); }
+  #error { color: #faa; white-space: pre-wrap; }
+
+  /* ─── right panel: categories ─── */
+  #categories {
+    position: absolute; top: 8px; right: 8px; bottom: 8px; width: 380px;
+    background: rgba(0,0,0,0.6); border-radius: 6px;
+    display: flex; flex-direction: column; font-size: 12px; color: #ddd;
+    overflow-y: auto;
+  }
+  #categories .head {
+    padding: 8px 10px 6px;
+    border-bottom: 1px solid #444;
+    font-weight: bold; font-size: 13px;
+  }
+  #categories .cat-section {
+    border-bottom: 1px solid #333;
+    padding: 6px 10px;
+  }
+  #categories .cat-header {
+    display: flex; align-items: center; gap: 6px; cursor: pointer;
+    user-select: none; padding: 2px 0;
+  }
+  #categories .cat-header .swatch {
+    width: 12px; height: 12px; border-radius: 2px; border: 1px solid #555;
+    flex-shrink: 0;
+  }
+  #categories .cat-header .label { font-weight: bold; flex: 1; }
+  #categories .cat-header .count { color: #888; font-size: 11px; margin-right: auto; }
+  .eye-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 2px; opacity: 0.8; color: #fff; }
+  .eye-btn:hover { opacity: 1; }
+  .eye-btn.off { opacity: 0.3; }
+  #categories .cat-items { padding-left: 18px; }
+  #categories .cat-items.collapsed { display: none; }
+  #categories .cat-item {
+    display: flex; align-items: center; gap: 4px; padding: 1px 0;
+  }
+  #categories .cat-item .name {
+    flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #categories .cat-item button {
+    padding: 1px 5px; font-size: 10px; opacity: 0.6;
+  }
+  #categories .cat-item button:hover { opacity: 1; }
+
+  /* active category highlight */
+  .cat-header.selected { background: rgba(255,255,255,0.08); border-radius: 4px; }
+
+  /* bottom bar */
+  #bottom-bar {
+    position: absolute; bottom: 8px; left: 8px; right: 400px;
+    background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px;
+    font-size: 12px; display: flex; gap: 8px; align-items: center;
+  }
+  #bottom-bar .mode-label { font-weight: bold; color: #7cd; }
+  #export-area {
+    position: absolute; bottom: 50px; left: 8px; right: 400px;
+    background: rgba(0,0,0,0.85); padding: 10px 12px; border-radius: 6px;
+    font-size: 11px; max-height: 300px; overflow-y: auto; display: none;
+  }
+  #export-area pre { margin: 0; white-space: pre-wrap; color: #aed; }
+  #btn-copy { float: right; padding: 4px 12px; cursor: pointer; background: #4a6; color: #000; border: none; border-radius: 3px; font-weight: bold; }
+  #btn-copy:hover { background: #5b7; }
+
+  /* Pick modal */
+  #pick-modal {
+    display: none; position: absolute; background: rgba(20,20,24,0.95);
+    border: 1px solid #555; border-radius: 6px; padding: 6px 0;
+    min-width: 220px; max-height: 400px; overflow-y: auto; z-index: 100;
+    font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  }
+  #pick-modal .pm-title {
+    padding: 4px 12px; color: #888; font-size: 10px; text-transform: uppercase;
+  }
+  #pick-modal .pm-item {
+    padding: 5px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+  #pick-modal .pm-item:hover { background: rgba(255,255,255,0.1); }
+  #pick-modal .pm-item .pm-depth { color: #555; font-size: 10px; min-width: 16px; }
+  #pick-modal .pm-item .pm-name { flex: 1; }
+  #pick-modal .pm-item .pm-meshes { color: #888; font-size: 10px; }
+  #pick-modal .pm-item .pm-cat { font-size: 10px; padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="drop"></div>
+
+<div id="info">
+  <div><b>glTF categorizer</b> — drag a raw <code>.glb</code> here</div>
+  <div class="hint">LMB = rotate · RMB = pan · wheel = zoom · click part = assign to category</div>
+  <div style="margin-top: 8px;">
+    <button id="btn-wireframe">wireframe</button>
+    <button id="btn-grid" class="active">grid</button>
+    <button id="btn-axes" class="active">axes</button>
+    <button id="btn-reset">reset view</button>
+    <button id="btn-export">export JSON</button>
+    <button id="btn-reload-cfg">reload JSON</button>
+  </div>
+  <div class="stats" id="stats">no file loaded</div>
+  <div class="picked" id="picked"><span class="hint">click a part to assign it</span></div>
+  <div id="error"></div>
+</div>
+
+<div id="categories">
+  <div class="head">Categories <span class="hint">(click to select active, then click parts)</span></div>
+  <div id="cat-list"></div>
+</div>
+
+<div id="bottom-bar">
+  <span class="mode-label">Active:</span>
+  <span id="active-cat-name">EXCLUDE_COMMON</span>
+  <span class="hint">— click parts in scene to add/remove</span>
+</div>
+
+<div id="export-area"><button id="btn-copy">Copy</button><pre id="export-content"></pre></div>
+<div id="pick-modal"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ═══════════════════════════════════════════════════════════════════
+//  Categories — loaded from galipeur-parts.json at runtime
+// ═══════════════════════════════════════════════════════════════════
+
+const CONFIG_PATH = '../scripts/galipeur-parts.json';
+
+// Color palette for categories (stable order)
+const CAT_COLORS = [
+  '#cc3333', '#33aaff', '#33cc66', '#66cc33', '#cccc33',
+  '#cc9933', '#ff66aa', '#aa66ff', '#66aaff', '#ff9966',
+  '#66ffcc', '#cc66ff',
+];
+
+function categoriesFromJson(cfg) {
+  const categories = [];
+
+  if (cfg.exclude_common) {
+    categories.push({
+      id: 'EXCLUDE_COMMON',
+      label: 'Exclude (common)',
+      color: CAT_COLORS[0],
+      prePatterns: cfg.exclude_common,
+    });
+  }
+
+  if (cfg.parts) {
+    for (const [name, patterns] of Object.entries(cfg.parts)) {
+      const label = name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const colorIdx = categories.length % CAT_COLORS.length;
+      categories.push({
+        id: name.toUpperCase(),
+        label,
+        color: CAT_COLORS[colorIdx],
+        prePatterns: patterns,
+      });
+    }
+  }
+
+  categories.push({
+    id: 'BASE',
+    label: 'Base (chassis)',
+    color: '#aaaaaa',
+    prePatterns: [],
+  });
+
+  return categories;
+}
+
+const FALLBACK_CATEGORIES = [
+  { id: 'EXCLUDE_COMMON', label: 'Exclude (common)', color: '#cc3333', prePatterns: [] },
+  { id: 'BASE', label: 'Base (chassis)', color: '#aaaaaa', prePatterns: [] },
+];
+
+let CATEGORIES = FALLBACK_CATEGORIES;
+let loadedConfig = {}; // keep original JSON fields (url, out_dir, raw_cache)
+
+async function loadCategories() {
+  try {
+    const resp = await fetch(CONFIG_PATH + '?t=' + Date.now());
+    if (!resp.ok) throw new Error(resp.statusText);
+    const cfg = await resp.json();
+    loadedConfig = cfg;
+    const parsed = categoriesFromJson(cfg);
+    if (parsed.length >= 2) CATEGORIES = parsed;
+  } catch (e) {
+    console.warn('Could not load galipeur-parts.json, using fallback categories:', e.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  State
+// ═══════════════════════════════════════════════════════════════════
+
+// Map: node name (possibly with ##N suffix) → category id
+const assignments = new Map();
+// Set of node names assigned by autoCategorize (vs manual click)
+const autoAssigned = new Set();
+// Map: disambiguated name → original name (strip ##N for export/matching)
+const originalNames = new Map();
+let activeCatId = CATEGORIES[0].id;
+let currentModel = null;
+let wireframe = false;
+// Set of category ids that are hidden in the 3D view
+const hiddenCats = new Set();
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  Three.js setup
+// ═══════════════════════════════════════════════════════════════════
+
+// On-demand rendering — only draw when something changes
+let renderPending = false;
+function requestRender() {
+  if (renderPending) return;
+  renderPending = true;
+  requestAnimationFrame(() => {
+    renderPending = false;
+    renderer.render(scene, camera);
+  });
+}
+
+const canvas = document.getElementById('canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+renderer.setPixelRatio(1);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x202024);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.001, 1000);
+camera.position.set(2, 1.5, 2);
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = false; // no damping → no need for continuous render loop
+controls.addEventListener('change', requestRender);
+
+const hemi = new THREE.HemisphereLight(0xffffff, 0x404040, 0.9);
+scene.add(hemi);
+const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+dir.position.set(3, 5, 2);
+scene.add(dir);
+
+const grid = new THREE.GridHelper(2, 20, 0x555555, 0x333333);
+scene.add(grid);
+const axes = new THREE.AxesHelper(0.3);
+scene.add(axes);
+
+function resize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  requestRender();
+}
+window.addEventListener('resize', resize);
+resize();
+
+const loader = new GLTFLoader();
+const draco = new DRACOLoader();
+draco.setDecoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/draco/');
+loader.setDRACOLoader(draco);
+const ktx2 = new KTX2Loader();
+ktx2.setTranscoderPath('https://unpkg.com/three@0.169.0/examples/jsm/libs/basis/');
+ktx2.detectSupport(renderer);
+loader.setKTX2Loader(ktx2);
+loader.setMeshoptDecoder(MeshoptDecoder);
+
+// ═══════════════════════════════════════════════════════════════════
+//  Glob matching (simple * wildcard)
+// ═══════════════════════════════════════════════════════════════════
+
+function globMatch(pattern, str) {
+  // Convert glob to regex: * → .*, escape the rest
+  const re = new RegExp(
+    '^' + pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$',
+    'i'
+  );
+  return re.test(str);
+}
+
+function matchesAnyPattern(name, patterns) {
+  return patterns.some(p => globMatch(p, name));
+}
+
+// Parse "Part 3##1" → { base: "Part 3", index: 1 }
+// Parse "Part 137"  → { base: "Part 137", index: null }
+function parseInstancePattern(pat) {
+  const m = pat.match(/^(.+)##(\d+)$/);
+  if (m) return { base: m[1], index: parseInt(m[2], 10) };
+  return { base: pat, index: null };
+}
+
+// Match a disambiguated node name (e.g. "Part 3##1") against a pattern
+// that may also have ##N (e.g. "Part 3##1") or not (e.g. "Part 3").
+function matchesPattern(nodeName, pattern) {
+  const { base: patBase, index: patIdx } = parseInstancePattern(pattern);
+  const nodeBase = baseName(nodeName);
+  if (!globMatch(patBase, nodeBase)) return false;
+  if (patIdx === null) return true; // pattern has no ##N → matches all instances
+  // Pattern has ##N → node must have the same ##N
+  const nodeM = nodeName.match(/##(\d+)$/);
+  if (!nodeM) return false;
+  return parseInt(nodeM[1], 10) === patIdx;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  Model loading
+// ═══════════════════════════════════════════════════════════════════
+
+function restoreOriginalNames(gltf) {
+  const parser = gltf.parser;
+  const raw = parser && parser.json ? parser.json : null;
+  if (!raw || !parser.associations) return;
+  for (const [obj, assoc] of parser.associations) {
+    if (typeof assoc !== 'object' || assoc === null) continue;
+    if ('nodes' in assoc && Array.isArray(raw.nodes)) {
+      const n = raw.nodes[assoc.nodes];
+      if (n && typeof n.name === 'string') obj.name = n.name;
+    } else if ('meshes' in assoc && Array.isArray(raw.meshes) && !obj.name) {
+      const m = raw.meshes[assoc.meshes];
+      if (m && typeof m.name === 'string') obj.name = m.name;
+    }
+  }
+}
+
+// Rename duplicate node names with ##N suffix so each instance is unique
+function disambiguateNames(model) {
+  originalNames.clear();
+  // Count occurrences of each name
+  const counts = new Map();
+  model.traverse(o => {
+    if (!o.name || o.isMesh) return; // skip meshes (surfaces)
+    counts.set(o.name, (counts.get(o.name) || 0) + 1);
+  });
+  // Rename duplicates
+  const seen = new Map();
+  model.traverse(o => {
+    if (!o.name || o.isMesh) return;
+    if (counts.get(o.name) <= 1) return; // unique name, keep as-is
+    const idx = seen.get(o.name) || 0;
+    seen.set(o.name, idx + 1);
+    const orig = o.name;
+    o.name = `${orig}##${idx}`;
+    originalNames.set(o.name, orig);
+  });
+}
+
+// Get original name (strip ##N suffix)
+function baseName(name) {
+  return originalNames.get(name) || name;
+}
+
+function clearModel() {
+  if (currentModel) {
+    scene.remove(currentModel);
+    currentModel.traverse(c => {
+      if (c.geometry) c.geometry.dispose();
+      if (c.material) {
+        if (Array.isArray(c.material)) c.material.forEach(m => m.dispose());
+        else c.material.dispose();
+      }
+    });
+    currentModel = null;
+  }
+  assignments.clear();
+  originalNames.clear();
+}
+
+function statsFor(model) {
+  let triangles = 0, vertices = 0, meshes = 0;
+  model.traverse(c => {
+    if (c.isMesh) {
+      meshes++;
+      const g = c.geometry;
+      vertices += g.attributes.position ? g.attributes.position.count : 0;
+      if (g.index) triangles += g.index.count / 3;
+      else triangles += (g.attributes.position ? g.attributes.position.count : 0) / 3;
+    }
+  });
+  const box = new THREE.Box3().setFromObject(model);
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  return { triangles: Math.round(triangles), vertices, meshes, size };
+}
+
+function frameModel(model) {
+  const box = new THREE.Box3().setFromObject(model);
+  if (box.isEmpty()) return;
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
+  const fov = camera.fov * Math.PI / 180;
+  const distance = (maxDim / 2) / Math.tan(fov / 2) * 1.6;
+  const d = new THREE.Vector3(0.7, 0.6, 0.7).normalize();
+  camera.position.copy(center).add(d.multiplyScalar(distance));
+  camera.near = Math.max(maxDim / 1000, 0.001);
+  camera.far = maxDim * 100;
+  camera.updateProjectionMatrix();
+  controls.target.copy(center);
+  controls.update();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  Auto-categorize based on pre-seeded patterns
+// ═══════════════════════════════════════════════════════════════════
+
+function autoCategorize() {
+  if (!currentModel) return;
+  const allNames = new Set();
+  currentModel.traverse(o => { if (o.name) allNames.add(o.name); });
+
+  for (const name of allNames) {
+    for (const cat of CATEGORIES) {
+      if (cat.prePatterns.some(p => matchesPattern(name, p))) {
+        assignments.set(name, cat.id);
+        autoAssigned.add(name);
+        break;
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  Colorize meshes by category
+// ═══════════════════════════════════════════════════════════════════
+
+function getCatForNode(obj) {
+  let cur = obj;
+  while (cur && cur !== scene) {
+    if (cur.name && assignments.has(cur.name)) return { catId: assignments.get(cur.name), manual: !autoAssigned.has(cur.name) };
+    cur = cur.parent;
+  }
+  return null;
+}
+
+// Category materials — built after categories are loaded
+const catMaterials = {};
+const catMaterialsWire = {};
+
+function buildCatMaterials() {
+  for (const cat of CATEGORIES) {
+    if (catMaterials[cat.id]) continue; // already built
+    const isExclude = cat.id === 'EXCLUDE_COMMON';
+    catMaterials[cat.id] = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(cat.color),
+      transparent: isExclude, opacity: isExclude ? 0.15 : 0.85,
+    });
+    catMaterialsWire[cat.id] = catMaterials[cat.id].clone();
+    catMaterialsWire[cat.id].wireframe = true;
+  }
+}
+
+// Cache for manually-assigned transparent materials
+const manualMaterials = {};
+
+function colorize() {
+  if (!currentModel) return;
+  const pool = wireframe ? catMaterialsWire : catMaterials;
+  currentModel.traverse(o => {
+    if (!o.isMesh) return;
+    const info = getCatForNode(o);
+    if (!info) {
+      // Uncategorized = BASE
+      o.visible = !hiddenCats.has('BASE');
+      return;
+    }
+    // EXCLUDE_COMMON: default hidden, eye toggle reveals them
+    if (info.catId === 'EXCLUDE_COMMON' && !info.manual) {
+      o.visible = hiddenCats.has('EXCLUDE_COMMON'); // inverted: toggled = show
+      if (o.visible) o.material = pool[info.catId];
+      return;
+    }
+    // Other categories: default visible, eye toggle hides them
+    if (hiddenCats.has(info.catId)) {
+      o.visible = false;
+      return;
+    }
+    o.visible = true;
+    if (info.manual) {
+      // Manually reassigned: semi-transparent version of category color
+      const key = info.catId + (wireframe ? '_w' : '');
+      if (!manualMaterials[key]) {
+        manualMaterials[key] = pool[info.catId].clone();
+        manualMaterials[key].transparent = true;
+        manualMaterials[key].opacity = 0.4;
+      }
+      o.material = manualMaterials[key];
+    } else {
+      o.material = pool[info.catId];
+    }
+  });
+  requestRender();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  Categories UI
+// ═══════════════════════════════════════════════════════════════════
+
+function renderCategories() {
+  const container = document.getElementById('cat-list');
+  container.innerHTML = '';
+
+  for (const cat of CATEGORIES) {
+    const items = [...assignments.entries()].filter(([, v]) => v === cat.id).map(([k]) => k).sort();
+
+    const section = document.createElement('div');
+    section.className = 'cat-section';
+
+    const header = document.createElement('div');
+    header.className = 'cat-header' + (activeCatId === cat.id ? ' selected' : '');
+
+    const swatch = document.createElement('div');
+    swatch.className = 'swatch';
+    swatch.style.background = cat.color;
+    header.appendChild(swatch);
+
+    const label = document.createElement('span');
+    label.className = 'label';
+    label.textContent = cat.label;
+    header.appendChild(label);
+
+    const count = document.createElement('span');
+    count.className = 'count';
+    count.textContent = `(${items.length})`;
+    header.appendChild(count);
+
+    // EXCLUDE_COMMON: inverted logic (default hidden, toggle to show)
+    const isExclude = cat.id === 'EXCLUDE_COMMON';
+    const isVisible = isExclude ? hiddenCats.has(cat.id) : !hiddenCats.has(cat.id);
+    const eyeBtn = document.createElement('button');
+    eyeBtn.className = 'eye-btn' + (isVisible ? '' : ' off');
+    eyeBtn.textContent = isVisible ? '●' : '○';
+    eyeBtn.title = isVisible ? 'Hide category' : 'Show category';
+    eyeBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (hiddenCats.has(cat.id)) hiddenCats.delete(cat.id);
+      else hiddenCats.add(cat.id);
+      colorize();
+      renderCategories();
+    };
+    header.appendChild(eyeBtn);
+
+    header.onclick = () => {
+      activeCatId = cat.id;
+      document.getElementById('active-cat-name').textContent = cat.label;
+      renderCategories();
+    };
+    section.appendChild(header);
+
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'cat-items' + (activeCatId !== cat.id ? ' collapsed' : '');
+    for (const name of items) {
+      const row = document.createElement('div');
+      row.className = 'cat-item';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'name';
+      nameSpan.textContent = name;
+      nameSpan.title = name;
+      row.appendChild(nameSpan);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = '✕';
+      removeBtn.title = 'Remove from category';
+      removeBtn.onclick = (e) => {
+        e.stopPropagation();
+        assignments.delete(name);
+        colorize();
+        renderCategories();
+      };
+      row.appendChild(removeBtn);
+      itemsDiv.appendChild(row);
+    }
+    section.appendChild(itemsDiv);
+    container.appendChild(section);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  Click-to-assign
+// ═══════════════════════════════════════════════════════════════════
+
+const raycaster = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+
+function getAssignableName(obj) {
+  // Try parent first (preferred — avoids surface names)
+  let cur = obj.isMesh ? obj.parent : obj;
+  while (cur && cur !== currentModel && cur !== scene) {
+    if (cur.name) return cur.name;
+    cur = cur.parent;
+  }
+  // Fallback: use the mesh's own name if no named parent found
+  if (obj.name) return obj.name;
+  return null;
+}
+
+// Raycast: returns all visible hits' objects
+function raycastAll(e) {
+  if (!currentModel) return [];
+  const rect = canvas.getBoundingClientRect();
+  ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(ndc, camera);
+  return raycaster.intersectObject(currentModel, true).filter(h => h.object.visible);
+}
+
+// First visible hit name (for hover)
+function raycastFirst(e) {
+  for (const hit of raycastAll(e)) {
+    const name = getAssignableName(hit.object);
+    if (name) return name;
+  }
+  return null;
+}
+
+// ── Hover highlight ──
+// Supports two modes:
+// - by name (string): highlights ALL instances with that name (for canvas hover)
+// - by node (Object3D): highlights only that specific subtree (for modal hover)
+let hoveredKey = null; // string name or Object3D
+const hoverMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
+const hoverMatWire = hoverMat.clone();
+hoverMatWire.wireframe = true;
+const savedMaterials = new Map();
+
+function setHover(key) {
+  if (key === hoveredKey) return;
+  if (hoveredKey) {
+    for (const [mesh, mat] of savedMaterials) mesh.material = mat;
+    savedMaterials.clear();
+  }
+  hoveredKey = key;
+  if (!key || !currentModel) { requestRender(); return; }
+
+  const mat = wireframe ? hoverMatWire : hoverMat;
+  if (typeof key === 'string') {
+    // Highlight all meshes matching this name
+    currentModel.traverse(o => {
+      if (!o.isMesh || !o.visible) return;
+      if (getAssignableName(o) === key) {
+        savedMaterials.set(o, o.material);
+        o.material = mat;
+      }
+    });
+  } else {
+    // Highlight only meshes under this specific Object3D subtree
+    key.traverse(o => {
+      if (!o.isMesh || !o.visible) return;
+      savedMaterials.set(o, o.material);
+      o.material = mat;
+    });
+  }
+  requestRender();
+}
+
+// Count visible meshes under a specific Object3D subtree
+function countMeshesUnder(node) {
+  let n = 0;
+  node.traverse(o => { if (o.isMesh && o.visible) n++; });
+  return n;
+}
+
+// Count how many instances of a given name exist in the model
+function countInstances(name) {
+  let n = 0;
+  if (!currentModel) return 0;
+  currentModel.traverse(o => { if (baseName(o.name) === name) n++; });
+  return n;
+}
+
+// Collect named ancestors from a mesh up to the model root,
+// storing the actual Object3D reference for instance-level selection
+function getAncestorNodes(obj) {
+  const items = [];
+  // Start from parent, but include the mesh itself as fallback
+  let cur = obj.isMesh ? obj.parent : obj;
+  let depth = 0;
+  while (cur && cur !== currentModel && cur !== scene) {
+    if (cur.name && countMeshesUnder(cur) > 0) {
+      items.push({ name: cur.name, node: cur, depth, instances: countInstances(baseName(cur.name)) });
+    }
+    cur = cur.parent;
+    depth++;
+  }
+  // If no named parent found, include the mesh itself
+  if (items.length === 0 && obj.name) {
+    items.push({ name: obj.name, node: obj, depth: 0, instances: countInstances(baseName(obj.name)) });
+  }
+  return items;
+}
+
+// Get the named node for a mesh (closest named parent)
+function getNamedNode(obj) {
+  let cur = obj.isMesh ? obj.parent : obj;
+  while (cur && cur !== currentModel && cur !== scene) {
+    if (cur.name) return cur;
+    cur = cur.parent;
+  }
+  // Fallback: the mesh itself if it has a name
+  if (obj.name) return obj;
+  return null;
+}
+
+canvas.addEventListener('pointermove', e => {
+  if (pickModalOpen) return;
+  const name = raycastFirst(e);
+  setHover(name);
+  if (name) {
+    document.getElementById('picked').innerHTML = `<b>${name}</b>`;
+    canvas.style.cursor = 'pointer';
+  } else {
+    document.getElementById('picked').innerHTML = '<span class="hint">click a part to assign it</span>';
+    canvas.style.cursor = '';
+  }
+});
+
+canvas.addEventListener('pointerleave', () => {
+  if (!pickModalOpen) setHover(null);
+  canvas.style.cursor = '';
+});
+
+// ── Pick modal ──
+const pickModal = document.getElementById('pick-modal');
+let pickModalOpen = false;
+
+function closePickModal() {
+  pickModal.style.display = 'none';
+  pickModalOpen = false;
+  setHover(null);
+}
+
+function assignName(name) {
+  assignments.set(name, activeCatId);
+  autoAssigned.delete(name);
+  const cat = CATEGORIES.find(c => c.id === activeCatId);
+  document.getElementById('picked').innerHTML =
+    `<b>${name}</b> → <b>${cat.label}</b>`;
+  hoveredKey = null;
+  savedMaterials.clear();
+  closePickModal();
+  colorize();
+  renderCategories();
+}
+
+function showPickModal(e, hits) {
+  pickModalOpen = true;
+  pickModal.innerHTML = '';
+
+  // Use Object3D refs to distinguish instances with the same name
+  const seenNodes = new Set();
+  const sections = [];
+
+  // Section 1: hierarchy of first hit (ancestors with Object3D refs)
+  if (hits.length > 0) {
+    const ancestors = getAncestorNodes(hits[0].object);
+    if (ancestors.length > 0) {
+      sections.push({ title: 'Hierarchy', items: ancestors });
+      ancestors.forEach(a => seenNodes.add(a.node));
+    }
+  }
+
+  // Section 2: all other raycast hits (behind the first one)
+  const behindItems = [];
+  for (const hit of hits) {
+    const node = getNamedNode(hit.object);
+    if (node && !seenNodes.has(node) && countMeshesUnder(node) > 0) {
+      seenNodes.add(node);
+      behindItems.push({ name: node.name, node, depth: 0, instances: countInstances(baseName(node.name)) });
+    }
+  }
+  if (behindItems.length > 0) {
+    sections.push({ title: 'Behind', items: behindItems });
+  }
+
+  if (sections.length === 0) { closePickModal(); return; }
+
+  for (const section of sections) {
+    const titleEl = document.createElement('div');
+    titleEl.className = 'pm-title';
+    titleEl.textContent = section.title;
+    pickModal.appendChild(titleEl);
+
+    for (const item of section.items) {
+      const row = document.createElement('div');
+      row.className = 'pm-item';
+
+      const depthEl = document.createElement('span');
+      depthEl.className = 'pm-depth';
+      depthEl.textContent = item.depth > 0 ? '└'.padStart(item.depth, ' ') : '•';
+      row.appendChild(depthEl);
+
+      const nameEl = document.createElement('span');
+      nameEl.className = 'pm-name';
+      nameEl.textContent = item.name;
+      row.appendChild(nameEl);
+
+      // Show instance count + mesh count
+      const meshCount = countMeshesUnder(item.node);
+      const infoEl = document.createElement('span');
+      infoEl.className = 'pm-meshes';
+      let info = meshCount + ' mesh' + (meshCount !== 1 ? 'es' : '');
+      if (item.instances > 1) info += ` · ×${item.instances}`;
+      infoEl.textContent = info;
+      row.appendChild(infoEl);
+
+      // Show current category if any
+      const curCat = assignments.get(item.name);
+      if (curCat) {
+        const catDef = CATEGORIES.find(c => c.id === curCat);
+        if (catDef) {
+          const catEl = document.createElement('span');
+          catEl.className = 'pm-cat';
+          catEl.style.background = catDef.color;
+          catEl.style.color = '#000';
+          catEl.textContent = catDef.label;
+          row.appendChild(catEl);
+        }
+      }
+
+      // Hover highlights ONLY this specific instance's subtree
+      row.addEventListener('mouseenter', () => setHover(item.node));
+      row.addEventListener('mouseleave', () => setHover(null));
+      row.addEventListener('click', () => assignName(item.name));
+
+      pickModal.appendChild(row);
+    }
+  }
+
+  // Position near click
+  const x = Math.min(e.clientX, window.innerWidth - 260);
+  const y = Math.min(e.clientY, window.innerHeight - 300);
+  pickModal.style.left = x + 'px';
+  pickModal.style.top = y + 'px';
+  pickModal.style.display = 'block';
+}
+
+// Close modal on click outside
+window.addEventListener('pointerdown', e => {
+  if (pickModalOpen && !pickModal.contains(e.target)) {
+    closePickModal();
+  }
+});
+
+// ── Click to open pick modal ──
+let downX = 0, downY = 0;
+canvas.addEventListener('pointerdown', e => { downX = e.clientX; downY = e.clientY; });
+canvas.addEventListener('pointerup', e => {
+  if (pickModalOpen) return;
+  const dx = e.clientX - downX;
+  const dy = e.clientY - downY;
+  if (Math.hypot(dx, dy) > 4) return;
+
+  const hits = raycastAll(e);
+  if (hits.length === 0) return;
+
+  showPickModal(e, hits);
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  Export
+// ═══════════════════════════════════════════════════════════════════
+
+function generateExport() {
+  // If ALL instances of a name are in the same category, export the
+  // base name (no ##N). Otherwise export each instance separately.
+  function exportNames(entries) {
+    // Group by base name
+    const byBase = new Map();
+    for (const [k] of entries) {
+      const base = baseName(k);
+      if (!byBase.has(base)) byBase.set(base, []);
+      byBase.get(base).push(k);
+    }
+    const result = [];
+    for (const [base, keys] of byBase) {
+      // How many total instances of this name exist?
+      const total = countInstances(base);
+      if (keys.length >= total) {
+        // All instances assigned to this category → use base name
+        result.push(base);
+      } else {
+        // Partial → keep ##N suffixes
+        for (const k of keys) result.push(k);
+      }
+    }
+    return result.sort();
+  }
+
+  const exclEntries = [...assignments.entries()].filter(([, v]) => v === 'EXCLUDE_COMMON');
+  const excluded = exportNames(exclEntries);
+
+  const parts = {};
+  for (const cat of CATEGORIES) {
+    if (cat.id === 'EXCLUDE_COMMON' || cat.id === 'BASE') continue;
+    const catEntries = [...assignments.entries()].filter(([, v]) => v === cat.id);
+    const items = exportNames(catEntries);
+    if (items.length) parts[cat.id.toLowerCase()] = items;
+  }
+
+  const cfg = {
+    url: loadedConfig.url || '',
+    out_dir: loadedConfig.out_dir || 'sim/assets/robots/galipeur',
+    raw_cache: loadedConfig.raw_cache || 'sim/assets/robots/galipeur.glb.raw',
+    exclude_common: excluded,
+    parts,
+  };
+
+  return JSON.stringify(cfg, null, 2);
+}
+
+document.getElementById('btn-export').onclick = () => {
+  const area = document.getElementById('export-area');
+  const content = document.getElementById('export-content');
+  const text = generateExport();
+  content.textContent = text;
+  area.style.display = area.style.display === 'block' ? 'none' : 'block';
+};
+
+document.getElementById('btn-copy').onclick = () => {
+  const text = generateExport();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btn-copy');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  });
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  Load handler
+// ═══════════════════════════════════════════════════════════════════
+
+async function afterLoad(gltf) {
+  clearModel();
+  restoreOriginalNames(gltf);
+  disambiguateNames(gltf.scene);
+  currentModel = gltf.scene;
+
+  // Replace PBR materials with lightweight unlit ones, keeping the
+  // original base color so parts remain distinguishable. Dispose
+  // textures and strip heavy vertex attributes to free GPU memory.
+  currentModel.traverse(o => {
+    if (!o.isMesh) return;
+    if (o.material) {
+      const mat = Array.isArray(o.material) ? o.material[0] : o.material;
+      const baseColor = (mat.color) ? mat.color.clone() : new THREE.Color(0x888888);
+      // Dispose all textures
+      for (const m of (Array.isArray(o.material) ? o.material : [o.material])) {
+        for (const key of ['map','normalMap','roughnessMap','metalnessMap','aoMap','emissiveMap']) {
+          if (m[key]) { m[key].dispose(); }
+        }
+        m.dispose();
+      }
+      // Lightweight unlit replacement with original color
+      o.material = new THREE.MeshBasicMaterial({ color: baseColor });
+    }
+    const g = o.geometry;
+    if (g) {
+      g.deleteAttribute('tangent');
+      g.deleteAttribute('uv');
+      g.deleteAttribute('uv2');
+    }
+  });
+
+  scene.add(currentModel);
+
+  const s = statsFor(currentModel);
+  document.getElementById('stats').innerHTML = `
+    <div><b>meshes</b>: ${s.meshes}</div>
+    <div><b>triangles</b>: ${s.triangles.toLocaleString()}</div>
+    <div><b>vertices</b>: ${s.vertices.toLocaleString()}</div>
+    <div><b>bbox</b>: ${s.size.x.toFixed(3)} × ${s.size.y.toFixed(3)} × ${s.size.z.toFixed(3)} m</div>
+  `;
+  frameModel(currentModel);
+
+  // Auto-categorize from prePatterns
+  autoCategorize();
+  colorize();
+  renderCategories();
+}
+
+async function loadUrl(url) {
+  document.getElementById('error').textContent = '';
+  try {
+    const gltf = await new Promise((res, rej) => loader.load(url, res, undefined, rej));
+    await afterLoad(gltf);
+  } catch (e) {
+    document.getElementById('error').textContent = 'load error: ' + (e.message || e);
+  }
+}
+
+async function loadFile(file) {
+  document.getElementById('error').textContent = '';
+  const buf = await file.arrayBuffer();
+  try {
+    const gltf = await new Promise((res, rej) => loader.parse(buf, '', res, rej));
+    await afterLoad(gltf);
+  } catch (e) {
+    document.getElementById('error').textContent = 'load error: ' + (e.message || e);
+  }
+}
+
+// Drag & drop
+const dropZone = document.getElementById('drop');
+window.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragging'); });
+window.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragging');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+
+// Buttons
+document.getElementById('btn-wireframe').onclick = (e) => {
+  wireframe = !wireframe;
+  e.target.classList.toggle('active', wireframe);
+  colorize();
+};
+document.getElementById('btn-grid').onclick = (e) => {
+  grid.visible = !grid.visible;
+  e.target.classList.toggle('active', grid.visible);
+  requestRender();
+};
+document.getElementById('btn-axes').onclick = (e) => {
+  axes.visible = !axes.visible;
+  e.target.classList.toggle('active', axes.visible);
+  requestRender();
+};
+document.getElementById('btn-reset').onclick = () => {
+  if (currentModel) frameModel(currentModel);
+};
+document.getElementById('btn-reload-cfg').onclick = async () => {
+  await loadCategories();
+  buildCatMaterials();
+  // Full reset: clear everything and re-categorize from scratch
+  assignments.clear();
+  autoAssigned.clear();
+  Object.keys(manualMaterials).forEach(k => delete manualMaterials[k]);
+  if (currentModel) {
+    autoCategorize();
+    colorize();
+  }
+  renderCategories();
+  const btn = document.getElementById('btn-reload-cfg');
+  btn.textContent = 'reloaded!';
+  setTimeout(() => { btn.textContent = 'reload JSON'; }, 1500);
+};
+
+// Boot: load categories from script, then build materials & load model
+(async () => {
+  await loadCategories();
+  buildCatMaterials();
+  renderCategories();
+
+  const params = new URLSearchParams(window.location.search);
+  const initial = params.get('url') || '../../../sim/assets/robots/galipeur.glb.raw';
+  loadUrl(initial).catch(() => {});
+
+  requestRender();
+})();
+</script>
+</body>
+</html>
