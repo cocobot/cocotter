@@ -11,7 +11,8 @@ use crate::led::{LedMessage, Leds};
 use board_sabotter::movement::MovementLowLevelHardware;
 use crate::meca::{CleatSide, Meca};
 use crate::can::{GalipeurCan, ota_relay::CanOtaRelayHandler};
-use crate::opponent_detection::{OpponentDetection, OpponentDetectionConf, Zone};
+use crate::opponent_detection::{OpponentDetection, OpponentDetectionConf, Zone, ADVERSARY_RADIUS_MM};
+use board_sabotter::debug_viz;
 use crate::strat::Strat;
 use crate::sensors::{Sensors, TopLidarConf};
 use crate::strat::utils::arfast;
@@ -94,20 +95,30 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                         let length = (dx * dx + dy * dy).sqrt();
                         let direction = dy.atan2(dx) - robot_a;
                         let conf = od.conf();
+                        let hw = conf.corridor_half_width_mm + ADVERSARY_RADIUS_MM;
+                        let stop = conf.corridor_stop_until_mm + ADVERSARY_RADIUS_MM;
+                        let len = stop * 1.5;
                         let zone = Zone::Corridor {
-                            half_width_mm: conf.corridor_half_width_mm,
-                            length_mm: length,
+                            half_width_mm: hw,
+                            length_mm: len,
                             direction_rad: direction,
-                            stop_until_mm: conf.corridor_stop_until_mm,
+                            stop_until_mm: stop,
                         };
+                        debug_viz::send_preflight_corridor(
+                            hw, len, direction, stop,
+                        );
                         if !od.preflight(zone) {
                             return false;
                         }
+                        od.set_target(to.x, to.y);
                         od.update_zone(zone);
                         true
                     }
                     TrajectoryEvent::Rotation => {
-                        let zone = Zone::Cylinder { radius_mm: od.conf().rotation_radius_mm };
+                        let conf = od.conf();
+                        let r = conf.rotation_radius_mm + ADVERSARY_RADIUS_MM;
+                        let zone = Zone::Cylinder { radius_mm: r };
+                        debug_viz::send_preflight_cylinder(r);
                         if !od.preflight(zone) {
                             return false;
                         }
@@ -116,6 +127,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                     }
                     TrajectoryEvent::Done => {
                         od.update_zone(Zone::Inactive);
+                        debug_viz::clear_preflight_viz();
                         true
                     }
                 }

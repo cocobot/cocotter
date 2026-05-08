@@ -12,7 +12,7 @@ use crate::arfast;
 use crate::led::LedMessage;
 use crate::meca::{Meca, CleatSide};
 use board_sabotter::movement::MovementLowLevelHardware;
-use crate::opponent_detection::OpponentDetection;
+use crate::opponent_detection::{DetectionMode, OpponentDetection};
 use crate::sensors::Sensors;
 use crate::strat::utils::{AsservHelper, arfast};
 
@@ -96,6 +96,17 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             inputs: board.inputs().take().unwrap(),
         };
 
+        #[cfg(target_os = "espidf")]
+        {
+            use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
+            ThreadSpawnConfiguration {
+                priority: 15,
+                ..Default::default()
+            }
+            .set()
+            .unwrap();
+        }
+
         std::thread::Builder::new()
             .name("strat".into())
             .stack_size(8192)
@@ -103,6 +114,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                 instance.run();
             })
             .expect("spawn strat");
+
+        #[cfg(target_os = "espidf")]
+        {
+            use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
+            ThreadSpawnConfiguration::default().set().unwrap();
+        }
     }
 
     fn run(mut self) {
@@ -122,7 +139,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         log::info!("Color selection");
 
         self.sensors.ground_lidar_power_off();
-        //self.sensors.ground_lidar(RobotSide::Back);
 
         //waiting for starter to be inserted
         loop {
@@ -157,10 +173,36 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         }
 
-        std::thread::sleep(Duration::from_secs(1));
+       // std::thread::sleep(Duration::from_secs(1));
+        
+        self.asserv.teleport(-750.0, 1000.0, arfast(RobotSide::Back, TableSide::Up));
+        self.opponent_detection.set_mode(DetectionMode::OnTable);
+        loop {
+            log::info!("A");
+            self.asserv.goto_xya(-1300.0, 1000.0, 0.0).ok();
+            log::info!("A Done");
+            std::thread::sleep(Duration::from_millis(1000));
+
+
+            log::info!("B");
+            self.asserv.goto_xya( 500.0, 1000.0, 0.0).ok();
+            log::info!("B Done");
+            std::thread::sleep(Duration::from_millis(1000));
+
+            log::info!("c");
+            self.asserv.goto_xya( 500.0, 500.0, 0.0).ok();
+            log::info!("C Done");
+            std::thread::sleep(Duration::from_millis(1000));
+
+            log::info!("D");
+            self.asserv.goto_xya(-1300.0, 500.0, 0.0).ok();
+            log::info!("D Done");
+            std::thread::sleep(Duration::from_millis(1000));
+        }
 
         //start robot with back on the up side of table in the start area
         //there's a crate between the robot and up side
+        self.asserv.teleport(self.kx*(900.0 + 170.0 + 50.0), 2000.0 - 130.0 - 50.0, arfast(RobotSide::Back, TableSide::Up));
         self.asserv.reset_position(self.kx*(900.0 + 170.0 + 50.0), 2000.0 - 130.0 - 50.0, arfast(RobotSide::Back, TableSide::Up));
 
         //TODO : add autoset and go to final position in start area

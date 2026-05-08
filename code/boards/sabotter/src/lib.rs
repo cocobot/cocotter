@@ -4,6 +4,7 @@ pub mod esp;
 pub mod mock;
 
 pub mod movement;
+pub mod debug_viz;
 
 use embedded_hal::{
     digital::{StatefulOutputPin, InputPin},

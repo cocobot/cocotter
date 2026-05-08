@@ -133,6 +133,7 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             use esp_idf_svc::hal::task::thread::ThreadSpawnConfiguration;
             use esp_idf_svc::hal::cpu::Core;
             ThreadSpawnConfiguration {
+                priority: 10,
                 pin_to_core: Some(Core::Core1),
                 ..Default::default()
             }

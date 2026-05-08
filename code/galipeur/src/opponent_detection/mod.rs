@@ -3,6 +3,7 @@ use std::sync::{Arc, Mutex};
 
 use asserv::maths::XYA;
 use flume::Sender;
+use log::info;
 use crate::led::{LedMessage, OpponentLedPixel};
 
 /// Conservative adversary footprint. Eurobot opponent is Ø450mm;
@@ -29,38 +30,69 @@ struct ScanPoint {
     robot_pos: XYA,
 }
 
-struct ScanBuffer {
+struct ScanHalf {
     points: [ScanPoint; SCAN_BUFFER_SIZE],
-    write_idx: usize,
     len: usize,
 }
 
-impl ScanBuffer {
-    fn new() -> Self {
+impl ScanHalf {
+    const fn new() -> Self {
         Self {
-            points: [ScanPoint::default(); SCAN_BUFFER_SIZE],
-            write_idx: 0,
+            points: [ScanPoint { angle_deg: 0.0, distance_mm: 0, robot_pos: XYA { x: 0.0, y: 0.0, a: 0.0 } }; SCAN_BUFFER_SIZE],
             len: 0,
         }
     }
 
-    fn push(&mut self, angle_deg: f32, distance_mm: u16, robot_pos: XYA) {
-        self.points[self.write_idx] = ScanPoint { angle_deg, distance_mm, robot_pos };
-        self.write_idx = (self.write_idx + 1) % SCAN_BUFFER_SIZE;
+    fn clear(&mut self) {
+        self.len = 0;
+    }
+
+    fn push(&mut self, pt: ScanPoint) {
         if self.len < SCAN_BUFFER_SIZE {
+            self.points[self.len] = pt;
             self.len += 1;
         }
     }
 
     fn iter(&self) -> impl Iterator<Item = &ScanPoint> + '_ {
-        let start = if self.len < SCAN_BUFFER_SIZE {
-            0
-        } else {
-            self.write_idx
-        };
-        (0..self.len).map(move |i| {
-            &self.points[(start + i) % SCAN_BUFFER_SIZE]
-        })
+        self.points[..self.len].iter()
+    }
+}
+
+/// Double-buffered scan: `writing` accumulates the current revolution,
+/// `complete` holds the last full revolution for preflight reads.
+struct ScanBuffer {
+    complete: ScanHalf,
+    writing: ScanHalf,
+    last_angle: f32,
+    initialized: bool,
+}
+
+impl ScanBuffer {
+    fn new() -> Self {
+        Self {
+            complete: ScanHalf::new(),
+            writing: ScanHalf::new(),
+            last_angle: 0.0,
+            initialized: false,
+        }
+    }
+
+    fn push(&mut self, angle_deg: f32, distance_mm: u16, robot_pos: XYA) {
+        // Detect revolution wrap: swap buffers
+        if self.initialized && angle_deg < self.last_angle - 180.0 {
+            std::mem::swap(&mut self.complete, &mut self.writing);
+            self.writing.clear();
+        }
+        self.last_angle = angle_deg;
+        self.initialized = true;
+
+        self.writing.push(ScanPoint { angle_deg, distance_mm, robot_pos });
+    }
+
+    /// Iterate over the last complete revolution.
+    fn iter(&self) -> impl Iterator<Item = &ScanPoint> + '_ {
+        self.complete.iter()
     }
 }
 
@@ -169,12 +201,11 @@ pub enum TripState {
 }
 
 impl Zone {
-    pub fn trip_state(&self, x_mm: f32, y_mm: f32, inflate_mm: f32) -> TripState {
+    pub fn trip_state(&self, x_mm: f32, y_mm: f32) -> TripState {
         match *self {
             Zone::Inactive => TripState::Clear,
             Zone::Cylinder { radius_mm } => {
-                let r = radius_mm + inflate_mm;
-                if r > 0.0 && x_mm * x_mm + y_mm * y_mm <= r * r {
+                if radius_mm > 0.0 && x_mm * x_mm + y_mm * y_mm <= radius_mm * radius_mm {
                     TripState::Stop
                 } else {
                     TripState::Clear
@@ -191,41 +222,34 @@ impl Zone {
                 }
                 let (sin, cos) = direction_rad.sin_cos();
                 let along = cos * x_mm + sin * y_mm;
-                let lateral = -sin * x_mm + cos * y_mm;
-                let lateral_clamped = lateral.clamp(-half_width_mm, half_width_mm);
-                let dy = lateral - lateral_clamped;
-                let inflate_sq = inflate_mm * inflate_mm;
+                if along < 0.0 || along > length_mm {
+                    return TripState::Clear;
+                }
+                let lateral = (-sin * x_mm + cos * y_mm).abs();
+                if lateral > half_width_mm {
+                    return TripState::Clear;
+                }
 
                 let stop_until = stop_until_mm.clamp(0.0, length_mm);
-                let along_stop = along.clamp(0.0, stop_until);
-                let dx_stop = along - along_stop;
-                if dx_stop * dx_stop + dy * dy <= inflate_sq {
-                    return TripState::Stop;
+                if along <= stop_until {
+                    TripState::Stop
+                } else {
+                    TripState::Slow
                 }
-
-                let along_full = along.clamp(0.0, length_mm);
-                let dx_full = along - along_full;
-                if dx_full * dx_full + dy * dy <= inflate_sq {
-                    return TripState::Slow;
-                }
-
-                TripState::Clear
             }
         }
     }
 
-    pub fn compile(self, inflate_mm: f32) -> CompiledZone {
+    pub fn compile(self) -> CompiledZone {
         let (sin_dir, cos_dir) = match self {
             Zone::Corridor { direction_rad, .. } => direction_rad.sin_cos(),
             _ => (0.0, 0.0),
         };
         let max_dist_f32 = match self {
             Zone::Inactive => 0.0,
-            Zone::Cylinder { radius_mm } => (radius_mm + inflate_mm).max(0.0),
+            Zone::Cylinder { radius_mm } => radius_mm.max(0.0),
             Zone::Corridor { half_width_mm, length_mm, .. } => {
-                let h = (half_width_mm + inflate_mm).max(0.0);
-                let l = (length_mm + inflate_mm).max(0.0);
-                (l * l + h * h).sqrt()
+                (length_mm * length_mm + half_width_mm * half_width_mm).sqrt()
             }
         };
         let max_dist_mm = if max_dist_f32 >= u16::MAX as f32 {
@@ -235,8 +259,6 @@ impl Zone {
         };
         CompiledZone {
             inner: self,
-            inflate_mm,
-            inflate_sq_mm: inflate_mm * inflate_mm,
             max_dist_sq_mm: (max_dist_mm as u32).saturating_mul(max_dist_mm as u32),
             sin_dir,
             cos_dir,
@@ -251,8 +273,6 @@ impl Zone {
 #[derive(Debug, Clone, Copy)]
 pub struct CompiledZone {
     pub inner: Zone,
-    pub inflate_mm: f32,
-    pub inflate_sq_mm: f32,
     pub max_dist_sq_mm: u32,
     pub sin_dir: f32,
     pub cos_dir: f32,
@@ -276,8 +296,7 @@ impl CompiledZone {
         match self.inner {
             Zone::Inactive => TripState::Clear,
             Zone::Cylinder { radius_mm } => {
-                let r = radius_mm + self.inflate_mm;
-                if r > 0.0 && x_mm * x_mm + y_mm * y_mm <= r * r {
+                if radius_mm > 0.0 && x_mm * x_mm + y_mm * y_mm <= radius_mm * radius_mm {
                     TripState::Stop
                 } else {
                     TripState::Clear
@@ -293,24 +312,20 @@ impl CompiledZone {
                     return TripState::Clear;
                 }
                 let along = self.cos_dir * x_mm + self.sin_dir * y_mm;
-                let lateral = -self.sin_dir * x_mm + self.cos_dir * y_mm;
-                let lateral_clamped = lateral.clamp(-half_width_mm, half_width_mm);
-                let dy = lateral - lateral_clamped;
+                if along < 0.0 || along > length_mm {
+                    return TripState::Clear;
+                }
+                let lateral = (-self.sin_dir * x_mm + self.cos_dir * y_mm).abs();
+                if lateral > half_width_mm {
+                    return TripState::Clear;
+                }
 
                 let stop_until = stop_until_mm.clamp(0.0, length_mm);
-                let along_stop = along.clamp(0.0, stop_until);
-                let dx_stop = along - along_stop;
-                if dx_stop * dx_stop + dy * dy <= self.inflate_sq_mm {
-                    return TripState::Stop;
+                if along <= stop_until {
+                    TripState::Stop
+                } else {
+                    TripState::Slow
                 }
-
-                let along_full = along.clamp(0.0, length_mm);
-                let dx_full = along - along_full;
-                if dx_full * dx_full + dy * dy <= self.inflate_sq_mm {
-                    return TripState::Slow;
-                }
-
-                TripState::Clear
             }
         }
     }
@@ -398,6 +413,8 @@ pub struct OpponentDetectionConf {
     pub corridor_half_width_mm: f32,
     pub corridor_stop_until_mm: f32,
     pub rotation_radius_mm: f32,
+    /// Cruise speed cap applied when an opponent is in the Slow zone.
+    pub slow_cruise_speed: f32,
 }
 
 // ------------------------------------------------------------------
@@ -436,7 +453,8 @@ pub struct TableConfig {
 impl TableConfig {
     fn point_on_table(&self, tx: f32, ty: f32) -> bool {
         let m = self.margin_mm;
-        tx >= m && tx <= self.width_mm - m && ty >= m && ty <= self.height_mm - m
+        let half_w = self.width_mm / 2.0;
+        tx >= -half_w + m && tx <= half_w - m && ty >= m && ty <= self.height_mm - m
     }
 }
 
@@ -444,15 +462,78 @@ impl TableConfig {
 // OpponentDetection
 // ------------------------------------------------------------------
 
+/// Number of consecutive clean revolutions required to auto-clear must_slow.
+const SLOW_CLEAR_REVOLUTIONS: u8 = 3;
+
+struct SlowRevTracker {
+    last_angle: f32,
+    initialized: bool,
+    /// Did this revolution have any slow hit?
+    rev_had_slow: bool,
+    /// Consecutive clean revolutions (no slow hits).
+    clean_revs: u8,
+}
+
+impl SlowRevTracker {
+    fn new() -> Self {
+        Self { last_angle: 0.0, initialized: false, rev_had_slow: false, clean_revs: 0 }
+    }
+
+    fn reset(&mut self) {
+        self.rev_had_slow = false;
+        self.clean_revs = 0;
+    }
+
+    /// Call for each point. Returns true when a revolution boundary is crossed
+    /// and `SLOW_CLEAR_REVOLUTIONS` consecutive clean revolutions have passed.
+    fn update(&mut self, angle_deg: f32, had_slow_hit: bool) -> bool {
+        if had_slow_hit {
+            self.rev_had_slow = true;
+        }
+
+        if !self.initialized {
+            self.last_angle = angle_deg;
+            self.initialized = true;
+            return false;
+        }
+
+        // Detect revolution wrap
+        if angle_deg < self.last_angle - 180.0 {
+            let had_slow = self.rev_had_slow;
+            if self.rev_had_slow {
+                self.clean_revs = 0;
+            } else {
+                self.clean_revs = self.clean_revs.saturating_add(1);
+            }
+            log::info!("SlowRev: revolution boundary, had_slow={had_slow}, clean_revs={}", self.clean_revs);
+            let should_clear = !had_slow && self.clean_revs >= SLOW_CLEAR_REVOLUTIONS;
+            self.rev_had_slow = false;
+            self.last_angle = angle_deg;
+            return should_clear;
+        }
+
+        self.last_angle = angle_deg;
+        false
+    }
+}
+
 struct OpponentDetectionInner {
     zone: AtomicZone,
     must_stop: AtomicBool,
     hit_count: AtomicU8,
+    must_slow: AtomicBool,
+    slow_count: AtomicU8,
     mode: AtomicU8,
     robot_position: Mutex<XYA>,
+    /// Target position for the current trajectory segment (table frame).
+    /// Used to dynamically cap stop_until_mm based on remaining distance.
+    target_x: AtomicU32,
+    target_y: AtomicU32,
     conf: OpponentDetectionConf,
     led_accum: Mutex<LedAccumulator>,
     scan_buffer: Mutex<ScanBuffer>,
+    /// Tracks slow-clear revolution logic (behind scan_buffer mutex for convenience).
+    slow_rev: Mutex<SlowRevTracker>,
 }
 
 #[derive(Clone)]
@@ -468,11 +549,16 @@ impl OpponentDetection {
                 zone: AtomicZone::new(),
                 must_stop: AtomicBool::new(false),
                 hit_count: AtomicU8::new(0),
+                must_slow: AtomicBool::new(false),
+                slow_count: AtomicU8::new(0),
                 mode: AtomicU8::new(DetectionMode::Off as u8),
                 robot_position: Mutex::new(XYA::new(0.0, 0.0, 0.0)),
+                target_x: AtomicU32::new(0),
+                target_y: AtomicU32::new(0),
                 conf,
                 led_accum: Mutex::new(LedAccumulator::new(led_sender, led_offset)),
                 scan_buffer: Mutex::new(ScanBuffer::new()),
+                slow_rev: Mutex::new(SlowRevTracker::new()),
             }),
         }
     }
@@ -484,6 +570,8 @@ impl OpponentDetection {
         if matches!(mode, DetectionMode::Off) {
             self.inner.must_stop.store(false, Ordering::Relaxed);
             self.inner.hit_count.store(0, Ordering::Relaxed);
+            self.inner.must_slow.store(false, Ordering::Relaxed);
+            self.inner.slow_count.store(0, Ordering::Relaxed);
         }
     }
 
@@ -504,6 +592,12 @@ impl OpponentDetection {
         }
     }
 
+    /// Set the target position for dynamic stop zone capping.
+    pub fn set_target(&self, x: f32, y: f32) {
+        self.inner.target_x.store(x.to_bits(), Ordering::Relaxed);
+        self.inner.target_y.store(y.to_bits(), Ordering::Relaxed);
+    }
+
     // --- Robot position (written by asserv loop) ---
 
     pub fn update_robot_position(&self, pos: XYA) {
@@ -517,9 +611,21 @@ impl OpponentDetection {
         self.inner.must_stop.load(Ordering::Relaxed)
     }
 
+    #[inline]
+    pub fn must_slow(&self) -> bool {
+        self.inner.must_slow.load(Ordering::Relaxed)
+    }
+
+    pub fn slow_cruise_speed(&self) -> f32 {
+        self.inner.conf.slow_cruise_speed
+    }
+
     pub fn clear_stop(&self) {
         self.inner.must_stop.store(false, Ordering::Relaxed);
         self.inner.hit_count.store(0, Ordering::Relaxed);
+        self.inner.must_slow.store(false, Ordering::Relaxed);
+        self.inner.slow_count.store(0, Ordering::Relaxed);
+        self.inner.slow_rev.lock().unwrap().reset();
     }
 
     // --- Preflight (called by asserv callback before accepting a trajectory segment) ---
@@ -529,9 +635,16 @@ impl OpponentDetection {
     /// Returns `true` if the zone is clear, `false` if an opponent is detected.
     /// Sets `must_stop` when returning `false`.
     pub fn preflight(&self, zone: Zone) -> bool {
+
+        let mode = self.mode();
+        if matches!(mode, DetectionMode::Off) {
+            return true;
+        }
+
         let robot_pos = *self.inner.robot_position.lock().unwrap();
-        let compiled = zone.compile(ADVERSARY_RADIUS_MM);
+        let compiled = zone.compile();
         let scan_buf = self.inner.scan_buffer.lock().unwrap();
+        let on_table_filter = matches!(mode, DetectionMode::OnTable);
 
         let cur_cos = robot_pos.a.cos();
         let cur_sin = robot_pos.a.sin();
@@ -550,6 +663,11 @@ impl OpponentDetection {
             let tx = pt.robot_pos.x + bx_old * old_cos - by_old * old_sin;
             let ty = pt.robot_pos.y + bx_old * old_sin + by_old * old_cos;
 
+            // Filter: skip points outside table when mode is OnTable
+            if on_table_filter && !self.inner.conf.table.point_on_table(tx, ty) {
+                continue;
+            }
+
             // Table → body(current)
             let dx = tx - robot_pos.x;
             let dy = ty - robot_pos.y;
@@ -558,12 +676,21 @@ impl OpponentDetection {
 
             if matches!(compiled.trip_state(bx, by), TripState::Stop) {
                 hits += 1;
+                log::info!(
+                    "Preflight hit {}/{}: table=({:.0},{:.0}) body=({:.0},{:.0}) ang={:.1}° dist={} robot=({:.0},{:.0},{:.2})",
+                    hits, TRIP_THRESHOLD, tx, ty, bx, by,
+                    pt.angle_deg, pt.distance_mm,
+                    robot_pos.x, robot_pos.y, robot_pos.a,
+                );
                 if hits >= TRIP_THRESHOLD as u32 {
                     self.inner.must_stop.store(true, Ordering::Relaxed);
+                    log::info!("Preflight: NOPE ! {:?}", zone);
                     return false;
                 }
             }
         }
+
+        log::info!("preflight OK hits={hits} {:?}", zone);
         true
     }
 
@@ -578,23 +705,46 @@ impl OpponentDetection {
             return;
         }
 
-        let zone = self.inner.zone.load();
+        let robot_pos = *self.inner.robot_position.lock().unwrap();
+        let mut zone = self.inner.zone.load();
+
+        // Dynamically cap stop/slow zones based on remaining distance to target
+        if let Zone::Corridor { ref mut stop_until_mm, ref mut length_mm, .. } = zone {
+            let tx = f32::from_bits(self.inner.target_x.load(Ordering::Relaxed));
+            let ty = f32::from_bits(self.inner.target_y.load(Ordering::Relaxed));
+            let dx = tx - robot_pos.x;
+            let dy = ty - robot_pos.y;
+            let remaining = (dx * dx + dy * dy).sqrt() + ADVERSARY_RADIUS_MM;
+            *stop_until_mm = stop_until_mm.min(remaining);
+            *length_mm = length_mm.min(remaining * 1.5);
+        }
+
         let compiled = if matches!(zone, Zone::Inactive) {
             None
         } else {
-            Some(zone.compile(ADVERSARY_RADIUS_MM))
+            Some(zone.compile())
         };
-
-        let robot_pos = *self.inner.robot_position.lock().unwrap();
         let on_table_filter = matches!(mode, DetectionMode::OnTable);
 
-        let mut count = self.inner.hit_count.load(Ordering::Relaxed);
+        let mut stop_count = self.inner.hit_count.load(Ordering::Relaxed);
+        let mut slow_count = self.inner.slow_count.load(Ordering::Relaxed);
         let mut led_accum = self.inner.led_accum.lock().unwrap();
         let mut scan_buf = self.inner.scan_buffer.lock().unwrap();
+        let mut slow_rev = self.inner.slow_rev.lock().unwrap();
 
         for &(angle_deg, distance_mm, _intensity) in points {
             if let Some(compiled) = &compiled {
                 led_accum.check_revolution(angle_deg, &zone, compiled);
+            }
+
+            // Track revolution for slow auto-clear (must see all angles, even distance=0)
+            if compiled.is_some() && self.inner.must_slow.load(Ordering::Relaxed) {
+                if slow_rev.update(angle_deg, false) {
+                    self.inner.must_slow.store(false, Ordering::Relaxed);
+                    slow_count = 0;
+                    self.inner.slow_count.store(0, Ordering::Relaxed);
+                    log::warn!("Slow auto-cleared after {SLOW_CLEAR_REVOLUTIONS} clean revolutions");
+                }
             }
 
             if distance_mm == 0 {
@@ -624,19 +774,49 @@ impl OpponentDetection {
             // Zone hit detection
             if let Some(compiled) = &compiled {
                 let in_range = !compiled.distance_reject(distance_mm);
-                let is_hit = in_range && is_on_table && matches!(compiled.trip_state(bx, by), TripState::Stop);
-
-                if is_hit {
-                    count = count.saturating_add(1).min(TRIP_THRESHOLD);
+                let trip = if in_range && is_on_table {
+                    compiled.trip_state(bx, by)
                 } else {
-                    count = count.saturating_sub(1);
+                    TripState::Clear
+                };
+
+                // Stop counter: triggers on Stop hits
+                let is_stop = matches!(trip, TripState::Stop);
+                if is_stop {
+                    stop_count = stop_count.saturating_add(1).min(TRIP_THRESHOLD);
+                } else {
+                    stop_count = stop_count.saturating_sub(1);
                 }
-                if count >= TRIP_THRESHOLD {
+                if stop_count >= TRIP_THRESHOLD {
                     self.inner.must_stop.store(true, Ordering::Relaxed);
                 }
 
+                // Slow counter: triggers on Stop OR Slow hits (anything in the corridor)
+                let is_slow = matches!(trip, TripState::Stop | TripState::Slow);
+                if is_slow {
+                    slow_count = slow_count.saturating_add(1).min(TRIP_THRESHOLD);
+                    let cos_a = robot_pos.a.cos();
+                    let sin_a = robot_pos.a.sin();
+                    let tx = robot_pos.x + bx * cos_a - by * sin_a;
+                    let ty = robot_pos.y + bx * sin_a + by * cos_a;
+                    log::info!(
+                        "Slow hit: trip={trip:?} ang={angle_deg:.1}° dist={distance_mm} body=({bx:.0},{by:.0}) table=({tx:.0},{ty:.0}) slow_count={slow_count}"
+                    );
+                } else {
+                    slow_count = slow_count.saturating_sub(1);
+                }
+                if slow_count >= TRIP_THRESHOLD && !self.inner.must_slow.load(Ordering::Relaxed) {
+                    log::warn!("Slow TRIGGERED (slow_count={slow_count})");
+                    self.inner.must_slow.store(true, Ordering::Relaxed);
+                }
+
+                // Mark slow hits for revolution tracker
+                if is_slow {
+                    slow_rev.rev_had_slow = true;
+                }
+
                 let led_idx = led_accum.angle_to_led(angle_deg);
-                if is_hit {
+                if is_stop {
                     led_accum.set_pixel(led_idx, OpponentLedPixel::Hit);
                 } else if is_on_table && in_range {
                     led_accum.set_pixel(led_idx, OpponentLedPixel::Detected);
@@ -644,7 +824,8 @@ impl OpponentDetection {
             }
         }
 
-        self.inner.hit_count.store(count, Ordering::Relaxed);
+        self.inner.hit_count.store(stop_count, Ordering::Relaxed);
+        self.inner.slow_count.store(slow_count, Ordering::Relaxed);
     }
 
 }
@@ -660,16 +841,16 @@ mod tests {
     #[test]
     fn cylinder_trip() {
         let z = Zone::Cylinder { radius_mm: 250.0 };
-        assert_eq!(z.trip_state(0.0, 0.0, 0.0), TripState::Stop);
-        assert_eq!(z.trip_state(100.0, 100.0, 0.0), TripState::Stop);
-        assert_eq!(z.trip_state(200.0, 200.0, 0.0), TripState::Clear);
+        assert_eq!(z.trip_state(0.0, 0.0), TripState::Stop);
+        assert_eq!(z.trip_state(100.0, 100.0), TripState::Stop);
+        assert_eq!(z.trip_state(200.0, 200.0), TripState::Clear);
     }
 
     #[test]
-    fn cylinder_inflate() {
-        let z = Zone::Cylinder { radius_mm: 250.0 };
-        assert_eq!(z.trip_state(400.0, 0.0, 0.0), TripState::Clear);
-        assert_eq!(z.trip_state(400.0, 0.0, ADVERSARY_RADIUS_MM), TripState::Stop);
+    fn cylinder_sized_for_adversary() {
+        let z = Zone::Cylinder { radius_mm: 250.0 + ADVERSARY_RADIUS_MM };
+        assert_eq!(z.trip_state(400.0, 0.0), TripState::Stop);
+        assert_eq!(z.trip_state(500.0, 0.0), TripState::Clear);
     }
 
     #[test]
@@ -680,9 +861,9 @@ mod tests {
             direction_rad: 0.0,
             stop_until_mm: 600.0,
         };
-        assert_eq!(z.trip_state(300.0, 0.0, 0.0), TripState::Stop);
-        assert_eq!(z.trip_state(900.0, 0.0, 0.0), TripState::Slow);
-        assert_eq!(z.trip_state(1800.0, 0.0, 0.0), TripState::Clear);
+        assert_eq!(z.trip_state(300.0, 0.0), TripState::Stop);
+        assert_eq!(z.trip_state(900.0, 0.0), TripState::Slow);
+        assert_eq!(z.trip_state(1800.0, 0.0), TripState::Clear);
     }
 
     #[test]
@@ -693,16 +874,27 @@ mod tests {
             direction_rad: 0.0,
             stop_until_mm: 1500.0,
         };
-        assert_eq!(z.trip_state(500.0, 200.0, 0.0), TripState::Stop);
-        assert_eq!(z.trip_state(500.0, 400.0, 0.0), TripState::Clear);
+        assert_eq!(z.trip_state(500.0, 200.0), TripState::Stop);
+        assert_eq!(z.trip_state(500.0, 300.0), TripState::Clear);
+    }
+
+    #[test]
+    fn corridor_behind() {
+        let z = Zone::Corridor {
+            half_width_mm: 250.0,
+            length_mm: 1500.0,
+            direction_rad: 0.0,
+            stop_until_mm: 600.0,
+        };
+        assert_eq!(z.trip_state(-100.0, 0.0), TripState::Clear);
     }
 
     #[test]
     fn compiled_distance_reject() {
         let z = Zone::Cylinder { radius_mm: 250.0 };
-        let c = z.compile(ADVERSARY_RADIUS_MM);
+        let c = z.compile();
         assert!(c.distance_reject(0));
-        assert!(!c.distance_reject(300));
+        assert!(!c.distance_reject(200));
         assert!(c.distance_reject(1000));
     }
 
@@ -714,10 +906,10 @@ mod tests {
             direction_rad: 0.5,
             stop_until_mm: 500.0,
         };
-        let c = z.compile(ADVERSARY_RADIUS_MM);
+        let c = z.compile();
         for (x, y) in [(300.0, 100.0), (0.0, 0.0), (800.0, 400.0), (2000.0, 0.0)] {
             assert_eq!(
-                z.trip_state(x, y, ADVERSARY_RADIUS_MM),
+                z.trip_state(x, y),
                 c.trip_state(x, y),
                 "mismatch at ({x}, {y})"
             );
@@ -762,11 +954,15 @@ mod tests {
 
     #[test]
     fn table_filter() {
+        // X: -1500..1500, Y: 0..2000, margin 50
         let table = TableConfig { width_mm: 3000.0, height_mm: 2000.0, margin_mm: 50.0 };
-        assert!(table.point_on_table(1500.0, 1000.0));
-        assert!(!table.point_on_table(10.0, 1000.0));
-        assert!(!table.point_on_table(2990.0, 1000.0));
-        assert!(!table.point_on_table(1500.0, 1980.0));
+        assert!(table.point_on_table(0.0, 1000.0));      // center
+        assert!(table.point_on_table(1400.0, 1000.0));    // near right edge
+        assert!(table.point_on_table(-1400.0, 1000.0));   // near left edge
+        assert!(!table.point_on_table(1480.0, 1000.0));   // outside right margin
+        assert!(!table.point_on_table(-1480.0, 1000.0));  // outside left margin
+        assert!(!table.point_on_table(0.0, 1980.0));      // outside top margin
+        assert!(!table.point_on_table(0.0, 10.0));        // outside bottom margin
     }
 
     fn make_det() -> OpponentDetection {
@@ -777,6 +973,7 @@ mod tests {
             corridor_half_width_mm: 250.0,
             corridor_stop_until_mm: 600.0,
             rotation_radius_mm: 400.0,
+            slow_cruise_speed: 1.0,
         }, tx);
         det.set_mode(DetectionMode::Always);
         det.update_zone(Zone::Cylinder { radius_mm: 400.0 });

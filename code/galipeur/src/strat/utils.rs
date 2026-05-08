@@ -75,12 +75,40 @@ impl<B: SabotterBoard> AsservHelper<B> {
 
     fn wait(&self) -> Result<(), StrategyError> {
         //TODO damien use passive waiting with Sender/Receiver
+        let mut was_slow = false;
+        let mut saved_cruise_speed = 0.0f32;
+        let mut saved_cruise_acc = 0.0f32;
         loop {
             if self.opponent_detection.must_stop() {
+                if was_slow {
+                    let mut asserv = self.asserv.lock().unwrap();
+                    asserv.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
+                }
+                self.asserv.lock().unwrap().stop();
                 return Err(StrategyError::OpponentDetected);
             }
+
+            let is_slow = self.opponent_detection.must_slow();
+            if is_slow && !was_slow {
+                let mut asserv = self.asserv.lock().unwrap();
+                (saved_cruise_speed, saved_cruise_acc) = asserv.xy_cruise_speed();
+                let slow_speed = self.opponent_detection.slow_cruise_speed();
+                log::warn!("Slow triggered: cruise {saved_cruise_speed} -> {slow_speed}");
+                asserv.set_xy_cruise_speed(slow_speed, saved_cruise_acc);
+                was_slow = true;
+            } else if !is_slow && was_slow {
+                log::warn!("Slow cleared: cruise -> {saved_cruise_speed}");
+                let mut asserv = self.asserv.lock().unwrap();
+                asserv.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
+                was_slow = false;
+            }
+
             let asserv = self.asserv.lock().unwrap();
             if asserv.done_xy() && asserv.done_a() {
+                if was_slow {
+                    drop(asserv);
+                    self.asserv.lock().unwrap().set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
+                }
                 return Ok(());
             }
             drop(asserv);

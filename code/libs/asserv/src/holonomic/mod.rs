@@ -336,6 +336,15 @@ impl<H: AsservHardware> Asserv<H> {
     }
 
 
+    /// Emergency stop: freeze carrot at current position, cancel trajectory.
+    pub fn stop(&mut self) {
+        self.set_carrot_xy_consign(self.cs.position().xy());
+        self.carrot_a = self.cs.position().a;
+        self.cs.set_target_a(self.carrot_a);
+        self.order = TrajectoryOrder::Idle;
+        self.synced_angle = None;
+    }
+
     //
     // Movement orders
     //
@@ -448,6 +457,10 @@ impl<H: AsservHardware> Asserv<H> {
 
     pub fn set_a_speed(&mut self, speed: f32, acc: f32) {
         self.cs.set_a_speed(speed, acc);
+    }
+
+    pub fn xy_cruise_speed(&self) -> (f32, f32) {
+        (self.conf.cruise_speed, self.conf.cruise_acc)
     }
 
     pub fn set_xy_cruise_speed(&mut self, speed: f32, acc: f32) {
@@ -580,6 +593,9 @@ impl<H: AsservHardware> Asserv<H> {
                 } else if carrot_speed < self.conf.cruise_speed {
                     // Acceleration phase
                     carrot_speed = (carrot_speed + self.conf.cruise_acc).min(self.conf.cruise_speed);
+                } else if carrot_speed > self.conf.cruise_speed {
+                    // Over cruise speed (e.g. slow zone active): decelerate to new cruise
+                    carrot_speed = (carrot_speed - self.conf.cruise_acc).max(self.conf.cruise_speed);
                 } else {
                     // Stable phase: nothing to do
                 }
