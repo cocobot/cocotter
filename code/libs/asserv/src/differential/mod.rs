@@ -178,6 +178,8 @@ impl<H: AsservHardware> Asserv<H> {
     }
 
     pub fn stop(&mut self) {
+        self.cs.reset_targets();
+        self.cs.motor_filter.reset();
         self.order = TrajectoryOrder::Stop;
     }
 
