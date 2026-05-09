@@ -314,7 +314,11 @@ async fn led_status_task(
         // Send lidar status every ~200ms (4 cycles @ 50ms)
         // Module 0 → lidar 0,3 / Module 1 → lidar 1,4 / Module 2 → lidar 2,5
         if cycle_count % 4 == 0 {
-            const LIDAR_MAP: [[usize; 2]; 3] = [[0, 3], [1, 4], [2, 5]];
+            const LIDAR_MAP: [[usize; 2]; 3] = [
+                [3, 2], // module 0 = Left  → left0, left1
+                [4, 1], // module 1 = Back  → back0, back1
+                [0, 5], // module 2 = Right → right0, right1
+            ];
             for (module, lidars) in LIDAR_MAP.iter().enumerate() {
                 let m0 = lidar::get_measurement(lidars[0]);
                 let m1 = lidar::get_measurement(lidars[1]);

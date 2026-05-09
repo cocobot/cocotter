@@ -606,7 +606,6 @@ impl OpponentDetection {
     // --- Robot position (written by asserv loop) ---
 
     pub fn update_robot_position(&self, pos: XYA) {
-        log::info!("RPOS {:?}", pos);
         *self.inner.robot_position.lock().unwrap() = pos;
     }
 

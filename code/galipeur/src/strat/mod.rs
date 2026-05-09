@@ -138,10 +138,11 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     fn prepare_match(&mut self) {
         log::info!("Color selection");
 
-        self.sensors.ground_lidar_power_off();
+       // self.sensors.ground_lidar_power_off();
 
         //waiting for starter to be inserted
         loop {
+            self.sensors.ground_lidar(RobotSide::Back);
             let team = match self.inputs.color.is_high().unwrap_or(false) {
                 true => Team::Left,
                 false => Team::Right,
@@ -167,13 +168,27 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                     self.table_aux  = TableSide::Left;
                     self.kx = 1.0;
                 }
-                self.meca.init(team);
+                //self.meca.init(team);
                 break;
             }
 
         }
 
-       // std::thread::sleep(Duration::from_secs(1));
+        calibration::ground_lidars_sample(&self.asserv, &self.sensors);
+        loop {
+std::thread::sleep(Duration::from_secs(1));
+        }
+
+
+        self.asserv.teleport(0.0, 1000.0, arfast(RobotSide::Back, TableSide::Down));
+        self.asserv.reset_position(0.0, 1000.0, arfast(RobotSide::Back, TableSide::Down));
+        self.opponent_detection.set_mode(DetectionMode::Always);
+
+        loop {
+std::thread::sleep(Duration::from_secs(1));
+        }
+
+         std::thread::sleep(Duration::from_secs(1));
         
         self.asserv.teleport(-750.0, 1000.0, arfast(RobotSide::Back, TableSide::Up));
         self.opponent_detection.set_mode(DetectionMode::OnTable);
