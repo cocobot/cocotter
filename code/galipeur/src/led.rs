@@ -16,8 +16,10 @@ pub enum OpponentLedPixel {
     Zone = 1,
     /// Lidar point detected on table in this direction (purple)
     Detected = 2,
-    /// Lidar point triggered a stop hit (purple blink)
-    Hit = 3,
+    /// Lidar point in slow zone (purple blink 3Hz)
+    Slow = 3,
+    /// Lidar point triggered a stop hit (purple bright blink fast)
+    Hit = 4,
 }
 
 pub enum LedMessage {
@@ -160,15 +162,20 @@ impl<B: SabotterBoard> LedsInternal<B> {
                 // Opponent detection overlay (lowest priority, overridden by ground/meca)
                 {
                     const DIM_GREEN: RGB8 = RGB8 { r: 0, g: 20, b: 0 };
-                    const PURPLE: RGB8 = RGB8 { r: 40, g: 0, b: 40 };
-                    const PURPLE_BRIGHT: RGB8 = RGB8 { r: 120, g: 0, b: 120 };
-                    let hit_blink_on = (start.elapsed().subsec_millis() % 100) < 50;
+                    const PURPLE: RGB8 = RGB8 { r: 30, g: 0, b: 30 };
+                    const PURPLE_BRIGHT: RGB8 = RGB8 { r: 200, g: 0, b: 200 };
+                    let ms = start.elapsed().subsec_millis();
+                    let hit_blink_on = (ms % 100) < 50;
+                    let slow_blink_on = (ms % 333) < 167;
                     for i in 0..40 {
                         let px = self.opponent_overlay[i];
                         if px != OpponentLedPixel::Off {
                             pixels[i + 1] = match px {
                                 OpponentLedPixel::Zone => DIM_GREEN,
                                 OpponentLedPixel::Detected => PURPLE,
+                                OpponentLedPixel::Slow => {
+                                    if slow_blink_on { PURPLE_BRIGHT } else { BLACK }
+                                }
                                 OpponentLedPixel::Hit => {
                                     if hit_blink_on { PURPLE_BRIGHT } else { BLACK }
                                 }

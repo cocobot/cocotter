@@ -30,31 +30,32 @@ struct ScanPoint {
 }
 
 struct ScanHalf {
-    points: [ScanPoint; SCAN_BUFFER_SIZE],
-    len: usize,
+    points: Vec<ScanPoint>,
 }
 
 impl ScanHalf {
-    const fn new() -> Self {
+    fn new() -> Self {
         Self {
-            points: [ScanPoint { angle_deg: 0.0, distance_mm: 0, robot_pos: XYA { x: 0.0, y: 0.0, a: 0.0 } }; SCAN_BUFFER_SIZE],
-            len: 0,
+            points: Vec::with_capacity(SCAN_BUFFER_SIZE),
         }
     }
 
     fn clear(&mut self) {
-        self.len = 0;
+        self.points.clear();
     }
 
     fn push(&mut self, pt: ScanPoint) {
-        if self.len < SCAN_BUFFER_SIZE {
-            self.points[self.len] = pt;
-            self.len += 1;
+        if self.points.len() < SCAN_BUFFER_SIZE {
+            self.points.push(pt);
         }
     }
 
+    fn len(&self) -> usize {
+        self.points.len()
+    }
+
     fn iter(&self) -> impl Iterator<Item = &ScanPoint> + '_ {
-        self.points[..self.len].iter()
+        self.points.iter()
     }
 }
 
@@ -79,7 +80,7 @@ impl ScanBuffer {
 
     fn push(&mut self, angle_deg: f32, distance_mm: u16, robot_pos: XYA) {
         // Detect revolution wrap: swap buffers
-        if self.initialized && angle_deg < self.last_angle - 180.0 {
+        if self.initialized && angle_deg > self.last_angle + 180.0 {
             std::mem::swap(&mut self.complete, &mut self.writing);
             self.writing.clear();
         }
@@ -155,18 +156,24 @@ impl LedAccumulator {
     }
 
     /// Check if a revolution wrapped, emit overlay and reset.
-    fn check_revolution(&mut self, angle_deg: f32, zone: &Zone, compiled: &CompiledZone) {
+    fn check_revolution(&mut self, angle_deg: f32, zone: &Zone, compiled: Option<&CompiledZone>) {
         if !self.initialized {
             self.last_angle = angle_deg;
             self.initialized = true;
-            self.pixels = Self::zone_baseline(zone, compiled);
+            if let Some(compiled) = compiled {
+                self.pixels = Self::zone_baseline(zone, compiled);
+            }
             return;
         }
         // Detect wrap: current angle much smaller than last (crossed 360°→0°)
-        if angle_deg < self.last_angle - 180.0 {
+        if angle_deg > self.last_angle + 180.0 {
             // Revolution complete — send overlay and reset
             self.sender.send(LedMessage::OpponentOverlay(self.pixels)).ok();
-            self.pixels = Self::zone_baseline(zone, compiled);
+            self.pixels = if let Some(compiled) = compiled {
+                Self::zone_baseline(zone, compiled)
+            } else {
+                [OpponentLedPixel::Off; LED_COUNT]
+            };
         }
         self.last_angle = angle_deg;
     }
@@ -497,7 +504,7 @@ impl SlowRevTracker {
         }
 
         // Detect revolution wrap
-        if angle_deg < self.last_angle - 180.0 {
+        if angle_deg > self.last_angle + 180.0 {
             let had_slow = self.rev_had_slow;
             if self.rev_had_slow {
                 self.clean_revs = 0;
@@ -599,6 +606,7 @@ impl OpponentDetection {
     // --- Robot position (written by asserv loop) ---
 
     pub fn update_robot_position(&self, pos: XYA) {
+        log::info!("RPOS {:?}", pos);
         *self.inner.robot_position.lock().unwrap() = pos;
     }
 
@@ -715,8 +723,6 @@ impl OpponentDetection {
         } else {
             Some(zone.compile())
         };
-        let on_table_filter = matches!(mode, DetectionMode::OnTable);
-
         let mut stop_count = self.inner.hit_count.load(Ordering::Relaxed);
         let mut slow_count = self.inner.slow_count.load(Ordering::Relaxed);
         let mut led_accum = self.inner.led_accum.lock().unwrap();
@@ -724,9 +730,7 @@ impl OpponentDetection {
         let mut slow_rev = self.inner.slow_rev.lock().unwrap();
 
         for &(angle_deg, distance_mm, _intensity) in points {
-            if let Some(compiled) = &compiled {
-                led_accum.check_revolution(angle_deg, &zone, compiled);
-            }
+            led_accum.check_revolution(angle_deg, &zone, compiled.as_ref());
 
             // Track revolution for slow auto-clear (must see all angles, even distance=0)
             if compiled.is_some() && self.inner.must_slow.load(Ordering::Relaxed) {
@@ -747,18 +751,20 @@ impl OpponentDetection {
             let bx = dist * angle_rad.cos();
             let by = dist * angle_rad.sin();
 
-            let is_on_table = if on_table_filter {
+            let is_on_table = if distance_mm <= 3000 {
                 let cos_a = robot_pos.a.cos();
                 let sin_a = robot_pos.a.sin();
                 let tx = robot_pos.x + bx * cos_a - by * sin_a;
                 let ty = robot_pos.y + bx * sin_a + by * cos_a;
                 self.inner.conf.table.point_on_table(tx, ty)
             } else {
-                true
+                false
             };
 
             if is_on_table {
                 scan_buf.push(angle_deg, distance_mm, robot_pos);
+                let led_idx = led_accum.angle_to_led(angle_deg);
+                led_accum.set_pixel(led_idx, OpponentLedPixel::Detected);
             }
 
             // Zone hit detection
@@ -785,10 +791,6 @@ impl OpponentDetection {
                 let is_slow = matches!(trip, TripState::Stop | TripState::Slow);
                 if is_slow {
                     slow_count = slow_count.saturating_add(1).min(TRIP_THRESHOLD);
-                    let cos_a = robot_pos.a.cos();
-                    let sin_a = robot_pos.a.sin();
-                    let tx = robot_pos.x + bx * cos_a - by * sin_a;
-                    let ty = robot_pos.y + bx * sin_a + by * cos_a;
                 } else {
                     slow_count = slow_count.saturating_sub(1);
                 }
@@ -801,11 +803,12 @@ impl OpponentDetection {
                     slow_rev.rev_had_slow = true;
                 }
 
+                // Upgrade LED pixel for zone hits
                 let led_idx = led_accum.angle_to_led(angle_deg);
                 if is_stop {
                     led_accum.set_pixel(led_idx, OpponentLedPixel::Hit);
-                } else if is_on_table && in_range {
-                    led_accum.set_pixel(led_idx, OpponentLedPixel::Detected);
+                } else if is_slow {
+                    led_accum.set_pixel(led_idx, OpponentLedPixel::Slow);
                 }
             }
         }

@@ -92,7 +92,6 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                     TrajectoryEvent::Translation { from, to, robot_a } => {
                         let dx = to.x - from.x;
                         let dy = to.y - from.y;
-                        let length = (dx * dx + dy * dy).sqrt();
                         let direction = dy.atan2(dx) - robot_a;
                         let conf = od.conf();
                         let hw = conf.corridor_half_width_mm + ADVERSARY_RADIUS_MM;
