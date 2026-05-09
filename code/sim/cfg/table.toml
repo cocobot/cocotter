@@ -259,6 +259,7 @@ height_mm = 300
 # the chassis: emitter sits 390 mm above the table top.
 [galipeur]
 lidar_height_mm = 390
+lidar_angle_offset_deg = 313.7
 
 # Neopixel fixtures wired to sabotter's single ws2812 output. Order of
 # the list defines strip order: the `single` below consumes pixel 0, the

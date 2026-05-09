@@ -293,6 +293,11 @@ pub struct RobotConfig {
     /// tall.
     #[serde(default)]
     pub lidar_height_mm: f32,
+    /// LD06 angle offset in degrees. The firmware converts raw CW angles
+    /// to body-frame CCW via `body = (offset - raw) mod 360`. The simulator
+    /// uses this to raycast in the correct direction for each raw angle.
+    #[serde(default)]
+    pub lidar_angle_offset_deg: f32,
     /// Optional 3D model (visual glb + simplified collision primitives).
     /// When absent the robot renders as its `bbox` cuboid and the raycast
     /// uses the AABB silhouette.

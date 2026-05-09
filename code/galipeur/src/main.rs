@@ -15,10 +15,10 @@ fn main() {
 
     let mut routines = GalipeurRoutines::new(
         &mut board,
-        TopLidarConf { angle_offset: 0.0 },
+        TopLidarConf { angle_offset: 313.7 },
         OpponentDetectionConf {
             table: TableConfig { width_mm: 3000.0, height_mm: 2000.0, margin_mm: 150.0 },
-            led_angle_offset: 0.0,
+            led_angle_offset: 162.0,
             corridor_half_width_mm: 250.0,
             corridor_stop_until_mm: 600.0,
             rotation_radius_mm: 400.0,

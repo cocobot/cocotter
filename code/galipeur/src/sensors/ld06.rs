@@ -3,6 +3,9 @@
 const HEADER: u8 = 0x54;
 pub const PACKET_SIZE: usize = 47;
 const POINTS_PER_REVOLUTION: usize = 500;
+/// Minimum valid distance in mm. Points closer than this are likely
+/// reflections from the robot body and are discarded.
+const MIN_DISTANCE_MM: u16 = 125;
 
 #[derive(Clone, Copy)]
 pub struct LidarPoint {
@@ -63,8 +66,8 @@ impl TopLidarScan {
         };
 
         for (i, point) in packet.points.iter().enumerate() {
-            if point.distance > 150 && self.scan_index < POINTS_PER_REVOLUTION {
-                let angle = (packet.start_angle + angle_step * i as f32 + self.angle_offset) % 360.0;
+            if point.distance > MIN_DISTANCE_MM && self.scan_index < POINTS_PER_REVOLUTION {
+                let angle = (self.angle_offset - packet.start_angle - angle_step * i as f32).rem_euclid(360.0);
                 self.scan[self.scan_index] = (angle, point.distance, point.intensity);
                 self.scan_index += 1;
             }
@@ -85,8 +88,9 @@ pub fn packet_points(packet: &LidarPacket, angle_offset: f32) -> [(f32, u16, u8)
 
     let mut out = [(0.0f32, 0u16, 0u8); 12];
     for (i, point) in packet.points.iter().enumerate() {
-        let angle = (packet.start_angle + angle_step * i as f32 + angle_offset) % 360.0;
-        out[i] = (angle, point.distance, point.intensity);
+        let angle = (angle_offset - packet.start_angle - angle_step * i as f32).rem_euclid(360.0);
+        let dist = if point.distance > MIN_DISTANCE_MM { point.distance } else { 0 };
+        out[i] = (angle, dist, point.intensity);
     }
     out
 }

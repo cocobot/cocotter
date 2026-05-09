@@ -330,7 +330,7 @@ fn handle_galipeur(
                 // continuous time so a single sim tick produces 0, 1, or 2
                 // packets depending on the accumulator phase.
                 let walls = world.visible_segments(robot_id, config.galipeur.lidar_height_mm, &static_walls);
-                for packet in lidar.tick(state.pose, &walls, sim_tick_ms) {
+                for packet in lidar.tick(state.pose, &walls, sim_tick_ms, config.galipeur.lidar_angle_offset_deg) {
                     send_msg(&stream, &SimMsgS2C::Ld06Bytes { bytes: packet.bytes.to_vec() })?;
                     // Re-publish the same hits to Bevy so the `L` toggle
                     // can render the rotor's current slice.
@@ -560,6 +560,7 @@ impl Ld06Emitter {
         pose: Pose2D,
         walls: &[[f32; 4]],
         dt_ms: u16,
+        lidar_offset_deg: f32,
     ) -> Vec<Ld06EmittedPacket> {
         self.accumulator_us = self
             .accumulator_us
@@ -567,12 +568,12 @@ impl Ld06Emitter {
         let mut out = Vec::new();
         while self.accumulator_us >= Self::PACKET_PERIOD_US {
             self.accumulator_us -= Self::PACKET_PERIOD_US;
-            out.push(self.emit_one(pose, walls));
+            out.push(self.emit_one(pose, walls, lidar_offset_deg));
         }
         out
     }
 
-    fn emit_one(&mut self, pose: Pose2D, walls: &[[f32; 4]]) -> Ld06EmittedPacket {
+    fn emit_one(&mut self, pose: Pose2D, walls: &[[f32; 4]], lidar_offset_deg: f32) -> Ld06EmittedPacket {
         let span_deg =
             Self::SPEED_DEG_S as f32 * (Self::PACKET_PERIOD_US as f32) / 1_000_000.0;
         let step = span_deg / 11.0;
@@ -582,11 +583,11 @@ impl Ld06Emitter {
         let mut distances = [0u16; 12];
         let intensities = [200u8; 12];
         for i in 0..12 {
-            let local_deg = start + step * i as f32;
-            // The LD06 packet angles use math convention (0° = body +X),
-            // but `raycast` uses strat convention (0° = +Y). Subtract
-            // π/2 so that LD06 angle 0° raycasts along body +X.
-            let world_angle = pose.theta_rad + local_deg.to_radians() - std::f32::consts::FRAC_PI_2;
+            let raw_deg = start + step * i as f32;
+            // Firmware converts raw CW to body CCW: body = (offset - raw).
+            // Strat convention: 0° = +Y, CCW.
+            let body_rad = (lidar_offset_deg - raw_deg).to_radians();
+            let world_angle = pose.theta_rad + body_rad;
             let d = raycast::raycast(
                 (pose.x_mm, pose.y_mm),
                 world_angle,
