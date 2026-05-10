@@ -112,6 +112,80 @@ pub fn measure_wall<B: SabotterBoard + 'static>(
     None
 }
 
+/// Angle tangent à la face en body frame (perpendiculaire à la normale, sens trigo).
+fn face_tangent_angle(face: RobotSide) -> f32 {
+    match face {
+        RobotSide::Back => 0.0,                                    // normal -90°, tangent 0°
+        RobotSide::Left => core::f32::consts::FRAC_PI_3,          // normal 150°, tangent 60°
+        RobotSide::Right => -core::f32::consts::FRAC_PI_3,        // normal 30°, tangent -60°
+    }
+}
+
+/// Hit point in body frame (no world rotation).
+fn hit_body(pose: GroundLidarPose, distance: u16) -> Option<(f32, f32)> {
+    if distance == 0 {
+        return None;
+    }
+    let d = distance as f32;
+    Some((pose.x + d * pose.theta.cos(), pose.y + d * pose.theta.sin()))
+}
+
+/// Measure lateral offset along a face relative to a stop/edge.
+///
+/// Returns the tangential component of the hit point in body frame (mm).
+/// Positive = offset in the tangent direction (CCW from face normal).
+/// Retries up to 3 times if implausible (> 5 m).
+pub fn measure_edge<B: SabotterBoard + 'static>(
+    sensors: &Sensors<B>,
+    face: RobotSide,
+    select: LidarSelect,
+) -> Option<f32> {
+    let tangent = face_tangent_angle(face);
+    let cos_t = tangent.cos();
+    let sin_t = tangent.sin();
+
+    for attempt in 0..MAX_RETRIES {
+        if let Some(lateral) = measure_edge_once(sensors, face, select, cos_t, sin_t) {
+            if lateral.abs() < MAX_PLAUSIBLE_MM {
+                return Some(lateral);
+            }
+            log::warn!("measure_edge: implausible {:.1} mm (attempt {}/{})", lateral, attempt + 1, MAX_RETRIES);
+        }
+    }
+    log::error!("measure_edge: all {} retries failed for {:?}", MAX_RETRIES, face);
+    None
+}
+
+fn measure_edge_once<B: SabotterBoard + 'static>(
+    sensors: &Sensors<B>,
+    face: RobotSide,
+    select: LidarSelect,
+    cos_t: f32,
+    sin_t: f32,
+) -> Option<f32> {
+    let module = sensors.ground_lidar_wait(face)?;
+    let poses = sensors.ground_lidar_poses(face)?;
+
+    match select {
+        LidarSelect::BothWithAngle | LidarSelect::Both => {
+            let (bx0, by0) = hit_body(poses[0], module.distance_0)?;
+            let (bx1, by1) = hit_body(poses[1], module.distance_1)?;
+            let bx = (bx0 + bx1) / 2.0;
+            let by = (by0 + by1) / 2.0;
+            Some(bx * cos_t + by * sin_t)
+        }
+        single => {
+            let (pose, distance) = match single {
+                LidarSelect::Low => (poses[0], module.distance_0),
+                LidarSelect::High => (poses[1], module.distance_1),
+                _ => unreachable!(),
+            };
+            let (bx, by) = hit_body(pose, distance)?;
+            Some(bx * cos_t + by * sin_t)
+        }
+    }
+}
+
 fn measure_wall_once<B: SabotterBoard + 'static>(
     sensors: &Sensors<B>,
     face: RobotSide,
