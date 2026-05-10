@@ -41,14 +41,17 @@ LANE_FIT_WINDOW_DEG: list[tuple[float, float]] = [
 # Expected θ_min (robot heading at which each lidar sees the
 # calibration wall at minimum distance), derived from module angular
 # position on the chassis.  Modules are at 0° (back), 120°, 240°.
-# Bracket pairs: (2,3)=back, (0,5)=120°, (1,4)=240°.
+# CAN modules 0 and 2 each have one lidar per face (bracket pairs):
+#   Face 120° (Left):  L0 (module 0 lane 0) + L5 (module 2 lane 1)
+#   Face back (0°):    L2 (module 1 lane 0) + L3 (module 1 lane 1)
+#   Face 240° (Right): L1 (module 0 lane 1) + L4 (module 2 lane 0)
 MODULE_THETA_MIN_DEG: list[float] = [
-    120.0,  # L0 — 120° module
-    240.0,  # L1 — 240° module
-      0.0,  # L2 — back module
-      0.0,  # L3 — back module
-    240.0,  # L4 — 240° module
-    120.0,  # L5 — 120° module
+    120.0,  # L0 — module 0 lane 0 → Left face
+    240.0,  # L1 — module 0 lane 1 → Right face
+      0.0,  # L2 — module 1 lane 0 → Back face
+      0.0,  # L3 — module 1 lane 1 → Back face
+    240.0,  # L4 — module 2 lane 0 → Right face
+    120.0,  # L5 — module 2 lane 1 → Left face
 ]
 
 
@@ -616,24 +619,46 @@ def main() -> int:
     print(f"# CAL_X (global, final): {cal_x_global:.1f} mm", file=sys.stderr)
 
     # Ready-to-paste block for galipeur/src/main.rs.
+    # The calibration body frame is rotated -90° from the asserv body
+    # frame, so apply a +90° rotation: x' = -y, y' = x, θ' = θ + 90°.
+    #
+    # CAN modules 0 and 2 each have one lidar per face, so we regroup
+    # by face (swapping lane 1 between modules 0 and 2):
+    #   Face Left  (module 0 in config): L0 (CAN m0 lane 0) + L5 (CAN m2 lane 1)
+    #   Face Back  (module 1 in config): L2 (CAN m1 lane 0) + L3 (CAN m1 lane 1)
+    #   Face Right (module 2 in config): L4 (CAN m2 lane 0) + L1 (CAN m0 lane 1)
+    face_lidar_indices = [
+        (0, 5),  # Left face
+        (2, 3),  # Back face
+        (4, 1),  # Right face
+    ]
+    face_names = ["Left", "Back", "Right"]
+
+    def fmt_pose(fit):
+        if fit is None:
+            return None
+        x, y, t, cal_x, r_min, th_min = fit
+        x_a, y_a, t_a = -y, x, t + math.radians(90)
+        t_a = wrap_pi(t_a)
+        return x_a, y_a, t_a, r_min, th_min
+
     print("// Paste into galipeur/src/main.rs (GroundLidarConf):")
     print("GroundLidarConf {")
     print("    modules: [")
-    for m in range(3):
-        print(f"        // Module {m}: lidar {m * 2} and lidar {m * 2 + 1}")
+    for face_idx, (li0, li1) in enumerate(face_lidar_indices):
+        print(f"        // {face_names[face_idx]} face: lidar {li0} and lidar {li1}")
         print("        [")
-        for l in range(2):
-            idx = m * 2 + l
-            fit = fits[idx]
-            if fit is None:
+        for idx in (li0, li1):
+            pose = fmt_pose(fits[idx])
+            if pose is None:
                 print(f"            GroundLidarPose {{ x: 0.0, y: 0.0, theta: 0.0 }},  "
                       f"// lidar {idx}: FIT FAILED")
             else:
-                x, y, t, cal_x, r_min, th_min = fit
+                x_a, y_a, t_a, r_min, th_min = pose
                 print(
-                    f"            GroundLidarPose {{ x: {x:.2f}, y: {y:.2f}, "
-                    f"theta: {math.degrees(t):.3f}_f32.to_radians() }},  "
-                    f"// r_min={r_min:.0f} mm @ θ_R={math.degrees(th_min):.1f}°"
+                    f"            GroundLidarPose {{ x: {x_a:.2f}, y: {y_a:.2f}, "
+                    f"theta: {math.degrees(t_a):.3f}_f32.to_radians() }},  "
+                    f"// L{idx} r_min={r_min:.0f} mm @ θ_R={math.degrees(th_min):.1f}°"
                 )
         print("        ],")
     print("    ],")

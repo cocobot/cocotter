@@ -15,12 +15,13 @@ fn main() {
 
     let mut routines = GalipeurRoutines::new(
         &mut board,
-        TopLidarConf { angle_offset: 310.6 },
+        TopLidarConf { angle_offset: 40.6 },
         OpponentDetectionConf {
-            table: TableConfig { width_mm: 3000.0, height_mm: 2000.0, margin_mm: 150.0 },
-            led_angle_offset: 162.0,
+            table: TableConfig { width_mm: 3000.0, height_mm: 2000.0, margin_mm: 250.0 },
+            led_angle_offset: 72.0,
             corridor_half_width_mm: 250.0,
-            corridor_stop_until_mm: 600.0,
+            corridor_stop_until_mm: 550.0,
+            corridor_slow_until_mm: 800.0,
             rotation_radius_mm: 400.0,
             slow_cruise_speed: 3.0,
         },
@@ -86,20 +87,20 @@ fn main() {
     routines.sensors.set_conf(
         GroundLidarConf {
             modules: [
-                // Module 0: lidar 0 and lidar 1
+                // Left face: L5 (low) + L0 (high)
                 [
-                    GroundLidarPose { x: -57.09, y: 167.44, theta: 28.550_f32.to_radians() },  // r_min=629 mm @ θ_R=136.6°
-                    GroundLidarPose { x: -53.44, y: -150.17, theta: -31.300_f32.to_radians() },  // r_min=634 mm @ θ_R=224.5°
+                    GroundLidarPose { x: -33.10, y: 158.56, theta: -179.850_f32.to_radians() },
+                    GroundLidarPose { x: -167.31, y: -55.24, theta: 118.650_f32.to_radians() },
                 ],
-                // Module 1: lidar 2 and lidar 3
+                // Back face: L2 (low) + L3 (high)
                 [
-                    GroundLidarPose { x: -119.21, y: -127.60, theta: 150.400_f32.to_radians() },  // r_min=623 mm @ θ_R=15.3°
-                    GroundLidarPose { x: -111.49, y: 127.89, theta: -150.650_f32.to_radians() },  // r_min=631 mm @ θ_R=344.7°
+                    GroundLidarPose { x: 129.50, y: -117.69, theta: -119.700_f32.to_radians() },
+                    GroundLidarPose { x: -130.93, y: -110.39, theta: -60.450_f32.to_radians() },
                 ],
-                // Module 2: lidar 4 and lidar 5
+                // Right face: L1 (low) + L4 (high)
                 [
-                    GroundLidarPose { x: 173.62, y: -33.59, theta: -91.450_f32.to_radians() },  // r_min=629 mm @ θ_R=256.6°
-                    GroundLidarPose { x: 163.86, y: 27.20, theta: 90.650_f32.to_radians() },  // r_min=632 mm @ θ_R=103.4°
+                    GroundLidarPose { x: 150.26, y: -55.35, theta: 58.800_f32.to_radians() },
+                    GroundLidarPose { x: 36.00, y: 172.10, theta: -1.300_f32.to_radians() },
                 ],
             ],
         },

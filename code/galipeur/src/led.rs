@@ -14,12 +14,16 @@ pub enum OpponentLedPixel {
     Off = 0,
     /// Zone boundary indicator (dim green for corridor, 1/3 for cylinder)
     Zone = 1,
-    /// Lidar point detected on table in this direction (purple)
+    /// Lidar point detected on table in this direction (orange)
     Detected = 2,
-    /// Lidar point in slow zone (purple blink 3Hz)
-    Slow = 3,
-    /// Lidar point triggered a stop hit (purple bright blink fast)
-    Hit = 4,
+    /// Lidar point detected on table AND inside a zone (orange/green blink)
+    DetectedInZone = 3,
+    /// Lidar point in slow zone (purple blink)
+    Slow = 4,
+    /// Lidar point triggered a stop hit (purple)
+    Hit = 5,
+    /// Preflight rejected trajectory due to this point (orange)
+    PreflightHit = 6,
 }
 
 pub enum LedMessage {
@@ -165,20 +169,21 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     const PURPLE: RGB8 = RGB8 { r: 30, g: 0, b: 30 };
                     const PURPLE_BRIGHT: RGB8 = RGB8 { r: 200, g: 0, b: 200 };
                     let ms = start.elapsed().subsec_millis();
-                    let hit_blink_on = (ms % 100) < 50;
                     let slow_blink_on = (ms % 333) < 167;
                     for i in 0..40 {
                         let px = self.opponent_overlay[i];
                         if px != OpponentLedPixel::Off {
                             pixels[i + 1] = match px {
                                 OpponentLedPixel::Zone => DIM_GREEN,
-                                OpponentLedPixel::Detected => PURPLE,
+                                OpponentLedPixel::Detected => RGB8 { r: 80, g: 40, b: 0 },
+                                OpponentLedPixel::DetectedInZone => {
+                                    if slow_blink_on { RGB8 { r: 80, g: 40, b: 0 } } else { DIM_GREEN }
+                                }
                                 OpponentLedPixel::Slow => {
                                     if slow_blink_on { PURPLE_BRIGHT } else { BLACK }
                                 }
-                                OpponentLedPixel::Hit => {
-                                    if hit_blink_on { PURPLE_BRIGHT } else { BLACK }
-                                }
+                                OpponentLedPixel::Hit => PURPLE,
+                                OpponentLedPixel::PreflightHit => RGB8 { r: 200, g: 80, b: 0 },
                                 OpponentLedPixel::Off => unreachable!(),
                             };
                         }

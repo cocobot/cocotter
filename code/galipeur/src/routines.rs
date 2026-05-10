@@ -96,7 +96,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                         let conf = od.conf();
                         let hw = conf.corridor_half_width_mm + ADVERSARY_RADIUS_MM;
                         let stop = conf.corridor_stop_until_mm + ADVERSARY_RADIUS_MM;
-                        let len = stop * 1.5;
+                        let len = conf.corridor_slow_until_mm + ADVERSARY_RADIUS_MM;
                         let zone = Zone::Corridor {
                             half_width_mm: hw,
                             length_mm: len,

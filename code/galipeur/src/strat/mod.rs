@@ -1,5 +1,6 @@
 use std::sync::{Arc, Mutex};
 use std::{thread::sleep, time::Duration};
+use amatheur::XYA;
 use asserv::holonomic::{Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
 use board_common::Team;
@@ -11,6 +12,8 @@ use pathfinding::{PathGraph, PathGraphBuilder};
 use crate::arfast;
 use crate::led::LedMessage;
 use crate::meca::{Meca, CleatSide};
+use crate::strat::errors::StrategyError;
+use crate::strat::realign::LidarSelect;
 use board_sabotter::movement::MovementLowLevelHardware;
 use crate::opponent_detection::{DetectionMode, OpponentDetection};
 use crate::sensors::Sensors;
@@ -19,7 +22,7 @@ use crate::strat::utils::{AsservHelper, arfast};
 pub mod utils;
 pub mod errors;
 mod calibration;
-mod realign;
+pub mod realign;
 
 pub struct Strat<B: SabotterBoard> {
     team: Team,
@@ -135,10 +138,50 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     //----------
 
+    fn setup_position(&mut self) -> Result<(), StrategyError>{
+        self.opponent_detection.set_mode(DetectionMode::Off);
+
+        let initial_angle = arfast(RobotSide::Back, self.table_main);
+        let end_angle = arfast(RobotSide::Back, TableSide::Up);
+
+        self.asserv.teleport(self.kx * 1300.0, 1500.0, initial_angle);
+        self.asserv.reset_position(0.0, 0.0, initial_angle);
+
+        self.asserv.enable_motor_control();
+
+        self.asserv.goto_xya(75.0, 0.0, initial_angle)?;
+
+        self.meca.init(self.team);
+
+        let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
+            Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
+            None => return Err(StrategyError::SensorUnavailable),
+        };
+
+        let current = self.asserv.position();
+        self.asserv.reset_position(x_back, current.y, current.a);
+
+        
+        self.asserv.goto_a(end_angle)?;
+        std::thread::sleep(Duration::from_secs(1));
+
+        let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
+            Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
+            None => return Err(StrategyError::SensorUnavailable),
+        };
+
+        let current = self.asserv.position();
+        self.asserv.reset_position(current.x, y_back, current.a);
+
+        self.asserv.goto_xya(self.kx * 1150.0, 1800.0, end_angle)?;
+
+        Ok(())
+    }
+
     fn prepare_match(&mut self) {
         log::info!("Color selection");
 
-       // self.sensors.ground_lidar_power_off();
+        self.asserv.disable_motor_control();
 
         //waiting for starter to be inserted
         loop {
@@ -167,63 +210,20 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                     self.table_main = TableSide::Right;
                     self.table_aux  = TableSide::Left;
                     self.kx = 1.0;
-                }
-                //self.meca.init(team);
+                }               
                 break;
             }
 
         }
 
-        calibration::ground_lidars_sample(&self.asserv, &self.sensors);
-        loop {
-std::thread::sleep(Duration::from_secs(1));
-        }
+        //if self.setup_position().is_err() {
+        //    self.end_of_match();
+        //}
 
-
-        self.asserv.teleport(0.0, 1000.0, arfast(RobotSide::Back, TableSide::Down));
-        self.asserv.reset_position(0.0, 1000.0, arfast(RobotSide::Back, TableSide::Down));
-        self.opponent_detection.set_mode(DetectionMode::Always);
-
-        loop {
-std::thread::sleep(Duration::from_secs(1));
-        }
-
-         std::thread::sleep(Duration::from_secs(1));
-        
-        self.asserv.teleport(-750.0, 1000.0, arfast(RobotSide::Back, TableSide::Up));
+        self.asserv.reset_position(self.kx * 1150.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
+        self.asserv.enable_motor_control();
         self.opponent_detection.set_mode(DetectionMode::OnTable);
-        loop {
-            log::info!("A");
-            self.asserv.goto_xya(-1300.0, 1000.0, 0.0).ok();
-            log::info!("A Done");
-            std::thread::sleep(Duration::from_millis(1000));
 
-
-            log::info!("B");
-            self.asserv.goto_xya( 500.0, 1000.0, 0.0).ok();
-            log::info!("B Done");
-            std::thread::sleep(Duration::from_millis(1000));
-
-            log::info!("c");
-            self.asserv.goto_xya( 500.0, 500.0, 0.0).ok();
-            log::info!("C Done");
-            std::thread::sleep(Duration::from_millis(1000));
-
-            log::info!("D");
-            self.asserv.goto_xya(-1300.0, 500.0, 0.0).ok();
-            log::info!("D Done");
-            std::thread::sleep(Duration::from_millis(1000));
-        }
-
-        //start robot with back on the up side of table in the start area
-        //there's a crate between the robot and up side
-        self.asserv.teleport(self.kx*(900.0 + 170.0 + 50.0), 2000.0 - 130.0 - 50.0, arfast(RobotSide::Back, TableSide::Up));
-        self.asserv.reset_position(self.kx*(900.0 + 170.0 + 50.0), 2000.0 - 130.0 - 50.0, arfast(RobotSide::Back, TableSide::Up));
-
-        //TODO : add autoset and go to final position in start area
-        //self.sensors.ground_lidar(RobotSide::Back);
-
-        self.asserv.goto_xya(self.kx*1150.0, 1800.0, arfast(RobotSide::Back, TableSide::Up)).ok();
 
         //waiting for starter to be removed
         let mut blink = false;
@@ -241,6 +241,16 @@ std::thread::sleep(Duration::from_secs(1));
             }
         }
 
+        
+
+        loop {
+            let r = self.asserv.goto_xya(self.kx * 500.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
+            log::info!("GOTO 1 {:?}", r);
+           // let r = self.asserv.goto_xya(self.kx * 750.0, 1800.0,  arfast(RobotSide::Back, TableSide::Up));
+            //log::info!("GOTO 2 {:?}", r);
+                        sleep(Duration::from_millis(2000));
+
+        }
 
 
     }
@@ -370,11 +380,9 @@ std::thread::sleep(Duration::from_secs(1));
         std::thread::sleep(Duration::from_secs(1));
     }
 
-    fn end_of_match(&mut self) {
+    fn end_of_match(&mut self) -> ! {
         self.sensors.ground_lidar_power_off();
-        self.meca.release(RobotSide::Back);
-        self.meca.release(RobotSide::Left);
-        self.meca.release(RobotSide::Right);
+        self.meca.end_of_match();
         loop {
             std::thread::sleep(Duration::from_secs(1));
         }

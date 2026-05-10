@@ -78,15 +78,17 @@ impl ScanBuffer {
         }
     }
 
-    fn push(&mut self, angle_deg: f32, distance_mm: u16, robot_pos: XYA) {
-        // Detect revolution wrap: swap buffers
+    /// Must be called for every lidar point (not just on-table) to detect revolution wraps.
+    fn update_angle(&mut self, angle_deg: f32) {
         if self.initialized && angle_deg > self.last_angle + 180.0 {
             std::mem::swap(&mut self.complete, &mut self.writing);
             self.writing.clear();
         }
         self.last_angle = angle_deg;
         self.initialized = true;
+    }
 
+    fn push(&mut self, angle_deg: f32, distance_mm: u16, robot_pos: XYA) {
         self.writing.push(ScanPoint { angle_deg, distance_mm, robot_pos });
     }
 
@@ -128,7 +130,7 @@ impl LedAccumulator {
     }
 
     /// Compute the zone baseline (which LEDs show the zone shape).
-    fn zone_baseline(zone: &Zone, compiled: &CompiledZone) -> [OpponentLedPixel; LED_COUNT] {
+    fn zone_baseline(zone: &Zone, compiled: &CompiledZone, led_angle_offset: f32) -> [OpponentLedPixel; LED_COUNT] {
         let mut pixels = [OpponentLedPixel::Off; LED_COUNT];
         match zone {
             Zone::Inactive => {}
@@ -140,7 +142,8 @@ impl LedAccumulator {
             Zone::Corridor { .. } => {
                 // Check at several distances to find which angles the corridor covers
                 for i in 0..LED_COUNT {
-                    let angle_rad = (i as f32 * 360.0 / LED_COUNT as f32).to_radians();
+                    let angle_deg = (i as f32 * 360.0 / LED_COUNT as f32 - led_angle_offset).rem_euclid(360.0);
+                    let angle_rad = angle_deg.to_radians();
                     for &d in &[200.0_f32, 500.0, 1000.0, 1500.0] {
                         let x = d * angle_rad.cos();
                         let y = d * angle_rad.sin();
@@ -161,7 +164,7 @@ impl LedAccumulator {
             self.last_angle = angle_deg;
             self.initialized = true;
             if let Some(compiled) = compiled {
-                self.pixels = Self::zone_baseline(zone, compiled);
+                self.pixels = Self::zone_baseline(zone, compiled, self.led_angle_offset);
             }
             return;
         }
@@ -170,7 +173,7 @@ impl LedAccumulator {
             // Revolution complete — send overlay and reset
             self.sender.send(LedMessage::OpponentOverlay(self.pixels)).ok();
             self.pixels = if let Some(compiled) = compiled {
-                Self::zone_baseline(zone, compiled)
+                Self::zone_baseline(zone, compiled, self.led_angle_offset)
             } else {
                 [OpponentLedPixel::Off; LED_COUNT]
             };
@@ -418,6 +421,7 @@ pub struct OpponentDetectionConf {
     pub led_angle_offset: f32,
     pub corridor_half_width_mm: f32,
     pub corridor_stop_until_mm: f32,
+    pub corridor_slow_until_mm: f32,
     pub rotation_radius_mm: f32,
     /// Cruise speed cap applied when an opponent is in the Slow zone.
     pub slow_cruise_speed: f32,
@@ -655,6 +659,8 @@ impl OpponentDetection {
         let cur_sin = robot_pos.a.sin();
 
         let mut hits = 0u32;
+        let mut blocked = false;
+        let mut hit_led_indices: [usize; TRIP_THRESHOLD as usize] = [0; TRIP_THRESHOLD as usize];
         for pt in scan_buf.iter() {
             // Stored body frame
             let angle_rad = pt.angle_deg.to_radians();
@@ -679,14 +685,29 @@ impl OpponentDetection {
             let bx = cur_cos * dx + cur_sin * dy;
             let by = -cur_sin * dx + cur_cos * dy;
 
-            if matches!(compiled.trip_state(bx, by), TripState::Stop) {
+            let trip = compiled.trip_state(bx, by);
+            if matches!(trip, TripState::Stop) {
+                let angle_cur = by.atan2(bx).to_degrees().rem_euclid(360.0);
+                if (hits as usize) < TRIP_THRESHOLD as usize {
+                    hit_led_indices[hits as usize] = ((angle_cur + self.inner.conf.led_angle_offset) .rem_euclid(360.0) / 360.0 * LED_COUNT as f32) as usize % LED_COUNT;
+                }
                 hits += 1;
 
-                if hits >= TRIP_THRESHOLD as u32 {
-                    self.inner.must_stop.store(true, Ordering::Relaxed);
-                    return false;
+                if hits >= TRIP_THRESHOLD as u32 && !blocked {
+                    blocked = true;
                 }
             }
+        }
+        // Drop scan_buf lock BEFORE taking led_accum (feed() takes them in reverse order)
+        drop(scan_buf);
+
+        if blocked {
+            self.inner.must_stop.store(true, Ordering::Relaxed);
+            let mut led_accum = self.inner.led_accum.lock().unwrap();
+            for i in 0..TRIP_THRESHOLD as usize {
+                led_accum.set_pixel(hit_led_indices[i], OpponentLedPixel::PreflightHit);
+            }
+            return false;
         }
 
         true
@@ -730,6 +751,7 @@ impl OpponentDetection {
 
         for &(angle_deg, distance_mm, _intensity) in points {
             led_accum.check_revolution(angle_deg, &zone, compiled.as_ref());
+            scan_buf.update_angle(angle_deg);
 
             // Track revolution for slow auto-clear (must see all angles, even distance=0)
             if compiled.is_some() && self.inner.must_slow.load(Ordering::Relaxed) {
@@ -750,11 +772,11 @@ impl OpponentDetection {
             let bx = dist * angle_rad.cos();
             let by = dist * angle_rad.sin();
 
+            let cos_a = robot_pos.a.cos();
+            let sin_a = robot_pos.a.sin();
+            let tx = robot_pos.x + bx * cos_a - by * sin_a;
+            let ty = robot_pos.y + bx * sin_a + by * cos_a;
             let is_on_table = if distance_mm <= 3000 {
-                let cos_a = robot_pos.a.cos();
-                let sin_a = robot_pos.a.sin();
-                let tx = robot_pos.x + bx * cos_a - by * sin_a;
-                let ty = robot_pos.y + bx * sin_a + by * cos_a;
                 self.inner.conf.table.point_on_table(tx, ty)
             } else {
                 false
@@ -763,7 +785,12 @@ impl OpponentDetection {
             if is_on_table {
                 scan_buf.push(angle_deg, distance_mm, robot_pos);
                 let led_idx = led_accum.angle_to_led(angle_deg);
-                led_accum.set_pixel(led_idx, OpponentLedPixel::Detected);
+                let det_state = if led_accum.pixels[led_idx] == OpponentLedPixel::Zone {
+                    OpponentLedPixel::DetectedInZone
+                } else {
+                    OpponentLedPixel::Detected
+                };
+                led_accum.set_pixel(led_idx, det_state);
             }
 
             // Zone hit detection
@@ -960,6 +987,7 @@ mod tests {
             led_angle_offset: 0.0,
             corridor_half_width_mm: 250.0,
             corridor_stop_until_mm: 600.0,
+            corridor_slow_until_mm: 900.0,
             rotation_radius_mm: 400.0,
             slow_cruise_speed: 1.0,
         }, tx);

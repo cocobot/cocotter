@@ -52,6 +52,14 @@ impl<B: SabotterBoard> AsservHelper<B> {
         self.asserv.lock().unwrap().reset_position(XYA::new(x, y, a));
     }
 
+    pub fn disable_motor_control(&self) {
+        self.asserv.lock().unwrap().cs.disable_motor_control();
+    }
+
+    pub fn enable_motor_control(&self) {
+        self.asserv.lock().unwrap().cs.enable_motor_control();
+    }
+
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
         if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
             return Err(StrategyError::OpponentDetected);

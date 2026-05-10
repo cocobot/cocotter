@@ -43,15 +43,6 @@ pub struct TopLidarConf {
     pub angle_offset: f32,
 }
 
-/// Result of plane offset computation from a ground lidar module
-#[derive(Debug, Clone, Copy)]
-pub struct PlaneOffset {
-    /// Normal direction of the detected surface in robot frame (radians)
-    pub angle: f32,
-    /// Perpendicular distance from robot center to the surface (mm)
-    pub distance: f32,
-}
-
 /// Ground lidar data for one module (2 lidars)
 #[derive(Debug, Clone, Copy, Default)]
 pub struct GroundLidarModule {
@@ -268,60 +259,17 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
         self.top_lidar.wait_next_clone()
     }
 
-    /// Wait for a fresh ground lidar measurement on this side, then compute plane offset.
+    /// Wait for a fresh ground lidar reading on `face`.
     ///
     /// Blocks until a new CAN LidarStatus arrives for the requested module.
-    /// Returns `None` if measurements are invalid or config is not set.
-    pub fn get_plane_offset(&self, side: RobotSide) -> Option<PlaneOffset> {
-        let idx = side.module() as usize;
-        let module = self.ground_lidar_modules[idx].wait_next()?;
+    pub fn ground_lidar_wait(&self, face: RobotSide) -> Option<GroundLidarModule> {
+        let idx = face.module() as usize;
+        self.ground_lidar_modules[idx].wait_next()
+    }
 
-        // Need valid measurements from both lidars
-        if module.distance_0 == 0 || module.distance_1 == 0 {
-            return None;
-        }
-
-         log::info!("GroundLidarModule for {:?}: distance_0={} sq_0={} distance_1={} sq_1={}",
-            side, module.distance_0, module.sq_0, module.distance_1, module.sq_1);
-
-        let conf = self.ground_lidar_conf.get()?.modules[idx];
-
-        let pose0 = conf[0];
-        let pose1 = conf[1];
-        let d0 = module.distance_0 as f32;
-        let d1 = module.distance_1 as f32;
-
-        // Hit points in robot frame
-        let p0x = pose0.x + d0 * pose0.theta.cos();
-        let p0y = pose0.y + d0 * pose0.theta.sin();
-        let p1x = pose1.x + d1 * pose1.theta.cos();
-        let p1y = pose1.y + d1 * pose1.theta.sin();
-
-        // Direction along the surface
-        let dx = p1x - p0x;
-        let dy = p1y - p0y;
-        let len = (dx * dx + dy * dy).sqrt();
-        if len < 1e-6 {
-            return None;
-        }
-
-        // Outward normal (perpendicular to surface, pointing away from robot)
-        let mut nx = -dy / len;
-        let mut ny = dx / len;
-
-        // Perpendicular distance from origin to the line
-        let mut dist = nx * p0x + ny * p0y;
-
-        // Ensure distance is positive (normal points outward)
-        if dist < 0.0 {
-            nx = -nx;
-            ny = -ny;
-            dist = -dist;
-        }
-
-        Some(PlaneOffset {
-            angle: ny.atan2(nx),
-            distance: dist,
-        })
+    /// Get the calibrated poses for the two lidars on `face`.
+    pub fn ground_lidar_poses(&self, face: RobotSide) -> Option<[GroundLidarPose; 2]> {
+        let idx = face.module() as usize;
+        Some(self.ground_lidar_conf.get()?.modules[idx])
     }
 }

@@ -259,7 +259,7 @@ height_mm = 300
 # the chassis: emitter sits 390 mm above the table top.
 [galipeur]
 lidar_height_mm = 390
-lidar_angle_offset_deg = 313.7
+lidar_angle_offset_deg = 40.6
 
 # Neopixel fixtures wired to sabotter's single ws2812 output. Order of
 # the list defines strip order: the `single` below consumes pixel 0, the
@@ -287,43 +287,47 @@ pixel_size_mm = 8
 # the ground. `position_mm = [x_fwd, y_left, z_up]` (asserv body
 # frame, Z-up). `theta_rad` = heading in body XY plane (0 = +X,
 # +pi/2 = +Y).
-# Six ground lidars in two trios (gl0/gl1/gl2 + gl3/gl4/gl5), 120°
-# apart around the robot Z axis. An additional +120° rotation is
-# applied here (compared to the firmware-paste reference) so the
-# sim's `i % 3` packing lines up with the firmware modules.
+# Six ground lidars packed as two trios (gl0/gl1/gl2 + gl3/gl4/gl5).
+# The sim's `i % 3` packing gives module index, `i / 3` gives lane.
+# Firmware modules (galipeur main.rs):
+#   Module 0 (Left):  L5 (low) + L0 (high)  → gl0 + gl3
+#   Module 1 (Back):  L2 (low) + L3 (high)  → gl1 + gl4
+#   Module 2 (Right): L1 (low) + L4 (high)  → gl2 + gl5
 
 [[galipeur.ground_lidars]]
-name = "gl0"
-position_mm = [170.131, 39.998, 25.850]
-theta_rad = 1.5707963            # +90°
+name = "gl0"                     # L5 (low)
+position_mm = [-33.10, 158.56, 25.850]
+theta_rad = -3.1389747           # -179.85°
 enabled = true
 
 [[galipeur.ground_lidars]]
-name = "gl1"
-position_mm = [-117.029, 125.654, 25.850]
-theta_rad = -2.6179938           # -150°
-
-[[galipeur.ground_lidars]]
-name = "gl2"
-position_mm = [-50.430, -164.111, 25.850]
-theta_rad = -0.5235988           # -30°
+name = "gl1"                     # L2 (low)
+position_mm = [129.50, -117.69, 25.850]
+theta_rad = -2.0891591           # -119.70°
 enabled = true
 
 [[galipeur.ground_lidars]]
-name = "gl3"
-position_mm = [-50.309, 164.176, 38.522]
-theta_rad = 0.5235988            # +30°
+name = "gl2"                     # L1 (low)
+position_mm = [150.26, -55.35, 25.850]
+theta_rad = 1.0262536            # +58.80°
 enabled = true
 
 [[galipeur.ground_lidars]]
-name = "gl4"
-position_mm = [-119.701, -127.340, 38.522]
-theta_rad = 2.6179938            # +150°
+name = "gl3"                     # L0 (high)
+position_mm = [-167.31, -55.24, 38.522]
+theta_rad = 2.0708332            # +118.65°
+enabled = true
 
 [[galipeur.ground_lidars]]
-name = "gl5"
-position_mm = [167.341, -38.377, 38.522]
-theta_rad = -1.5707963           # -90°
+name = "gl4"                     # L3 (high)
+position_mm = [-130.93, -110.39, 38.522]
+theta_rad = -1.0550515           # -60.45°
+enabled = true
+
+[[galipeur.ground_lidars]]
+name = "gl5"                     # L4 (high)
+position_mm = [36.00, 172.10, 38.522]
+theta_rad = -0.0226893           # -1.30°
 enabled = true
 
 [pami.bbox]
