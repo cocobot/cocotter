@@ -204,6 +204,10 @@
   MecaRelease:
     side: [left, right, back]
 
+  MecaApproachTake:
+    side: [left, right, back]
+    wall: [up, down, left, right]
+
   MecaEndOfMatch:
 
   MecaRawSetServo:

@@ -82,7 +82,7 @@ const ARMS: [[ArmCalib; 4]; 3] = [
     // Module 2
     [
         ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 740 },
-        ArmCalib { cleat_up: 420, pre_grab: 360, down: 340, up: 735 },
+        ArmCalib { cleat_up: 420, pre_grab: 370, down: 340, up: 735 },
         ArmCalib { cleat_up: 420, pre_grab: 375, down: 355, up: 760 },
         ArmCalib { cleat_up: 415, pre_grab: 355, down: 335, up: 746 },
     ],
@@ -92,26 +92,26 @@ const CLAMPS: [ClampCalib; 3] = [
     // Module 0
     ClampCalib {
         rotate: RotateCalib { pickup: 830, hold: 650 - 40 },  //hold = horizontal - 40
-        left:  GripCalib { open: 316, close: 660 },
-        right: GripCalib { open: 618, close: 275 },
+        left:  GripCalib { open: 316 - 40, close: 660 },
+        right: GripCalib { open: 618 + 40, close: 275 },
     },
     // Module 1 — TODO calibrer
     ClampCalib {
         rotate: RotateCalib { pickup: 870, hold: 670 - 40 },
-        left:  GripCalib { open: 420, close: 654 },
-        right: GripCalib { open: 540, close: 280 },
+        left:  GripCalib { open: 420 - 40, close: 654 },
+        right: GripCalib { open: 540 + 40, close: 280 },
     },
     // Module 2
     ClampCalib {
         rotate: RotateCalib { pickup: 840, hold: 660 - 40 },
-        left:  GripCalib { open: 375, close: 590 },
-        right: GripCalib { open: 535, close: 300 },
+        left:  GripCalib { open: 375 - 40, close: 590 },
+        right: GripCalib { open: 535 + 40, close: 300 },
     },
 ];
 
 const TRANSLATIONS: [TranslationCalib; 3] = [
     TranslationCalib { spread: 640, close: 910 }, // Module 0
-    TranslationCalib { spread: 640, close: 910 }, // Module 1
+    TranslationCalib { spread: 640, close: 940 }, // Module 1
     TranslationCalib { spread: 340, close: 710 }, // Module 2
 ];
 
@@ -348,7 +348,7 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
     /// PWM-toggle valves (5 ms ON / 15 ms OFF, ~25% duty) for `duration`, then fully release.
     pub fn slow_releases(&self, module: u8, arms: &[u8], duration: Duration) {
         for &arm in arms {
-            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 5, off_ms: 15 });
+            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 30, off_ms: 5 });
         }
         std::thread::sleep(duration);
         self.releases(module, arms);

@@ -414,16 +414,19 @@ impl<B: SabotterBoard> MecaWorker<B> {
             .collect();
 
         self.primitives.translation_spread(module);
+        self.primitives.slow_releases(module, &bad_color_arms, Duration::from_millis(200));
+        self.primitives.end_releases(module, ALL_ARMS);
+
         self.primitives.arms_pre_release_good_color(module, &good_color_arms);
         std::thread::sleep(Duration::from_millis(250));
 
         self.primitives.slow_releases(module, &bad_color_arms, Duration::from_millis(500));
         self.primitives.releases(module, &good_color_arms);
         std::thread::sleep(Duration::from_millis(250));
-        self.primitives.end_releases(module, &[0, 1, 2, 3]);
+        self.primitives.end_releases(module, ALL_ARMS);
 
         self.primitives.translation_spread(module);
-        self.primitives.arms_up(module, &[0, 1, 2, 3]);
+        self.primitives.arms_up(module, ALL_ARMS);
     }
 
     fn do_end_of_match(&self) {

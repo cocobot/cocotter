@@ -105,7 +105,7 @@ fn main() {
             ],
         },
         GroundConf {
-            thresholds: [50, 50, 50],
+            thresholds: [5, 5, 5],
         },
     );
 

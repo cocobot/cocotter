@@ -2,4 +2,5 @@
 pub enum StrategyError {
     OpponentDetected,
     SensorUnavailable,
+    StupidOrder,
 }

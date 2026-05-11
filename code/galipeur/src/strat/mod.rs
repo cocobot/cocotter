@@ -1,12 +1,15 @@
+use core::f32;
 use std::sync::{Arc, Mutex};
 use std::{thread::sleep, time::Duration};
 use amatheur::XYA;
+use asserv::differential::conf::TrajectoryConf;
 use asserv::holonomic::{Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
 use board_common::Team;
 use embedded_hal::digital::InputPin;
 use board_sabotter::{SabotterBoard, SabotterInputs};
 use flume::Sender;
+use log::info;
 use pathfinding::{PathGraph, PathGraphBuilder};
 
 use crate::arfast;
@@ -129,7 +132,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.prepare_match();
         //self.pathfinding_test();
         //self.test_movement();
-        self.take_first_crates();
+        self.test_eirbot_2();
+        //self.take_first_crates();
 
         self.return_to_start();
         self.end_of_match();
@@ -141,41 +145,54 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     fn setup_position(&mut self) -> Result<(), StrategyError>{
         self.opponent_detection.set_mode(DetectionMode::Off);
 
-        let initial_angle = arfast(RobotSide::Back, self.table_main);
         let end_angle = arfast(RobotSide::Back, TableSide::Up);
 
-        self.asserv.teleport(self.kx * 1300.0, 1500.0, initial_angle);
-        self.asserv.reset_position(0.0, 0.0, initial_angle);
+        #[cfg(not(target_os = "espidf"))]
+        {
+            self.asserv.teleport(self.kx * 1150.0, 1740.0, end_angle);
+            self.asserv.enable_motor_control();
+            self.meca.init(self.team);
+            return Ok(());
+        }
 
-        self.asserv.enable_motor_control();
+        #[cfg(target_os = "espidf")]
+        {
+            let initial_angle = arfast(RobotSide::Back, self.table_main);
 
-        self.asserv.goto_xya(75.0, 0.0, initial_angle)?;
+            self.asserv.teleport(self.kx * 1300.0, 1500.0, initial_angle);
+            self.asserv.reset_position(0.0, 0.0, initial_angle);
 
-        self.meca.init(self.team);
+            self.asserv.enable_motor_control();
 
-        let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
-            Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
-            None => return Err(StrategyError::SensorUnavailable),
-        };
+            self.asserv.goto_xya(- self.kx * 75.0, 0.0, initial_angle)?;
 
-        let current = self.asserv.position();
-        self.asserv.reset_position(x_back, current.y, current.a);
+            self.meca.init(self.team);
 
-        
-        self.asserv.goto_a(end_angle)?;
-        std::thread::sleep(Duration::from_secs(1));
+            let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
+                Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
+                None => return Err(StrategyError::SensorUnavailable),
+            };
 
-        let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
-            Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
-            None => return Err(StrategyError::SensorUnavailable),
-        };
+            let current = self.asserv.position();
+            self.asserv.reset_position(x_back, current.y, current.a);
 
-        let current = self.asserv.position();
-        self.asserv.reset_position(current.x, y_back, current.a);
 
-        self.asserv.goto_xya(self.kx * 1150.0, 1800.0, end_angle)?;
+            self.asserv.goto_a(end_angle)?;
+            std::thread::sleep(Duration::from_secs(1));
 
-        Ok(())
+            let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
+                Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
+                None => return Err(StrategyError::SensorUnavailable),
+            };
+
+            let current = self.asserv.position();
+            self.asserv.reset_position(current.x, y_back, current.a);
+
+            self.asserv.goto_xya(self.kx * 1150.0, 1740.0, end_angle)?;
+            self.asserv.teleport(self.kx * 1150.0, 1740.0, end_angle);
+
+            Ok(())
+        }
     }
 
     fn prepare_match(&mut self) {
@@ -210,18 +227,32 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                     self.table_main = TableSide::Right;
                     self.table_aux  = TableSide::Left;
                     self.kx = 1.0;
-                }               
+                }     
                 break;
             }
 
         }
+       //         self.opponent_detection.set_mode(DetectionMode::Off);
+//
+       // self.asserv.reset_position(0.0, 0.0, arfast(RobotSide::Back, TableSide::Left));
+       //
+       // self.asserv.enable_motor_control();
+       //
+       // loop {
+       //     if self.approach_and_take(RobotSide::Back, TableSide::Left).is_ok() {
+       //         sleep(Duration::from_millis(1000));
+       //         self.release(RobotSide::Back, TableSide::Left).ok();
+       //         self.asserv.goto_xya(0.0, 0.0, arfast(RobotSide::Back, TableSide::Left)).ok();
+       //     }
+       //     else {
+       //         sleep(Duration::from_millis(250));
+       //     }
+       // }
 
-        //if self.setup_position().is_err() {
-        //    self.end_of_match();
-        //}
+        if self.setup_position().is_err() {
+            self.end_of_match();
+        }
 
-        self.asserv.reset_position(self.kx * 1150.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
-        self.asserv.enable_motor_control();
         self.opponent_detection.set_mode(DetectionMode::OnTable);
 
 
@@ -241,25 +272,95 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }
         }
 
-        
-
-        loop {
-            let r = self.asserv.goto_xya(self.kx * 500.0, 1800.0, arfast(RobotSide::Back, TableSide::Up));
-            log::info!("GOTO 1 {:?}", r);
-           // let r = self.asserv.goto_xya(self.kx * 750.0, 1800.0,  arfast(RobotSide::Back, TableSide::Up));
-            //log::info!("GOTO 2 {:?}", r);
-                        sleep(Duration::from_millis(2000));
-
-        }
+        //loop {
+        //²    if self.asserv.goto_xya(self.kx * 1150.0, 1300.0, arfast(RobotSide::Back, TableSide::Up)).is_ok() {
+        //²        break
+        //²    }
+        //²    else {
+        //²        sleep(Duration::from_millis(100));
+        //²    }
+        //²}
+        //²loop {
+        //²    self.asserv.goto_xya(self.kx * 1150.0, 1300.0, arfast(RobotSide::Back, TableSide::Up)).ok();
+        //²    self.asserv.goto_xya(self.kx * 1150.0, 400.0, arfast(RobotSide::Back, TableSide::Up)).ok();
+        //²    sleep(Duration::from_millis(250));
+        //²}
 
 
     }
 
-    fn take_first_crates (&mut self){
-        // Right side doesn't work well, so for use of left side
-        self.robot_main = RobotSide::Right;
+    fn take_crate_spot(&self, x: f32, y: f32, face: RobotSide, side: TableSide) -> Result<(), StrategyError>{
+        const PRETAKE_DISTANCE : f32 = 275.0;
 
-        self.asserv.goto_xya(self.kx * 1180.0, 1600.0,arfast(RobotSide::Back, TableSide::Up)).ok();
+        let offset_take_xy = match side {
+            TableSide::Down => (0.0, PRETAKE_DISTANCE),
+            TableSide::Up => (0.0, -PRETAKE_DISTANCE),
+            TableSide::Left => (PRETAKE_DISTANCE, 0.0),
+            TableSide::Right => (-PRETAKE_DISTANCE, 0.0),
+        };
+
+        let face = match self.meca.prepare_direct_take(Some(face), CleatSide::Both) {
+            Some(face) => face,
+            None => {return Err(StrategyError::StupidOrder)}
+        };
+
+        self.asserv.goto_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
+        self.approach_and_take(face, side)?;
+
+        Ok(())
+    }
+
+    fn release_on_spot(&self, x: f32, y: f32, face: RobotSide, side: TableSide) -> Result<(), StrategyError>{
+        const PRERELEASE_DISTANCE : f32 = 230.0;
+
+        let offset_take_xy = match side {
+            TableSide::Down => (0.0, PRERELEASE_DISTANCE),
+            TableSide::Up => (0.0, -PRERELEASE_DISTANCE),
+            TableSide::Left => (PRERELEASE_DISTANCE, 0.0),
+            TableSide::Right => (-PRERELEASE_DISTANCE, 0.0),
+        };
+
+        let face = match self.meca.prepare_release(Some(face)) {
+            Some(face) => face,
+            None => {return Err(StrategyError::StupidOrder)}
+        };
+
+        self.asserv.goto_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
+        self.release(face, side)?;
+
+        Ok(())
+    }
+
+    fn test_eirbot_2 (&mut self){ 
+        
+        self.opponent_detection.set_mode(DetectionMode::OnTable);
+        self.asserv.goto_xya(self.kx * 1150.0, 1400.0, arfast(RobotSide::Back, TableSide::Up)).ok();
+        self.asserv.goto_xya(self.kx * 900.0, 1200.0, arfast(RobotSide::Back, TableSide::Up)).ok();
+
+        
+        self.take_crate_spot(self.kx * 1350.0, 1200.0, self.robot_main, self.table_main).ok();
+        self.take_crate_spot(self.kx * 1350.0,  400.0, self.robot_main, self.table_main).ok();
+        
+        //self.asserv.goto_xya(self.kx * 1250.0, 300.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+        //self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+        //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+        
+        self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+        self.take_crate_spot(-self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+
+        
+        self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
+        self.release_on_spot(self.kx * 0.0, 100.0, self.robot_aux, TableSide::Down).ok();
+        self.release_on_spot(self.kx * 700.0, 100.0, self.robot_main, TableSide::Down).ok();
+        self.release_on_spot(self.kx * 800.0, 800.0, self.robot_aux, self.table_aux).ok();
+        self.release_on_spot(self.kx * 1400.0, 800.0, self.robot_main, self.table_main).ok();
+        
+        self.return_to_start();  
+    }
+
+    fn take_first_crates (&mut self){ 
         self.asserv.goto_xya(self.kx * 1000.0, 1200.0, arfast(self.robot_main, self.table_main)).ok();
         let side = self.meca.prepare_direct_take(Some(self.robot_main), CleatSide::Right).unwrap();
         self.asserv.goto_xya(self.kx * 1130.0, 1200.0, arfast(side, self.table_main)).ok();
@@ -284,8 +385,10 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.meca.direct_take(side);
 
         std::thread::sleep(Duration::from_secs(5));
+        
 
         self.meca.end_of_match();
+
    
     }
 
@@ -338,6 +441,10 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         } else {
             rome::warn!(self.rlogger, "Cannot find a path");
         }
+
+        self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
+
+        self.end_of_match();
     }
 
     #[allow(dead_code)]
@@ -380,6 +487,38 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         std::thread::sleep(Duration::from_secs(1));
     }
 
+    pub fn release(&self, face: RobotSide, wall: TableSide) -> Result<(), StrategyError> {
+        const BACK_MV_RELEASE : f32 = 140.0;
+       
+        let face = match self.meca.prepare_release(Some(face)) {
+            Some(face) => face,
+            None => {return Err(StrategyError::StupidOrder)}
+        };
+        self.asserv.goto_a(arfast(face, wall))?;
+
+        self.meca.release(face);
+
+        
+        let normal_body = realign::face_normal_angle(face);
+        let heading = self.asserv.position().a;
+        let normal_world = normal_body + heading;
+
+        let dx = BACK_MV_RELEASE * normal_world.cos();
+        let dy = BACK_MV_RELEASE * normal_world.sin();
+        self.asserv.goto_xy_rel(-dx, -dy)?;
+        self.asserv.goto_xy_rel(dx, dy)?;
+     
+       Ok(())
+    }
+
+    pub fn approach_and_take(
+        &self,
+        face: RobotSide,
+        wall: TableSide,
+    ) -> Result<(), StrategyError> {
+        approach_and_take(&self.sensors, &self.meca, &self.asserv, face, wall)
+    }
+
     fn end_of_match(&mut self) -> ! {
         self.sensors.ground_lidar_power_off();
         self.meca.end_of_match();
@@ -387,4 +526,92 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             std::thread::sleep(Duration::from_secs(1));
         }
     }
+}
+
+/// Approach a cleat using lidar-based realignment, then take.
+///
+/// Sequence: prepare meca → slow → measure distance → advance → measure lateral → correct → take.
+pub fn approach_and_take<B: SabotterBoard + 'static>(
+    sensors: &Sensors<B>,
+    meca: &Meca<B>,
+    asserv: &AsservHelper<B>,
+    face: RobotSide,
+    wall: TableSide,
+) -> Result<(), StrategyError> {
+    const CENTER_TO_FACE : f32 = 120.0;
+    const SHIFT_TRANSLATION : f32 = 75.0;
+    const REJECT_DISTANCE : f32 = 300.0;
+
+    const TARGET_DISTANCE: f32 = 150.0; // mm face→cleat
+    const TARGET_LATERAL: f32 = 0.0;    // mm, 0 = centered
+    const SLOW_SPEED: f32 = 200.0;
+    const SLOW_ACC: f32 = 500.0;
+
+
+    // 0. Prepare meca
+    let face = match meca.prepare_direct_take(Some(face), CleatSide::Both) {
+        Some(face) => face,
+        None => {return Err(StrategyError::StupidOrder)},
+    };
+    asserv.goto_a(arfast(face, wall))?;
+    meca.prepare_direct_take(Some(face), CleatSide::Left);
+
+    sleep(Duration::from_millis(250));
+
+    let normal_body = realign::face_normal_angle(face);
+    let tangent_body = realign::face_tangent_angle(face);
+
+    // 1. Slow speed
+    let (saved_speed, saved_acc) = asserv.xy_cruise_speed();
+    //asserv.set_xy_cruise_speed(SLOW_SPEED, SLOW_ACC);
+
+    let result = (|| -> Result<(), StrategyError> {
+        // Body→world rotation: add robot heading to body-frame angles
+        let heading = asserv.position().a;
+        let normal_world = normal_body + heading;
+        let tangent_world = normal_world + f32::consts::FRAC_PI_2;
+
+        // 2. Measure perpendicular distance (face → obstacle, in body frame)
+        let face_distance = realign::measure_face_distance(sensors, face, LidarSelect::Low)
+            .ok_or(StrategyError::SensorUnavailable)?;
+        log::info!("approach_and_take: face_distance={:.1} mm", face_distance);
+
+        if face_distance > REJECT_DISTANCE {
+            return Err(StrategyError::StupidOrder);
+        }
+
+        // 3. Advance to target distance (move along face normal, in world frame)
+        let dist_correction = face_distance - CENTER_TO_FACE;
+        let dx = dist_correction * normal_world.cos();
+        let dy = dist_correction * normal_world.sin();
+        let dx_lat = SHIFT_TRANSLATION * tangent_world.cos();
+        let dy_lat = SHIFT_TRANSLATION * tangent_world.sin();
+        log::info!("D {} {}", dx + dx_lat, dy + dy_lat);
+        asserv.goto_xy_rel(dx, dy)?;
+        asserv.goto_xy_rel(dx_lat, dy_lat)?;
+
+       /// // 4. Measure lateral offset
+       /// let lateral = realign::measure_edge(sensors, face, LidarSelect::Low)
+       ///     .ok_or(StrategyError::SensorUnavailable)?;
+///
+       /// // 5. Correct lateral position (in world frame)
+       /// let lateral_correction = TARGET_LATERAL - lateral;
+       /// let dx = lateral_correction * tangent_world.cos();
+       /// let dy = lateral_correction * tangent_world.sin();
+       /// asserv.goto_xy_rel(dx, dy)?;
+
+        Ok(())
+    })();
+
+    // Restore speed regardless of outcome
+   // asserv.set_xy_cruise_speed(saved_speed, saved_acc);
+    if result.is_err() {
+        meca.prepare_direct_take(Some(face), CleatSide::Both);
+        return result;
+    }
+
+    // 6. Take
+    meca.direct_take(face);
+
+    Ok(())
 }

@@ -52,6 +52,14 @@ impl<B: SabotterBoard> AsservHelper<B> {
         self.asserv.lock().unwrap().reset_position(XYA::new(x, y, a));
     }
 
+    pub fn xy_cruise_speed(&self) -> (f32, f32) {
+        self.asserv.lock().unwrap().xy_cruise_speed()
+    }
+
+    pub fn set_xy_cruise_speed(&self, speed: f32, acc: f32) {
+        self.asserv.lock().unwrap().set_xy_cruise_speed(speed, acc);
+    }
+
     pub fn disable_motor_control(&self) {
         self.asserv.lock().unwrap().cs.disable_motor_control();
     }
@@ -62,6 +70,13 @@ impl<B: SabotterBoard> AsservHelper<B> {
 
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
         if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
+            return Err(StrategyError::OpponentDetected);
+        }
+        self.wait()
+    }
+
+    pub fn goto_xy_rel(&self, dx: f32, dy: f32) -> Result<(), StrategyError> {
+        if !self.asserv.lock().unwrap().goto_xy_rel(dx, dy) {
             return Err(StrategyError::OpponentDetected);
         }
         self.wait()

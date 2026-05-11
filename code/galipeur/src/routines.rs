@@ -15,7 +15,7 @@ use crate::opponent_detection::{OpponentDetection, OpponentDetectionConf, Zone, 
 use board_sabotter::debug_viz;
 use crate::strat::Strat;
 use crate::sensors::{Sensors, TopLidarConf};
-use crate::strat::utils::arfast;
+use crate::strat::utils::{arfast, AsservHelper};
 
 /// Everything needed for PAMI routines
 ///
@@ -348,6 +348,29 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                     rome::params::MecaReleaseSide::Right => { self.meca.release(asserv::holonomic::RobotSide::Right); }
                     rome::params::MecaReleaseSide::Back  => { self.meca.release(asserv::holonomic::RobotSide::Back);  }
                 }
+                true
+            }
+            rome::Message::MecaApproachTake { side, wall } => {
+                log::info!("ROME: meca approach take");
+                let face = match side {
+                    rome::params::MecaApproachTakeSide::Left => RobotSide::Left,
+                    rome::params::MecaApproachTakeSide::Right => RobotSide::Right,
+                    rome::params::MecaApproachTakeSide::Back => RobotSide::Back,
+                };
+                let table_side = match wall {
+                    rome::params::MecaApproachTakeWall::Up => TableSide::Up,
+                    rome::params::MecaApproachTakeWall::Down => TableSide::Down,
+                    rome::params::MecaApproachTakeWall::Left => TableSide::Left,
+                    rome::params::MecaApproachTakeWall::Right => TableSide::Right,
+                };
+                let sensors = self.sensors.clone();
+                let meca = self.meca.clone();
+                let asserv_helper = AsservHelper::new(self.asserv.clone(), self.opponent_detection.clone());
+                std::thread::spawn(move || {
+                    if let Err(e) = crate::strat::approach_and_take(&sensors, &meca, &asserv_helper, face, table_side) {
+                        log::error!("approach_and_take failed: {:?}", e);
+                    }
+                });
                 true
             }
             rome::Message::MecaEndOfMatch  => {
