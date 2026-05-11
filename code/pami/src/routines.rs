@@ -376,11 +376,11 @@ impl<B: PamiBoard> PamiRoutines<B> {
                 self.step_idle();
             }
             self.asserv.stop();
-            log::info!("Obstacle detected");
+            rome::info!(self.rlogger,"Obstacle detected");
             while self.obstacle_detected(){
                 self.step_idle();
             }
-            log::info!("Obstacle gone, resume movement");
+            rome::info!(self.rlogger,"Obstacle gone, resume movement");
         }
         true
     }
@@ -391,7 +391,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
             match vlx_distances{
                 Some(d) => {
                     let distances = d.all_distances();
-                    log::info!("Obstacle {:?}", distances);
+                    rome::info!(self.rlogger,"Obstacle {:?}", distances);
                     return distances.iter().any(|&v| v < 100 && v != 0);
                 }
                 None => { self.step_idle(); }
