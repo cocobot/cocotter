@@ -284,9 +284,9 @@ start_angle_rad = -0.1066610
 pixel_size_mm = 8
 
 # Ground-level lidars: mounted under the chassis, beams parallel to
-# the ground. `position_mm = [x_fwd, y_left, z_up]` (asserv body
-# frame, Z-up). `theta_rad` = heading in body XY plane (0 = +X,
-# +pi/2 = +Y).
+# the ground. `position_mm = [x_right, y_forward, z_up]` (motor body
+# frame, Z-up). `theta_rad` = heading in body XY plane (0 = +X right,
+# +pi/2 = +Y forward).
 # Six ground lidars packed as two trios (gl0/gl1/gl2 + gl3/gl4/gl5).
 # The sim's `i % 3` packing gives module index, `i / 3` gives lane.
 # Firmware modules (galipeur main.rs):

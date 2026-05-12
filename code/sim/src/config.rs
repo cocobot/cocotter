@@ -320,12 +320,12 @@ pub struct RobotConfig {
 pub struct GroundLidar {
     #[serde(default)]
     pub name: String,
-    /// `[x_forward, y_left, z_up]` in mm (body frame) — emitter origin.
+    /// `[x_right, y_forward, z_up]` in mm (motor body frame) — emitter origin.
     /// Ground lidars sit just above the chassis base; Z stays small.
     pub position_mm: [f32; 3],
-    /// Beam heading in the body's horizontal plane (rad). 0 = +X
-    /// forward, positive = CCW toward +Y (left). Beam is parallel to
-    /// the ground — no pitch.
+    /// Beam heading in the motor body frame horizontal plane (rad).
+    /// 0 = +X (rightward), positive = CCW toward +Y (forward). Beam
+    /// is parallel to the ground — no pitch.
     pub theta_rad: f32,
     #[serde(default = "default_ground_lidar_range")]
     pub max_range_mm: f32,

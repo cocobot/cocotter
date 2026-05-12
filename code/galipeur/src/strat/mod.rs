@@ -147,15 +147,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         let end_angle = arfast(RobotSide::Back, TableSide::Up);
 
-        #[cfg(not(target_os = "espidf"))]
-        {
-            self.asserv.teleport(self.kx * 1150.0, 1740.0, end_angle);
-            self.asserv.enable_motor_control();
-            self.meca.init(self.team);
-            return Ok(());
-        }
-
-        #[cfg(target_os = "espidf")]
         {
             let initial_angle = arfast(RobotSide::Back, self.table_main);
 

@@ -386,13 +386,16 @@ fn handle_galipeur(
                         if !gl.enabled {
                             continue;
                         }
-                        // Body (bx=fwd, by=left) rotated into strat
-                        // world by robot θ (θ=0 → facing +Y).
+                        // Body (bx=right, by=forward) in motor frame,
+                        // rotated into strat world by standard R(θ).
+                        // Raycast uses strat convention (angle 0 → +Y),
+                        // so subtract π/2 from the standard world angle.
                         let bx = gl.position_mm[0];
                         let by = gl.position_mm[1];
-                        let world_x = state.pose.x_mm - sin_t * bx - cos_t * by;
-                        let world_y = state.pose.y_mm + cos_t * bx - sin_t * by;
-                        let world_theta = state.pose.theta_rad + gl.theta_rad;
+                        let world_x = state.pose.x_mm + cos_t * bx - sin_t * by;
+                        let world_y = state.pose.y_mm + sin_t * bx + cos_t * by;
+                        let world_theta = state.pose.theta_rad + gl.theta_rad
+                            - core::f32::consts::FRAC_PI_2;
                         let d = raycast::raycast(
                             (world_x, world_y),
                             world_theta,
