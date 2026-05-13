@@ -749,7 +749,15 @@ impl OpponentDetection {
         let mut scan_buf = self.inner.scan_buffer.lock().unwrap();
         let mut slow_rev = self.inner.slow_rev.lock().unwrap();
 
-        for &(angle_deg, distance_mm, _intensity) in points {
+        for &(angle_deg, distance_mm, intensity) in points {
+            
+            if intensity < 185 {
+                continue
+            }
+            if distance_mm < 180 {
+                continue
+            }
+           
             led_accum.check_revolution(angle_deg, &zone, compiled.as_ref());
             scan_buf.update_angle(angle_deg);
 
@@ -791,6 +799,8 @@ impl OpponentDetection {
                     OpponentLedPixel::Detected
                 };
                 led_accum.set_pixel(led_idx, det_state);
+               //log::info!("pt {:?} {:?} {:?} {:?} {:?} {}", (tx, ty), robot_pos, robot_pos.a.to_degrees(), angle_deg, distance_mm, intensity);
+
             }
 
             // Zone hit detection

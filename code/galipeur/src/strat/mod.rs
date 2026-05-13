@@ -129,6 +129,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     }
 
     fn run(mut self) {
+        sleep(Duration::from_millis(100));
+
         self.prepare_match();
         //self.pathfinding_test();
         //self.test_movement();
@@ -323,6 +325,15 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     }
 
     fn test_eirbot_2 (&mut self){ 
+
+        let init_pos = self.asserv.position();
+        self.opponent_detection.set_mode(DetectionMode::OnTable);
+        self.asserv.
+        loop {
+            self.asserv.goto_xya(init_pos.x , init_pos.y - 1250.0, init_pos.a).ok();
+            self.asserv.goto_xya(init_pos.x , init_pos.y -  250.0, init_pos.a).ok();
+            sleep(Duration::from_millis(10));
+        }
         
         self.opponent_detection.set_mode(DetectionMode::OnTable);
         self.asserv.goto_xya(self.kx * 1150.0, 1400.0, arfast(RobotSide::Back, TableSide::Up)).ok();
