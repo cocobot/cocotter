@@ -180,6 +180,7 @@ impl<H: AsservHardware> Asserv<H> {
     pub fn stop(&mut self) {
         self.cs.reset_targets();
         self.cs.motor_filter.reset(self.cs.dist(),self.cs.position().a);
+        self.cs.hardware.set_motor_consigns([0.0,0.0]);
         self.order = TrajectoryOrder::Stop;
     }
 

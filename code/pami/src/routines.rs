@@ -244,6 +244,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
             if let Some(color) = ground_led_color.update(&now) {
                 self.set_ground_led_color(color);
             }
+            _ = self.obstacle_detected()
         }
 
         log::info!("Match starts!");
@@ -366,7 +367,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
         }
     }
 
-    pub fn got_to_xy_with_detection(&mut self, x:f32, y:f32) -> bool {
+    pub fn go_to_xy_with_detection(&mut self, x:f32, y:f32) -> bool {
         'order: loop {
             self.asserv.goto_xy(x,y);
             while !self.obstacle_detected(){
@@ -391,8 +392,15 @@ impl<B: PamiBoard> PamiRoutines<B> {
             match vlx_distances{
                 Some(d) => {
                     let distances = d.all_distances();
-                    rome::info!(self.rlogger,"Obstacle {:?}", distances);
-                    return distances.iter().any(|&v| v < 100 && v != 0);
+                    rome::info!(self.rlogger,"Obstacle {:?}", &distances[0..4]);
+                    rome::info!(self.rlogger,"Obstacle {:?}", &distances[4..8]);
+                    rome::info!(self.rlogger,"Obstacle {:?}", &distances[8..12]);
+                    rome::info!(self.rlogger,"Obstacle {:?}", &distances[12..16]);
+                    rome::info!(self.rlogger," -- ");
+                    return //( distances[1] < 300 && distances[1] != 0 ) ||
+                           ( distances[5] < 300 && distances[5] != 0 ) ||
+                           ( distances[9] < 300 && distances[9] != 0 );
+                           //( distances[13] < 300 && distances[13] != 0 );
                 }
                 None => { self.step_idle(); }
             }

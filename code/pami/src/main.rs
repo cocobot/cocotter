@@ -8,6 +8,7 @@ use pami::config::PamiConfig;
 use pami::events::*;
 use pami::routines::{PamiRoutines, MatchStep};
 use pami::ui::Ui;
+use std::time::{Duration};
 
 #[cfg(target_os = "espidf")]
 type PamiBoardImpl = board_pami::EspPamiBoard;
@@ -87,6 +88,7 @@ fn main() {
     //TODO Match starts! Trigger events (UI, etc.)
 
     let flipped_x = match_conf.team == Team::Left;
+    let kx = if flipped_x { -1.0 } else { 1.0 };
     macro_rules! xflip {
         ($e:expr) => { if flipped_x { $e.xflip() } else { $e } }
     }
@@ -94,9 +96,18 @@ fn main() {
     let start_position = match match_conf.role {
         PamiRole::None => XYA::new(0.0, 0.0 ,0.0),
         PamiRole::Ninja => XYA::new(800.0,1950.0,0.0),
-        PamiRole::Paninja(n) => XYA::new(1500.0-50.0*n as f32,1950.0, -core::f32::consts::FRAC_PI_2)
+        PamiRole::Paninja(_) => XYA::new(1420.0,1960.0, -core::f32::consts::FRAC_PI_2)
     };
     routines.asserv.reset_position(xflip!(start_position));
+
+    std::thread::sleep(Duration::from_secs(1));
+
+    match match_conf.role {
+        PamiRole::Paninja(n) => {
+            routines.asserv.goto_xy(1420.0 * kx,1680.0 - 80.0 * n as f32);
+        }
+        _ => { }
+    }
 
     routines.wait_match_start(&match_conf);
 
@@ -121,7 +132,13 @@ fn main() {
 
     if match_conf.role == PamiRole::None {
         routines.asserv.set_movement_direction(MovementDirection::Backward);
-        routines.got_to_xy_with_detection(0.0, 500.0);
+        routines.go_to_xy_with_detection(0.0, 500.0);
+    }
+
+    if match_conf.role == PamiRole::Paninja(1) {
+        routines.asserv.set_movement_direction(MovementDirection::Backward);
+        routines.go_to_xy_with_detection(kx*1380.0, 1400.0);
+        routines.go_to_xy_with_detection(kx*1337.0, 900.0);
     }
 
     loop {
