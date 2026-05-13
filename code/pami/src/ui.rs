@@ -365,7 +365,13 @@ impl MatchConfScreen {
             PamiRole::None => "none",
             PamiRole::Ninja => "NINJA !",
             //TODO add all pananinjas
-            PamiRole::Paninja(_) => "PANINJA",
+            PamiRole::Paninja(1) => "PANJA 1",
+            PamiRole::Paninja(2) => "PANJA 2",
+            PamiRole::Paninja(3) => "PANJA 3",
+            PamiRole::Paninja(4) => "PANJA 4",
+            PamiRole::Paninja(5) => "PANJA 5",
+            PamiRole::Paninja(6) => "PANJA 6",
+            PamiRole::Paninja(_) => "What ?",
         }
     }
 

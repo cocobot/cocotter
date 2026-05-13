@@ -157,12 +157,12 @@ impl<B: PamiBoard> PamiRoutines<B> {
         // Initialize match conf from buttons state
         let mut buttons = self.pami_buttons.read_state();
         let mut match_conf = MatchConf {
-            team: match buttons.switch(0) {
+            team: match buttons.switch(2) {
                 false => Team::Left,
                 true => Team::Right,
             },
             start_delay: 90,
-            role: match (buttons.switch(1), buttons.switch(2), buttons.switch(3)) {
+            role: match (buttons.switch(1), buttons.switch(0), buttons.switch(3)) {
                 (false, false, false) => PamiRole::None,
                 (true,  false, false) => PamiRole::Paninja(1),
                 (false,  true, false) => PamiRole::Paninja(2),
