@@ -37,11 +37,11 @@ impl MotorFilter {
     }
 
     /// Reset filters
-    pub(crate) fn reset(&mut self) {
+    pub(crate) fn reset(&mut self, dist:f32, angle:f32) {
         self.pid_dist.reset();
         self.pid_angle.reset();
-        self.ramp_dist.reset_finished_to(0.0);
-        self.ramp_angle.reset_finished_to(0.0);
+        self.ramp_dist.reset_finished_to(dist);
+        self.ramp_angle.reset_finished_to(angle);
     }
 
     /// Provide access to distance PID configurations
