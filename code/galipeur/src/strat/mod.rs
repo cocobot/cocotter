@@ -150,38 +150,38 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         let end_angle = arfast(RobotSide::Back, TableSide::Up);
 
         {
-            let initial_angle = arfast(RobotSide::Back, self.table_main);
+            //²let initial_angle = arfast(RobotSide::Back, self.table_main);
+//²
+            //²self.asserv.teleport(self.kx * 1300.0, 1500.0, initial_angle);
+            //²self.asserv.reset_position(0.0, 0.0, initial_angle);
+//²
+            //²self.asserv.enable_motor_control();
+//²
+            //²self.asserv.goto_xya(- self.kx * 75.0, 0.0, initial_angle)?;
+//²
+            //²self.meca.init(self.team);
+//²
+            //²let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
+            //²    Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
+            //²    None => return Err(StrategyError::SensorUnavailable),
+            //²};
+//²
+            //²let current = self.asserv.position();
+            //²self.asserv.reset_position(x_back, current.y, current.a);
+//²
+//²
+            //²self.asserv.goto_a(end_angle)?;
+            //²std::thread::sleep(Duration::from_secs(1));
+//²
+            //²let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
+            //²    Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
+            //²    None => return Err(StrategyError::SensorUnavailable),
+            //²};
+//²
+            //²let current = self.asserv.position();
+            //²self.asserv.reset_position(current.x, y_back, current.a);
 
-            self.asserv.teleport(self.kx * 1300.0, 1500.0, initial_angle);
-            self.asserv.reset_position(0.0, 0.0, initial_angle);
-
-            self.asserv.enable_motor_control();
-
-            self.asserv.goto_xya(- self.kx * 75.0, 0.0, initial_angle)?;
-
-            self.meca.init(self.team);
-
-            let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
-                Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
-                None => return Err(StrategyError::SensorUnavailable),
-            };
-
-            let current = self.asserv.position();
-            self.asserv.reset_position(x_back, current.y, current.a);
-
-
-            self.asserv.goto_a(end_angle)?;
-            std::thread::sleep(Duration::from_secs(1));
-
-            let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
-                Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
-                None => return Err(StrategyError::SensorUnavailable),
-            };
-
-            let current = self.asserv.position();
-            self.asserv.reset_position(current.x, y_back, current.a);
-
-            self.asserv.goto_xya(self.kx * 1150.0, 1740.0, end_angle)?;
+            //self.asserv.goto_xya(self.kx * 1150.0, 1740.0, end_angle)?;
             self.asserv.teleport(self.kx * 1150.0, 1740.0, end_angle);
 
             Ok(())
@@ -245,6 +245,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         if self.setup_position().is_err() {
             self.end_of_match();
         }
+        self.sensors.ground_lidar_power_off();
 
         self.opponent_detection.set_mode(DetectionMode::OnTable);
 
@@ -259,6 +260,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             sleep(Duration::from_millis(100));
 
             if self.inputs.starter.is_high().unwrap_or(false) {
+                self.asserv.set_match_started();
                 self.leds.send(LedMessage::GameTeam { team: self.team }).ok();
                 log::info!("Match started");
                 break;
@@ -326,40 +328,43 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     fn test_eirbot_2 (&mut self){ 
 
-        let init_pos = self.asserv.position();
+       //let init_pos = self.asserv.position();
+       //self.opponent_detection.set_mode(DetectionMode::OnTable);
+       //self.asserv.set_stop_mode(utils::StopMode::WaitAndResume);
+
+       //loop {
+       //    self.asserv.goto_xya(init_pos.x , 1350.0, init_pos.a).ok();
+       //    self.asserv.goto_xya(init_pos.x , 1000.0, init_pos.a).ok();
+       //    sleep(Duration::from_millis(10));
+       //}
+
         self.opponent_detection.set_mode(DetectionMode::OnTable);
-        self.asserv.
-        loop {
-            self.asserv.goto_xya(init_pos.x , init_pos.y - 1250.0, init_pos.a).ok();
-            self.asserv.goto_xya(init_pos.x , init_pos.y -  250.0, init_pos.a).ok();
-            sleep(Duration::from_millis(10));
-        }
-        
-        self.opponent_detection.set_mode(DetectionMode::OnTable);
+        self.asserv.set_stop_mode(utils::StopMode::WaitAndResume);
         self.asserv.goto_xya(self.kx * 1150.0, 1400.0, arfast(RobotSide::Back, TableSide::Up)).ok();
         self.asserv.goto_xya(self.kx * 900.0, 1200.0, arfast(RobotSide::Back, TableSide::Up)).ok();
 
         
         self.take_crate_spot(self.kx * 1350.0, 1200.0, self.robot_main, self.table_main).ok();
-        self.take_crate_spot(self.kx * 1350.0,  400.0, self.robot_main, self.table_main).ok();
+        //self.take_crate_spot(self.kx * 1350.0,  400.0, self.robot_main, self.table_main).ok();
         
         //self.asserv.goto_xya(self.kx * 1250.0, 300.0, arfast(RobotSide::Left, TableSide::Up)).ok();
         //self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
         //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
         
-        self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
-        self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
-        self.take_crate_spot(-self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
-        self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+        //self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        //self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+        //self.take_crate_spot(-self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        //self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
 
         
-        self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
-        self.release_on_spot(self.kx * 0.0, 100.0, self.robot_aux, TableSide::Down).ok();
-        self.release_on_spot(self.kx * 700.0, 100.0, self.robot_main, TableSide::Down).ok();
-        self.release_on_spot(self.kx * 800.0, 800.0, self.robot_aux, self.table_aux).ok();
+        //self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
+        //self.release_on_spot(self.kx * 0.0, 100.0, self.robot_aux, TableSide::Down).ok();
+        //self.release_on_spot(self.kx * 700.0, 100.0, self.robot_main, TableSide::Down).ok();
+        //self.release_on_spot(self.kx * 800.0, 800.0, self.robot_aux, self.table_aux).ok();
         self.release_on_spot(self.kx * 1400.0, 800.0, self.robot_main, self.table_main).ok();
         
-        self.return_to_start();  
+        self.end_of_match();
+        //self.return_to_start();  
     }
 
     fn take_first_crates (&mut self){ 
@@ -439,12 +444,13 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         let goal = self.pathfinder.nearest_node(&XY::new(self.kx*1200.0, 1700.0));
         if let Some(path) = self.pathfinder.find_path(start, goal) {
             let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
-            self.asserv.run_path(&asserv_path).ok();
+            if self.asserv.run_path(&asserv_path).is_ok() {
+                self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
+            }
         } else {
             rome::warn!(self.rlogger, "Cannot find a path");
         }
 
-        self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
 
         self.end_of_match();
     }

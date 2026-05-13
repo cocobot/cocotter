@@ -122,6 +122,7 @@ impl<H: AsservHardware> ControlSystem<H> {
 
     /// Enable motor control
     pub fn enable_motor_control(&mut self) {
+        self.motor_filter.reset(&self.position);
         self.motors_reactivated = true;
         self.motor_control = true;
     }

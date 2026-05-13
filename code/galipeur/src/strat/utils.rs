@@ -1,10 +1,19 @@
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 
 use asserv::{holonomic::{Asserv, RobotSide, TableSide}, maths::{XY, XYA}};
 use board_sabotter::SabotterBoard;
 
 use board_sabotter::movement::MovementLowLevelHardware;
 use crate::{opponent_detection::OpponentDetection, strat::errors::StrategyError};
+
+const MATCH_DURATION_SECS: u64 = 90;
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum StopMode {
+    Reject,
+    WaitAndResume,
+}
 
 pub const fn arfast(face: RobotSide, side: TableSide) -> f32 {
     match (face, side) {
@@ -32,11 +41,26 @@ macro_rules! arfast {
 pub struct AsservHelper<B: SabotterBoard> {
     asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>,
     opponent_detection: OpponentDetection,
+    stop_mode: StopMode,
+    match_start: Arc<Mutex<Option<Instant>>>,
 }
 
 impl<B: SabotterBoard> AsservHelper<B> {
     pub fn new(asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>, opponent_detection: OpponentDetection) -> Self {
-        Self { asserv, opponent_detection }
+        Self { asserv, opponent_detection, stop_mode: StopMode::Reject, match_start: Arc::new(Mutex::new(None)) }
+    }
+
+    pub fn set_stop_mode(&mut self, mode: StopMode) {
+        self.stop_mode = mode;
+    }
+
+    pub fn set_match_started(&self) {
+        *self.match_start.lock().unwrap() = Some(Instant::now());
+    }
+
+    pub fn is_end_of_match(&self) -> bool {
+        self.match_start.lock().unwrap()
+            .map_or(false, |start| start.elapsed().as_secs() >= MATCH_DURATION_SECS)
     }
 
     pub fn position(&self) -> XYA {
@@ -69,60 +93,138 @@ impl<B: SabotterBoard> AsservHelper<B> {
     }
 
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
-        if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
-            return Err(StrategyError::OpponentDetected);
+        loop {
+            if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+            self.enable_motor_control();
+            if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
+                if self.stop_mode == StopMode::WaitAndResume {
+                    self.wait_opponent_clear();
+                    continue;
+                }
+                return Err(StrategyError::OpponentDetected);
+            }
+            match self.wait() {
+                Ok(()) => return Ok(()),
+                Err(_) if self.stop_mode == StopMode::WaitAndResume => continue,
+                Err(e) => return Err(e),
+            }
         }
-        self.wait()
     }
 
     pub fn goto_xy_rel(&self, dx: f32, dy: f32) -> Result<(), StrategyError> {
+        if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+        let start = self.position();
+        let target_x = start.x + dx;
+        let target_y = start.y + dy;
+        self.enable_motor_control();
         if !self.asserv.lock().unwrap().goto_xy_rel(dx, dy) {
-            return Err(StrategyError::OpponentDetected);
+            if self.stop_mode == StopMode::WaitAndResume {
+                self.wait_opponent_clear();
+            } else {
+                return Err(StrategyError::OpponentDetected);
+            }
         }
-        self.wait()
+        loop {
+            match self.wait() {
+                Ok(()) => return Ok(()),
+                Err(_) if self.stop_mode == StopMode::WaitAndResume => {
+                    if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+                    self.enable_motor_control();
+                    if !self.asserv.lock().unwrap().goto_xya(target_x, target_y, self.position().a) {
+                        return Err(StrategyError::OpponentDetected);
+                    }
+                    continue;
+                },
+                Err(e) => return Err(e),
+            }
+        }
     }
 
     pub fn goto_a(&self, a: f32) -> Result<(), StrategyError> {
-        if !self.asserv.lock().unwrap().goto_a(a) {
-            return Err(StrategyError::OpponentDetected);
+        loop {
+            if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+
+            self.enable_motor_control();
+            if !self.asserv.lock().unwrap().goto_a(a) {
+                if self.stop_mode == StopMode::WaitAndResume {
+                    self.wait_opponent_clear();
+                    continue;
+                }
+                return Err(StrategyError::OpponentDetected);
+            }
+            match self.wait() {
+                Ok(()) => return Ok(()),
+                Err(_) if self.stop_mode == StopMode::WaitAndResume => continue,
+                Err(e) => return Err(e),
+            }
         }
-        self.wait()
     }
 
     pub fn run_path(&self, path: &[XY]) -> Result<(), StrategyError> {
-        if !self.asserv.lock().unwrap().run_path(path) {
-            return Err(StrategyError::OpponentDetected);
+        loop {
+            if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+
+            self.enable_motor_control();
+            if !self.asserv.lock().unwrap().run_path(path) {
+                if self.stop_mode == StopMode::WaitAndResume {
+                    self.wait_opponent_clear();
+                    continue;
+                }
+                return Err(StrategyError::OpponentDetected);
+            }
+            match self.wait() {
+                Ok(()) => return Ok(()),
+                Err(_) if self.stop_mode == StopMode::WaitAndResume => continue,
+                Err(e) => return Err(e),
+            }
         }
-        self.wait()
+    }
+
+    fn wait_opponent_clear(&self) {
+        log::warn!("Preflight blocked, waiting for opponent to clear...");
+        while self.opponent_detection.must_stop() {
+            self.opponent_detection.clear_stop();
+            std::thread::sleep(std::time::Duration::from_millis(500));
+        }
+        log::warn!("Opponent cleared");
     }
 
     fn wait(&self) -> Result<(), StrategyError> {
         //TODO damien use passive waiting with Sender/Receiver
         let mut was_slow = false;
-        let mut saved_cruise_speed = 0.0f32;
-        let mut saved_cruise_acc = 0.0f32;
+        let (saved_cruise_speed, saved_cruise_acc) = self.xy_cruise_speed();
         loop {
+            if self.is_end_of_match() {
+                self.disable_motor_control();
+                if was_slow {
+                    self.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
+                }
+                return Err(StrategyError::EndOfMatch);
+            }
+
             if self.opponent_detection.must_stop() {
                 if was_slow {
-                    let mut asserv = self.asserv.lock().unwrap();
-                    asserv.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
+                    self.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
                 }
-                self.asserv.lock().unwrap().stop();
+                //self.asserv.lock().unwrap().stop();
+                self.disable_motor_control();
+
+                if self.stop_mode == StopMode::WaitAndResume {
+                    self.wait_opponent_clear();
+                }
+
                 return Err(StrategyError::OpponentDetected);
             }
 
             let is_slow = self.opponent_detection.must_slow();
             if is_slow && !was_slow {
-                let mut asserv = self.asserv.lock().unwrap();
-                (saved_cruise_speed, saved_cruise_acc) = asserv.xy_cruise_speed();
                 let slow_speed = self.opponent_detection.slow_cruise_speed();
                 log::warn!("Slow triggered: cruise {saved_cruise_speed} -> {slow_speed}");
-                asserv.set_xy_cruise_speed(slow_speed, saved_cruise_acc);
+                self.set_xy_cruise_speed(slow_speed, saved_cruise_acc);
                 was_slow = true;
             } else if !is_slow && was_slow {
                 log::warn!("Slow cleared: cruise -> {saved_cruise_speed}");
-                let mut asserv = self.asserv.lock().unwrap();
-                asserv.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
+                self.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
                 was_slow = false;
             }
 
@@ -130,7 +232,7 @@ impl<B: SabotterBoard> AsservHelper<B> {
             if asserv.done_xy() && asserv.done_a() {
                 if was_slow {
                     drop(asserv);
-                    self.asserv.lock().unwrap().set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
+                    self.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
                 }
                 return Ok(());
             }

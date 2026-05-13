@@ -131,6 +131,15 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
             .set()
             .unwrap();
         }
+            std::thread::sleep(Duration::from_millis(1000));
+
+       //    can.send(&CanMessage::SetLidarEnable { enable: true });
+       //loop {
+       //    can.send(&CanMessage::RequestGroundValue { sensor: 0 });
+       //    can.send(&CanMessage::RequestGroundValue { sensor: 1 });
+       //    can.send(&CanMessage::RequestGroundValue { sensor: 2 });
+       //    std::thread::sleep(Duration::from_millis(100));
+       //}
 
         std::thread::Builder::new()
             .name("sensors".into())
@@ -236,7 +245,7 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
 
     /// Get raw ground lidar data for a robot side (last cached value)
     pub fn ground_lidar(&self, side: RobotSide) -> GroundLidarModule {
-        self.can.send(&CanMessage::SetLidarEnable { enable: true });
+        self.can.send(&CanMessage::SetLidarEnable { enable: false });
         self.ground_lidar_modules[side.module() as usize].get()
     }
 

@@ -4,6 +4,8 @@ mod motor_filter;
 #[cfg(feature = "rome")]
 pub mod rome;
 
+use std::time::{Duration, Instant};
+
 use crate::maths::{XY, XYA, normalize_radians_pi_pi};
 use conf::*;
 use control_system::ControlSystem;
@@ -494,6 +496,18 @@ impl<H: AsservHardware> Asserv<H> {
     pub fn set_autoset_delays(&mut self, wait: u8, duration: u8) {
         self.conf.autoset_wait = wait;
         self.conf.autoset_duration = duration;
+    }
+
+    pub fn disable_motor_control(&mut self) {
+        self.cs.disable_motor_control();
+        self.order = TrajectoryOrder::Idle;
+        self.synced_angle = None;
+    }
+
+    pub fn enable_motor_control(&mut self) {
+        self.carrot = self.cs.position().xy();
+        self.carrot_a = self.cs.position().a;
+        self.cs.enable_motor_control();
     }
 
     /// Reset position, reset carrot to current position, reset motor consigns
