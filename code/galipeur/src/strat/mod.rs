@@ -150,36 +150,36 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         let end_angle = arfast(RobotSide::Back, TableSide::Up);
 
         {
-            //²let initial_angle = arfast(RobotSide::Back, self.table_main);
-//²
-            //²self.asserv.teleport(self.kx * 1300.0, 1500.0, initial_angle);
-            //²self.asserv.reset_position(0.0, 0.0, initial_angle);
-//²
-            //²self.asserv.enable_motor_control();
-//²
-            //²self.asserv.goto_xya(- self.kx * 75.0, 0.0, initial_angle)?;
-//²
-            //²self.meca.init(self.team);
-//²
-            //²let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
-            //²    Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
-            //²    None => return Err(StrategyError::SensorUnavailable),
-            //²};
-//²
-            //²let current = self.asserv.position();
-            //²self.asserv.reset_position(x_back, current.y, current.a);
-//²
-//²
-            //²self.asserv.goto_a(end_angle)?;
-            //²std::thread::sleep(Duration::from_secs(1));
-//²
-            //²let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
-            //²    Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
-            //²    None => return Err(StrategyError::SensorUnavailable),
-            //²};
-//²
-            //²let current = self.asserv.position();
-            //²self.asserv.reset_position(current.x, y_back, current.a);
+            let initial_angle = arfast(RobotSide::Back, self.table_main);
+
+            self.asserv.teleport(self.kx * 1300.0, 1500.0, initial_angle);
+            self.asserv.reset_position(0.0, 0.0, initial_angle);
+
+            self.asserv.enable_motor_control();
+
+            self.asserv.goto_xya(- self.kx * 75.0, 0.0, initial_angle)?;
+
+            self.meca.init(self.team);
+
+            let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
+                Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
+                None => return Err(StrategyError::SensorUnavailable),
+            };
+
+            let current = self.asserv.position();
+            self.asserv.reset_position(x_back, current.y, current.a);
+
+
+            self.asserv.goto_a(end_angle)?;
+            std::thread::sleep(Duration::from_secs(1));
+
+            let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
+                Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
+                None => return Err(StrategyError::SensorUnavailable),
+            };
+
+            let current = self.asserv.position();
+            self.asserv.reset_position(current.x, y_back, current.a);
 
             //self.asserv.goto_xya(self.kx * 1150.0, 1740.0, end_angle)?;
             self.asserv.teleport(self.kx * 1150.0, 1740.0, end_angle);

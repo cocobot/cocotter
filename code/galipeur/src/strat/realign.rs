@@ -149,7 +149,6 @@ pub fn measure_face_distance<B: SabotterBoard + 'static>(
     face: RobotSide,
     select: LidarSelect,
 ) -> Option<f32> {
-    return Some(200.0);
     let normal = face_normal_angle(face);
     measure_projected(sensors, face, select, normal.cos(), normal.sin(), "measure_face_distance")
 }
