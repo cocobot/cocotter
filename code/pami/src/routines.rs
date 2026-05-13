@@ -48,7 +48,7 @@ pub struct PamiRoutines<B: PamiBoard> {
 
 
 /// Duration during which a paninja PAMI can move
-const PANINJA_ACTIVE_DURATION: Duration = Duration::from_secs(10);
+const PANINJA_ACTIVE_DURATION: Duration = Duration::from_secs(15);
 /// Total match duration
 const MATCH_DURATION: Duration = Duration::from_secs(100);
 
@@ -161,7 +161,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
                 false => Team::Left,
                 true => Team::Right,
             },
-            start_delay: 90,
+            start_delay: 85,
             role: match (buttons.switch(1), buttons.switch(0), buttons.switch(3)) {
                 (false, false, false) => PamiRole::None,
                 (true,  false, false) => PamiRole::Paninja(1),
@@ -249,12 +249,14 @@ impl<B: PamiBoard> PamiRoutines<B> {
 
         log::info!("Match starts!");
         let now = Instant::now();
-        if match_conf.role == PamiRole::Ninja {
-            let active_time = now + Duration::from_secs(match_conf.start_delay as u64);
-            let match_end = active_time + PANINJA_ACTIVE_DURATION;
-            self.match_instants = Some((active_time, match_end));
-        } else {
-            self.match_instants = Some((now, now + MATCH_DURATION));
+        match match_conf.role {
+            PamiRole::Paninja(_) => {
+                let active_time = now + Duration::from_secs(match_conf.start_delay as u64);
+                let match_end = active_time + PANINJA_ACTIVE_DURATION;
+                self.match_instants = Some((active_time, match_end));
+            }
+            _ => { self.match_instants = Some((now, now + MATCH_DURATION));
+            }
         }
         self.set_ground_led_color(&Color::BLACK);
     }
