@@ -31,7 +31,7 @@ impl MecaSideState {
 
     pub fn ready_to_take(&mut self, ready: bool) {
         self.ready_to_take = ready;
-        log::info!("READY TO TAKE SET TO {}", ready);
+        //log::info!("READY TO TAKE SET TO {}", ready);
     }
 
     pub fn is_ready_to_take(&self) -> bool {
@@ -40,7 +40,7 @@ impl MecaSideState {
 
     pub fn upper_stage_up(&mut self, up: bool) {
         self.upper_stage_up = up;
-        log::info!("Set clamp up {}", up)
+        //log::info!("Set clamp up {}", up)
     }
 
     pub fn is_upper_stage_up(&self) -> bool {

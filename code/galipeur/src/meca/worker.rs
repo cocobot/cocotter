@@ -222,7 +222,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
     fn do_prepare_direct_take(&self, side: RobotSide, cleat_up: CleatSide) {
         let module = Self::side_to_module(side);
-        log::info!("Prepare DT {}", module);
+        //log::info!("Prepare DT {}", module);
 
         self.reset_ready_to_take_sides(module);
 
@@ -232,7 +232,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
             side_state.ready_to_take(true);
             side_state.is_upper_stage_empty()
         };
-        log::info!("UE {}", is_upper_empty);
+        //log::info!("UE {}", is_upper_empty);
 
         self.proxy.set_color_led_pwm(255);
         self.primitives.translation_spread(module);
@@ -252,7 +252,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
             }
         }
 
-        log::info!("Is upper empty: {}", is_upper_empty);
+        //log::info!("Is upper empty: {}", is_upper_empty);
         if is_upper_empty {
             self.primitives.clamp_rotate_pickup(module);
             self.primitives.clamp_open(module);
@@ -289,7 +289,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         let needs_transfer = {
             let state = self.state.lock().unwrap();
             let side_state = &state[module as usize];
-            log::info!("Test {} {}", side_state.is_lower_stage_empty(), side_state.is_upper_stage_empty());
+            //log::info!("Test {} {}", side_state.is_lower_stage_empty(), side_state.is_upper_stage_empty());
             side_state.is_lower_stage_empty() && !side_state.is_upper_stage_empty()
         };
         if needs_transfer {
@@ -301,10 +301,10 @@ impl<B: SabotterBoard> MecaWorker<B> {
             let side_state = &state[module as usize];
             (side_state.is_upper_stage_empty(), side_state.is_upper_stage_up())
         };
-        log::info!("Give space to arm ? {} {}", upper_stage_empty, upper_stage_is_up);
+        //log::info!("Give space to arm ? {} {}", upper_stage_empty, upper_stage_is_up);
 
         if upper_stage_empty || !upper_stage_is_up {
-            log::info!("Give space to arm {} {}", upper_stage_empty, upper_stage_is_up);
+            //log::info!("Give space to arm {} {}", upper_stage_empty, upper_stage_is_up);
             self.primitives.arms_give_space_from_clamp_rotation(module, &[0, 1, 2, 3]);
             std::thread::sleep(Duration::from_millis(500));
             self.primitives.clamp_close(module);
@@ -331,14 +331,14 @@ impl<B: SabotterBoard> MecaWorker<B> {
             let is_lower_empty = side_state.is_lower_stage_empty();
             let is_upper_empty = side_state.is_upper_stage_empty();
             let is_ready_to_take = side_state.is_ready_to_take();
-            log::info!("RESET READY TO TAKE");
+            //log::info!("RESET READY TO TAKE");
             side_state.ready_to_take(false);
             drop(state);
 
-            log::info!("Test {} {} {}", is_lower_empty, is_upper_empty, is_ready_to_take);
+            //log::info!("Test {} {} {}", is_lower_empty, is_upper_empty, is_ready_to_take);
 
             if !is_ready_to_take || !is_lower_empty {
-                log::warn!("Direct take: side {:?} is not ready to take....", side);
+                //log::warn!("Direct take: side {:?} is not ready to take....", side);
 
                 if !is_lower_empty {
                     if !is_upper_empty {

@@ -1,0 +1,21 @@
+{
+    "rust-analyzer.cargo.target": "x86_64-unknown-linux-gnu",
+    "rust-analyzer.cargo.allTargets": false,
+    "rust-analyzer.check.overrideCommand": [
+        "cargo",
+        "check",
+        "--workspace",
+        "--message-format=json-diagnostic-rendered-ansi",
+        "--keep-going",
+        "--target",
+        "x86_64-unknown-linux-gnu",
+        "--exclude",
+        "ble",
+        "--exclude",
+        "esp32_encoder",
+        "--exclude",
+        "picotter",
+        "--exclude",
+        "picotter-bootloader"
+    ]
+}

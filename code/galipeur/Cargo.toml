@@ -20,6 +20,10 @@ cancaner = { path = "../libs/cancaner" }
 pathfinding = { path = "../libs/pathfinding" }
 rome = { path = "../libs/rome" }
 
+[target.'cfg(not(target_os = "espidf"))'.dependencies]
+sim_client = { path = "../libs/sim_client" }
+sim_protocol = { path = "../libs/sim_protocol" }
+
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = "0.52"
 ble = { path = "../libs/ble" }

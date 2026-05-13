@@ -1,5 +1,6 @@
 use core::f32;
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 use std::{thread::sleep, time::Duration};
 use amatheur::XYA;
 use asserv::differential::conf::TrajectoryConf;
@@ -15,6 +16,7 @@ use pathfinding::{PathGraph, PathGraphBuilder};
 use crate::arfast;
 use crate::led::LedMessage;
 use crate::meca::{Meca, CleatSide};
+use crate::strat::actions::EndOfMatchAction;
 use crate::strat::errors::StrategyError;
 use crate::strat::realign::LidarSelect;
 use board_sabotter::movement::MovementLowLevelHardware;
@@ -26,13 +28,15 @@ pub mod utils;
 pub mod errors;
 mod calibration;
 pub mod realign;
+pub mod planner;
+pub mod actions;
 
 pub struct Strat<B: SabotterBoard> {
     team: Team,
     leds: Sender<LedMessage>,
     sensors: Sensors<B>,
-    meca: Meca<B>,
-    asserv: AsservHelper<B>,
+    pub(crate) meca: Meca<B>,
+    pub(crate) asserv: AsservHelper<B>,
     opponent_detection: OpponentDetection,
     rlogger: Sender<String>,
 
@@ -134,12 +138,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.prepare_match();
         //self.pathfinding_test();
         //self.test_movement();
-        self.test_eirbot_2();
+        //self.test_eirbot_2();
         //self.take_first_crates();
+        self.run_auto_strat();
 
         self.return_to_start();
         self.end_of_match();
-
     }
 
     //----------
@@ -149,6 +153,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         let end_angle = arfast(RobotSide::Back, TableSide::Up);
 
+        #[cfg(target_os = "espidf")]
         {
             let initial_angle = arfast(RobotSide::Back, self.table_main);
 
@@ -186,6 +191,15 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
             Ok(())
         }
+
+        #[cfg(not(target_os = "espidf"))]
+        {
+            self.asserv.reset_position(self.kx * 1150.0, 1740.0, end_angle);
+            self.asserv.teleport(self.kx * 1150.0, 1740.0, end_angle);
+
+            Ok(())
+        }
+
     }
 
     fn prepare_match(&mut self) {
@@ -284,48 +298,6 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     }
 
-    fn take_crate_spot(&self, x: f32, y: f32, face: RobotSide, side: TableSide) -> Result<(), StrategyError>{
-        const PRETAKE_DISTANCE : f32 = 275.0;
-
-        let offset_take_xy = match side {
-            TableSide::Down => (0.0, PRETAKE_DISTANCE),
-            TableSide::Up => (0.0, -PRETAKE_DISTANCE),
-            TableSide::Left => (PRETAKE_DISTANCE, 0.0),
-            TableSide::Right => (-PRETAKE_DISTANCE, 0.0),
-        };
-
-        let face = match self.meca.prepare_direct_take(Some(face), CleatSide::Both) {
-            Some(face) => face,
-            None => {return Err(StrategyError::StupidOrder)}
-        };
-
-        self.asserv.goto_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
-        self.approach_and_take(face, side)?;
-
-        Ok(())
-    }
-
-    fn release_on_spot(&self, x: f32, y: f32, face: RobotSide, side: TableSide) -> Result<(), StrategyError>{
-        const PRERELEASE_DISTANCE : f32 = 230.0;
-
-        let offset_take_xy = match side {
-            TableSide::Down => (0.0, PRERELEASE_DISTANCE),
-            TableSide::Up => (0.0, -PRERELEASE_DISTANCE),
-            TableSide::Left => (PRERELEASE_DISTANCE, 0.0),
-            TableSide::Right => (-PRERELEASE_DISTANCE, 0.0),
-        };
-
-        let face = match self.meca.prepare_release(Some(face)) {
-            Some(face) => face,
-            None => {return Err(StrategyError::StupidOrder)}
-        };
-
-        self.asserv.goto_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
-        self.release(face, side)?;
-
-        Ok(())
-    }
-
     fn test_eirbot_2 (&mut self){ 
 
        //let init_pos = self.asserv.position();
@@ -344,24 +316,19 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(self.kx * 900.0, 1200.0, arfast(RobotSide::Back, TableSide::Up)).ok();
 
         
-        self.take_crate_spot(self.kx * 1350.0, 1200.0, self.robot_main, self.table_main).ok();
-        //self.take_crate_spot(self.kx * 1350.0,  400.0, self.robot_main, self.table_main).ok();
-        
-        //self.asserv.goto_xya(self.kx * 1250.0, 300.0, arfast(RobotSide::Left, TableSide::Up)).ok();
-        //self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
-        //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
-        
-        //self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
-        //self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
-        //self.take_crate_spot(-self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
-        //self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+        actions::TakeCrateAction::execute(self, self.kx * 1350.0, 1200.0, Some(self.robot_main), self.table_main).ok();
+        actions::TakeCrateAction::execute(self, self.kx * 1350.0,  400.0, Some(self.robot_main), self.table_main).ok();
 
-        
-        //self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
-        //self.release_on_spot(self.kx * 0.0, 100.0, self.robot_aux, TableSide::Down).ok();
-        //self.release_on_spot(self.kx * 700.0, 100.0, self.robot_main, TableSide::Down).ok();
-        //self.release_on_spot(self.kx * 800.0, 800.0, self.robot_aux, self.table_aux).ok();
-        self.release_on_spot(self.kx * 1400.0, 800.0, self.robot_main, self.table_main).ok();
+        actions::TakeCrateAction::execute(self, self.kx * 400.0,  175.0, Some(self.robot_aux), TableSide::Down).ok();
+        actions::TakeCrateAction::execute(self, self.kx * 350.0,  800.0, Some(RobotSide::Back), TableSide::Up).ok();
+        actions::TakeCrateAction::execute(self, -self.kx * 400.0,  175.0, Some(self.robot_aux), TableSide::Down).ok();
+        actions::TakeCrateAction::execute(self, -self.kx * 350.0,  800.0, Some(RobotSide::Back), TableSide::Up).ok();
+
+        actions::ReleaseAction::execute(self, self.kx * 0.0, 800.0, Some(RobotSide::Back), TableSide::Up).ok();
+        actions::ReleaseAction::execute(self, self.kx * 0.0, 100.0, Some(self.robot_aux), TableSide::Down).ok();
+        actions::ReleaseAction::execute(self, self.kx * 700.0, 100.0, Some(self.robot_main), TableSide::Down).ok();
+        actions::ReleaseAction::execute(self, self.kx * 800.0, 800.0, Some(self.robot_aux), self.table_aux).ok();
+        actions::ReleaseAction::execute(self, self.kx * 1400.0, 800.0, Some(self.robot_main), self.table_main).ok();
         
         self.end_of_match();
         //self.return_to_start();  
@@ -455,6 +422,176 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.end_of_match();
     }
 
+    // ---- Auto-strategy planner integration ----
+
+    fn build_actions(&self) -> Vec<Box<dyn planner::Action<B>>> {
+        use actions::{TakeCrateAction, ReleaseAction};
+        let team = self.team;
+
+        let actions: Vec<Box<dyn planner::Action<B>>> = vec![
+            Box::new(EndOfMatchAction { x: self.kx * 1200.0, y: 1770.0}),
+
+            Box::new(TakeCrateAction::new(0, TableSide::Right, team)),
+            Box::new(TakeCrateAction::new(1, TableSide::Left, team)),
+            Box::new(TakeCrateAction::new(2, TableSide::Right, team)),
+            Box::new(TakeCrateAction::new(3, TableSide::Left, team)),
+
+            Box::new(TakeCrateAction::new(4, TableSide::Up, team)),
+            Box::new(TakeCrateAction::new(4, TableSide::Down, team)),
+            Box::new(TakeCrateAction::new(5, TableSide::Up, team)),
+            Box::new(TakeCrateAction::new(5, TableSide::Down, team)),
+
+            Box::new(TakeCrateAction::new(6, TableSide::Down, team)),
+            Box::new(TakeCrateAction::new(7, TableSide::Down, team)),
+
+            Box::new(ReleaseAction::new(10, TableSide::Right)),
+            Box::new(ReleaseAction::new(11, TableSide::Left)),
+
+            Box::new(ReleaseAction::new(12, TableSide::Up)),
+            Box::new(ReleaseAction::new(13, TableSide::Up)),
+
+            Box::new(ReleaseAction::new(14, TableSide::Up)),
+            Box::new(ReleaseAction::new(14, TableSide::Left)),
+            Box::new(ReleaseAction::new(14, TableSide::Down)),
+            Box::new(ReleaseAction::new(15, TableSide::Up)),
+            Box::new(ReleaseAction::new(15, TableSide::Right)),
+            Box::new(ReleaseAction::new(15, TableSide::Down)),
+
+            //TODO 16/17
+        ];
+
+        actions
+    }
+
+    /// Estimate travel time for a trapezoidal velocity profile.
+    /// If the distance is too short to reach cruise speed, uses a triangular profile.
+    fn trapezoidal_time(dist: f32, v_max: f32, acc: f32) -> f32 {
+        if dist <= 0.0 {
+            return 0.0;
+        }
+        // Distance needed for one accel or decel ramp
+        let d_ramp = v_max * v_max / (2.0 * acc);
+        if dist >= 2.0 * d_ramp {
+            // Trapezoidal: accel + cruise + decel
+            v_max / acc + dist / v_max
+        } else {
+            // Triangular: never reaches cruise speed
+            2.0 * (dist / acc).sqrt()
+        }
+    }
+
+    fn travel_cost(&self, from: XY, to: XY) -> f32 {
+        // Asserv units are mm/tick, tick period = 10ms
+        const TICKS_PER_S: f32 = 100.0;
+        let (speed_per_tick, acc_per_tick) = self.asserv.xy_cruise_speed();
+        let v_max = speed_per_tick * TICKS_PER_S;           // mm/s
+        let acc = acc_per_tick * TICKS_PER_S * TICKS_PER_S; // mm/s²
+
+        let start = self.pathfinder.nearest_node(&from);
+        let goal = self.pathfinder.nearest_node(&to);
+        if let Some(path) = self.pathfinder.find_path(start, goal) {
+            let mut dist = 0.0f32;
+            if let Some(&first) = path.first() {
+                dist += (self.pathfinder.get_node_xy(first) - from).length();
+            }
+            for w in path.windows(2) {
+                let a = self.pathfinder.get_node_xy(w[0]);
+                let b = self.pathfinder.get_node_xy(w[1]);
+                dist += (b - a).length();
+            }
+            if let Some(&last) = path.last() {
+                dist += (to - self.pathfinder.get_node_xy(last)).length();
+            }
+            Self::trapezoidal_time(dist, v_max, acc)
+        } else {
+            f32::INFINITY
+        }
+    }
+
+    fn run_auto_strat(&self) {
+        self.opponent_detection.set_mode(DetectionMode::OnTable);
+
+        let actions = self.build_actions();
+        let match_start = Instant::now();
+
+        let mut live_state = planner::WorldState {
+            position: self.asserv.position().xy(),
+            time_remaining: planner::state::MATCH_DURATION,
+            secured_points: 0,
+            potential_points: 0,
+            flags: 0,
+            counters: [0; 1],
+        };
+
+        loop {
+            live_state.time_remaining =
+                planner::state::MATCH_DURATION - match_start.elapsed().as_secs_f32();
+
+            if live_state.time_remaining < 5.0 {
+                log::info!("Auto-strat: time's up, stopping");
+                break;
+            }
+
+            let travel_cost = |from: XY, to: XY| -> f32 { self.travel_cost(from, to) };
+
+            // TODO: extract opponent position from detection when available
+            let opponent_pos: Option<XY> = None;
+
+            let plan = planner::plan(&actions, live_state.clone(), &travel_cost, opponent_pos);
+
+            log::info!(
+                "Plan: {} actions, expected score {}, time remaining {:.1}s",
+                plan.sequence.len(),
+                plan.expected_score,
+                plan.time_remaining,
+            );
+            for (i, &id) in plan.sequence.iter().enumerate() {
+                log::info!("  [{}] {}", i, actions[id].label());
+            }
+
+            planner::debug::visualize_plan(&actions, &plan, 0);
+
+            if plan.sequence.is_empty() {
+                log::info!("Auto-strat: no more actions available");
+                break;
+            }
+
+            let action_id = plan.sequence[0];
+
+            planner::debug::visualize_plan(&actions, &plan, 0);
+
+            log::info!(
+                "Executing: {} (time left: {:.1}s)",
+                actions[action_id].label(),
+                live_state.time_remaining
+            );
+
+            match actions[action_id].run(self) {
+                Ok(()) => {
+                    actions[action_id].apply(&mut live_state);
+                    live_state.position = self.asserv.position().xy();
+                    log::info!(
+                        "  OK — secured: {}, potential: {}",
+                        live_state.secured_points,
+                        live_state.potential_points
+                    );
+                }
+                Err(StrategyError::OpponentDetected) => {
+                    log::warn!("Opponent detected! Replanning...");
+                    live_state.position = self.asserv.position().xy();
+                }
+                Err(e) => {
+                    log::warn!("Action {} failed: {:?}, skipping", actions[action_id].label(), e);
+                    // Mark as done (via flags) so we don't retry
+                    actions[action_id].apply(&mut live_state);
+                    live_state.position = self.asserv.position().xy();
+                }
+            }
+        }
+
+        planner::debug::clear_viz();
+    }
+
     #[allow(dead_code)]
     fn test_movement(&mut self) {
         let prefered_side = self.robot_main;
@@ -527,7 +664,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         approach_and_take(&self.sensors, &self.meca, &self.asserv, face, wall)
     }
 
-    fn end_of_match(&mut self) -> ! {
+    fn end_of_match(&self) -> ! {
         self.sensors.ground_lidar_power_off();
         self.meca.end_of_match();
         loop {
@@ -535,6 +672,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
     }
 }
+
 
 /// Approach a cleat using lidar-based realignment, then take.
 ///
