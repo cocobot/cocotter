@@ -238,6 +238,38 @@ impl Game {
 
     }
 
+    fn start_plop(&mut self) {
+         let mut position = self.trajectory.get_position().lock().unwrap();
+        position.set_coordinates(Some(2900.0), Some(1900.0), None);
+        drop(position);
+
+
+        self.wait_for_start();
+
+        let angle = if self.config.x_negative_color {
+            90.0_f32
+        } else {
+            -90.0_f32
+        };
+
+        let initial_a = if self.config.x_negative_color {
+            181.5_f32
+        }
+        else {
+            181.0_f32
+        };
+         
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(true)
+            .set_no_detection(false)
+            .add_order(Order::GotoD {d_mm: 250.0})
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+    }
+
     fn strat_superstar(&mut self) {
 
         let mut position = self.trajectory.get_position().lock().unwrap();
@@ -366,10 +398,12 @@ impl Game {
 
         std::thread::sleep(Duration::from_millis(1000));
 
-        match self.config.strategy {
-            GameStrategy::Superstar => self.strat_superstar(),
-            GameStrategy::FarPit | GameStrategy::MidPit | GameStrategy::NearPit => self.start_pit(self.config.strategy),
-        }
+        //match self.config.strategy {
+        //    GameStrategy::Superstar => self.strat_superstar(),
+        //    GameStrategy::FarPit | GameStrategy::MidPit | GameStrategy::NearPit => self.start_pit(self.config.strategy),
+        //}
+
+        self.start_plop();
 
         let colors = [
             [1.0, 0.0, 0.0], // Red
