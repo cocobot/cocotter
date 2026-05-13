@@ -16,7 +16,7 @@ use embassy_executor::{InterruptExecutor, Spawner};
 use embassy_futures::join::{join, join3, join_array};
 use embassy_stm32::can::CanConfigurator;
 use embassy_stm32::can::OperatingMode;
-use embassy_stm32::gpio::{Level, Output, OutputType, Speed};
+use embassy_stm32::gpio::{Input, Level, Output, OutputType, Pull, Speed};
 use embassy_stm32::i2c::{self, Config as I2cConfig, I2c};
 use embassy_stm32::timer::simple_pwm::{PwmPin, SimplePwm, SimplePwmChannel};
 use embassy_stm32::timer::low_level::{CountingMode, OutputPolarity};
@@ -186,6 +186,7 @@ static TRANSLATION_BUS: static_cell::StaticCell<Mutex<CriticalSectionRawMutex, T
 #[embassy_executor::task]
 async fn led_status_task(
     mut led: Output<'static>,
+    lidar_off_pin: Input<'static>,
     module0: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module1: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
@@ -217,9 +218,8 @@ async fn led_status_task(
             (g0.unwrap_or(true), g1.unwrap_or(true), g2.unwrap_or(true))
         };
 
-        if !ground.0 || !ground.1 || !ground.2 || aru {
+        if lidar_off_pin.is_high() || aru {
             lidar::power_off();
-            log::warn!("Force lidar off G0={} G1={} G2={}, aru={}", ground.0, ground.1, ground.2, aru);
         }
         
 
@@ -536,10 +536,8 @@ async fn cmd_task(
         if let CanMessage::SetLidarEnable { enable } = &msg {
             if *enable {
                 lidar::power_on();
-                info!("Lidars enabled");
             } else {
                 lidar::power_off();
-                info!("Lidars disabled");
             }
             continue;
         }
@@ -934,6 +932,7 @@ async fn main(spawner: Spawner) {
 
    
     let mut led = Output::new(p.PD11, Level::Low, Speed::Low);
+    let lidar_off_pin = Input::new(p.PD4, Pull::Up);
 
    
     // =========================================================================
@@ -1178,7 +1177,7 @@ async fn main(spawner: Spawner) {
         Timer::after_millis(100).await;
     }
 
-    spawner.spawn(led_status_task(led, module0, module1, module2, translation_bus, color_led_ch3).unwrap());
+    spawner.spawn(led_status_task(led, lidar_off_pin, module0, module1, module2, translation_bus, color_led_ch3).unwrap());
     spawner.spawn(cmd_task(module0, module1, module2, translation_bus).unwrap());
     spawner.spawn(valve_toggle_task(module0, module1, module2).unwrap());
 
