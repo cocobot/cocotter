@@ -306,7 +306,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     }
 
     fn release_on_spot(&self, x: f32, y: f32, face: RobotSide, side: TableSide) -> Result<(), StrategyError>{
-        const PRERELEASE_DISTANCE : f32 = 230.0;
+        const PRERELEASE_DISTANCE : f32 = 250.0;
 
         let offset_take_xy = match side {
             TableSide::Down => (0.0, PRERELEASE_DISTANCE),
@@ -350,17 +350,36 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.release_on_spot(self.kx * 700.0, 800.0, self.robot_main, self.table_aux).ok();
 
 
-        self.asserv.goto_xya(self.kx * 1250.0, 300.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+        self.asserv.goto_xya(self.kx * 1100.0, 400.0, self.asserv.position().a).ok();
        // self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
         //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
 
         self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
-        self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        self.take_crate_spot(self.kx * 400.0,  100.0, self.robot_aux, TableSide::Down).ok();
+
+        self.asserv.set_stop_mode(utils::StopMode::Reject);
         self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
+
+        self.asserv.set_stop_mode(utils::StopMode::WaitAndResume);
+        self.release_on_spot(self.kx * 800.0, 100.0, self.robot_aux, TableSide::Down).ok();
+
+        self.asserv.goto_xya(self.kx * 800.0, 500.0, self.asserv.position().a).ok();
+        self.asserv.set_stop_mode(utils::StopMode::Reject);
+        self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+        self.take_crate_spot(-self.kx * 400.0,  100.0, self.robot_aux, TableSide::Down).ok();
+
+        self.asserv.set_stop_mode(utils::StopMode::WaitAndResume);
+
+        self.asserv.goto_xya(self.kx * 600.0, 500.0, self.asserv.position().a).ok();
+        self.asserv.goto_xya(self.kx * 1100.0, 500.0, self.asserv.position().a).ok();
+        self.asserv.goto_xya(self.kx * 1100.0, 1200.0, self.asserv.position().a).ok();
+        self.asserv.goto_xya(self.kx * 600.0, 1200.0, self.asserv.position().a).ok();
+
         self.release_on_spot(self.kx * 250.0, 1450.0, self.robot_aux, TableSide::Up).ok();
 
+        self.asserv.set_stop_mode(utils::StopMode::Reject);
 
-        //self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        
         //self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
         //self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
 //
@@ -450,8 +469,10 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         if let Some(path) = self.pathfinder.find_path(start, goal) {
             let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
             if self.asserv.run_path(&asserv_path).is_ok() {
-                //if self.asserv
-                //self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
+                if self.asserv.ellapsed_time_since_start().as_secs() >= 87 {
+                    self.asserv.goto_xya(self.kx * 1200.0, self.asserv.position().x, arfast(self.robot_aux, TableSide::Down)).ok();
+                    self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
+                }
             }
         } else {
             rome::warn!(self.rlogger, "Cannot find a path");

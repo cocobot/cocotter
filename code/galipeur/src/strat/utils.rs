@@ -1,5 +1,5 @@
 use std::sync::{Arc, Mutex};
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use asserv::{holonomic::{Asserv, RobotSide, TableSide}, maths::{XY, XYA}};
 use board_sabotter::SabotterBoard;
@@ -61,6 +61,10 @@ impl<B: SabotterBoard> AsservHelper<B> {
     pub fn is_end_of_match(&self) -> bool {
         self.match_start.lock().unwrap()
             .map_or(false, |start| start.elapsed().as_secs() >= MATCH_DURATION_SECS)
+    }
+
+    pub fn ellapsed_time_since_start(&self) ->  Duration{
+        self.match_start.lock().unwrap().map_or(Duration::from_secs(1000),|start| start.elapsed())
     }
 
     pub fn position(&self) -> XYA {
