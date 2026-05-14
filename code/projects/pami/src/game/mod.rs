@@ -86,9 +86,9 @@ impl FunnyAction {
             }
         }
 
-        if instance.lock().unwrap().strategy == GameStrategy::Ninja
+        log::info!("Let's eat nuts!");
+        if instance.lock().unwrap().strategy == GameStrategy::Paninja_1
         {
-            log::info!("Let's eat nuts!");
             loop {
                 instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
                 thread::sleep(Duration::from_millis(600));
@@ -154,7 +154,7 @@ impl Game {
 
                     sender.send(TrajectoryEvent::CustomEvent(event.clone())).unwrap();
                 }
-                Event::Line { activated: _ } => {
+                Event::Line { .. } => {
                     sender.send(TrajectoryEvent::CustomEvent(event.clone())).unwrap();
                 }
                 _ => {}
@@ -228,7 +228,7 @@ impl Game {
         });
 
         //wait for our time to shine
-        if !self.config.test_mode {
+        if !self.config.test_mode && self.config.strategy != GameStrategy::Ninja {
             loop {
                 if start_time.elapsed().as_secs() >= PAMI_START_TIME_SECONDS {
                     break;
@@ -255,21 +255,11 @@ impl Game {
         position.set_coordinates(Some(2900.0), Some(1900.0), None);
         drop(position);
 
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
 
         self.wait_for_start();
 
-        let angle = if self.config.x_negative_color {
-            90.0_f32
-        } else {
-            -90.0_f32
-        };
-
-        let initial_a = if self.config.x_negative_color {
-            181.5_f32
-        }
-        else {
-            181.0_f32
-        };
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
 
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)
@@ -277,45 +267,105 @@ impl Game {
             .add_order(Order::GotoD {d_mm: 800.0})
             ;
 
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+
         self.trajectory
             .execute(orders)
             .unwrap();
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
     }
 
     fn strat_ninja(&mut self) {
         let mut position = self.trajectory.get_position().lock().unwrap();
-        position.set_coordinates(Some(2900.0), Some(1900.0), None);
+        position.set_coordinates(Some(2900.0), Some(1900.0), Some(0.0));
         drop(position);
 
+        let angle = if self.config.x_negative_color {
+            90_f32
+        } else {
+            -90_f32
+        };
 
         self.wait_for_start();
 
-        let angle = if self.config.x_negative_color {
-            90.0_f32
-        } else {
-            -90.0_f32
-        };
-
-        let initial_a = if self.config.x_negative_color {
-            181.5_f32
-        }
-        else {
-            181.0_f32
-        };
-
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
 
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)
-            .set_no_detection(false)
-            .add_order(Order::GotoD {d_mm: 800.0})
+            .set_no_detection(true)
+            .add_order(Order::GotoD {d_mm: 450.0})
+            .add_order(Order::GotoA { a_rad: (-angle).to_radians() })
             ;
 
         self.trajectory
             .execute(orders)
             .unwrap();
 
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+
+        log::info!("Move those crates out of the frigde");
+
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(false)
+            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.5)
+            .add_order(Order::CustomOrder { callback: move_until_white })
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
+
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(true)
+            .set_no_angle(true)
+            .add_order(Order::GotoD {d_mm: 450.0})
+            .add_order(Order::SetPosition { x_mm: None, y_mm:  None, a_rad: Some((-angle).to_radians()) })
+            .set_no_angle(false)
+            .set_backwards(false)
+            .add_order(Order::GotoD {d_mm: 50.0})
+            .set_backwards(true)
+            .add_order(Order::GotoA {a_rad: 0.0 })
+            .add_order(Order::GotoD {d_mm: 250.0})
+            .add_order(Order::GotoA { a_rad: (angle).to_radians() })
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+
+        log::info!("Move those crates out of the frigde");
+
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(false)
+            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.5)
+            .add_order(Order::CustomOrder { callback: move_until_white })
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+
+
+        log::info!("Last push");
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(false)
+            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
+            .add_order(Order::CustomOrder { callback: move_until_void })
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+
     }
 
     fn strat_test(&mut self) {
@@ -324,19 +374,6 @@ impl Game {
         drop(position);
 
         self.wait_for_start();
-
-        let angle = if self.config.x_negative_color {
-            90.0_f32
-        } else {
-            -90.0_f32
-        };
-
-        let initial_a = if self.config.x_negative_color {
-            181.5_f32
-        }
-        else {
-            181.0_f32
-        };
 
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)
@@ -522,10 +559,45 @@ impl Game {
     }
 }
 
+fn move_until_white<const N: usize>(order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, trajectory: &Trajectory<N, Event>) -> Result<usize, TrajectorError> {
+   
+    //to push crates out, we must pass two red line and go to a wite space
+
+    for event in custom_events.iter() {
+        if let Event::Line { raw_input, .. } = event{
+            //stop at white space
+            if raw_input | 0b00000000 == 0 {
+                log::info!("edge reached");
+                //full stop
+                let mut position = trajectory.get_position().lock().unwrap();
+                let current_d = position.get_coordinates().get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
+                position.get_ramps_as_mut()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(current_d, true);
+                return Ok(order_index + 1);
+            }
+        }
+        state.state_index = 1; //set state to 1 to start the order
+    }
+
+
+    if state.state_index > 0 {
+        //first line data received, we can start the order
+        let mut position = trajectory.get_position().lock().unwrap();
+        let current_d = position.get_coordinates().get_raw_linear_coordonate()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT];
+        let target_d = if config.is_backwards() {
+            current_d - 100.0 //move backwards
+        } else {
+            current_d + 100.0 //move forwards
+        };
+        
+        position.get_ramps_as_mut()[Order::<N, Event>::D_INDEX_IN_NON_HOLONOMIC_ROBOT].set_target(target_d, false);
+    }
+
+    Ok(order_index)
+}
 fn move_until_void<const N: usize>(order_index: usize, config: &OrderConfig<N>, state: &mut OrderState<N>, custom_events: &mut Vec<Event>, trajectory: &Trajectory<N, Event>) -> Result<usize, TrajectorError> {
     
     for event in custom_events.iter() {
-        if let Event::Line { activated } = event{
+        if let Event::Line { activated, .. } = event{
             //stop if all is true
             if activated.iter().all(|&x| x) {
                 //full stop

@@ -20,7 +20,7 @@ pub enum Event {
 
     //sensors
     BackDistance { distance: [i16; 8] },
-    Line { activated: [bool; 8]},
+    Line { raw_input:u8, activated: [bool; 8]},
     
     ////pwm outputs
     Pwm { pwm_event : PWMEvent},

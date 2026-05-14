@@ -47,18 +47,18 @@ impl Sensors {
                     //log::error!("Error reading sensor data: {:?}", e);
                 }
             }
-            let line_sensor = self.line_sensor.get_input().unwrap();
+            let raw_input = self.line_sensor.get_input().unwrap();
             let activated = [
-                line_sensor & 0b000_00001 != 0,
-                line_sensor & 0b000_00010 != 0,
-                line_sensor & 0b000_00100 != 0,
-                line_sensor & 0b000_01000 != 0,
-                line_sensor & 0b000_10000 != 0,
-                line_sensor & 0b001_00000 != 0,
-                line_sensor & 0b010_00000 != 0,
-                line_sensor & 0b100_00000 != 0,
+                raw_input & 0b000_00001 != 0,
+                raw_input & 0b000_00010 != 0,
+                raw_input & 0b000_00100 != 0,
+                raw_input & 0b000_01000 != 0,
+                raw_input & 0b000_10000 != 0,
+                raw_input & 0b001_00000 != 0,
+                raw_input & 0b010_00000 != 0,
+                raw_input & 0b100_00000 != 0,
             ];
-            self.event.send_event(Event::Line { activated });
+            self.event.send_event(Event::Line { raw_input, activated });
           
 
             std::thread::sleep(std::time::Duration::from_millis(50));
