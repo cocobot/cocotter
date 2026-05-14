@@ -238,7 +238,7 @@ async fn led_status_task(
             (g0.unwrap_or(true), g1.unwrap_or(true), g2.unwrap_or(true))
         };
 
-        if LIDAR_OFF.load(Ordering::Relaxed) || aru {
+        if aru {
             lidar::power_off();
             log::info!("LIDAR OFF PIN off");
         }
@@ -336,9 +336,9 @@ async fn led_status_task(
         // Module 0 → lidar 0,3 / Module 1 → lidar 1,4 / Module 2 → lidar 2,5
         if cycle_count % 4 == 0 {
             const LIDAR_MAP: [[usize; 2]; 3] = [
-                [3, 2], // module 0 = Left  → left0, left1
+                [3, 5], // module 0 = Left  → left0, left1
                 [4, 1], // module 1 = Back  → back0, back1
-                [0, 5], // module 2 = Right → right0, right1
+                [0, 2], // module 2 = Right → right0, right1
             ];
             for (module, lidars) in LIDAR_MAP.iter().enumerate() {
                 let m0 = lidar::get_measurement(lidars[0]);

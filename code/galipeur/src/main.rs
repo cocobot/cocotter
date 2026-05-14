@@ -94,8 +94,8 @@ fn main() {
                 ],
                 // Back face: L2 (low) + L3 (high)
                 [
-                    GroundLidarPose { x: 129.50, y: -117.69, theta: -119.700_f32.to_radians() },
-                    GroundLidarPose { x: -130.93, y: -110.39, theta: -60.450_f32.to_radians() },
+                    GroundLidarPose { x: 129.50, y: -139.80, theta: -119.700_f32.to_radians() },
+                    GroundLidarPose { x: -130.93, y: -131.00, theta: -60.450_f32.to_radians() },
                 ],
                 // Right face: L1 (low) + L4 (high)
                 [

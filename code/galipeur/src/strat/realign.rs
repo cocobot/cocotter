@@ -54,7 +54,7 @@ pub struct WallMeasurement {
     pub x: Option<f32>,
     /// Robot Y in table frame. `Some` for Up/Down walls.
     pub y: Option<f32>,
-    /// Robot heading in table frame. `Some` only with `LidarSelect::BothWithAngle`.
+    /// Robot headingW).x.unwrap(), high.u in table frame. `Some` only with `LidarSelect::BothWithAngle`.
     pub a: Option<f32>,
 }
 
@@ -272,7 +272,6 @@ fn measure_wall_once<B: SabotterBoard + 'static>(
             Some(WallMeasurement { x, y, a })
         }
         single => {
-            log::info!("inogp {:?}", module);
             let (pose, distance) = match single {
                 LidarSelect::Low => (poses[1], module.distance_1),
                 LidarSelect::High => (poses[0], module.distance_0),

@@ -368,7 +368,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                 let meca = self.meca.clone();
                 let asserv_helper = AsservHelper::new(self.asserv.clone(), self.opponent_detection.clone());
                 std::thread::spawn(move || {
-                    if let Err(e) = crate::strat::approach_and_take(&sensors, &meca, &asserv_helper, face, table_side) {
+                    if let Err(e) = crate::strat::approach_and_take(&sensors, &meca, &asserv_helper, face, table_side, false) {
                         log::error!("approach_and_take failed: {:?}", e);
                     }
                 });

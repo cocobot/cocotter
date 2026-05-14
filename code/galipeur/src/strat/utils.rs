@@ -7,7 +7,7 @@ use board_sabotter::SabotterBoard;
 use board_sabotter::movement::MovementLowLevelHardware;
 use crate::{opponent_detection::OpponentDetection, strat::errors::StrategyError};
 
-const MATCH_DURATION_SECS: u64 = 90;
+const MATCH_DURATION_SECS: u64 = 100;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum StopMode {
