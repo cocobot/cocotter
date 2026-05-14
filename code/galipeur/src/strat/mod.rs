@@ -181,8 +181,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             let current = self.asserv.position();
             self.asserv.reset_position(current.x, y_back, current.a);
 
-            self.asserv.goto_xya(self.kx * 1150.0, 1760.0, end_angle)?;
-            self.asserv.teleport(self.kx * 1150.0, 1760.0, end_angle);
+            self.asserv.goto_xya(self.kx * 1150.0, 1755.0, end_angle)?;
+            self.asserv.teleport(self.kx * 1150.0, 1755.0, end_angle);
 
             Ok(())
         }
@@ -299,14 +299,28 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             None => {return Err(StrategyError::StupidOrder)}
         };
 
-        self.asserv.goto_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
+        self.pathfinder_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
         self.approach_and_take(face, side)?;
 
         Ok(())
     }
 
+    fn pathfinder_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
+        self.asserv.goto_a(a).ok();
+        let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
+        let goal = self.pathfinder.nearest_node(&XY::new(x, y));
+        if let Some(path) = self.pathfinder.find_path(start, goal) {
+            let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
+            self.asserv.run_path(&asserv_path)?;
+        } else {
+            rome::warn!(self.rlogger, "Cannot find a path");
+        }
+
+        self.asserv.goto_xya(x, y, a)
+    }
+
     fn release_on_spot(&self, x: f32, y: f32, face: RobotSide, side: TableSide) -> Result<(), StrategyError>{
-        const PRERELEASE_DISTANCE : f32 = 250.0;
+        const PRERELEASE_DISTANCE : f32 = 300.0;
 
         let offset_take_xy = match side {
             TableSide::Down => (0.0, PRERELEASE_DISTANCE),
@@ -320,7 +334,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             None => {return Err(StrategyError::StupidOrder)}
         };
 
-        self.asserv.goto_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
+        self.pathfinder_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
         self.release(face, side)?;
 
         Ok(())
@@ -345,28 +359,75 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         
         self.take_crate_spot(self.kx * 1350.0, 1200.0, self.robot_main, self.table_main).ok();
-        self.take_crate_spot(self.kx * 1350.0,  400.0, self.robot_main, self.table_main).ok();
-        self.release_on_spot(self.kx * 1400.0, 800.0, self.robot_main, self.table_main).ok();
-        self.release_on_spot(self.kx * 700.0, 800.0, self.robot_main, self.table_aux).ok();
+        self.take_crate_spot(self.kx * 1350.0,  350.0, self.robot_main, self.table_main).ok();
+       
+       self.asserv.goto_xya(self.kx * 1100.0, 850.0, self.asserv.position().a).ok();
+       let y_back = realign::measure_wall(&self.sensors, self.robot_main,self.table_main, LidarSelect::Both, self.asserv.position()); 
+        log::info!("YBACK {:?}", y_back);
+
+        if let Some(pos) = y_back {
+            let current = self.asserv.position();
+            if let Some(x) = pos.x {
+                self.asserv.reset_position(x, current.y, current.a);
+            }
+        }
+        self.asserv.goto_xya(self.kx * 1100.0, 850.0, self.asserv.position().a).ok();
+
+       
+        self.release_on_spot(self.kx * 1400.0, 850.0, self.robot_main, self.table_main).ok();
+
+        self.asserv.goto_xya(self.kx * 1050.0, 850.0, self.asserv.position().a).ok();
+        self.asserv.goto_xya(self.kx * 1050.0, 400.0, self.asserv.position().a).ok();
+
+        self.asserv.goto_xya(self.kx * 1050.0, 400.0, arfast(RobotSide::Back, TableSide::Down)).ok();
+
+        let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down, LidarSelect::Both, self.asserv.position()); 
+        log::info!("YBACK {:?}", y_back);
+
+        if let Some(pos) = y_back {
+            let current = self.asserv.position();
+            if let Some(y) = pos.y {
+                self.asserv.reset_position(current.x, y,current.a);
+            }
+        }
+        self.release_on_spot(self.kx * 700.0, 850.0, self.robot_main, TableSide::Up).ok();
+
+        
 
 
-        self.asserv.goto_xya(self.kx * 1100.0, 400.0, self.asserv.position().a).ok();
+        self.asserv.goto_xya(self.kx * 1100.0, 475.0, self.asserv.position().a).ok();
        // self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
         //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
 
-        self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
-        self.take_crate_spot(self.kx * 400.0,  100.0, self.robot_aux, TableSide::Down).ok();
+        self.take_crate_spot(self.kx * 350.0,  850.0, RobotSide::Back, TableSide::Up).ok();
+        self.take_crate_spot(self.kx * 400.0,  150.0, self.robot_aux, TableSide::Down).ok();
 
         self.asserv.set_stop_mode(utils::StopMode::Reject);
-        self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
+        self.release_on_spot(self.kx * 0.0, 850.0, RobotSide::Back, TableSide::Up).ok();
 
         self.asserv.set_stop_mode(utils::StopMode::WaitAndResume);
-        self.release_on_spot(self.kx * 800.0, 100.0, self.robot_aux, TableSide::Down).ok();
 
-        self.asserv.goto_xya(self.kx * 800.0, 500.0, self.asserv.position().a).ok();
+
+        self.asserv.goto_xya(self.kx * 800.0, 550.0, arfast(RobotSide::Back, TableSide::Down)).ok();
+
+         let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down, LidarSelect::Both, self.asserv.position()); 
+        log::info!("YBACK {:?}", y_back);
+
+
+        if let Some(pos) = y_back {
+            let current = self.asserv.position();
+            if let Some(y) = pos.y {
+                self.asserv.reset_position(current.x, y,current.a);
+            }
+        }
+
+
+        self.release_on_spot(self.kx * 800.0, 150.0, self.robot_aux, TableSide::Down).ok();
+
+        self.asserv.goto_xya(self.kx * 800.0, 550.0, self.asserv.position().a).ok();
         self.asserv.set_stop_mode(utils::StopMode::Reject);
-        self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
-        self.take_crate_spot(-self.kx * 400.0,  100.0, self.robot_aux, TableSide::Down).ok();
+        //self.take_crate_spot(-self.kx * 350.0,  850.0, RobotSide::Back, TableSide::Up).ok();
+        //self.take_crate_spot(-self.kx * 400.0,  150.0, self.robot_aux, TableSide::Down).ok();
 
         self.asserv.set_stop_mode(utils::StopMode::WaitAndResume);
 
@@ -375,9 +436,9 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(self.kx * 1100.0, 1200.0, self.asserv.position().a).ok();
         self.asserv.goto_xya(self.kx * 600.0, 1200.0, self.asserv.position().a).ok();
 
-        self.release_on_spot(self.kx * 250.0, 1450.0, self.robot_aux, TableSide::Up).ok();
+       
+        //self.release_on_spot(self.kx * 150.0, 1450.0, self.robot_aux, TableSide::Up).ok();
 
-        self.asserv.set_stop_mode(utils::StopMode::Reject);
 
         
         //self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
@@ -469,10 +530,13 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         if let Some(path) = self.pathfinder.find_path(start, goal) {
             let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
             if self.asserv.run_path(&asserv_path).is_ok() {
-                if self.asserv.ellapsed_time_since_start().as_secs() >= 87 {
+                    while self.asserv.ellapsed_time_since_start().as_secs() < 95 {
+                        sleep(Duration::from_millis(100));
+                    }
+
                     self.asserv.goto_xya(self.kx * 1200.0, self.asserv.position().x, arfast(self.robot_aux, TableSide::Down)).ok();
                     self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
-                }
+                
             }
         } else {
             rome::warn!(self.rlogger, "Cannot find a path");

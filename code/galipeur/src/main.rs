@@ -55,10 +55,10 @@ fn main() {
             out_shift: 0,
         },
         trajectory: TrajectoryConf {
-            a_speed: 3.14 * 50.0,
+            a_speed: 3.14 * 75.0,
             a_acc: 3.14 * 3.0,
-            xy_cruise_speed: 4.0,
-            xy_cruise_acc: 0.15,
+            xy_cruise_speed: 6.0,
+            xy_cruise_acc: 0.10,
             xy_steering_speed: 1.5,
             xy_steering_acc: 0.1,
             xy_stop_speed: 1.5,

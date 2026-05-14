@@ -30,11 +30,12 @@ use embassy_stm32::{bind_interrupts, peripherals};
 use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
 use embassy_sync::mutex::Mutex;
 use embassy_time::{Duration, Instant, Timer};
-use core::sync::atomic::{AtomicU8, AtomicU16, Ordering};
+use core::sync::atomic::{AtomicBool, AtomicU8, AtomicU16, Ordering};
 use log::{info, warn};
 use panic_rtt_target as _;
 use rtt_target::rprintln;
 
+static LIDAR_OFF: AtomicBool = AtomicBool::new(true);
 static COLOR_LED_DUTY: AtomicU8 = AtomicU8::new(0);
 static COLOR_THRESHOLD: AtomicU16 = AtomicU16::new(2000);
 use rtt_target::rtt_init_print;
@@ -182,11 +183,30 @@ static MODULE2: static_cell::StaticCell<Mutex<CriticalSectionRawMutex, ModuleTyp
 static TRANSLATION_BUS: static_cell::StaticCell<Mutex<CriticalSectionRawMutex, TranslationBusType>> =
     static_cell::StaticCell::new();
 
+/// Debounce lidar_off_pin: 40 consecutive HIGH reads (400ms) to set LIDAR_OFF,
+/// but a single LOW immediately clears it.
+#[embassy_executor::task]
+async fn lidar_off_debounce_task(pin: Input<'static>) {
+    let mut count: u8 = 0;
+    LIDAR_OFF.store(pin.is_high(), Ordering::Relaxed);
+    loop {
+        Timer::after_millis(10).await;
+        if pin.is_low() {
+            count = 0;
+            LIDAR_OFF.store(false, Ordering::Relaxed);
+        } else {
+            count = count.saturating_add(1);
+            if count >= 40 {
+                LIDAR_OFF.store(true, Ordering::Relaxed);
+            }
+        }
+    }
+}
+
 /// LED blink task (5Hz) + periodic status report + ground sensor monitoring
 #[embassy_executor::task]
 async fn led_status_task(
     mut led: Output<'static>,
-    lidar_off_pin: Input<'static>,
     module0: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module1: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
     module2: &'static Mutex<CriticalSectionRawMutex, ModuleType>,
@@ -218,7 +238,7 @@ async fn led_status_task(
             (g0.unwrap_or(true), g1.unwrap_or(true), g2.unwrap_or(true))
         };
 
-        if lidar_off_pin.is_high() || aru {
+        if LIDAR_OFF.load(Ordering::Relaxed) || aru {
             lidar::power_off();
             log::info!("LIDAR OFF PIN off");
         }
@@ -1178,7 +1198,8 @@ async fn main(spawner: Spawner) {
         Timer::after_millis(100).await;
     }
 
-    spawner.spawn(led_status_task(led, lidar_off_pin, module0, module1, module2, translation_bus, color_led_ch3).unwrap());
+    spawner.spawn(lidar_off_debounce_task(lidar_off_pin).unwrap());
+    spawner.spawn(led_status_task(led, module0, module1, module2, translation_bus, color_led_ch3).unwrap());
     spawner.spawn(cmd_task(module0, module1, module2, translation_bus).unwrap());
     spawner.spawn(valve_toggle_task(module0, module1, module2).unwrap());
 

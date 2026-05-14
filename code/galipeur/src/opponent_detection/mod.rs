@@ -464,7 +464,7 @@ impl TableConfig {
     fn point_on_table(&self, tx: f32, ty: f32) -> bool {
         let m = self.margin_mm;
         let half_w = self.width_mm / 2.0;
-        tx >= -half_w + m && tx <= half_w - m && ty >= m && ty <= self.height_mm - m
+        tx >= -half_w + m && tx <= half_w - m && ty >= m && ty <= self.height_mm - m - 400.0
     }
 }
 
