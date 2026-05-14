@@ -181,8 +181,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             let current = self.asserv.position();
             self.asserv.reset_position(current.x, y_back, current.a);
 
-            //self.asserv.goto_xya(self.kx * 1150.0, 1740.0, end_angle)?;
-            self.asserv.teleport(self.kx * 1150.0, 1740.0, end_angle);
+            self.asserv.goto_xya(self.kx * 1150.0, 1760.0, end_angle)?;
+            self.asserv.teleport(self.kx * 1150.0, 1760.0, end_angle);
 
             Ok(())
         }
@@ -245,7 +245,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         if self.setup_position().is_err() {
             self.end_of_match();
         }
-        self.sensors.ground_lidar_power_off();
+        //self.sensors.ground_lidar_power_off();
 
         self.opponent_detection.set_mode(DetectionMode::OnTable);
 
@@ -345,26 +345,31 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         
         self.take_crate_spot(self.kx * 1350.0, 1200.0, self.robot_main, self.table_main).ok();
-        //self.take_crate_spot(self.kx * 1350.0,  400.0, self.robot_main, self.table_main).ok();
-        
-        //self.asserv.goto_xya(self.kx * 1250.0, 300.0, arfast(RobotSide::Left, TableSide::Up)).ok();
-        //self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
-        //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
-        
-        //self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
-        //self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
-        //self.take_crate_spot(-self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
-        //self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
-
-        
-        //self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
-        //self.release_on_spot(self.kx * 0.0, 100.0, self.robot_aux, TableSide::Down).ok();
-        //self.release_on_spot(self.kx * 700.0, 100.0, self.robot_main, TableSide::Down).ok();
-        //self.release_on_spot(self.kx * 800.0, 800.0, self.robot_aux, self.table_aux).ok();
+        self.take_crate_spot(self.kx * 1350.0,  400.0, self.robot_main, self.table_main).ok();
         self.release_on_spot(self.kx * 1400.0, 800.0, self.robot_main, self.table_main).ok();
+        self.release_on_spot(self.kx * 700.0, 800.0, self.robot_main, self.table_aux).ok();
+
+
+        self.asserv.goto_xya(self.kx * 1250.0, 300.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+       // self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+        //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+
+        self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+        self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
+        self.release_on_spot(self.kx * 250.0, 1450.0, self.robot_aux, TableSide::Up).ok();
+
+
+        //self.take_crate_spot(self.kx * 400.0,  175.0, self.robot_aux, TableSide::Down).ok();
+        //self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up).ok();
+        //self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, TableSide::Up).ok();
+//
+        //
+        //self.release_on_spot(self.kx * 0.0, 100.0, self.robot_aux, TableSide::Down).ok();
+        //self.release_on_spot(self.kx * 800.0, 800.0, self.robot_aux, self.table_aux).ok();
         
-        self.end_of_match();
-        //self.return_to_start();  
+        //self.end_of_match();
+        self.return_to_start();  
     }
 
     fn take_first_crates (&mut self){ 
@@ -441,11 +446,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     fn return_to_start(&mut self){
         self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
         let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
-        let goal = self.pathfinder.nearest_node(&XY::new(self.kx*1200.0, 1700.0));
+        let goal = self.pathfinder.nearest_node(&XY::new(self.kx*700.0, 1400.0));
         if let Some(path) = self.pathfinder.find_path(start, goal) {
             let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
             if self.asserv.run_path(&asserv_path).is_ok() {
-                self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
+                //if self.asserv
+                //self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(self.robot_aux, TableSide::Down)).ok();
             }
         } else {
             rome::warn!(self.rlogger, "Cannot find a path");
@@ -555,15 +561,20 @@ pub fn approach_and_take<B: SabotterBoard + 'static>(
     const SLOW_SPEED: f32 = 200.0;
     const SLOW_ACC: f32 = 500.0;
 
-
+log::info!("AA");
     // 0. Prepare meca
     let face = match meca.prepare_direct_take(Some(face), CleatSide::Both) {
         Some(face) => face,
         None => {return Err(StrategyError::StupidOrder)},
     };
+    log::info!("A4");
+
     asserv.goto_a(arfast(face, wall))?;
+    log::info!("A3");
+
     meca.prepare_direct_take(Some(face), CleatSide::Left);
 
+log::info!("Azzz2");
     sleep(Duration::from_millis(250));
 
     let normal_body = realign::face_normal_angle(face);
@@ -578,14 +589,16 @@ pub fn approach_and_take<B: SabotterBoard + 'static>(
         let heading = asserv.position().a;
         let normal_world = normal_body + heading;
         let tangent_world = normal_world + f32::consts::FRAC_PI_2;
+log::info!("A2dsds54d56sq");
 
         // 2. Measure perpendicular distance (face → obstacle, in body frame)
-        let face_distance = realign::measure_face_distance(sensors, face, LidarSelect::Low)
-            .ok_or(StrategyError::SensorUnavailable)?;
+        let mut face_distance = realign::measure_face_distance(sensors, face, LidarSelect::Low)
+            .or(Some(200.0)).unwrap();
         log::info!("approach_and_take: face_distance={:.1} mm", face_distance);
 
         if face_distance > REJECT_DISTANCE {
-            return Err(StrategyError::StupidOrder);
+            face_distance = 200.0;
+            //return Err(StrategyError::StupidOrder);
         }
 
         // 3. Advance to target distance (move along face normal, in world frame)
@@ -606,7 +619,7 @@ pub fn approach_and_take<B: SabotterBoard + 'static>(
        /// let lateral_correction = TARGET_LATERAL - lateral;
        /// let dx = lateral_correction * tangent_world.cos();
        /// let dy = lateral_correction * tangent_world.sin();
-       /// asserv.goto_xy_rel(dx, dy)?;
+       // asserv.goto_xy_rel(dx, dy)?;
 
         Ok(())
     })();

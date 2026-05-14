@@ -220,6 +220,7 @@ async fn led_status_task(
 
         if lidar_off_pin.is_high() || aru {
             lidar::power_off();
+            log::info!("LIDAR OFF PIN off");
         }
         
 
@@ -932,7 +933,7 @@ async fn main(spawner: Spawner) {
 
    
     let mut led = Output::new(p.PD11, Level::Low, Speed::Low);
-    let lidar_off_pin = Input::new(p.PD4, Pull::Up);
+    let lidar_off_pin = Input::new(p.PD5, Pull::Up);
 
    
     // =========================================================================

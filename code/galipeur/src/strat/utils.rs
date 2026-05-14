@@ -95,6 +95,7 @@ impl<B: SabotterBoard> AsservHelper<B> {
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
         loop {
             if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+            self.asserv.lock().unwrap().stop();
             self.enable_motor_control();
             if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
                 if self.stop_mode == StopMode::WaitAndResume {

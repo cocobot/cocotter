@@ -244,6 +244,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
 
         // Send meca telemetry
         if self.meca_tm_periodicity.update(now) {
+            self.can.send(&CanMessage::SetLidarEnable { enable: true });
             if self.meca_tm_full {
                 for side in 0..3u8 {
                     for arm in 0..4u8 {
