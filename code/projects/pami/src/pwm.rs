@@ -177,7 +177,7 @@ impl PWM {
                     self.device.set_channel_off(PWM_EXTENDED_CHANEL_VACCUM, clamp_duty((4095.0 * speed) as i16)).ok();
                 }
                 PWMEvent::Servo0(pos) => {
-                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[0], clamp_duty((4095.0 * pos/10.0) as i16)).ok();
+                    self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[0], clamp_duty((4095.0 * (0.5 + (2.5-0.5)*pos/180.0) / 20.0) as i16)).ok();
                 }
                 PWMEvent::Servo1(pos) => {
                     self.device.set_channel_off(PWM_EXTENDED_CHANEL_SERVO[1], clamp_duty((4095.0 * pos/10.0) as i16)).ok();

@@ -53,28 +53,28 @@ static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
     [116, 77, 189, 81, 207, 138] => PAMIConfig {
         id: 0,
         color: "Red",
-        strategy: GameStrategy::NearPit,
+        strategy: GameStrategy::Ninja,
     },
 
     //yellow (ID = 1)
     [116, 77, 189, 81, 239, 34] => PAMIConfig {
         id: 1,
         color: "Yellow",
-        strategy: GameStrategy::Superstar,
+        strategy: GameStrategy::Test,
     },
 
     //blue (ID = 2)
     [116, 77, 189, 82, 75, 170] => PAMIConfig {
         id: 2,
         color: "Blue",
-        strategy: GameStrategy::FarPit,
+        strategy: GameStrategy::Paninja_1,
     },
 
     //rose (ID = 3)
     [116, 77, 189, 82, 134, 222] => PAMIConfig {
         id: 3,
         color: "Rose",
-        strategy: GameStrategy::MidPit,
+        strategy: GameStrategy::Test,
     },
 };
 

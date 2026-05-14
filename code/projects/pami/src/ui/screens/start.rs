@@ -49,38 +49,30 @@ impl UIScreen for Start {
                 .unwrap();
         }
 
-        for i in 0..4 {
+        for i in 0..3 {
             let mut stroke_size = 1;
 
             let mut selected = false;
             if let Some(config) = &self.config {
                 match config.strategy {
-                    GameStrategy::FarPit => {
+                    GameStrategy::Ninja => {
                         if i == 0 && !config.x_negative_color {
-                            selected = true;
-                        }
-                        else if i == 3 && config.x_negative_color {
-                            selected = true;
-                        }
-                    }
-                    GameStrategy::MidPit => {
-                        if i == 1 && !config.x_negative_color {
                             selected = true;
                         }
                         else if i == 2 && config.x_negative_color {
                             selected = true;
                         }
                     }
-                    GameStrategy::NearPit => {
-                        if i == 2 && !config.x_negative_color {
+                    GameStrategy::Paninja_1 => {
+                        if i == 1 && !config.x_negative_color {
                             selected = true;
                         }
                         else if i == 1 && config.x_negative_color {
                             selected = true;
                         }
                     }
-                    GameStrategy::Superstar => {
-                        if i == 3 && !config.x_negative_color {
+                    GameStrategy::Test => {
+                        if i == 2 && !config.x_negative_color {
                             selected = true;
                         }
                         else if i == 0 && config.x_negative_color {

@@ -4,12 +4,11 @@ use board_pami_2023::Starter;
 use cocotter::trajectory::{order::{Order, OrderState}, OrderConfig, TrajectorError, Trajectory, TrajectoryEvent, TrajectoryOrderList};
 use crate::{asserv::AsservMutexProtected, config::{GAME_TIME_SECONDS, PAMI_START_TIME_SECONDS}, events::{Event, EventSystem}, pwm::{OverrideState, PWMEvent}};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum GameStrategy {
-    Superstar,
-    NearPit,
-    MidPit,
-    FarPit,
+    Ninja,
+    Paninja_1,
+    Test,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -23,14 +22,16 @@ pub struct FunnyAction {
     start_time: Option<Instant>,
     test_mode : bool,
     event: EventSystem,
+    strategy: GameStrategy,
 }
 
 impl FunnyAction {
-    pub fn new(event: &EventSystem) -> Arc<Mutex<Self>> {
+    pub fn new(event: &EventSystem, strat:GameStrategy) -> Arc<Mutex<Self>> {
         let instance = Arc::new(Mutex::new(Self {
             start_time: None,
             test_mode: false,
             event: event.clone(),
+            strategy: strat,
         }));
 
         let cloned_instance = instance.clone();
@@ -85,11 +86,22 @@ impl FunnyAction {
             }
         }
 
-        loop {
-            instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
-            thread::sleep(Duration::from_millis(1000));
-            instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
-            thread::sleep(Duration::from_millis(500));
+        if instance.lock().unwrap().strategy == GameStrategy::Ninja
+        {
+            log::info!("Let's eat nuts!");
+            loop {
+                instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
+                thread::sleep(Duration::from_millis(600));
+                instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+                thread::sleep(Duration::from_millis(600));
+            }
+        } else {
+            loop {
+                instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+                thread::sleep(Duration::from_millis(600));
+                instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+                thread::sleep(Duration::from_millis(300));
+            }
         }
     }
 }
@@ -122,7 +134,7 @@ impl Game {
             trajectory,
             start_time: None,
             event: event.clone(),
-            funny_action: FunnyAction::new(event),
+            funny_action: FunnyAction::new(event, config.strategy),
         };
 
         std::thread::Builder::new()
@@ -238,8 +250,8 @@ impl Game {
 
     }
 
-    fn start_plop(&mut self) {
-         let mut position = self.trajectory.get_position().lock().unwrap();
+    fn strat_paninja_1(&mut self) {
+        let mut position = self.trajectory.get_position().lock().unwrap();
         position.set_coordinates(Some(2900.0), Some(1900.0), None);
         drop(position);
 
@@ -258,11 +270,11 @@ impl Game {
         else {
             181.0_f32
         };
-         
+
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)
             .set_no_detection(false)
-            .add_order(Order::GotoD {d_mm: 250.0})
+            .add_order(Order::GotoD {d_mm: 800.0})
             ;
 
         self.trajectory
@@ -270,6 +282,74 @@ impl Game {
             .unwrap();
     }
 
+    fn strat_ninja(&mut self) {
+        let mut position = self.trajectory.get_position().lock().unwrap();
+        position.set_coordinates(Some(2900.0), Some(1900.0), None);
+        drop(position);
+
+
+        self.wait_for_start();
+
+        let angle = if self.config.x_negative_color {
+            90.0_f32
+        } else {
+            -90.0_f32
+        };
+
+        let initial_a = if self.config.x_negative_color {
+            181.5_f32
+        }
+        else {
+            181.0_f32
+        };
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
+
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(true)
+            .set_no_detection(false)
+            .add_order(Order::GotoD {d_mm: 800.0})
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+    }
+
+    fn strat_test(&mut self) {
+        let mut position = self.trajectory.get_position().lock().unwrap();
+        position.set_coordinates(Some(0.0), Some(0.0), None);
+        drop(position);
+
+        self.wait_for_start();
+
+        let angle = if self.config.x_negative_color {
+            90.0_f32
+        } else {
+            -90.0_f32
+        };
+
+        let initial_a = if self.config.x_negative_color {
+            181.5_f32
+        }
+        else {
+            181.0_f32
+        };
+
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(true)
+            .set_no_detection(false)
+            .add_order(Order::GotoD {d_mm: 500.0})
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+    }
+
+    /* 2025 code
     fn strat_superstar(&mut self) {
 
         let mut position = self.trajectory.get_position().lock().unwrap();
@@ -391,6 +471,7 @@ impl Game {
             .execute(orders)
             .unwrap();
     }
+    */
 
     fn run(&mut self) {
 
@@ -398,12 +479,11 @@ impl Game {
 
         std::thread::sleep(Duration::from_millis(1000));
 
-        //match self.config.strategy {
-        //    GameStrategy::Superstar => self.strat_superstar(),
-        //    GameStrategy::FarPit | GameStrategy::MidPit | GameStrategy::NearPit => self.start_pit(self.config.strategy),
-        //}
-
-        self.start_plop();
+        match self.config.strategy {
+            GameStrategy::Ninja => self.strat_ninja(),
+            GameStrategy::Paninja_1 => self.strat_paninja_1(),
+            GameStrategy::Test => self.strat_test(),
+        }
 
         let colors = [
             [1.0, 0.0, 0.0], // Red
