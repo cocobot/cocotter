@@ -217,9 +217,9 @@ impl<I2C: I2c> I2cDevices<I2C> {
         &self.ground_state
     }
 
-    /// Set ground sensor threshold
-    pub fn ground_set_threshold(&mut self, threshold: u16) {
-        self.ground_state.set_threshold(threshold);
+    /// Set ground sensor mode and threshold
+    pub fn ground_set_mode_and_threshold(&mut self, mode: cancaner::GroundThresholdMode, threshold: u16) {
+        self.ground_state.set_mode_and_threshold(mode, threshold);
     }
 
     /// Get ground sensor value

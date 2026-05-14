@@ -351,8 +351,8 @@ where
         self.i2c_devices.ground_threshold()
     }
 
-    pub fn set_ground_threshold(&mut self, threshold: u16) {
-        self.i2c_devices.ground_set_threshold(threshold);
+    pub fn set_ground_mode_and_threshold(&mut self, mode: cancaner::GroundThresholdMode, threshold: u16) {
+        self.i2c_devices.ground_set_mode_and_threshold(mode, threshold);
     }
 
     pub fn ground_detected(&self) -> bool {

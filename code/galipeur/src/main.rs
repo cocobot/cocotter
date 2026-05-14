@@ -1,7 +1,7 @@
 use asserv::holonomic::{conf::*};
 use board_sabotter::SabotterBoard;
 use galipeur::routines::GalipeurRoutines;
-use galipeur::sensors::{GroundConf, GroundLidarConf, GroundLidarPose, TopLidarConf};
+use galipeur::sensors::{GroundConf, GroundLidarCalib, GroundLidarConf, GroundLidarPose, TopLidarConf};
 use galipeur::opponent_detection::{OpponentDetectionConf, TableConfig};
 
 #[cfg(target_os = "espidf")]
@@ -94,8 +94,8 @@ fn main() {
                 ],
                 // Back face: L2 (low) + L3 (high)
                 [
-                    GroundLidarPose { x: 129.50, y: -139.80, theta: -119.700_f32.to_radians() },
-                    GroundLidarPose { x: -130.93, y: -131.00, theta: -60.450_f32.to_radians() },
+                    GroundLidarPose { x: 129.50, y: -117.69, theta: -119.700_f32.to_radians() },
+                    GroundLidarPose { x: -130.93, y: -110.39, theta: -60.450_f32.to_radians() },
                 ],
                 // Right face: L1 (low) + L4 (high)
                 [
@@ -103,9 +103,27 @@ fn main() {
                     GroundLidarPose { x: 36.00, y: 172.10, theta: -1.300_f32.to_radians() },
                 ],
             ],
+            calibs: [
+                // Left face: [0] = high (L0), [1] = low (L5)
+                [
+                    GroundLidarCalib { scale: 0.855305, offset: 135.781 },
+                    GroundLidarCalib { scale: 0.860393, offset: 134.236 },
+                ],
+                // Back face: [0] = high (L3), [1] = low (L2)
+                [
+                    GroundLidarCalib { scale: 0.874559, offset: 137.701 },
+                    GroundLidarCalib { scale: 0.869144, offset: 131.301 },
+                ],
+                // Right face: [0] = high (L4), [1] = low (L1)
+                [
+                    GroundLidarCalib { scale: 0.866882, offset: 134.374 },
+                    GroundLidarCalib { scale: 0.863545, offset: 130.437 },
+                ],
+            ],
         },
         GroundConf {
-            thresholds: [42, 42, 42],
+            mode: cancaner::GroundThresholdMode::Raw,
+            threshold: 42,
         },
     );
 

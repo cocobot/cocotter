@@ -216,6 +216,7 @@ async fn led_status_task(
     let status_tx = status_sender();
     let mut led_state = false;
     let mut cycle_count: u8 = 0;
+    let mut lidar_seq: u8 = 0;
     let mut prev_transl_moving = [false; 3];
     let mut prev_ground_mask: u8 = 0;
     let mut last_ground_send = Instant::now();
@@ -229,7 +230,8 @@ async fn led_status_task(
         let ground = {
             let mut m0 = module0.lock().await;
             let mut m1 = module1.lock().await;
-            let mut m2 = module2.lock().await;
+            let mut m2 = 
+            module2.lock().await;
             let (g0, g1, g2) = join3(
                 m0.update_ground_sensor(),
                 m1.update_ground_sensor(),
@@ -238,9 +240,8 @@ async fn led_status_task(
             (g0.unwrap_or(true), g1.unwrap_or(true), g2.unwrap_or(true))
         };
 
-        if aru {
+        if aru || !ground.0 || !ground.1 || !ground.2 {
             lidar::power_off();
-            log::info!("LIDAR OFF PIN off");
         }
         
 
@@ -340,6 +341,7 @@ async fn led_status_task(
                 [4, 1], // module 1 = Back  → back0, back1
                 [0, 2], // module 2 = Right → right0, right1
             ];
+            lidar_seq = lidar_seq.wrapping_add(1);
             for (module, lidars) in LIDAR_MAP.iter().enumerate() {
                 let m0 = lidar::get_measurement(lidars[0]);
                 let m1 = lidar::get_measurement(lidars[1]);
@@ -347,9 +349,8 @@ async fn led_status_task(
                     .try_send(CanMessage::LidarStatus {
                         module: module as u8,
                         distance_0: m0.distance_mm.min(u16::MAX as u32) as u16,
-                        sq_0: m0.signal_quality,
                         distance_1: m1.distance_mm.min(u16::MAX as u32) as u16,
-                        sq_1: m1.signal_quality,
+                        seq: lidar_seq,
                     })
                     .ok();
             }
@@ -670,13 +671,10 @@ async fn cmd_task(
 
         // Handle ground sensor commands
         match &msg {
-            CanMessage::SetGroundThreshold { sensor, threshold } => {
-                match *sensor {
-                    0 => module0.lock().await.set_ground_threshold(*threshold),
-                    1 => module1.lock().await.set_ground_threshold(*threshold),
-                    2 => module2.lock().await.set_ground_threshold(*threshold),
-                    _ => {}
-                }
+            CanMessage::SetGroundThreshold { mode, threshold, .. } => {
+                module0.lock().await.set_ground_mode_and_threshold(*mode, *threshold);
+                module1.lock().await.set_ground_mode_and_threshold(*mode, *threshold);
+                module2.lock().await.set_ground_mode_and_threshold(*mode, *threshold);
                 continue;
             }
             CanMessage::RequestGroundValue { sensor } => {

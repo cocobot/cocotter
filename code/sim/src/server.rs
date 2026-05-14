@@ -273,6 +273,7 @@ fn handle_galipeur(
     let mut last_battery = Instant::now();
     let mut last_pose_log = Instant::now();
     let mut last_ground_lidar = Instant::now();
+    let mut lidar_seq: u8 = 0;
     let battery_period = Duration::from_secs(1);
     let pose_log_period = Duration::from_millis(500);
     let ground_lidar_period = Duration::from_millis(250);
@@ -405,13 +406,14 @@ fn handle_galipeur(
                         dists[module][lane] =
                             d.round().clamp(0.0, 65535.0) as u16;
                     }
+                    lidar_seq = lidar_seq.wrapping_add(1);
                     for (m, [d0, d1]) in dists.iter().enumerate() {
                         if *d0 == 0 && *d1 == 0 {
                             continue;
                         }
                         send_msg(
                             &stream,
-                            &PicotterEmu::lidar_status_msg(m as u8, *d0, *d1),
+                            &PicotterEmu::lidar_status_msg(m as u8, *d0, *d1, lidar_seq),
                         )?;
                         can_frames_out += 1;
                     }

@@ -453,6 +453,27 @@ impl ArmCmd {
     }
 }
 
+/// Ground sensor threshold mode
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[repr(u8)]
+pub enum GroundThresholdMode {
+    /// Raw: detection when value >= threshold
+    #[default]
+    Raw = 0,
+    /// Delta: capture current value as reference, detect when value < reference - threshold (latching)
+    Delta = 1,
+}
+
+impl GroundThresholdMode {
+    pub fn from_u8(val: u8) -> Option<Self> {
+        match val {
+            0 => Some(Self::Raw),
+            1 => Some(Self::Delta),
+            _ => None,
+        }
+    }
+}
+
 /// Ground domain commands (4 bits in CAN ID)
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]

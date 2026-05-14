@@ -197,8 +197,8 @@ pub enum CanMessage {
     /// Request ground sensor value (ID: 0x21S with no data)
     RequestGroundValue { sensor: u8 },
 
-    /// Set ground sensor threshold (ID: 0x22S)
-    SetGroundThreshold { sensor: u8, threshold: u16 },
+    /// Set ground sensor threshold (ID: 0x22S, global)
+    SetGroundThreshold { sensor: u8, mode: GroundThresholdMode, threshold: u16 },
 
     // ==================== LOG Domain (0x3) ====================
     /// Log level configuration (ID: 0x300)
@@ -268,9 +268,8 @@ pub enum CanMessage {
     LidarStatus {
         module: u8,
         distance_0: u16,
-        sq_0: u16,
         distance_1: u16,
-        sq_1: u16,
+        seq: u8,
     },
 }
 
@@ -597,10 +596,11 @@ impl CanMessage {
                 }
             }
             GroundCmd::SetThreshold => {
-                if data.len() >= 2 {
+                if data.len() >= 3 {
                     Some(CanMessage::SetGroundThreshold {
                         sensor,
-                        threshold: u16::from_le_bytes([data[0], data[1]]),
+                        mode: GroundThresholdMode::from_u8(data[0])?,
+                        threshold: u16::from_le_bytes([data[1], data[2]]),
                     })
                 } else {
                     None
@@ -735,13 +735,12 @@ impl CanMessage {
                 }
             }
             LidarCmd::Status => {
-                if data.len() >= 8 {
+                if data.len() >= 5 {
                     Some(CanMessage::LidarStatus {
                         module,
                         distance_0: u16::from_le_bytes([data[0], data[1]]),
-                        sq_0: u16::from_le_bytes([data[2], data[3]]),
-                        distance_1: u16::from_le_bytes([data[4], data[5]]),
-                        sq_1: u16::from_le_bytes([data[6], data[7]]),
+                        distance_1: u16::from_le_bytes([data[2], data[3]]),
+                        seq: data[4],
                     })
                 } else {
                     None
@@ -1002,11 +1001,12 @@ impl CanMessage {
                     len: 0,
                 }
             }
-            CanMessage::SetGroundThreshold { sensor, threshold } => {
+            CanMessage::SetGroundThreshold { sensor, mode, threshold } => {
                 let id = Self::build_id(Domain::Ground, GroundCmd::SetThreshold as u8, *sensor);
                 let mut data = [0u8; MAX_DATA_LEN];
-                data[0..2].copy_from_slice(&threshold.to_le_bytes());
-                EncodedMessage { id, data, len: 2 }
+                data[0] = *mode as u8;
+                data[1..3].copy_from_slice(&threshold.to_le_bytes());
+                EncodedMessage { id, data, len: 3 }
             }
 
             // ==================== LOG ====================
@@ -1148,14 +1148,13 @@ impl CanMessage {
                 data[0] = *enable as u8;
                 EncodedMessage { id, data, len: 1 }
             }
-            CanMessage::LidarStatus { module, distance_0, sq_0, distance_1, sq_1 } => {
+            CanMessage::LidarStatus { module, distance_0, distance_1, seq } => {
                 let id = Self::build_id(Domain::Lidar, LidarCmd::Status as u8, *module);
                 let mut data = [0u8; MAX_DATA_LEN];
                 data[0..2].copy_from_slice(&distance_0.to_le_bytes());
-                data[2..4].copy_from_slice(&sq_0.to_le_bytes());
-                data[4..6].copy_from_slice(&distance_1.to_le_bytes());
-                data[6..8].copy_from_slice(&sq_1.to_le_bytes());
-                EncodedMessage { id, data, len: 8 }
+                data[2..4].copy_from_slice(&distance_1.to_le_bytes());
+                data[4] = *seq;
+                EncodedMessage { id, data, len: 5 }
             }
         }
     }
@@ -1546,7 +1545,13 @@ mod tests {
     fn roundtrip_set_ground_threshold() {
         roundtrip(&CanMessage::SetGroundThreshold {
             sensor: 0,
+            mode: GroundThresholdMode::Raw,
             threshold: 800,
+        });
+        roundtrip(&CanMessage::SetGroundThreshold {
+            sensor: 0,
+            mode: GroundThresholdMode::Delta,
+            threshold: 50,
         });
     }
 
@@ -1643,16 +1648,14 @@ mod tests {
         roundtrip(&CanMessage::LidarStatus {
             module: 0,
             distance_0: 1234,
-            sq_0: 4200,
             distance_1: 5678,
-            sq_1: 9900,
+            seq: 42,
         });
         roundtrip(&CanMessage::LidarStatus {
             module: 2,
             distance_0: 0,
-            sq_0: 0,
             distance_1: 65535,
-            sq_1: 65535,
+            seq: 255,
         });
     }
 

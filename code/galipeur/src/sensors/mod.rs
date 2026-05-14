@@ -17,7 +17,6 @@ use crate::watched::Watched;
 
 const BATTERY_LOW_MV: u16 = 14_830; // 4S LiPo discharged threshold
 const NUM_MODULES: usize = 3;
-const NUM_GROUND_SENSORS: usize = 3;
 
 /// Position and orientation of one ground lidar in the robot frame
 #[derive(Debug, Clone, Copy)]
@@ -27,14 +26,23 @@ pub struct GroundLidarPose {
     pub theta: f32, // radians, direction the lidar points
 }
 
-/// Ground sensor threshold configuration
+/// Linear calibration for one ground lidar: wall_dist = scale * raw_d + offset
+#[derive(Debug, Clone, Copy)]
+pub struct GroundLidarCalib {
+    pub scale: f32,
+    pub offset: f32,
+}
+
+/// Ground sensor threshold configuration (global for all sensors)
 pub struct GroundConf {
-    pub thresholds: [u16; NUM_GROUND_SENSORS],
+    pub mode: cancaner::GroundThresholdMode,
+    pub threshold: u16,
 }
 
 /// Configuration for all ground lidar modules (2 poses per module)
 pub struct GroundLidarConf {
     pub modules: [[GroundLidarPose; 2]; NUM_MODULES],
+    pub calibs: [[GroundLidarCalib; 2]; NUM_MODULES],
 }
 
 /// Configuration for the 360 top lidar (LD06)
@@ -47,9 +55,8 @@ pub struct TopLidarConf {
 #[derive(Debug, Clone, Copy, Default)]
 pub struct GroundLidarModule {
     pub distance_0: u16,
-    pub sq_0: u16,
     pub distance_1: u16,
-    pub sq_1: u16,
+    pub seq: u8,
 }
 
 pub struct Sensors<B: SabotterBoard> {
@@ -98,15 +105,13 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
                         detection_mask & 0b100 != 0)
                     ).ok();
                 }
-                CanMessage::LidarStatus { module, distance_0, sq_0, distance_1, sq_1 } => {
+                CanMessage::LidarStatus { module, distance_0, distance_1, seq } => {
                     let idx = *module as usize;
-                    //log::info!("LidarStatus: module: {} distance_0: {} sq_0: {} distance_1: {} sq_1: {}", module, distance_0, sq_0, distance_1, sq_1);
                     if idx < NUM_MODULES {
                         lidar_cb[idx].update(|m| {
                             m.distance_0 = *distance_0;
-                            m.sq_0 = *sq_0;
                             m.distance_1 = *distance_1;
-                            m.sq_1 = *sq_1;
+                            m.seq = *seq;
                         });
                     }
                 }
@@ -133,13 +138,13 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
         }
             std::thread::sleep(Duration::from_millis(1000));
 
-       //    can.send(&CanMessage::SetLidarEnable { enable: true });
-       //loop {
-       //    can.send(&CanMessage::RequestGroundValue { sensor: 0 });
-       //    can.send(&CanMessage::RequestGroundValue { sensor: 1 });
-       //    can.send(&CanMessage::RequestGroundValue { sensor: 2 });
-       //    std::thread::sleep(Duration::from_millis(100));
-       //}
+           can.send(&CanMessage::SetLidarEnable { enable: true });
+      // loop {
+      //     can.send(&CanMessage::RequestGroundValue { sensor: 0 });
+      //     can.send(&CanMessage::RequestGroundValue { sensor: 1 });
+      //     can.send(&CanMessage::RequestGroundValue { sensor: 2 });
+      //     std::thread::sleep(Duration::from_millis(100));
+      // }
 
         std::thread::Builder::new()
             .name("sensors".into())
@@ -230,12 +235,16 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
     /// Set sensor configuration (can only be called once)
     pub fn set_conf(&self, ground_lidar_conf: GroundLidarConf, ground_conf: GroundConf) {
         let _ = self.ground_lidar_conf.set(ground_lidar_conf);
-        for (sensor, &threshold) in ground_conf.thresholds.iter().enumerate() {
-            self.can.send(&CanMessage::SetGroundThreshold {
-                sensor: sensor as u8,
-                threshold,
-            });
-        }
+        self.set_ground_mode(ground_conf.mode, ground_conf.threshold);
+    }
+
+    /// Change ground sensor mode and threshold during a match
+    pub fn set_ground_mode(&self, mode: cancaner::GroundThresholdMode, threshold: u16) {
+        self.can.send(&CanMessage::SetGroundThreshold {
+            sensor: 0,
+            mode,
+            threshold,
+        });
     }
 
     /// power off ground lidar data for all 3 modules
@@ -243,10 +252,11 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
         self.can.send(&CanMessage::SetLidarEnable { enable: false });
     }
 
-    /// Get raw ground lidar data for a robot side (last cached value)
-    pub fn ground_lidar(&self, side: RobotSide) -> GroundLidarModule {
+    /// Get fresh ground lidar data for a robot side.
+    /// Enables lidars and waits for a new reading (with timeout).
+    pub fn ground_lidar(&self, side: RobotSide) -> Option<GroundLidarModule> {
         self.can.send(&CanMessage::SetLidarEnable { enable: true });
-        self.ground_lidar_modules[side.module() as usize].get()
+        self.ground_lidar_modules[side.module() as usize].wait_next()
     }
 
     /// Get raw ground lidar data for all 3 modules
@@ -280,5 +290,11 @@ impl<B: SabotterBoard + 'static> Sensors<B> {
     pub fn ground_lidar_poses(&self, face: RobotSide) -> Option<[GroundLidarPose; 2]> {
         let idx = face.module() as usize;
         Some(self.ground_lidar_conf.get()?.modules[idx])
+    }
+
+    /// Get the linear calibration for the two lidars on `face`.
+    pub fn ground_lidar_calibs(&self, face: RobotSide) -> Option<[GroundLidarCalib; 2]> {
+        let idx = face.module() as usize;
+        Some(self.ground_lidar_conf.get()?.calibs[idx])
     }
 }

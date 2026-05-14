@@ -86,7 +86,7 @@ pub fn ground_lidars_sample<B: SabotterBoard + 'static>(
         std::thread::sleep(Duration::from_millis(SETTLE_MS_FAST));
         let mods = sensors.ground_lidar_all();
         let pos = asserv.position();
-        print_sample("fwd", pos.a, &mods);
+        //print_sample("fwd", pos.a, &mods);
         let scan = sensors.top_lidar_scan();
         print_top_scan("fwd", pos.a, step_idx, &scan);
         // Extra delay to let the UART drain the LD06 scan line.
@@ -107,7 +107,7 @@ pub fn ground_lidars_sample<B: SabotterBoard + 'static>(
         for j in 0..SAMPLES_PER_STEP_SLOW {
             let mods = sensors.ground_lidar_all();
             let pos = asserv.position();
-            print_sample("rev", pos.a, &mods);
+            //print_sample("rev", pos.a, &mods);
             // Dump one LD06 scan per stop (first sub-sample only to
             // keep output size manageable — the LD06 doesn't change
             // meaningfully within 5×80 ms).
@@ -138,16 +138,4 @@ fn print_top_scan(pass: &str, theta: f32, step_idx: u32, scan: &TopLidarSnapshot
         }
     }
     println!("{buf}");
-}
-
-fn print_sample(pass: &str, theta: f32, mods: &[GroundLidarModule; 3]) {
-    println!(
-        "{pass},{theta:.6},{},{},{},{},{},{},{},{},{},{},{},{}",
-        mods[0].distance_0, mods[0].sq_0,
-        mods[0].distance_1, mods[0].sq_1,
-        mods[1].distance_0, mods[1].sq_0,
-        mods[1].distance_1, mods[1].sq_1,
-        mods[2].distance_0, mods[2].sq_0,
-        mods[2].distance_1, mods[2].sq_1,
-    );
 }

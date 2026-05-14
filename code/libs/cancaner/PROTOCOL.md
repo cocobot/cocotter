@@ -596,17 +596,27 @@ Data[0-1]: Valeur brute proximity (little-endian)
 Data[2-3]: Seuil de détection actuel (little-endian)
 ```
 
-### 0x22X - SET_GROUND_THRESHOLD
+### 0x220 - SET_GROUND_THRESHOLD
 
-Configure le seuil de détection.
+Configure le mode et le seuil de détection pour tous les capteurs de sol (global).
 
 ```
-ID: 0x22[capteur]
-Longueur: 2 octets
+ID: 0x220
+Longueur: 3 octets
 Direction: P→S
 
-Data[0-1]: Nouveau seuil (little-endian)
+Data[0]: Mode (GroundThresholdMode)
+         - 0 = Raw : détection si valeur >= seuil
+         - 1 = Delta : capture la valeur courante comme référence,
+                        détection si valeur < référence - seuil (latching)
+Data[1-2]: Seuil (u16, little-endian)
 ```
+
+**Notes:**
+- En mode Delta, chaque capteur capture individuellement sa valeur courante
+  comme référence au moment de la réception du message.
+- Une fois détecté en mode Delta, le capteur reste détecté (pas de réactivation).
+- Un nouveau SetGroundThreshold réinitialise le latching.
 
 ---
 
@@ -865,13 +875,12 @@ Le target M est le numéro du module (0-2).
 
 ```
 ID: 0x51[module]
-Longueur: 8 octets
+Longueur: 5 octets
 Direction: S→P
 
 Data[0-1]: Distance LiDAR 0 en mm (u16, LE)
-Data[2-3]: Signal Quality LiDAR 0 (u16, LE)
-Data[4-5]: Distance LiDAR 1 en mm (u16, LE)
-Data[6-7]: Signal Quality LiDAR 1 (u16, LE)
+Data[2-3]: Distance LiDAR 1 en mm (u16, LE)
+Data[4]:   Sequence counter (u8, wrapping)
 ```
 
 ---

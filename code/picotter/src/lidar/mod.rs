@@ -42,6 +42,8 @@ static LIDAR_DATA: [BlockingMutex<CriticalSectionRawMutex, Cell<LidarMeasurement
 
 // Power state: true = powered on, false = powered off
 static POWER_STATE: AtomicBool = AtomicBool::new(false);
+// Incremented on every power_off — threads detect mid-cycle power cuts
+static POWER_CYCLE: AtomicU8 = AtomicU8::new(0);
 
 // Barrier 1: tasks that have disabled TX and are ready for power-on
 static POWER_READY: AtomicU8 = AtomicU8::new(0);
@@ -73,11 +75,12 @@ impl LidarManager {
     }
 }
 
-/// Cut power to all lidars
+/// Cut power to all lidars immediately.
+/// Bumps POWER_CYCLE so threads know they must restart even if power_on() is
+/// called again before they get to run.
 pub fn power_off() {
-    if !POWER_STATE.swap(false, Ordering::Relaxed) {
-        return; // already off
-    }
+    POWER_STATE.store(false, Ordering::SeqCst);
+    POWER_CYCLE.fetch_add(1, Ordering::SeqCst);
     MANAGER.lock(|cell| {
         if let Some(mgr) = cell.borrow_mut().as_mut() {
             mgr.disable_nctrl();
@@ -89,7 +92,7 @@ pub fn power_off() {
 
 /// Signal tasks to start power-on sequence (does NOT touch hardware)
 pub fn power_on() {
-    if POWER_STATE.swap(true, Ordering::Relaxed) {
+    if POWER_STATE.swap(true, Ordering::SeqCst) {
         return; // already on
     }
     POWER_READY.store(0, Ordering::SeqCst);
@@ -173,14 +176,18 @@ fn disable_nctrl() {
     });
 }
 
-/// Check if power is still on
-fn is_powered() -> bool {
-    POWER_STATE.load(Ordering::Relaxed)
+/// Check if power is still on AND we're still in the same power cycle
+fn is_powered(cycle: u8) -> bool {
+    POWER_STATE.load(Ordering::SeqCst) && POWER_CYCLE.load(Ordering::SeqCst) == cycle
 }
 
-/// Wait until power is ON, polling every 25ms
-async fn wait_power_on() {
-    while !is_powered() {
+/// Wait until power is ON, polling every 25ms. Returns the cycle at wake-up.
+async fn wait_power_on() -> u8 {
+    loop {
+        let cycle = POWER_CYCLE.load(Ordering::SeqCst);
+        if POWER_STATE.load(Ordering::SeqCst) {
+            return cycle;
+        }
         Timer::after(POLL_INTERVAL).await;
     }
 }
@@ -190,7 +197,7 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
     rprintln!("Lidar {} task started, waiting for power", id);
 
     loop {
-        wait_power_on().await;
+        let cycle = wait_power_on().await;
         info!("Test on {}", id);
 
         // --- Phase 1: Cut parasitic power, then apply real power ---
@@ -202,12 +209,12 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
         // Barrier 1: wait for all tasks to have disabled TX
         POWER_READY.fetch_add(1, Ordering::SeqCst);
         while POWER_READY.load(Ordering::SeqCst) < NUM_LIDARS as u8 {
-            if !is_powered() {
+            if !is_powered(cycle) {
                 break;
             }
             Timer::after(POLL_INTERVAL).await;
         }
-        if !is_powered() {
+        if !is_powered(cycle) {
             enable_usart_tx(id);
             continue;
         }
@@ -221,7 +228,7 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
         // Wait for module to boot
         Timer::after_millis(750).await;
 
-        if !is_powered() {
+        if !is_powered(cycle) {
             continue;
         }
 
@@ -239,7 +246,7 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
             Err(e) => info!("Lidar {}: version read failed: {:?}", id, e),
         }
 
-        if !is_powered() {
+        if !is_powered(cycle) {
             continue;
         }
 
@@ -259,19 +266,19 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
             enable_nctrl();
         }
         while INIT_REPORTED.load(Ordering::SeqCst) < NUM_LIDARS as u8 {
-            if !is_powered() {
+            if !is_powered(cycle) {
                 break;
             }
             Timer::after(POLL_INTERVAL).await;
         }
 
-        if !is_powered() {
+        if !is_powered(cycle) {
             continue;
         }
 
         // Failed lidars sleep until next power cycle
         if !init_ok {
-            while is_powered() {
+            while is_powered(cycle) {
                 Timer::after(POLL_INTERVAL).await;
             }
             continue;
@@ -284,8 +291,8 @@ async fn lidar_task(mut lidar: LidarConcrete, id: u8) {
             log::error!("Lidar {}: start_continuous failed: {:?}", id, e);
         }
 
-        // Continuous read loop — exits when power is cut
-        while is_powered() {
+        // Continuous read loop — exits when power is cut OR cycle changed
+        while is_powered(cycle) {
             match lidar.read_measurement().await {
                 Ok(m) => {
                     LIDAR_DATA[id as usize].lock(|cell| cell.set(m));

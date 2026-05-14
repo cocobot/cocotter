@@ -6,6 +6,7 @@ use asserv::differential::conf::TrajectoryConf;
 use asserv::holonomic::{Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
 use board_common::Team;
+use cancaner::GroundThresholdMode;
 use embedded_hal::digital::InputPin;
 use board_sabotter::{SabotterBoard, SabotterInputs};
 use flume::Sender;
@@ -145,6 +146,8 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     //----------
 
     fn setup_position(&mut self) -> Result<(), StrategyError>{
+        self.sensors.set_ground_mode(GroundThresholdMode::Raw, 5);
+
         self.opponent_detection.set_mode(DetectionMode::Off);
 
         let end_angle = arfast(RobotSide::Back, TableSide::Up);
@@ -169,7 +172,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
             self.meca.init(self.team);
 
-            let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()) {
+            let x_back = match realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main) {
                 Some(measure) => if let Some(x) = measure.x { x } else { return Err(StrategyError::SensorUnavailable)},
                 None => return Err(StrategyError::SensorUnavailable),
             };
@@ -181,7 +184,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             self.asserv.goto_a(end_angle)?;
             std::thread::sleep(Duration::from_secs(1));
 
-            let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up, LidarSelect::Both, self.asserv.position()) {
+            let y_back = match realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Up) {
                 Some(measure) => if let Some(y) = measure.y { y } else { return Err(StrategyError::SensorUnavailable)},
                 None => return Err(StrategyError::SensorUnavailable),
             };
@@ -203,24 +206,24 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         //waiting for starter to be inserted
         loop {
+            log::info!("WAIT TIRET");
+            self.sensors.set_ground_mode(GroundThresholdMode::Delta, 40);
+
             let team = match self.inputs.color.is_high().unwrap_or(false) {
                 true => Team::Left,
                 false => Team::Right,
             };
             self.leds.send(LedMessage::GameTeam { team }).ok();
             
-            let back = self.sensors.ground_lidar(RobotSide::Back);
+            let _back = self.sensors.ground_lidar(RobotSide::Back);
            //let left = self.sensors.ground_lidar(RobotSide::Left);
            //let right = self.sensors.ground_lidar(RobotSide::Right);
 
-         // self.asserv.reset_position(0.0, 100.0, arfast(RobotSide::Back, TableSide::Down));
+          self.asserv.reset_position(0.0, 100.0, arfast(RobotSide::Left, TableSide::Down));
 
-         // let low = realign::measure_wall(&self.sensors,  RobotSide::Back,TableSide::Down, LidarSelect::Low, self.asserv.position()); 
-         // let high = realign::measure_wall(&self.sensors, RobotSide::Back,TableSide::Down, LidarSelect::High, self.asserv.position()); 
-         // let both = realign::measure_wall(&self.sensors, RobotSide::Back,TableSide::Down, LidarSelect::Both, self.asserv.position()); 
-
-         // let def = WallMeasurement {x: Some(-1.0), y: Some(-1.0), a: Some(-1.0)};
-         //  log::info!("B low {:?} high {:?} both {:?}", low.unwrap_or(def).y.unwrap() + 150.0- 300.0, high.unwrap_or(def).y.unwrap()+ 150.0- 300.0, both.unwrap_or(def).y.unwrap()+ 150.0- 300.0);
+            let wall_meas = realign::measure_wall(&self.sensors, RobotSide::Left, TableSide::Down);
+            let def = WallMeasurement {x: Some(-1.0), y: Some(-1.0)};
+            log::info!("B both {:?}", wall_meas.unwrap_or(def).y.unwrap());
 
             sleep(Duration::from_millis(100));
 
@@ -244,6 +247,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                 break;
             }
 
+        }
+
+        self.sensors.set_ground_mode(GroundThresholdMode::Raw, 10);
+
+        loop {
+            sleep(Duration::from_millis(100));
         }
        //         self.opponent_detection.set_mode(DetectionMode::Off);
 //
@@ -384,7 +393,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
        
        self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Down)).ok();
        sleep(Duration::from_millis(500));
-        let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down, LidarSelect::Both, self.asserv.position()); 
+        let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down);
         log::info!("POkio {:?}", y_back);
         if let Some(pos) = y_back {
             let current = self.asserv.position();
@@ -403,7 +412,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
 
         sleep(Duration::from_millis(500));
-        let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down, LidarSelect::Both, self.asserv.position()); 
+        let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down);
         log::info!("YBACK {:?}", y_back);
 
         if let Some(pos) = y_back {
@@ -416,7 +425,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                self.asserv.goto_a(arfast(RobotSide::Back, self.table_main)).ok();
 
         sleep(Duration::from_millis(500));       
-        let x_back = realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main, LidarSelect::Both, self.asserv.position()); 
+        let x_back = realign::measure_wall(&self.sensors, RobotSide::Back, self.table_main);
 
         if let Some(pos) = x_back {
             let current = self.asserv.position();
@@ -432,9 +441,9 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         
 
 
-        self.asserv.goto_xya(self.kx * 1100.0, 475.0, self.asserv.position().a).ok();
-        self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
-        self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+        //self.asserv.goto_xya(self.kx * 1100.0, 475.0, self.asserv.position().a).ok();
+        //self.asserv.goto_xya(self.kx * 1250.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
+        //self.asserv.goto_xya(self.kx * 800.0, 230.0, arfast(RobotSide::Left, TableSide::Up)).ok();
 
         self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Up, false).ok();
         self.take_crate_spot(self.kx * 400.0,  150.0, RobotSide::Back, TableSide::Down, true).ok();
@@ -448,7 +457,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(self.kx * 800.0, 550.0, arfast(RobotSide::Back, TableSide::Down)).ok();
 ////
          sleep(Duration::from_millis(500));
-         let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down, LidarSelect::Both, self.asserv.position()); 
+         let y_back = realign::measure_wall(&self.sensors, RobotSide::Back, TableSide::Down);
         log::info!("YBACK {:?}", y_back);
 ////
 ////
@@ -573,7 +582,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                         log::info!("Not now : {}", self.asserv.ellapsed_time_since_start().as_secs());
                     }
 
-                    self.asserv.goto_xya(self.kx * 1200.0, self.asserv.position().x, arfast(RobotSide::Back, TableSide::Up)).ok();
+                    self.asserv.goto_xya(self.kx * 1200.0, self.asserv.position().y, arfast(RobotSide::Back, TableSide::Up)).ok();
                     self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(RobotSide::Back, TableSide::Down)).ok();
                 
             }
@@ -765,7 +774,7 @@ log::info!("A2dsds54d56sq");
 
     if face == RobotSide::Back {
         if recallage { 
-            if let Some(pos) = realign::measure_wall(&sensors, face, wall, LidarSelect::Both, asserv.position()) {
+            if let Some(pos) = realign::measure_wall(&sensors, face, wall) {
                 let mut current_pos = asserv.position();
                 if let Some(x) = pos.x {
                     current_pos.x = x;
