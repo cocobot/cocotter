@@ -3,5 +3,6 @@ pub enum StrategyError {
     OpponentDetected,
     SensorUnavailable,
     StupidOrder,
+    PreEndOfMatch,
     EndOfMatch,
 }

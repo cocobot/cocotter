@@ -295,6 +295,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
         //self.sensors.ground_lidar_power_off();
 
+        self.sensors.ground_lidar_power_off();
         self.opponent_detection.set_mode(DetectionMode::OnTable);
 
 
@@ -311,6 +312,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
                 self.asserv.set_match_started();
                 self.leds.send(LedMessage::GameTeam { team: self.team }).ok();
                 log::info!("Match started");
+                self.sensors.set_ground_mode(GroundThresholdMode::Raw, 10);
                 break;
             }
         }
@@ -599,6 +601,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         let mut last_move_pos = self.asserv.position();
         let mut last_move_time = std::time::Instant::now();
 
+        //sl(30000);
         loop {
             let pos = self.asserv.position();
             let dx = pos.x - last_move_pos.x;
@@ -838,6 +841,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     }
 
     fn return_to_start(&mut self) -> !{
+        self.asserv.allow_pre_end_of_match(true);
         self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
         self.update_opponent();
         let start = self.pathfinder.nearest_node(&self.asserv.position().xy());

@@ -45,11 +45,12 @@ pub struct AsservHelper<B: SabotterBoard> {
     stop_mode: StopMode,
     match_start: Arc<Mutex<Option<Instant>>>,
     motor_disabled: Cell<bool>,
+    allow_pre_end_of_match: Cell<bool>,
 }
 
 impl<B: SabotterBoard> AsservHelper<B> {
     pub fn new(asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>, opponent_detection: OpponentDetection) -> Self {
-        Self { asserv, opponent_detection, stop_mode: StopMode::Reject, match_start: Arc::new(Mutex::new(None)), motor_disabled: Cell::new(false) }
+        Self { asserv, opponent_detection, stop_mode: StopMode::Reject, match_start: Arc::new(Mutex::new(None)), motor_disabled: Cell::new(false), allow_pre_end_of_match: Cell::new(false) }
     }
 
     pub fn set_stop_mode(&mut self, mode: StopMode) {
@@ -63,6 +64,19 @@ impl<B: SabotterBoard> AsservHelper<B> {
     pub fn is_end_of_match(&self) -> bool {
         self.match_start.lock().unwrap()
             .map_or(false, |start| start.elapsed().as_secs() >= MATCH_DURATION_SECS)
+    }
+
+    pub fn is_pre_end_of_match(&self) -> bool {
+        if self.allow_pre_end_of_match.get() {
+            return false;
+        }
+
+        self.match_start.lock().unwrap()
+            .map_or(false, |start| start.elapsed().as_secs() >= MATCH_DURATION_SECS - 16)
+    }
+
+    pub fn allow_pre_end_of_match(&self, val: bool) {
+        self.allow_pre_end_of_match.set(val);
     }
 
     pub fn ellapsed_time_since_start(&self) ->  Duration{
@@ -105,6 +119,8 @@ impl<B: SabotterBoard> AsservHelper<B> {
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
         loop {
             if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+            if self.is_pre_end_of_match() { return Err(StrategyError::PreEndOfMatch); }
+            
             self.enable_motor_control();
             if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
                 if self.stop_mode == StopMode::WaitAndResume {
@@ -123,6 +139,8 @@ impl<B: SabotterBoard> AsservHelper<B> {
 
     pub fn goto_xy_rel(&self, dx: f32, dy: f32) -> Result<(), StrategyError> {
         if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+        if self.is_pre_end_of_match() { return Err(StrategyError::PreEndOfMatch); }
+
         let start = self.position();
         let target_x = start.x + dx;
         let target_y = start.y + dy;
@@ -139,6 +157,8 @@ impl<B: SabotterBoard> AsservHelper<B> {
                 Ok(()) => return Ok(()),
                 Err(_) if self.stop_mode == StopMode::WaitAndResume => {
                     if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+                    if self.is_pre_end_of_match() { return Err(StrategyError::PreEndOfMatch); }
+
                     self.enable_motor_control();
                     if !self.asserv.lock().unwrap().goto_xya(target_x, target_y, self.position().a) {
                         return Err(StrategyError::OpponentDetected);
@@ -153,6 +173,7 @@ impl<B: SabotterBoard> AsservHelper<B> {
     pub fn goto_a(&self, a: f32) -> Result<(), StrategyError> {
         loop {
             if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+            if self.is_pre_end_of_match() { return Err(StrategyError::PreEndOfMatch); }
 
             self.enable_motor_control();
             if !self.asserv.lock().unwrap().goto_a(a) {
@@ -173,6 +194,8 @@ impl<B: SabotterBoard> AsservHelper<B> {
     pub fn run_path(&self, path: &[XY]) -> Result<(), StrategyError> {
         loop {
             if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
+            if self.is_pre_end_of_match() { return Err(StrategyError::PreEndOfMatch); }
+
 
             self.enable_motor_control();
             if !self.asserv.lock().unwrap().run_path(path) {
@@ -211,6 +234,8 @@ impl<B: SabotterBoard> AsservHelper<B> {
                 }
                 return Err(StrategyError::EndOfMatch);
             }
+            if self.is_pre_end_of_match() { return Err(StrategyError::PreEndOfMatch); }
+
 
             if self.opponent_detection.must_stop() {
                 if was_slow {
