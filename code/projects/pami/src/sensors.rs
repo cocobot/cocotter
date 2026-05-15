@@ -35,7 +35,7 @@ impl Sensors {
                     //get min distance by column
                     let mut min_distance = [i16::MAX; 8];
                     for row in 5..8 {
-                        for col in 0..8 {
+                        for col in 1..7 {
                             if data[row][col] < min_distance[7 - col] {
                                 min_distance[7 - col] = data[row][col];
                             }
