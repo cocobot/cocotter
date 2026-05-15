@@ -88,7 +88,7 @@ impl FunnyAction {
         }
 
         log::info!("Let's eat nuts!");
-        if instance.lock().unwrap().strategy == GameStrategy::Paninja_2
+        if instance.lock().unwrap().strategy != GameStrategy::Paninja_2
         {
             loop {
                 instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
@@ -164,6 +164,8 @@ impl Game {
     }
 
     fn wait_for_start(&mut self) {
+        //lower the head to put starting cord
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(70.0)});
         // Wait for the start signal to be low
         loop {
             if self.starter.is_low() {
@@ -260,7 +262,7 @@ impl Game {
 
         self.wait_for_start();
 
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(70.0)});
 
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)
@@ -287,7 +289,7 @@ impl Game {
 
         self.wait_for_start();
 
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(70.0)});
 
         let orders = TrajectoryOrderList::new()
             .set_backwards(true)
@@ -309,6 +311,7 @@ impl Game {
         let mut position = self.trajectory.get_position().lock().unwrap();
         position.set_coordinates(Some(2900.0), Some(1900.0), Some(0.0));
         drop(position);
+
 
         let angle = if self.config.x_negative_color {
             90_f32
@@ -347,7 +350,7 @@ impl Game {
 
             log::info!("Move those crates out of the frigde");
 
-            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(70.0)});
 
             let orders = TrajectoryOrderList::new()
                 .set_backwards(false)
@@ -564,6 +567,8 @@ impl Game {
     fn run(&mut self) {
 
         self.event.send_event(Event::GameConfiguration(self.config.clone()));
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
 
         std::thread::sleep(Duration::from_millis(1000));
 
