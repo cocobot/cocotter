@@ -292,91 +292,77 @@ impl Game {
 
         self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
 
-        let orders = TrajectoryOrderList::new()
-            .set_backwards(true)
-            .set_no_detection(true)
-            .add_order(Order::GotoD {d_mm: 450.0})
-            .add_order(Order::GotoA { a_rad: (-angle).to_radians() })
-            ;
+        for i in 0..2 {
+            let x_move = match i {
+                0 => 450.0,
+                1 => 220.0,
+                _ => 0.0,
+            };
+            let new_angle = match i {
+                0 => (-angle).to_radians(),
+                1 => (angle).to_radians(),
+                _ => 0.0,
+            };
 
-        self.trajectory
-            .execute(orders)
-            .unwrap();
+            let orders = TrajectoryOrderList::new()
+                .set_backwards(true)
+                .set_no_detection(true)
+                .add_order(Order::GotoD {d_mm: x_move})
+                .add_order(Order::GotoA {a_rad: new_angle})
+                ;
 
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+            self.trajectory
+                .execute(orders)
+                .unwrap();
 
-        log::info!("Move those crates out of the frigde");
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
 
-        let orders = TrajectoryOrderList::new()
-            .set_backwards(false)
-            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.5)
-            .add_order(Order::CustomOrder { callback: move_until_white })
-            ;
+            log::info!("Move those crates out of the frigde");
 
-        self.trajectory
-            .execute(orders)
-            .unwrap();
+            let orders = TrajectoryOrderList::new()
+                .set_backwards(false)
+                .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.5)
+                .add_order(Order::CustomOrder { callback: move_until_white })
+                ;
 
-        log::info!("Last push");
-        let orders = TrajectoryOrderList::new()
-            .set_backwards(false)
-            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
-            .add_order(Order::CustomOrder { callback: move_until_void })
-            ;
+            self.trajectory
+                .execute(orders)
+                .unwrap();
 
-        self.trajectory
-            .execute(orders)
-            .unwrap();
+            log::info!("Last push");
+            let orders = TrajectoryOrderList::new()
+                .set_backwards(false)
+                .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
+                .add_order(Order::CustomOrder { callback: move_until_void })
+                ;
 
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
+            self.trajectory
+                .execute(orders)
+                .unwrap();
 
-        let orders = TrajectoryOrderList::new()
-            .set_backwards(true)
-            .set_no_angle(true)
-            .add_order(Order::GotoD {d_mm: 450.0})
-            .add_order(Order::SetPosition { x_mm: None, y_mm:  None, a_rad: Some((-angle).to_radians()) })
-            .set_no_angle(false)
-            .set_backwards(false)
-            .add_order(Order::GotoD {d_mm: 50.0})
-            .set_backwards(true)
-            .add_order(Order::GotoA {a_rad: 0.0 })
-            .add_order(Order::GotoD {d_mm: 220.0})
-            .add_order(Order::GotoA { a_rad: (angle).to_radians() })
-            ;
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
 
-        self.trajectory
-            .execute(orders)
-            .unwrap();
+            if i == 0 {
 
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+                let orders = TrajectoryOrderList::new()
+                    .set_backwards(true)
+                    .set_no_angle(true)
+                    .add_order(Order::GotoD {d_mm: 450.0})
+                    .add_order(Order::SetPosition { x_mm: None, y_mm:  None, a_rad: Some((-angle).to_radians()) })
+                    .set_no_angle(false)
+                    .set_backwards(false)
+                    .add_order(Order::GotoD {d_mm: 50.0})
+                    .set_backwards(true)
+                    .add_order(Order::GotoA {a_rad: 0.0 })
+                    ;
 
-        log::info!("Move those crates out of the frigde");
+                self.trajectory
+                    .execute(orders)
+                    .unwrap();
+            }
 
-        let orders = TrajectoryOrderList::new()
-            .set_backwards(false)
-            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.5)
-            .add_order(Order::CustomOrder { callback: move_until_white })
-            ;
-
-        self.trajectory
-            .execute(orders)
-            .unwrap();
-
-
-        log::info!("Last push");
-        let orders = TrajectoryOrderList::new()
-            .set_backwards(false)
-            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
-            .add_order(Order::CustomOrder { callback: move_until_void })
-            ;
-
-        self.trajectory
-            .execute(orders)
-            .unwrap();
-
-        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
-
+        }
     }
 
     fn strat_test(&mut self) {
