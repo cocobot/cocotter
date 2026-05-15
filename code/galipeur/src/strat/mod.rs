@@ -46,6 +46,9 @@ pub struct Strat<B: SabotterBoard> {
     table_aux: TableSide,
     kx: f32,
     pathfinder: PathGraph,
+
+    releases: u64,
+    takes: u64,
 }
 
 impl<B : SabotterBoard + 'static> Strat<B> {
@@ -100,6 +103,9 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             table_aux: TableSide::Left,
             kx: 1.0,
             pathfinder,
+
+            takes: 0,
+            releases: 0,
 
             inputs: board.inputs().take().unwrap(),
         };
@@ -203,6 +209,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     fn prepare_match(&mut self) {
         log::info!("Color selection");
         sl(1500);
+        log::info!("OK ?");
 
         self.asserv.disable_motor_control();
 
@@ -220,11 +227,11 @@ impl<B : SabotterBoard + 'static> Strat<B> {
            //let left = self.sensors.ground_lidar(RobotSide::Left);
            //let right = self.sensors.ground_lidar(RobotSide::Right);
 
-          self.asserv.reset_position(0.0, 100.0, arfast(RobotSide::Left, TableSide::Down));
+          //elf.asserv.reset_position(0.0, 100.0, arfast(RobotSide::Left, TableSide::Down));
 
-            let wall_meas = realign::measure_wall(&self.sensors, RobotSide::Left, TableSide::Down);
-            let def = WallMeasurement {x: Some(-1.0), y: Some(-1.0)};
-            log::info!("B both {:?}", wall_meas.unwrap_or(def).y.unwrap());
+          // let wall_meas = realign::measure_wall(&self.sensors, RobotSide::Left, TableSide::Down);
+          // let def = WallMeasurement {x: Some(-1.0), y: Some(-1.0)};
+          // log::info!("B both {:?}", wall_meas.unwrap_or(def).y.unwrap());
 
             sleep(Duration::from_millis(250));
 
@@ -394,7 +401,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     }
 
-    fn take_id(&self, id: usize) -> Result<(), StrategyError> {
+    fn take_id(&mut self, id: usize, alternate: bool) -> Result<(), StrategyError> {
+        log::info!("Req Tak {}", id);
+        if self.takes & (1 << id) != 0 {
+            return Ok(())
+        }
+        
         if id == 0 {
             //celui qui est tout proche
             self.take_crate_spot(self.kx * 1350.0, 1200.0, RobotSide::Back, self.table_main, false)?;
@@ -414,20 +426,33 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             self.recallage(TableSide::Down);            
         }
         if id == 3 {
-            self.take_crate_spot(self.kx * 375.0,  800.0, self.robot_main, TableSide::Up, true).ok();
+            if alternate {
+                self.take_crate_spot(self.kx * 375.0,  800.0, RobotSide::Back, TableSide::Down, false).ok();
+
+            }
+            else {
+                self.take_crate_spot(self.kx * 375.0,  800.0, self.robot_main, TableSide::Up, false).ok();
+            }
         }
         if id == 4 {
-            self.take_crate_spot(-self.kx * 375.0,  800.0, RobotSide::Back, TableSide::Up, true).ok();
+            self.take_crate_spot(-self.kx * 375.0,  800.0, RobotSide::Back, TableSide::Down, true).ok();
         }
         if id == 5 {
-            self.take_crate_spot(-self.kx * 400.0,  175.0, RobotSide::Back, TableSide::Up, true).ok();
+            self.take_crate_spot(-self.kx * 400.0,  175.0, RobotSide::Back, TableSide::Down, true).ok();
             self.recallage(TableSide::Down);
         }
+
+        self.takes |= 1 << id;
 
         Ok(())
     }
 
-    fn release_id(&self, id: usize) -> Result<(), StrategyError> {
+    fn release_id(&mut self, id: usize, alternate: bool) -> Result<(), StrategyError> {
+        log::info!("Req Rel {}", id);
+        if self.releases & (1 << id) != 0 {
+            return Ok(())
+        }
+
         if id == 0 {
             self.release_on_spot(self.kx * 1400.0, 800.0, RobotSide::Back, self.table_main).ok();
         }
@@ -444,9 +469,52 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             self.release_on_spot(self.kx * 0.0, 100.0, RobotSide::Back, TableSide::Down).ok();
         }
 
+        self.releases |= 1 << id;
+
         Ok(())
     }
 
+    fn check_goto_eom(&mut self) {
+        let tme = self.asserv.ellapsed_time_since_start();
+        log::info!("Match time {}s", tme.as_secs());
+        if tme > Duration::from_secs(90) {
+            self.return_to_start();
+        }
+    }
+
+    fn strat_2(&mut self) -> Result<(), StrategyError> {
+        log::info!("USE STRAT 1");
+
+        op(self.take_id(3, true))?;
+            self.check_goto_eom();
+
+        op(self.release_id(3, false))?;
+        self.check_goto_eom();
+
+        self.take_id(4, false).ok();
+        self.check_goto_eom();
+
+        self.strat_1()
+    }
+
+    fn strat_1(&mut self) -> Result<(), StrategyError> {
+        log::info!("USE STRAT 1");
+        op(self.release_id(1, false))?;
+        self.check_goto_eom();
+        op(self.take_id(2, false))?;
+        self.check_goto_eom();
+        op(self.take_id(3, false))?;
+        self.check_goto_eom();
+        op(self.release_id(2, false))?;
+        self.check_goto_eom();
+        op(self.release_id(3, false))?;
+        self.check_goto_eom();
+        op(self.pathfinder_xya(self.kx * 1300.0, 1400.0, arfast(RobotSide::Back, self.table_main)))?;
+        self.check_goto_eom();
+        op(self.take_id(4, false))?;
+        self.check_goto_eom();
+        self.return_to_start();
+    }
 
     fn test_eirbot_2 (&mut self){ 
 
@@ -470,29 +538,28 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(self.kx * 900.0, 1200.0, arfast(RobotSide::Back, TableSide::Up)).ok();
 
 
-        //
-        self.take_id(0).ok();
-        self.take_id(1).ok();
-        self.release_id(0).ok();
+        self.asserv.set_stop_mode(utils::StopMode::Reject);
+        self.take_id(0, false).ok();
+        self.take_id(1, false).ok();
+        self.release_id(0, false).ok();
 
 
+        loop {
+            let r = self.strat_1();
+            if matches!(r, Err(StrategyError::EndOfMatch)) {
+                self.end_of_match();
+            }
 
-        //danger
-       // self.asserv.set_stop_mode(utils::StopMode::Reject);
 
-        //retry(|| {
-            self.release_id(1).ok();
-            self.take_id(2).ok();
-            self.take_id(3).ok();
-            self.release_id(2).ok();
-            self.release_id(3).ok();
-            self.take_id(4).ok();
-            self.take_id(5).ok();
-            self.release_id(4).ok();
-            self.return_to_start();
-        //});
+            let r = self.strat_2();
+            if matches!(r, Err(StrategyError::EndOfMatch)) {
+                self.end_of_match();
+            }
+            
+            sl(250);
+        }
         
-        //.ok();
+        
 
 
         loop {        sleep(Duration::from_millis(500)); }
@@ -675,23 +742,23 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
     }
 
-    fn return_to_start(&mut self){
+    fn return_to_start(&mut self) -> !{
         self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Up)).ok();
         let start = self.pathfinder.nearest_node(&self.asserv.position().xy());
         let goal = self.pathfinder.nearest_node(&XY::new(self.kx*700.0, 1400.0));
         if let Some(path) = self.pathfinder.find_path(start, goal) {
             let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
             if self.asserv.run_path(&asserv_path).is_ok() {
-                    self.asserv.goto_a(arfast(RobotSide::Back, self.table_main));
+                    self.asserv.goto_a(arfast(RobotSide::Back, self.table_main)).ok();
                     self.recallage(self.table_main);
-                    while self.asserv.ellapsed_time_since_start().as_secs() < 95 {
+                    while self.asserv.ellapsed_time_since_start().as_secs() < 96 {
                         sleep(Duration::from_millis(100));
                         log::info!("Not now : {}", self.asserv.ellapsed_time_since_start().as_secs());
                     }
 
-                    self.asserv.goto_xya(self.kx * 1200.0, self.asserv.position().y, arfast(RobotSide::Back, TableSide::Up)).ok();
-                    self.asserv.goto_xya(self.kx * 1200.0, 1770.0, arfast(RobotSide::Back, TableSide::Down)).ok();
-                
+                    self.asserv.goto_xya(self.kx * 1250.0, self.asserv.position().y, arfast(RobotSide::Back, self.table_main)).ok();
+                    self.asserv.goto_xya(self.kx * 1250.0, 1740.0, arfast(RobotSide::Back, self.table_main)).ok();
+                    self.meca.end_of_match();
             }
         } else {
             rome::warn!(self.rlogger, "Cannot find a path");
@@ -916,3 +983,10 @@ sl(250);
 fn sl(millis : u64) {
     sleep(Duration::from_millis(millis))
 }
+
+fn op(ret: Result<(), StrategyError>) -> Result<(), StrategyError> {
+            match ret {
+                Err(StrategyError::OpponentDetected) => Err(StrategyError::OpponentDetected),
+                _ => Ok(()),
+            }
+       }
