@@ -552,7 +552,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.check_goto_eom();
         op(self.release_id(3, false))?;
         self.check_goto_eom();
-        op(self.pathfinder_xya(self.kx * 1250.0, 1400.0, arfast(RobotSide::Back, self.table_main)))?;
+        op(self.pathfinder_xya(self.kx * 1050.0, 1400.0, arfast(RobotSide::Back, self.table_main)))?;
         self.check_goto_eom();
         op(self.take_id(4, false))?;
         self.check_goto_eom();
