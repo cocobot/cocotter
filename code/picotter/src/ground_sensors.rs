@@ -53,10 +53,13 @@ impl GroundSensorState {
                 self.detected = value >= self.threshold;
             }
             GroundThresholdMode::Delta => {
-                if self.latched {
-                    return;
+            
+                if value > self.reference {
+                    self.reference = value;
                 }
+
                 let floor = self.reference.saturating_sub(self.threshold);
+
                
                 self.detected  = value > floor;
             }

@@ -174,6 +174,7 @@ fn measure_wall_once<B: SabotterBoard + 'static>(
     face: RobotSide,
     wall: TableSide,
 ) -> Option<WallMeasurement> {
+    sensors.ground_lidar_wait(face);
     let module = sensors.ground_lidar_wait(face)?;
     let calibs = sensors.ground_lidar_calibs(face)?;
 
@@ -195,10 +196,10 @@ fn measure_wall_once<B: SabotterBoard + 'static>(
     let dist = (dist_high + dist_low) / 2.0;
 
     let (x, y) = match wall {
-        TableSide::Down => (None, Some(dist)),
-        TableSide::Up => (None, Some(ASSERV_Y_AT_UP_WALL - dist)),
-        TableSide::Left => (Some(ASSERV_X_AT_LEFT_WALL + dist), None),
-        TableSide::Right => (Some(ASSERV_X_AT_RIGHT_WALL - dist), None),
+        TableSide::Down => (None, Some(dist - 20.0)),
+        TableSide::Up => (None, Some(ASSERV_Y_AT_UP_WALL - (dist - 20.0))),
+        TableSide::Left => (Some(ASSERV_X_AT_LEFT_WALL + (dist - 20.0)), None),
+        TableSide::Right => (Some(ASSERV_X_AT_RIGHT_WALL - (dist - 20.0)), None),
     };
     Some(WallMeasurement { x, y })
 }

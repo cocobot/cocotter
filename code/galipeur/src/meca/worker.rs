@@ -421,6 +421,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
         std::thread::sleep(Duration::from_millis(250));
 
         self.primitives.slow_releases(module, &bad_color_arms, Duration::from_millis(500));
+
         self.primitives.releases(module, &good_color_arms);
         std::thread::sleep(Duration::from_millis(250));
         self.primitives.end_releases(module, ALL_ARMS);
