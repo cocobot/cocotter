@@ -306,7 +306,7 @@ impl Game {
 
             let orders = TrajectoryOrderList::new()
                 .set_backwards(true)
-                .set_no_detection(false)
+                .set_no_detection(true)
                 .add_order(Order::GotoD {d_mm: x_move})
                 .add_order(Order::GotoA {a_rad: new_angle})
                 ;
@@ -319,21 +319,12 @@ impl Game {
 
             log::info!("Move those crates out of the frigde");
 
+            self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+
             let orders = TrajectoryOrderList::new()
                 .set_backwards(false)
                 .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.5)
                 .add_order(Order::CustomOrder { callback: move_until_white })
-                ;
-
-            self.trajectory
-                .execute(orders)
-                .unwrap();
-
-            log::info!("Last push");
-            let orders = TrajectoryOrderList::new()
-                .set_backwards(false)
-                .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
-                .add_order(Order::CustomOrder { callback: move_until_void })
                 ;
 
             self.trajectory
@@ -345,10 +336,35 @@ impl Game {
 
             if i == 0 {
 
+            if self.config.x_negative_color {
+                let orders = TrajectoryOrderList::new()
+                .add_order(Order::GotoA {a_rad: (45_f32).to_radians()})
+                .add_order(Order::GotoA {a_rad: (135_f32).to_radians()})
+                .add_order(Order::GotoA {a_rad: (90_f32).to_radians()})
+                ;
+                self.trajectory
+                .execute(orders)
+                .unwrap();
+                } else {
+                let orders = TrajectoryOrderList::new()
+                .add_order(Order::GotoA {a_rad: (225_f32).to_radians()})
+                .add_order(Order::GotoA {a_rad: (315_f32).to_radians()})
+                .add_order(Order::GotoA {a_rad: (270_f32).to_radians()})
+                ;
+                self.trajectory
+                .execute(orders)
+                .unwrap();
+                }
+
+
+
+
                 let orders = TrajectoryOrderList::new()
                     .set_backwards(true)
+                    .set_no_detection(true)
+                    .add_order(Order::GotoD {d_mm: 350.0})
                     .set_no_angle(true)
-                    .add_order(Order::GotoD {d_mm: 450.0})
+                    .add_order(Order::GotoD {d_mm: 100.0})
                     .add_order(Order::SetPosition { x_mm: None, y_mm:  None, a_rad: Some((-angle).to_radians()) })
                     .set_no_angle(false)
                     .set_backwards(false)
@@ -363,6 +379,16 @@ impl Game {
             }
 
         }
+            log::info!("Last push");
+            let orders = TrajectoryOrderList::new()
+                .set_backwards(false)
+                .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
+                .add_order(Order::CustomOrder { callback: move_until_void })
+                ;
+
+            self.trajectory
+                .execute(orders)
+                .unwrap();
     }
 
     fn strat_test(&mut self) {
