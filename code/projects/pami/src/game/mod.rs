@@ -306,7 +306,7 @@ impl Game {
 
             let orders = TrajectoryOrderList::new()
                 .set_backwards(true)
-                .set_no_detection(true)
+                .set_no_detection(false)
                 .add_order(Order::GotoD {d_mm: x_move})
                 .add_order(Order::GotoA {a_rad: new_angle})
                 ;
