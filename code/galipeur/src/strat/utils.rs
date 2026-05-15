@@ -1,3 +1,4 @@
+use std::cell::Cell;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
@@ -43,11 +44,12 @@ pub struct AsservHelper<B: SabotterBoard> {
     opponent_detection: OpponentDetection,
     stop_mode: StopMode,
     match_start: Arc<Mutex<Option<Instant>>>,
+    motor_disabled: Cell<bool>,
 }
 
 impl<B: SabotterBoard> AsservHelper<B> {
     pub fn new(asserv: Arc<Mutex<Asserv<MovementLowLevelHardware<B>>>>, opponent_detection: OpponentDetection) -> Self {
-        Self { asserv, opponent_detection, stop_mode: StopMode::Reject, match_start: Arc::new(Mutex::new(None)) }
+        Self { asserv, opponent_detection, stop_mode: StopMode::Reject, match_start: Arc::new(Mutex::new(None)), motor_disabled: Cell::new(false) }
     }
 
     pub fn set_stop_mode(&mut self, mode: StopMode) {
@@ -89,17 +91,20 @@ impl<B: SabotterBoard> AsservHelper<B> {
     }
 
     pub fn disable_motor_control(&self) {
+        self.motor_disabled.set(true);
         self.asserv.lock().unwrap().cs.disable_motor_control();
     }
 
     pub fn enable_motor_control(&self) {
-        self.asserv.lock().unwrap().cs.enable_motor_control();
+        if self.motor_disabled.get() {
+            self.motor_disabled.set(false);
+            self.asserv.lock().unwrap().cs.enable_motor_control();
+        }
     }
 
     pub fn goto_xya(&self, x: f32, y: f32, a: f32) -> Result<(), StrategyError> {
         loop {
             if self.is_end_of_match() { return Err(StrategyError::EndOfMatch); }
-            self.asserv.lock().unwrap().stop();
             self.enable_motor_control();
             if !self.asserv.lock().unwrap().goto_xya(x, y, a) {
                 if self.stop_mode == StopMode::WaitAndResume {
@@ -211,8 +216,9 @@ impl<B: SabotterBoard> AsservHelper<B> {
                 if was_slow {
                     self.set_xy_cruise_speed(saved_cruise_speed, saved_cruise_acc);
                 }
-                //self.asserv.lock().unwrap().stop();
+                //
                 self.disable_motor_control();
+                self.asserv.lock().unwrap().stop();
 
                 if self.stop_mode == StopMode::WaitAndResume {
                     self.wait_opponent_clear();

@@ -381,6 +381,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         std::thread::sleep(Duration::from_millis(1000));
         let teams = self.primitives.read_arms_teams(module);
+        
         self.led_tx.send(LedMessage::MecaColors { module, teams }).ok();
         {
             let mut state = self.state.lock().unwrap();

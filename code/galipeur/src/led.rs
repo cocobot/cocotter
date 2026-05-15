@@ -35,6 +35,9 @@ pub enum LedMessage {
     IdleLoopTooSlow,
     MecaColors { module: u8, teams: [Team; 4] },
     OpponentOverlay([OpponentLedPixel; 40]),
+    OpponentDot(Option<usize>),
+    StratFlash(RGB8),
+    Rainbow,
 }
 
 /// Per-module pixel slots for the meca color display.
@@ -77,6 +80,7 @@ struct LedsInternal<B: SabotterBoard> {
     ground_detected: (bool, bool, bool),
     meca_colors: Option<(u8, [Team; 4])>,
     opponent_overlay: [OpponentLedPixel; 40],
+    opponent_dot: Option<usize>,
 }
 
 impl<B: SabotterBoard> LedsInternal<B> {
@@ -90,6 +94,7 @@ impl<B: SabotterBoard> LedsInternal<B> {
             ground_detected: (false, false, false),
             meca_colors: None,
             opponent_overlay: [OpponentLedPixel::Off; 40],
+            opponent_dot: None,
         }
     }
 
@@ -110,6 +115,8 @@ impl<B: SabotterBoard> LedsInternal<B> {
 
         const BLACK : RGB8 = RGB8 { r: 0, g: 0, b: 0 };
         const RED : RGB8 = RGB8 { r: 255, g: 0, b: 0 };
+        let mut strat_flash: Option<(RGB8, std::time::Instant)> = None;
+        let mut rainbow_until: Option<std::time::Instant> = None;
 
         loop {
             let mut slow_idle_loop = false;
@@ -118,6 +125,7 @@ impl<B: SabotterBoard> LedsInternal<B> {
                 match msg {
                     LedMessage::GameTeam { team } => {
                         self.game_color = Self::color_to_rgb8(team.color());
+                        strat_flash = Some((self.game_color, std::time::Instant::now()));
                     }
                     LedMessage::RomeActivity => {
                         rome_activity = true;
@@ -139,6 +147,15 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     }
                     LedMessage::OpponentOverlay(overlay) => {
                         self.opponent_overlay = overlay;
+                    }
+                    LedMessage::OpponentDot(idx) => {
+                        self.opponent_dot = idx;
+                    }
+                    LedMessage::StratFlash(color) => {
+                        strat_flash = Some((color, std::time::Instant::now()));
+                    }
+                    LedMessage::Rainbow => {
+                        rainbow_until = Some(std::time::Instant::now() + Duration::from_secs(2));
                     }
                 }
             }
@@ -190,6 +207,13 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     }
                 }
 
+                // Opponent position red dot (overrides overlay)
+                if let Some(idx) = self.opponent_dot {
+                    if idx < 40 {
+                        pixels[idx + 1] = RED;
+                    }
+                }
+
                 let ground_blink_on = (start.elapsed().subsec_millis() % 100) < 50;
                 let ground_error_color = if ground_blink_on { RED } else { BLACK };
 
@@ -222,6 +246,31 @@ impl<B: SabotterBoard> LedsInternal<B> {
                     }
                 }
                     
+            }
+
+            // Strat flash: override all LEDs for 250ms after last trigger
+            if let Some((color, last)) = strat_flash {
+                if last.elapsed() < Duration::from_millis(250) {
+                    for p in pixels.iter_mut() {
+                        *p = color;
+                    }
+                } else {
+                    strat_flash = None;
+                }
+            }
+
+            // Rainbow on upper LEDs
+            if let Some(until) = rainbow_until {
+                if std::time::Instant::now() < until {
+                    let ms = start.elapsed().as_millis() as f32;
+                    for i in 0..40 {
+                        let hue = ((i as f32 / 40.0) * 360.0 + ms * 0.36) % 360.0;
+                        let (r, g, b) = hsv_to_rgb(hue, 1.0, 255.0);
+                        pixels[i + 1] = RGB8 { r, g, b };
+                    }
+                } else {
+                    rainbow_until = None;
+                }
             }
 
             self.leds.rgba.write(pixels).ok();
@@ -258,4 +307,19 @@ impl<B: SabotterBoard> LedsInternal<B> {
             std::thread::sleep(Duration::from_millis(10));
         }
     }
+}
+
+fn hsv_to_rgb(h: f32, s: f32, v: f32) -> (u8, u8, u8) {
+    let c = v * s;
+    let x = c * (1.0 - ((h / 60.0) % 2.0 - 1.0).abs());
+    let m = v - c;
+    let (r, g, b) = match (h as u16) / 60 {
+        0 => (c, x, 0.0),
+        1 => (x, c, 0.0),
+        2 => (0.0, c, x),
+        3 => (0.0, x, c),
+        4 => (x, 0.0, c),
+        _ => (c, 0.0, x),
+    };
+    ((r + m) as u8, (g + m) as u8, (b + m) as u8)
 }

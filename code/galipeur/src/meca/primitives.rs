@@ -348,10 +348,16 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
     /// PWM-toggle valves (5 ms ON / 15 ms OFF, ~25% duty) for `duration`, then fully release.
     pub fn slow_releases(&self, module: u8, arms: &[u8], duration: Duration) {
         for &arm in arms {
-            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 30, off_ms: 5 });
+            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 5, off_ms: 15 });
         }
         std::thread::sleep(duration);
         self.releases(module, arms);
+    }
+
+    pub fn inf_slow_releases(&self, module: u8, arms: &[u8]) {
+        for &arm in arms {
+            self.proxy.set_valve(module, arm, ValveMode::Toggle { on_ms: 5, off_ms: 15 });
+        }
     }
 
     pub fn releases(&self, module: u8, arms: &[u8]) {
@@ -417,7 +423,7 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
 
     /// Drop everything in the lower stage (arms): release vacuum and move arms up (no wait).
     pub fn drop_lower_stage(&self, module: u8) {
-        self.releases(module, ALL_ARMS);
+        self.inf_slow_releases(module, ALL_ARMS);
         for arm in 0..4u8 {
             self.proxy.set_arm_position(module, arm, ARMS[module as usize][arm as usize].up, MOVE_TIME_MS);
         }

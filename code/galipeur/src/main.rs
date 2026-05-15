@@ -21,7 +21,7 @@ fn main() {
             led_angle_offset: 72.0,
             corridor_half_width_mm: 250.0,
             corridor_stop_until_mm: 550.0,
-            corridor_slow_until_mm: 800.0,
+            corridor_slow_until_mm: 850.0,
             rotation_radius_mm: 200.0,
             slow_cruise_speed: 3.0,
         },

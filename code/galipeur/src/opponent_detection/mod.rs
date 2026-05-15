@@ -1,6 +1,7 @@
 use std::sync::atomic::{AtomicBool, AtomicU8, AtomicU32, Ordering};
 use std::sync::{Arc, Mutex};
 
+use amatheur::XY;
 use asserv::maths::XYA;
 use flume::Sender;
 use crate::led::{LedMessage, OpponentLedPixel};
@@ -582,6 +583,96 @@ impl OpponentDetection {
             self.inner.must_slow.store(false, Ordering::Relaxed);
             self.inner.slow_count.store(0, Ordering::Relaxed);
         }
+    }
+
+
+    pub fn opponent_positon(&self) -> Option<XY> {
+        let robot_pos = *self.inner.robot_position.lock().unwrap();
+        let scan_buf = self.inner.scan_buffer.lock().unwrap();
+
+        const CLUSTER_DIST_MM: f32 = 450.0;
+        const CLUSTER_DIST_SQ: f32 = CLUSTER_DIST_MM * CLUSTER_DIST_MM;
+        const MIN_CLUSTER_POINTS: u32 = 3;
+
+        // Collect on-table points in table frame
+        let mut table_points: Vec<(f32, f32)> = Vec::new();
+        for pt in scan_buf.iter() {
+            let angle_rad = pt.angle_deg.to_radians();
+            let dist = pt.distance_mm as f32;
+            let bx = dist * angle_rad.cos();
+            let by = dist * angle_rad.sin();
+
+            let cos_a = pt.robot_pos.a.cos();
+            let sin_a = pt.robot_pos.a.sin();
+            let tx = pt.robot_pos.x + bx * cos_a - by * sin_a;
+            let ty = pt.robot_pos.y + bx * sin_a + by * cos_a;
+
+            if self.inner.conf.table.point_on_table(tx, ty) {
+                table_points.push((tx, ty));
+            }
+        }
+
+        if table_points.is_empty() {
+            return None;
+        }
+
+        const MIN_WIDTH_MM: f32 = 30.0; // 4cm with margin
+        const MAX_WIDTH_MM: f32 = 200.0; // 15cm with margin
+
+        // Simple greedy clustering: assign each point to the nearest existing
+        // cluster centroid, or start a new cluster if too far from all.
+        // (sum_x, sum_y, count, min_x, max_x, min_y, max_y)
+        let mut clusters: Vec<(f32, f32, u32, f32, f32, f32, f32)> = Vec::new();
+        for &(px, py) in &table_points {
+            let mut best = None;
+            let mut best_dist_sq = CLUSTER_DIST_SQ;
+            for (i, &(sx, sy, c, _, _, _, _)) in clusters.iter().enumerate() {
+                let cx = sx / c as f32;
+                let cy = sy / c as f32;
+                let dx = px - cx;
+                let dy = py - cy;
+                let d2 = dx * dx + dy * dy;
+                if d2 < best_dist_sq {
+                    best_dist_sq = d2;
+                    best = Some(i);
+                }
+            }
+            match best {
+                Some(i) => {
+                    clusters[i].0 += px;
+                    clusters[i].1 += py;
+                    clusters[i].2 += 1;
+                    clusters[i].3 = clusters[i].3.min(px);
+                    clusters[i].4 = clusters[i].4.max(px);
+                    clusters[i].5 = clusters[i].5.min(py);
+                    clusters[i].6 = clusters[i].6.max(py);
+                }
+                None => clusters.push((px, py, 1, px, px, py, py)),
+            }
+        }
+
+        // Return the closest cluster to the robot with enough points and valid width
+        let mut closest: Option<(f32, XY)> = None;
+        for &(sx, sy, c, min_x, max_x, min_y, max_y) in &clusters {
+            if c < MIN_CLUSTER_POINTS {
+                continue;
+            }
+            let width = (max_x - min_x).max(max_y - min_y);
+            if width < MIN_WIDTH_MM || width > MAX_WIDTH_MM {
+                continue;
+            }
+            let cx = sx / c as f32;
+            let cy = sy / c as f32;
+            let dx = cx - robot_pos.x;
+            let dy = cy - robot_pos.y;
+            let d2 = dx * dx + dy * dy;
+            match closest {
+                Some((best_d2, _)) if d2 >= best_d2 => {}
+                _ => closest = Some((d2, XY::new(cx, cy))),
+            }
+        }
+
+        closest.map(|(_, pos)| pos)
     }
 
     pub fn mode(&self) -> DetectionMode {

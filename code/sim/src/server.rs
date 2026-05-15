@@ -549,12 +549,11 @@ impl Ld06Emitter {
     /// ≈ 2 Hz rotor, matching the LD06 captured in galipeur/log_lidar.log
     /// (revolution period ≈ 500 ms).
     const SPEED_DEG_S: u16 = 720;
-    /// Packet sampling period. 11_900 µs × 720°/s ≈ 8.568° per packet
-    /// → ~42 packets per revolution → ~504 points/rev (firmware caps at
-    /// POINTS_PER_REVOLUTION = 500). 360 / 8.568 = 42.018, so packet
-    /// boundaries drift across revolutions and `start_angle` is not aligned
-    /// to any fixed grid.
-    const PACKET_PERIOD_US: u32 = 11_900;
+    /// Packet sampling period. 5_000 µs × 720°/s ≈ 3.6° per packet
+    /// → 100 packets per revolution → ~1200 points/rev. Higher density
+    /// than the real LD06 so the sim reliably hits small targets (e.g.
+    /// the opponent's antenna at lidar height).
+    const PACKET_PERIOD_US: u32 = 5_000;
     const MAX_RANGE_MM: f32 = 10_000.0;
 
     /// Advance time by `dt_ms` and emit every packet whose sampling window
