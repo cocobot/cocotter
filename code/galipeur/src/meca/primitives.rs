@@ -64,6 +64,12 @@ struct TranslationCalib {
     close: u16,
 }
 
+/// Presets for the taquet servo (on translation bus, index 3).
+struct TaquetCalib {
+    horizontal: u16,
+    vertical: u16,
+}
+
 const ARMS: [[ArmCalib; 4]; 3] = [
     // Module 0
     [
@@ -114,6 +120,9 @@ const TRANSLATIONS: [TranslationCalib; 3] = [
     TranslationCalib { spread: 640, close: 940 }, // Module 1
     TranslationCalib { spread: 340, close: 710 }, // Module 2
 ];
+
+const TAQUET: TaquetCalib = TaquetCalib { horizontal: 600, vertical: 840 };
+const TAQUET_MODULE: u8 = 3;
 
 const MOVE_TIME_MS: u16 = 50;
 const SLOW_MOVE_TIME_MS: u16 = 500;
@@ -320,6 +329,16 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         self.translation_move(module, TRANSLATIONS[module as usize].close);
     }
 
+    // ---------- Taquet (translation bus, module 3) ----------
+
+    pub fn taquet_horizontal(&self) {
+        self.translation_move(TAQUET_MODULE, TAQUET.horizontal);
+    }
+
+    pub fn taquet_vertical(&self) {
+        self.translation_move(TAQUET_MODULE, TAQUET.vertical);
+    }
+
     // ---------- Pump / valve (instant, no servo wait) ----------
 
     /// Enable pump, close valve.
@@ -412,6 +431,14 @@ impl<B: SabotterBoard> MecaPrimitives<B> {
         for module in 0..3 {
             self.reset_module(module);
         }
+
+        self.taquet_horizontal();
+        std::thread::sleep(Duration::from_millis(150));
+        self.taquet_vertical();
+        std::thread::sleep(Duration::from_millis(150));
+        self.taquet_horizontal();
+        std::thread::sleep(Duration::from_millis(150));
+        self.taquet_vertical();
     }
 
     pub fn reset_module(&self, module: u8) {

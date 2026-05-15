@@ -138,9 +138,9 @@ impl<B: SabotterBoard + 'static> Meca<B> {
         self.worker_tx.send(MecaAction::EndOfMatch { reply: tx }).ok();
         rx.recv().ok();
     }
-    pub fn idle(&self) {
+    pub fn taquet(&self, up: bool) {
         let (tx, rx) = flume::bounded(1);
-        self.worker_tx.send(MecaAction::Idle { reply: tx }).ok();
+        self.worker_tx.send(MecaAction::Taquet {up, reply: tx }).ok();
         rx.recv().ok();
     }
 

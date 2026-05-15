@@ -32,7 +32,8 @@ pub enum MecaAction {
     EndOfMatch {
         reply: Sender<()>,
     },
-    Idle {
+    Taquet {
+        up: bool,
         reply: Sender<()>,
 
     },
@@ -82,8 +83,14 @@ impl<B: SabotterBoard> MecaWorker<B> {
                     reply.send(None).ok();
                 }
             }
-            MecaAction::Idle { reply} => {  
+            MecaAction::Taquet { up, reply} => {  
                 self.reset_ready_to_take_sides(50);
+                if up {
+                    self.primitives.taquet_vertical();
+                }
+                else {
+                    self.primitives.taquet_horizontal();
+                }
                 reply.send(()).ok();
             }
             MecaAction::DirectTake { side, reply } => {
@@ -214,6 +221,7 @@ impl<B: SabotterBoard> MecaWorker<B> {
     }
 
     fn reset_ready_to_take_sides(&self, active_module: u8) {
+        self.primitives.taquet_vertical();
         let sides_to_reset: Vec<u8> = {
             let state = self.state.lock().unwrap();
             (0..3u8)
@@ -431,11 +439,13 @@ impl<B: SabotterBoard> MecaWorker<B> {
 
         self.primitives.slow_releases(module, &bad_color_arms, Duration::from_millis(500));
 
-        self.primitives.releases(module, &good_color_arms);
+        self.primitives.releases(module, ALL_ARMS);
         std::thread::sleep(Duration::from_millis(250));
-        self.primitives.end_releases(module, ALL_ARMS);
 
         self.primitives.translation_spread(module);
+
+                self.primitives.end_releases(module, ALL_ARMS);
+
         self.primitives.arms_up(module, ALL_ARMS);
     }
 

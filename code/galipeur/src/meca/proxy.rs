@@ -127,7 +127,7 @@ pub struct MecaProxy<B: SabotterBoard> {
 
     arms: [[Watcher<ArmStatus>; 4]; 3],
     clamps: [[Watcher<ClampStatus>; 3]; 3],
-    translations: [Watcher<TranslationStatus>; 3],
+    translations: [Watcher<TranslationStatus>; 4],
     color_raw: [[Watcher<ColorRawStatus>; 4]; 3],
     battery_voltage_mv: Watcher<Option<u16>>,
 
@@ -152,7 +152,7 @@ impl<B: SabotterBoard> MecaProxy<B> {
     pub fn new(can: GalipeurCan<B>) -> Self {
         let arms: [[Watcher<ArmStatus>; 4]; 3] = Default::default();
         let clamps: [[Watcher<ClampStatus>; 3]; 3] = Default::default();
-        let translations: [Watcher<TranslationStatus>; 3] = Default::default();
+        let translations: [Watcher<TranslationStatus>; 4] = Default::default();
         let color_raw: [[Watcher<ColorRawStatus>; 4]; 3] = Default::default();
         let battery_voltage_mv = Watcher::new(None);
         let last_ping = Arc::new(AtomicU8::new(0));

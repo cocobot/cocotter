@@ -151,11 +151,11 @@ const MODULE1_CLAMP_IDS: [u8; 3] = [20, 21, 22];
 const MODULE2_CLAMP_IDS: [u8; 3] = [20, 21, 22];
 
 // Translation servo IDs (one per module, on shared bus)
-const TRANSLATION_SERVO_IDS: [u8; 3] = [30, 31, 32];
+const TRANSLATION_SERVO_IDS: [u8; 4] = [30, 31, 32, 1];
 
 // Translation target positions (set by SetTranslation, read by periodic update)
-static TRANSLATION_TARGETS: [AtomicU16; 3] = [AtomicU16::new(0), AtomicU16::new(0), AtomicU16::new(0)];
-static TRANSLATION_MOVING: [AtomicU8; 3] = [AtomicU8::new(0), AtomicU8::new(0), AtomicU8::new(0)];
+static TRANSLATION_TARGETS: [AtomicU16; 4] = [AtomicU16::new(0), AtomicU16::new(0), AtomicU16::new(0), AtomicU16::new(0)];
+static TRANSLATION_MOVING: [AtomicU8; 4] = [AtomicU8::new(0), AtomicU8::new(0), AtomicU8::new(0), AtomicU8::new(0)];
 
 // Valve toggle state: bitmask of 12 valves (bit = module*4+arm), asymmetric on/off durations in ms
 static VALVE_TOGGLE_MASK: AtomicU16 = AtomicU16::new(0);
@@ -217,7 +217,7 @@ async fn led_status_task(
     let mut led_state = false;
     let mut cycle_count: u8 = 0;
     let mut lidar_seq: u8 = 0;
-    let mut prev_transl_moving = [false; 3];
+    let mut prev_transl_moving = [false; 4];
     let mut prev_ground_mask: u8 = 0;
     let mut last_ground_send = Instant::now();
     let mut aru = true;
@@ -280,7 +280,7 @@ async fn led_status_task(
         };
 
         let translation_update = async {
-            for module in 0..3u8 {
+            for module in 0..4u8 {
                 let servo_id = TRANSLATION_SERVO_IDS[module as usize];
                 let (position, error) = match translation_bus.lock().await.read_position(servo_id).await {
                     Ok((pos, err)) => (pos, err),
@@ -308,7 +308,6 @@ async fn led_status_task(
                         .ok();
                 }
 
-                break; //remove after servo 1 and 2 are cabled
             }
         };
 
@@ -625,7 +624,7 @@ async fn cmd_task(
             time_ms,
         } = &msg
         {
-            if (*module as usize) < 3 {
+            if (*module as usize) < 4 {
                 let servo_id = TRANSLATION_SERVO_IDS[*module as usize];
                 TRANSLATION_TARGETS[*module as usize].store(*position, Ordering::Relaxed);
                 TRANSLATION_MOVING[*module as usize].store(1, Ordering::Relaxed);
@@ -639,7 +638,7 @@ async fn cmd_task(
 
         // Handle RequestTranslationStatus
         if let CanMessage::RequestTranslationStatus { module } = &msg {
-            if (*module as usize) < 3 {
+            if (*module as usize) < 4 {
                 let servo_id = TRANSLATION_SERVO_IDS[*module as usize];
                 let mut bus = translation_bus.lock().await;
                 let (position, error) = match bus.read_position(servo_id).await {

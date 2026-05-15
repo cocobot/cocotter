@@ -71,7 +71,7 @@ impl Movement {
 pub struct PicotterEmu {
     arms: [[ArmShadow; 4]; 3],
     clamps: [[ClampShadow; 3]; 3],
-    translations: [TranslationShadow; 3],
+    translations: [TranslationShadow; 4],
 }
 
 #[derive(Default, Clone, Copy)]
@@ -150,7 +150,7 @@ impl PicotterEmu {
                     for t in &mut self.translations {
                         start_movement(t);
                     }
-                    for m in 0..3 {
+                    for m in 0..4 {
                         out.push(translation_status_msg(m, &self.translations[m as usize]));
                     }
                 } else if (module as usize) < self.translations.len() {
@@ -218,6 +218,16 @@ impl PicotterEmu {
                     t.movement = None;
                     out.push(translation_status_msg(m as u8, t));
                 }
+            }
+        }
+        // Taquet (translation index 3, not part of arm modules)
+        let t = &mut self.translations[3];
+        if let Some(mv) = t.movement {
+            let (pos, finished) = mv.sample(now);
+            t.position = pos;
+            if finished {
+                t.movement = None;
+                out.push(translation_status_msg(3, t));
             }
         }
         out

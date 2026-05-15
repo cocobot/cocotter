@@ -72,7 +72,7 @@ impl<B: SabotterBoard> AsservHelper<B> {
         }
 
         self.match_start.lock().unwrap()
-            .map_or(false, |start| start.elapsed().as_secs() >= MATCH_DURATION_SECS - 16)
+            .map_or(false, |start| start.elapsed().as_secs() >= MATCH_DURATION_SECS - 17)
     }
 
     pub fn allow_pre_end_of_match(&self, val: bool) {

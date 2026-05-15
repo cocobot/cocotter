@@ -227,6 +227,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         log::info!("OK ?");
 
         self.asserv.disable_motor_control();
+        //self.meca.init(Team::Left);
 
         //waiting for starter to be inserted
         loop {
@@ -528,26 +529,38 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         let init_p = self.asserv.position();
 
-        self.meca.idle();
-        self.pathfinder_xya(self.kx * 1200.0, 400.0, init_p.a)?;
-        self.recallage(self.table_main);
-        self.recallage(TableSide::Down);
+        self.meca.taquet(false);
+        let r = || -> Result<(), StrategyError>{
+            self.pathfinder_xya(self.kx * 1200.0, 400.0, init_p.a)?;
+            self.recallage(self.table_main);
+            self.recallage(TableSide::Down);
 
-        let face = if self.kx > 0.0 {
-            RobotSide::Back
-        } else {
-            RobotSide::Right
-        };
+            if self.kx > 0.0 {
+                    self.asserv.goto_a(arfast(RobotSide::Back, TableSide::Down))?;
+                self.asserv.goto_xya(self.kx * 1280.0, 225.0, arfast(RobotSide::Back, TableSide::Down))?;
 
-        self.asserv.goto_a(arfast(RobotSide::Back, self.table_main))?;
-        self.asserv.goto_xya(self.kx * 1280.0, 225.0, arfast(RobotSide::Back, self.table_main))?;
-        self.asserv.goto_a(arfast(RobotSide::Left, TableSide::Up))?;
-        self.asserv.goto_xya(self.kx * 830.0, 225.0, arfast(RobotSide::Left, TableSide::Up))?;
-        self.asserv.goto_xya(self.kx * 830.0, 400.0, arfast(RobotSide::Left, TableSide::Up))?;
+            } else {
+                self.asserv.goto_a(arfast(RobotSide::Back, self.table_main))?;
+                self.asserv.goto_xya(self.kx * 1280.0, 225.0, arfast(RobotSide::Back, self.table_main))?;
+            
+            }
 
-        self.releases |= 1 << 60;
+            self.asserv.goto_a(arfast(RobotSide::Left, TableSide::Up))?;
+            self.asserv.goto_xya(self.kx * 860.0, 225.0, arfast(RobotSide::Left, TableSide::Up))?;
+            self.meca.taquet(true);
 
-        Ok(())
+            self.asserv.goto_xya(self.kx * 860.0, 400.0, arfast(RobotSide::Left, TableSide::Up))?;
+        
+            self.releases |= 1 << 60;
+
+            Ok(())
+        }();
+
+        if r.is_err() {
+            self.meca.taquet(true);
+        }
+
+        r
     }
 
     fn check_goto_eom(&mut self) {
@@ -887,8 +900,16 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         if let Some(path) = self.pathfinder.find_path(start, goal) {
             let asserv_path: Vec<XY> = path.into_iter().map(|id| self.pathfinder.get_node_xy(id)).collect();
             if self.asserv.run_path(&asserv_path).is_ok() {
+                self.meca.taquet(true);
                     self.asserv.goto_a(arfast(RobotSide::Back, self.table_main)).ok();
-                    self.recallage(self.table_main);
+                    
+                    for i in 0..3 {
+                        self.release(RobotSide::Back, TableSide::Down).ok();
+                    }
+                                        self.recallage(self.table_main);
+
+
+
                     while self.asserv.ellapsed_time_since_start().as_secs() < 96 {
                         sleep(Duration::from_millis(100));
                         log::info!("Not now : {}", self.asserv.ellapsed_time_since_start().as_secs());
