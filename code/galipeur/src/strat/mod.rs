@@ -432,7 +432,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
         if id == 1 {
             //celui qui est tout proche
-            self.take_crate_spot(self.kx * 1350.0,  400.0, RobotSide::Back, self.table_main, true).ok();
+            self.take_crate_spot(self.kx * 1350.0,  400.0, RobotSide::Back, self.table_main, false).ok();
             self.recallage(self.table_main);
             let pos = self.asserv.position();
             self.asserv.goto_xya(pos.x, 300.0, arfast(RobotSide::Back, TableSide::Down)).ok();
@@ -440,7 +440,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
         if id == 2 {
             //celui qui est tout proche
-            self.take_crate_spot(self.kx * 400.0,  175.0, RobotSide::Back, TableSide::Down, true).ok();
+            self.take_crate_spot(self.kx * 400.0,  175.0, RobotSide::Back, TableSide::Down, false).ok();
             self.recallage(TableSide::Down);            
         }
         if id == 3 {
@@ -459,7 +459,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }
         }
         if id == 4 {
-            self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Down, true).ok();
+            self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Down, false).ok();
 
             if self.kx > 0.0 {
                 self.pathfinder.obstacles[2].new_radius(0.0);
@@ -469,7 +469,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }
         }
         if id == 5 {
-            self.take_crate_spot(-self.kx * 400.0,  175.0, RobotSide::Back, TableSide::Down, true).ok();
+            self.take_crate_spot(-self.kx * 400.0,  175.0, RobotSide::Back, TableSide::Down, false).ok();
             self.recallage(TableSide::Down);
         }
 
