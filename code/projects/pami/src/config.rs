@@ -60,7 +60,7 @@ static CONFIGS: phf::Map<[u8; 6], PAMIConfig> = phf_map! {
     [116, 77, 189, 81, 239, 34] => PAMIConfig {
         id: 1,
         color: "Yellow",
-        strategy: GameStrategy::Test,
+        strategy: GameStrategy::Paninja_2,
     },
 
     //blue (ID = 2)

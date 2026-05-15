@@ -8,6 +8,7 @@ use crate::{asserv::AsservMutexProtected, config::{GAME_TIME_SECONDS, PAMI_START
 pub enum GameStrategy {
     Ninja,
     Paninja_1,
+    Paninja_2,
     Test,
 }
 
@@ -45,7 +46,7 @@ impl FunnyAction {
                 _ => {}
             }
         });
-        
+
         let cloned_instance = instance.clone();
         std::thread::Builder::new()
             .stack_size(8192)
@@ -87,7 +88,7 @@ impl FunnyAction {
         }
 
         log::info!("Let's eat nuts!");
-        if instance.lock().unwrap().strategy == GameStrategy::Paninja_1
+        if instance.lock().unwrap().strategy == GameStrategy::Paninja_2
         {
             loop {
                 instance.lock().unwrap().event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
@@ -251,6 +252,33 @@ impl Game {
     }
 
     fn strat_paninja_1(&mut self) {
+        let mut position = self.trajectory.get_position().lock().unwrap();
+        position.set_coordinates(Some(2900.0), Some(1900.0), None);
+        drop(position);
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
+
+        self.wait_for_start();
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(60.0)});
+
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(true)
+            .set_no_detection(false)
+            .add_order(Order::GotoD {d_mm: 800.0})
+            ;
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(1.0)});
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
+        self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
+    }
+
+    fn strat_paninja_2(&mut self) {
         let mut position = self.trajectory.get_position().lock().unwrap();
         position.set_coordinates(Some(2900.0), Some(1900.0), None);
         drop(position);
@@ -542,6 +570,7 @@ impl Game {
         match self.config.strategy {
             GameStrategy::Ninja => self.strat_ninja(),
             GameStrategy::Paninja_1 => self.strat_paninja_1(),
+            GameStrategy::Paninja_2 => self.strat_paninja_2(),
             GameStrategy::Test => self.strat_test(),
         }
 

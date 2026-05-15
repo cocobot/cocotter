@@ -49,7 +49,7 @@ impl UIScreen for Start {
                 .unwrap();
         }
 
-        for i in 0..3 {
+        for i in 0..4 {
             let mut stroke_size = 1;
 
             let mut selected = false;
@@ -59,7 +59,7 @@ impl UIScreen for Start {
                         if i == 0 && !config.x_negative_color {
                             selected = true;
                         }
-                        else if i == 2 && config.x_negative_color {
+                        else if i == 3 && config.x_negative_color {
                             selected = true;
                         }
                     }
@@ -67,12 +67,20 @@ impl UIScreen for Start {
                         if i == 1 && !config.x_negative_color {
                             selected = true;
                         }
+                        else if i == 2 && config.x_negative_color {
+                            selected = true;
+                        }
+                    }
+                    GameStrategy::Paninja_2 => {
+                        if i == 2 && !config.x_negative_color {
+                            selected = true;
+                        }
                         else if i == 1 && config.x_negative_color {
                             selected = true;
                         }
                     }
                     GameStrategy::Test => {
-                        if i == 2 && !config.x_negative_color {
+                        if i == 3 && !config.x_negative_color {
                             selected = true;
                         }
                         else if i == 0 && config.x_negative_color {
