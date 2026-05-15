@@ -317,6 +317,17 @@ impl Game {
             .execute(orders)
             .unwrap();
 
+        log::info!("Last push");
+        let orders = TrajectoryOrderList::new()
+            .set_backwards(false)
+            .set_max_speed(cocotter::trajectory::RampCfg::Linear, 0.2)
+            .add_order(Order::CustomOrder { callback: move_until_void })
+            ;
+
+        self.trajectory
+            .execute(orders)
+            .unwrap();
+
         self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Vaccum(0.0)});
         self.event.send_event(Event::Pwm { pwm_event: PWMEvent::Servo0(30.0)});
 
@@ -330,7 +341,7 @@ impl Game {
             .add_order(Order::GotoD {d_mm: 50.0})
             .set_backwards(true)
             .add_order(Order::GotoA {a_rad: 0.0 })
-            .add_order(Order::GotoD {d_mm: 250.0})
+            .add_order(Order::GotoD {d_mm: 220.0})
             .add_order(Order::GotoA { a_rad: (angle).to_radians() })
             ;
 
