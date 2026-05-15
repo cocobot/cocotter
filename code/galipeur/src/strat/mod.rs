@@ -12,7 +12,7 @@ use embedded_hal::digital::InputPin;
 use board_sabotter::{SabotterBoard, SabotterInputs};
 use flume::Sender;
 use log::info;
-use pathfinding::{PathGraph, PathGraphBuilder};
+use pathfinding::{PathGraph, PathGraphBuilder, PathObstacle};
 
 use crate::arfast;
 use crate::led::LedMessage;
@@ -138,6 +138,21 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
     fn run(mut self) {
         sleep(Duration::from_millis(100));
+
+        //adversare
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new(0.0, 0.0), 0.0));
+        
+        
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new( 350.0, 800.0), 300.0)); // spot 4
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new(-350.0, 800.0), 300.0)); // spot 5
+
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new(-700.0, 800.0), 0.0)); // spot 15
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new(700.0, 800.0), 0.0)); // spot 14
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new(0.0, 800.0), 0.0)); // spot 18
+
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new(-400.0, 800.0), 0.0)); //
+        self.pathfinder.obstacles.push(PathObstacle::new(&XY::new(400.0, 800.0), 0.0)); //
+
 
         self.prepare_match();
         //self.pathfinding_test();
@@ -427,15 +442,28 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
         if id == 3 {
             if alternate {
-                self.take_crate_spot(self.kx * 375.0,  800.0, RobotSide::Back, TableSide::Down, false).ok();
+                self.take_crate_spot(self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Down, false).ok();
 
             }
             else {
-                self.take_crate_spot(self.kx * 375.0,  800.0, self.robot_main, TableSide::Up, false).ok();
+                self.take_crate_spot(self.kx * 350.0,  800.0, self.robot_main, TableSide::Up, false).ok();
+            }
+            if self.kx > 0.0 {
+                self.pathfinder.obstacles[1].new_radius(0.0);
+            }
+            else {
+                self.pathfinder.obstacles[2].new_radius(0.0);
             }
         }
         if id == 4 {
-            self.take_crate_spot(-self.kx * 375.0,  800.0, RobotSide::Back, TableSide::Down, true).ok();
+            self.take_crate_spot(-self.kx * 350.0,  800.0, RobotSide::Back, TableSide::Down, true).ok();
+
+            if self.kx > 0.0 {
+                self.pathfinder.obstacles[2].new_radius(0.0);
+            }
+            else {
+                self.pathfinder.obstacles[1].new_radius(0.0);
+            }
         }
         if id == 5 {
             self.take_crate_spot(-self.kx * 400.0,  175.0, RobotSide::Back, TableSide::Down, true).ok();
@@ -461,9 +489,19 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
         if id == 2 {
             self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, self.table_aux).ok();
+            self.pathfinder.obstacles[5].new_radius(300.0);
+
         }
         if id == 3 {
             self.release_on_spot(self.kx * 700.0, 800.0, self.robot_main, TableSide::Down).ok();
+        
+            if self.kx > 0.0 {
+                self.pathfinder.obstacles[4].new_radius(300.0);
+            }
+            else {
+                self.pathfinder.obstacles[3].new_radius(300.0);
+            }
+
         }
         if id == 4 {
             self.release_on_spot(self.kx * 0.0, 100.0, RobotSide::Back, TableSide::Down).ok();
@@ -538,6 +576,17 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(self.kx * 900.0, 1200.0, arfast(RobotSide::Back, TableSide::Up)).ok();
 
 
+        self.return_to_start();
+        if self.kx > 0.0 {
+            self.pathfinder.obstacles[3].new_radius(300.0);
+            self.pathfinder.obstacles[6].new_radius(300.0);
+        }
+        else {
+            self.pathfinder.obstacles[4].new_radius(300.0);
+            self.pathfinder.obstacles[7].new_radius(300.0);
+
+        }
+        
         self.asserv.set_stop_mode(utils::StopMode::Reject);
         self.take_id(0, false).ok();
         self.take_id(1, false).ok();
@@ -751,13 +800,13 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             if self.asserv.run_path(&asserv_path).is_ok() {
                     self.asserv.goto_a(arfast(RobotSide::Back, self.table_main)).ok();
                     self.recallage(self.table_main);
-                    while self.asserv.ellapsed_time_since_start().as_secs() < 96 {
+                    while self.asserv.ellapsed_time_since_start().as_secs() < 96 * 0 + 6 {
                         sleep(Duration::from_millis(100));
                         log::info!("Not now : {}", self.asserv.ellapsed_time_since_start().as_secs());
                     }
 
-                    self.asserv.goto_xya(self.kx * 1250.0, self.asserv.position().y, arfast(RobotSide::Back, self.table_main)).ok();
-                    self.asserv.goto_xya(self.kx * 1250.0, 1740.0, arfast(RobotSide::Back, self.table_main)).ok();
+                    self.asserv.goto_xya(self.kx * 1125.0, self.asserv.position().y, arfast(RobotSide::Back, self.table_main)).ok();
+                    self.asserv.goto_xya(self.kx * 1125.0, 1755.0, arfast(RobotSide::Back, self.table_main)).ok();
                     self.meca.end_of_match();
             }
         } else {
