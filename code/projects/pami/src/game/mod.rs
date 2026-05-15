@@ -192,6 +192,20 @@ impl Game {
         //wait a little bit to avoid bouncing
         std::thread::sleep(Duration::from_millis(500));
 
+        if self.config.strategy == GameStrategy::Ninja {
+            //wait before doing a little move for adjusting start area position
+            std::thread::sleep(Duration::from_secs(3));
+            let orders = TrajectoryOrderList::new()
+                .set_backwards(true)
+                .set_no_detection(true)
+                .add_order(Order::GotoD {d_mm: 45.0})
+                ;
+
+            self.trajectory
+                .execute(orders)
+                .unwrap();
+        }
+
         // Wait for the start signal to be high
         loop {
             if self.starter.is_high() {
