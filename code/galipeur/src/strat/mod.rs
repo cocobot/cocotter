@@ -374,7 +374,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.asserv.goto_xya(x, y, a)
     }
 
-    fn release_on_spot(&mut self, x: f32, y: f32, face: RobotSide, side: TableSide) -> Result<(), StrategyError>{
+    fn release_on_spot(&mut self, x: f32, y: f32, face: RobotSide, side: TableSide, recallage: bool) -> Result<(), StrategyError>{
         const PRERELEASE_DISTANCE : f32 = 325.0;
 
         let offset_take_xy = match side {
@@ -390,6 +390,12 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         };
 
         self.pathfinder_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
+       
+        if recallage {
+            self.recallage(TableSide::Down);
+            self.asserv.goto_xya(x + offset_take_xy.0, y + offset_take_xy.1, arfast(face, side))?;
+        }
+       
         self.release(face, side)?;
 
         Ok(())
@@ -485,18 +491,18 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
 
         if id == 0 {
-            self.release_on_spot(self.kx * 1400.0, 800.0, RobotSide::Back, self.table_main)?;
+            self.release_on_spot(self.kx * 1400.0, 800.0, RobotSide::Back, self.table_main, false)?;
         }
         if id == 1 {
-            self.release_on_spot(self.kx * 800.0, 100.0, RobotSide::Back, TableSide::Down)?;
+            self.release_on_spot(self.kx * 800.0, 100.0, RobotSide::Back, TableSide::Down, true)?;
         }
         if id == 2 {
-            self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, self.table_aux)?;
+            self.release_on_spot(self.kx * 0.0, 800.0, RobotSide::Back, self.table_aux, false)?;
             self.pathfinder.obstacles[5].new_radius(300.0);
 
         }
         if id == 3 {
-            self.release_on_spot(self.kx * 700.0, 800.0, self.robot_main, TableSide::Down)?;
+            self.release_on_spot(self.kx * 700.0, 800.0, self.robot_main, TableSide::Down, false)?;
         
             if self.kx > 0.0 {
                 self.pathfinder.obstacles[4].new_radius(300.0);
@@ -507,10 +513,39 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
         }
         if id == 4 {
-            self.release_on_spot(self.kx * 0.0, 100.0, RobotSide::Back, TableSide::Down)?;
+            self.release_on_spot(self.kx * 0.0, 100.0, RobotSide::Back, TableSide::Down, false)?;
         }
 
         self.releases |= 1 << id;
+
+        Ok(())
+    }
+
+    fn thermo(&mut self) -> Result<(), StrategyError> {
+        if self.releases & (1 << 60) != 0 {
+            return Ok(())
+        }
+
+        let init_p = self.asserv.position();
+
+        self.meca.idle();
+        self.pathfinder_xya(self.kx * 1200.0, 400.0, init_p.a)?;
+        self.recallage(self.table_main);
+        self.recallage(TableSide::Down);
+
+        let face = if self.kx > 0.0 {
+            RobotSide::Back
+        } else {
+            RobotSide::Right
+        };
+
+        self.asserv.goto_a(arfast(RobotSide::Back, self.table_main))?;
+        self.asserv.goto_xya(self.kx * 1280.0, 225.0, arfast(RobotSide::Back, self.table_main))?;
+        self.asserv.goto_a(arfast(RobotSide::Left, TableSide::Up))?;
+        self.asserv.goto_xya(self.kx * 830.0, 225.0, arfast(RobotSide::Left, TableSide::Up))?;
+        self.asserv.goto_xya(self.kx * 830.0, 400.0, arfast(RobotSide::Left, TableSide::Up))?;
+
+        self.releases |= 1 << 60;
 
         Ok(())
     }
@@ -542,6 +577,9 @@ impl<B : SabotterBoard + 'static> Strat<B> {
     fn strat_1(&mut self) -> Result<(), StrategyError> {
         log::info!("USE STRAT 1");
         self.leds.send(LedMessage::StratFlash(RGB8 { r: 255, g: 200, b: 0 })).ok();
+        self.check_goto_eom();
+        op(self.thermo())?;
+        self.check_goto_eom();
         op(self.release_id(1, false))?;
         self.check_goto_eom();
         op(self.take_id(2, false))?;
@@ -644,7 +682,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
             }
         }
 
-        self.release_on_spot(self.kx * 1400.0, 800.0, RobotSide::Back, self.table_main).ok();
+        self.release_on_spot(self.kx * 1400.0, 800.0, RobotSide::Back, self.table_main, false).ok();
 
         
         self.asserv.goto_xya(self.kx * 1050.0, 850.0, self.asserv.position().a).ok();
@@ -677,7 +715,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
 
 
 
-        self.release_on_spot(self.kx * 700.0, 850.0, RobotSide::Back, TableSide::Up).ok();
+        self.release_on_spot(self.kx * 700.0, 850.0, RobotSide::Back, TableSide::Up, false).ok();
 
         
 
@@ -690,7 +728,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         self.take_crate_spot(self.kx * 400.0,  150.0, RobotSide::Back, TableSide::Down, true).ok();
 ////
         self.asserv.set_stop_mode(utils::StopMode::Reject);
-        self.release_on_spot(self.kx * 0.0, 850.0, RobotSide::Back, TableSide::Up).ok();
+        self.release_on_spot(self.kx * 0.0, 850.0, RobotSide::Back, TableSide::Up, false).ok();
 ////
         self.asserv.set_stop_mode(utils::StopMode::WaitAndResume);
 ////
@@ -710,7 +748,7 @@ impl<B : SabotterBoard + 'static> Strat<B> {
         }
 ////
 ////
-        self.release_on_spot(self.kx * 800.0, 150.0, self.robot_aux, TableSide::Down).ok();
+        self.release_on_spot(self.kx * 800.0, 150.0, self.robot_aux, TableSide::Down, false).ok();
 ////
         self.asserv.goto_xya(self.kx * 800.0, 550.0, self.asserv.position().a).ok();
         self.asserv.set_stop_mode(utils::StopMode::Reject);

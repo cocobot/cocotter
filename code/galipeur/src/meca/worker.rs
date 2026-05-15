@@ -32,6 +32,10 @@ pub enum MecaAction {
     EndOfMatch {
         reply: Sender<()>,
     },
+    Idle {
+        reply: Sender<()>,
+
+    },
     // Not a direct action, change worker's state
     SetOwnColor(Team),
 }
@@ -77,6 +81,10 @@ impl<B: SabotterBoard> MecaWorker<B> {
                 else {
                     reply.send(None).ok();
                 }
+            }
+            MecaAction::Idle { reply} => {  
+                self.reset_ready_to_take_sides(50);
+                reply.send(()).ok();
             }
             MecaAction::DirectTake { side, reply } => {
                 let result = self.do_direct_take(side);

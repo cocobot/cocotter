@@ -138,6 +138,11 @@ impl<B: SabotterBoard + 'static> Meca<B> {
         self.worker_tx.send(MecaAction::EndOfMatch { reply: tx }).ok();
         rx.recv().ok();
     }
+    pub fn idle(&self) {
+        let (tx, rx) = flume::bounded(1);
+        self.worker_tx.send(MecaAction::Idle { reply: tx }).ok();
+        rx.recv().ok();
+    }
 
 
     #[allow(dead_code)]
