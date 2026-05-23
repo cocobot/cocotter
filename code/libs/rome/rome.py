@@ -188,8 +188,25 @@ def load_messages(source: Path | str | TextIO) -> list[Message]:
     if not isinstance(doc, dict):
         raise ValueError("Invalid document: top level element must be an object")
 
+    # Parse custom types first, to resolve them while parsing messages
+    declared_types: dict[str, ParamType] = {}
+    if items := doc.pop("types", None):
+        for type_name, type_decl in items.items():
+            if type_name in declared_types:
+                raise ValueError(f"Duplicate type name: {type_name}")
+            if isinstance(type_decl, list):
+                declared_types[type_name] = _parse_choices_to_type(type_decl)
+            else:
+                raise ValueError(f"Invalid custom type, only lists are supported: {type_decl!r}")
+
+    # Parse a type name, supported declared types
+    def parse_type_name(value) -> ParamType:
+        if isinstance(value, str) and value in declared_types:
+            return declared_types[value]
+        return _parse_type_name(value)
+
     declarations: dict[int, Message] = {}
-    names_in_use: set[str] = set()
+    message_names_in_use: set[str] = set()
     for group_id, group_items in doc.items():
         if not isinstance(group_id, int):
             raise ValueError(f"Invalid message group ID: key must be an integer, got {group_id!r}")
@@ -204,26 +221,26 @@ def load_messages(source: Path | str | TextIO) -> list[Message]:
                 raise ValueError(f"Invalid message name: must be a string, got {message_name!r}")
             if current_id in declarations:
                 raise ValueError(f"Duplicate message ID {current_id}, used by {declarations[current_id].name} and {message_name}")
-            if message_name in names_in_use:
+            if message_name in message_names_in_use:
                 raise ValueError(f"Duplicate message name: {message_name}")
 
             match parameters_decl:
                 case None:
                     message = MessageEmpty(current_id, message_name, None)
                 case list(items):
-                    message = MessagePositional(current_id, message_name, tuple(_parse_type_name(v) for v in items))
+                    message = MessagePositional(current_id, message_name, tuple(parse_type_name(v) for v in items))
                 case dict(items):
                     # Note: assume YAML is correct and there is no duplicate parameter name
                     params = {}
                     for k, v in items.items():
                         if not isinstance(k, str):
                             raise ValueError(f"Invalid parameter name: must be a string, got {k!r}")
-                        params[k] = _parse_type_name(v)
+                        params[k] = parse_type_name(v)
                     message = MessageNamed(current_id, message_name, params)
                 case _:
                     raise ValueError("Invalid messsage declaration: value must be an array or object")
             declarations[current_id] = message
-            names_in_use.add(message_name)
+            message_names_in_use.add(message_name)
             current_id += 1
 
     return list(declarations.values())
@@ -276,8 +293,10 @@ def _parse_type_name(value) -> ParamType:
         if m := re.match(r"^\[(.*); (\d+)\]$", value):
             return ("array", (_parse_type_name(m.group(1)), int(m.group(2))))
     elif isinstance(value, list):
-        # Note: nested choices are not supported, but accepted here
-        if all(isinstance(v, str) for v in value):
-            return ("choice", value)
+        return _parse_choices_to_type(value)
     raise ValueError(f"Unsupported type: {value!r}")
 
+def _parse_choices_to_type(value) -> ParamType:
+    if all(isinstance(v, str) for v in value):
+        return ("choice", value)
+    raise ValueError(f"Invalid choices, all values must be strings: {value!r}")

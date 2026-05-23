@@ -5,8 +5,20 @@ use std::collections::{HashMap, HashSet};
 use yaml_rust::{YamlLoader, Yaml};
 
 
+#[derive(Default)]
+struct Declarations<'a> {
+    choices: Vec<ChoiceDecl<'a>>,
+    messages: Vec<Message<'a>>,
+}
+
+struct ChoiceDecl<'a> {
+    name: &'a str,
+    choices: Vec<&'a str>,
+}
+
 enum ParamType<'a> {
-    Name(&'a str),
+    Builtin(&'a str),
+    Declared(&'a str),
     Choice(Vec<&'a str>),
 }
 
@@ -32,95 +44,163 @@ fn main() {
     let out_path = out_dir.join("rome_messages.rs");
 
     let doc = load_yaml_doc(yaml_file);
-    let messages = parse_message_doc(&doc);
-    generate_bindings(&messages, out_path);
+    let declarations = parse_message_doc(&doc);
+    generate_bindings(&declarations, out_path);
 }
 
 
-fn parse_message_doc(doc: &Yaml) -> Vec<Message<'_>> {
+#[allow(clippy::explicit_counter_loop)]
+fn parse_message_doc(doc: &Yaml) -> Declarations<'_> {
     let hash = if let Yaml::Hash(hash) = doc {
         hash
     } else {
         panic!("Invalid document: top level element must be an object");
     };
 
-
-    let mut messages = Vec::new();
+    let mut declarations = Declarations::default();
     let mut ids_in_use = HashMap::new();
-    let mut names_in_use = HashSet::new();
-    for (group_id, items) in hash {
-        let mut current_id = if let Yaml::Integer(id) = group_id {
+    let mut message_names_in_use = HashSet::new();
+    let mut type_names_in_use = HashSet::new();
+
+    // Message declarations are processed later on, after all custom types have been declared,
+    // to be able to separate declared and builtin type names
+    let mut message_declarations = Vec::new();
+    for (group_key, items) in hash {
+        if let Yaml::Integer(id) = group_key {
+            // ID value: message declarations
             if *id <= 0 || *id > u8::MAX as i64 {
                 panic!("Invalid message group ID: value must be a valid non-zero 8-bit value, got {id:?}");
             }
-            *id as u8
-        } else {
-            panic!("Invalid message group ID: key must be an integer, got {group_id:?}");
-        };
-        let items = if let Yaml::Hash(hash) = items {
-            hash
-        } else {
-            panic!("Invalid message group: value must an object");
-        };
-
-        for (message_name, parameters_decl) in items {
-            let message_name = if let Yaml::String(name) = message_name {
-                name.as_str()
+            let mut current_id = *id as u8;
+            let items = if let Yaml::Hash(hash) = items {
+                hash
             } else {
-                panic!("Invalid message name: must be a string, got {message_name:?}");
+                panic!("Invalid message group entry: value must an object");
             };
-            if let Some(old_name) = ids_in_use.insert(current_id, message_name) {
-                panic!("Duplicate message ID {current_id}, used by {old_name} and {message_name}");
+
+            for (message_name, parameters_decl) in items {
+                let message_name = if let Yaml::String(name) = message_name {
+                    name.as_str()
+                } else {
+                    panic!("Invalid message name: must be a string, got {message_name:?}");
+                };
+                if let Some(old_name) = ids_in_use.insert(current_id, message_name) {
+                    panic!("Duplicate message ID {current_id}, used by {old_name} and {message_name}");
+                }
+                check_custom_type_name(message_name);
+                if !message_names_in_use.insert(message_name) {
+                    panic!("Duplicate message name: {message_name}");
+                }
+
+                message_declarations.push((current_id, message_name, parameters_decl));
+                current_id += 1;
             }
-            if !names_in_use.insert(message_name) {
-                panic!("Duplicate message name: {message_name}");
-            }
-            let parameters = match parameters_decl {
-                Yaml::Null => {
-                    Parameters::None
-                }
-                Yaml::Array(items) => {
-                    let items = items.iter().map(parse_type_name).collect();
-                    Parameters::Positional(items)
-                }
-                Yaml::Hash(items) => {
-                    // Note: assume YAML is correct and there is no duplicate parameter name
-                    let items = items.iter().map(|(name, value)| {
-                        let param_name = if let Yaml::String(name) = name {
-                            name.as_str()
-                        } else {
-                            panic!("Invalid parameter name: must be a string, got {name:?}");
-                        };
-                        let param_type = parse_type_name(value);
-                        (param_name, param_type)
-                    }).collect();
-                    Parameters::Named(items)
-                }
-                _ => panic!("Invalid messsage declaration: value must be an array or object"),
+
+        } else if matches!(group_key, Yaml::String(s) if s == "types") {
+            // Type declarations
+            let items = if let Yaml::Hash(hash) = items {
+                hash
+            } else {
+                panic!("Invalid 'types' entry: value must an object");
             };
-            messages.push(Message {
-                id: current_id,
-                name: message_name,
-                parameters,
-            });
-            current_id += 1;
-        }
+            for (type_name, type_decl) in items {
+                let type_name = if let Yaml::String(name) = type_name {
+                    name.as_str()
+                } else {
+                    panic!("Invalid type name: must be a string, got {type_name:?}");
+                };
+                check_custom_type_name(type_name);
+                if !type_names_in_use.insert(type_name) {
+                    panic!("Duplicate type name: {type_name}");
+                }
+
+                // For now, only support declaration of choices
+                match type_decl {
+                    Yaml::Array(items) => {
+                        let choices = items.iter().map(parse_choice_name).collect();
+                        declarations.choices.push(ChoiceDecl { name: type_name, choices });
+                    }
+                    _ => panic!("Invalid type declaration: value must be an array"),
+                };
+            }
+
+        } else {
+            panic!("Invalid message group ID: key must be an integer, got {group_key:?}");
+        };
     }
 
-    messages
+    // Parse message declarations
+    for (message_id, message_name, parameters_decl) in message_declarations {
+        let parameters = match parameters_decl {
+            Yaml::Null => {
+                Parameters::None
+            }
+            Yaml::Array(items) => {
+                let items = items.iter().map(|s| parse_type_name(s, &type_names_in_use)).collect();
+                Parameters::Positional(items)
+            }
+            Yaml::Hash(items) => {
+                // Note: assume YAML is correct and there is no duplicate parameter name
+                let items = items.iter().map(|(name, value)| {
+                    let param_name = if let Yaml::String(name) = name {
+                        name.as_str()
+                    } else {
+                        panic!("Invalid parameter name: must be a string, got {name:?}");
+                    };
+                    let param_type = parse_type_name(value, &type_names_in_use);
+                    (param_name, param_type)
+                }).collect();
+                Parameters::Named(items)
+            }
+            _ => panic!("Invalid messsage declaration: value must be an array or object"),
+        };
+        declarations.messages.push(Message {
+            id: message_id,
+            name: message_name,
+            parameters,
+        });
+    }
+
+    declarations
 }
 
-fn parse_type_name(yaml: &Yaml) -> ParamType<'_> {
+
+/// Check that a custom name (message, choice, ...) follows basic rules
+fn check_custom_type_name(name: &str) {
+    match name.chars().next() {
+        None => panic!("Invalid name (empty)"),
+        Some(c) if !c.is_ascii_uppercase() => {
+            panic!("Invalid name '{name}': name must start with an uppercase ASCII letter");
+        }
+        Some(_) => {},
+    }
+}
+
+
+/// Parse a type name, detect a custom one if found in `custom_names`
+fn parse_type_name<'a>(yaml: &'a Yaml, declared_names: &HashSet<&str>) -> ParamType<'a> {
     match yaml {
-        Yaml::String(name) => ParamType::Name(name.as_str()),
-        Yaml::Array(items) => ParamType::Choice(items.iter().map(|v| {
-            if let Yaml::String(s) = v {
-                s.as_str()
+        Yaml::String(name) => {
+            let name = name.as_str();
+            if declared_names.contains(name) {
+                ParamType::Declared(name)
             } else {
-                panic!("Invalid choice value: must be a string, got {v:?}")
+                // Note: assume type is valid
+                ParamType::Builtin(name)
             }
-        }).collect()),
+        }
+        Yaml::Array(items) => {
+            ParamType::Choice(items.iter().map(parse_choice_name).collect())
+        }
         _ => panic!("Invalid parameter type: {yaml:?}"),
+    }
+}
+
+fn parse_choice_name(yaml: &Yaml) -> &str {
+    if let Yaml::String(s) = yaml {
+        s.as_str()
+    } else {
+        panic!("Invalid choice value: must be a string, got {yaml:?}")
     }
 }
 
@@ -142,7 +222,9 @@ fn capitalize(s: &str) -> String {
 }
 
 
-fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
+fn generate_bindings<P: AsRef<Path>>(declarations: &Declarations, path: P) {
+    //TODO Remape 'DeclaredTypeName' to 'params::DeclaredTypeName'
+    //TODO Check That all names exist
     let f = File::create(path).unwrap();
     let mut writer = BufWriter::new(f);
 
@@ -163,7 +245,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     // }
     writeln!(writer, "#[derive(Debug)]").unwrap();
     writeln!(writer, "pub enum Message {{").unwrap();
-    for message in messages {
+    for message in &declarations.messages {
         match &message.parameters {
             Parameters::None => {
                 writeln!(writer, "    {},", message.name).unwrap();
@@ -195,7 +277,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     // }
     writeln!(writer, "#[repr(u8)]").unwrap();
     writeln!(writer, "pub enum MessageId {{").unwrap();
-    for message in messages {
+    for message in &declarations.messages {
         writeln!(writer, "    {} = {},", message.name, message.id).unwrap();
     }
     writeln!(writer, "}}\n").unwrap();
@@ -227,7 +309,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     writeln!(writer, "impl Message {{").unwrap();
     writeln!(writer, "    pub(crate) fn deserialize_with_id<R: Reader>(id: u8, reader: &mut R) -> Result<Self, DecodeError> {{").unwrap();
     writeln!(writer, "        match id {{").unwrap();
-    for message in messages {
+    for message in &declarations.messages {
         match &message.parameters {
             Parameters::None => {
                 writeln!(writer, "            {} => Ok(Self::{}),", message.id, message.name).unwrap();
@@ -256,7 +338,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     writeln!(writer, "    }}\n").unwrap();
     writeln!(writer, "    pub fn message_id(&self) -> u8 {{").unwrap();
     writeln!(writer, "        match self {{").unwrap();
-    for message in messages {
+    for message in &declarations.messages {
         writeln!(writer, "            {} => {},", destructured_parameters_ignored(message), message.id).unwrap();
     }
     writeln!(writer, "      }}").unwrap();
@@ -299,7 +381,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     writeln!(writer, "impl Serialize for Message {{").unwrap();
     writeln!(writer, "    fn serialized_size(&self) -> usize {{").unwrap();
     writeln!(writer, "        (match self {{").unwrap();
-    for message in messages {
+    for message in &declarations.messages {
         match &message.parameters {
             Parameters::None => {
                 writeln!(writer, "            {} => 0,", destructured_parameters(message)).unwrap();
@@ -325,7 +407,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
 
     writeln!(writer, r#"    fn serialize<W: Writer>(&self, writer: &mut W) {{"#).unwrap();
     writeln!(writer, r#"        match self {{"#).unwrap();
-    for message in messages {
+    for message in &declarations.messages {
         writeln!(writer, "            {} => {{", destructured_parameters(message)).unwrap();
         writeln!(writer, "                {}u8.serialize(writer);", message.id).unwrap();
         match &message.parameters {
@@ -372,8 +454,8 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
     //     fn serialized_size(&self) -> usize { core::mem::size_of::<u8>() }
     //     fn serialize<W: Writer>(&self, encoder: &mut W) { (*self as u8).serialize(encoder) }
     // }
-    let mut rust_choices = vec![];
-    for message in messages {
+    let mut inline_choice_declarations = vec![];
+    for message in &declarations.messages {
         match &message.parameters {
             Parameters::None => {},
             Parameters::Positional(params) => {
@@ -381,7 +463,7 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
                     if let ParamType::Choice(choices) = typ {
                         let suffix = if params.len() == 1 { ParamChoiceSuffix::None } else { ParamChoiceSuffix::Index(i) };
                         let type_name = format_rust_choice_type(message.name, suffix);
-                        rust_choices.push((type_name, choices));
+                        inline_choice_declarations.push((type_name, choices));
                     }
                 }
             }
@@ -389,13 +471,16 @@ fn generate_bindings<P: AsRef<Path>>(messages: &[Message], path: P) {
                 for (name, typ) in params {
                     if let ParamType::Choice(choices) = typ {
                         let type_name = format_rust_choice_type(message.name, ParamChoiceSuffix::Name(name));
-                        rust_choices.push((type_name, choices));
+                        inline_choice_declarations.push((type_name, choices));
                     }
                 }
             }
         }
     }
-    for (name, choices) in &rust_choices {
+
+    let inline_choices_it = inline_choice_declarations.iter().map(|(name, choices)| (name.as_str(), *choices));
+    let declared_choices_it = declarations.choices.iter().map(|decl| (decl.name, &decl.choices));
+    for (name, choices) in declared_choices_it.chain(inline_choices_it) {
         writeln!(writer).unwrap();
         writeln!(writer, "    #[derive(Clone, Copy, PartialEq, Eq, Debug)]").unwrap();
         writeln!(writer, "    #[repr(u8)]").unwrap();
@@ -433,7 +518,8 @@ enum ParamChoiceSuffix<'a> {
 
 fn format_rust_type(typ: &ParamType<'_>, message_name: &str, suffix: ParamChoiceSuffix) -> String {
     match typ {
-        ParamType::Name(s) => s.to_string(),
+        ParamType::Builtin(s) => s.to_string(),
+        ParamType::Declared(s) => format!("params::{}", s),
         ParamType::Choice(_) => format!("params::{}", format_rust_choice_type(message_name, suffix)),
     }
 }
