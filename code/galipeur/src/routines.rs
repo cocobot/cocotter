@@ -1,6 +1,5 @@
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
-use asserv::holonomic::{RobotSide, TableSide};
 use asserv::holonomic::{Asserv, rome::AsservHoloRome};
 use asserv::rome::AsservRome;
 use board_common::{Periodicity, Team};
@@ -193,7 +192,7 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                             side,
                             arm,
                             position: s.position,
-                            color: rome::params::MecaTmArmFullStateColor::Unknown,
+                            color: rome::params::Team::Unknown,
                             pump: s.pump,
                             valve: s.valve,
                             servo_error: s.error,
@@ -257,38 +256,22 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                     rome::params::MecaPrepareTakeCleatUp::Right => CleatSide::Right,
                     rome::params::MecaPrepareTakeCleatUp::Both => CleatSide::Both,
                 };
-                match side {
-                    rome::params::MecaPrepareTakeSide::Left  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Left), cleat_up); }
-                    rome::params::MecaPrepareTakeSide::Right => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Right), cleat_up); }
-                    rome::params::MecaPrepareTakeSide::Back  => { self.meca.prepare_direct_take(Some(asserv::holonomic::RobotSide::Back), cleat_up);  }
-                }
+                self.meca.prepare_direct_take(Some(side.into()), cleat_up);
                 true
             }
             rome::Message::MecaTake { side } => {
                 log::info!("ROME: meca take");
-                match side {
-                    rome::params::MecaTakeSide::Left  => { self.meca.direct_take(asserv::holonomic::RobotSide::Left); }
-                    rome::params::MecaTakeSide::Right => { self.meca.direct_take(asserv::holonomic::RobotSide::Right); }
-                    rome::params::MecaTakeSide::Back  => { self.meca.direct_take(asserv::holonomic::RobotSide::Back);  }
-                }
+                self.meca.direct_take(side.into());
                 true
             }
             rome::Message::MecaPrepareRelease { side } => {
                 log::info!("ROME: meca prepare release");
-                match side {
-                    rome::params::MecaPrepareReleaseSide::Left  => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Left)); }
-                    rome::params::MecaPrepareReleaseSide::Right => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Right)); }
-                    rome::params::MecaPrepareReleaseSide::Back  => { self.meca.prepare_release(Some(asserv::holonomic::RobotSide::Back));  }
-                }
+                self.meca.prepare_release(Some(side.into()));
                 true
             }
             rome::Message::MecaRelease { side } => {
                 log::info!("ROME: meca release");
-                match side {
-                    rome::params::MecaReleaseSide::Left  => { self.meca.release(asserv::holonomic::RobotSide::Left); }
-                    rome::params::MecaReleaseSide::Right => { self.meca.release(asserv::holonomic::RobotSide::Right); }
-                    rome::params::MecaReleaseSide::Back  => { self.meca.release(asserv::holonomic::RobotSide::Back);  }
-                }
+                self.meca.release(side.into());
                 true
             }
             rome::Message::MecaEndOfMatch  => {
@@ -334,17 +317,8 @@ impl<B: SabotterBoard + 'static> GalipeurRoutines<B> {
                 true
             }
             rome::Message::GotoASide { robot, table } => {
-                let robot_side = match robot {
-                    rome::params::GotoASideRobot::Back => RobotSide::Back,
-                    rome::params::GotoASideRobot::Left => RobotSide::Left,
-                    rome::params::GotoASideRobot::Right => RobotSide::Right,                    
-                };
-                let table_side = match table {
-                    rome::params::GotoASideTable::Up => TableSide::Up,
-                    rome::params::GotoASideTable::Left => TableSide::Left,
-                    rome::params::GotoASideTable::Right => TableSide::Right, 
-                    rome::params::GotoASideTable::Down => TableSide::Down,
-                };
+                let robot_side = robot.into();
+                let table_side = table.into();
                 let mut asserv = self.asserv.lock().unwrap();
                 asserv.goto_a(arfast(robot_side, table_side));
 

@@ -5,23 +5,23 @@ use crate::rome::AsservRome;
 use crate::maths::{XY, XYA};
 
 
-impl From<params::AsservHoloAutosetTableSide> for TableSide {
-    fn from(value: params::AsservHoloAutosetTableSide) -> Self {
+impl From<params::TableSide> for TableSide {
+    fn from(value: params::TableSide) -> Self {
         match value {
-            params::AsservHoloAutosetTableSide::Left => Self::Left,
-            params::AsservHoloAutosetTableSide::Right => Self::Right,
-            params::AsservHoloAutosetTableSide::Up => Self::Up,
-            params::AsservHoloAutosetTableSide::Down => Self::Down,
+            params::TableSide::Left => Self::Left,
+            params::TableSide::Right => Self::Right,
+            params::TableSide::Up => Self::Up,
+            params::TableSide::Down => Self::Down,
         }
     }
 }
 
-impl From<params::AsservHoloAutosetRobotSide> for RobotSide {
-    fn from(value: params::AsservHoloAutosetRobotSide) -> Self {
+impl From<params::HolonomicSide> for RobotSide {
+    fn from(value: params::HolonomicSide) -> Self {
         match value {
-            params::AsservHoloAutosetRobotSide::Left => Self::Left,
-            params::AsservHoloAutosetRobotSide::Right => Self::Right,
-            params::AsservHoloAutosetRobotSide::Back => Self::Back,
+            params::HolonomicSide::Left => Self::Left,
+            params::HolonomicSide::Right => Self::Right,
+            params::HolonomicSide::Back => Self::Back,
         }
     }
 }

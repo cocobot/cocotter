@@ -1,3 +1,8 @@
+types:
+  Team: [unknown, yellow, blue]
+  HolonomicSide: [left, right, back]
+  TableSide: [left, right, up, down]
+
 # General messages
 10:
   BatteryLevel:
@@ -69,8 +74,8 @@
     path_size: u8
 
   AsservHoloAutoset:
-    robot_side: [left, right, back]
-    table_side: [left, right, up, down]
+    robot_side: HolonomicSide
+    table_side: TableSide
     target_x: f32
     target_y: f32
 
@@ -106,8 +111,8 @@
     encoders_to_position: "[f32; 9]"
 
   GotoASide:
-    robot: [left, right, back]
-    table: [up, left, down, right]
+    robot: HolonomicSide
+    table: TableSide
 
   GotoXY:
     x: f32
@@ -178,7 +183,7 @@
     side: u8
     arm: u8
     position: u16
-    color: [unknown, yellow, blue]
+    color: Team
     pump: bool
     valve: bool
     servo_error: u8
@@ -192,17 +197,17 @@
     error: u8
 
   MecaPrepareTake:
-    side: [left, right, back]
+    side: HolonomicSide
     cleat_up: [none, left, right, both]
 
   MecaTake:
-    side: [left, right, back]
+    side: HolonomicSide
 
   MecaPrepareRelease:
-    side: [left, right, back]
+    side: HolonomicSide
 
   MecaRelease:
-    side: [left, right, back]
+    side: HolonomicSide
 
   MecaEndOfMatch:
 
