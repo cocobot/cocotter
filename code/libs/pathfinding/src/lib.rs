@@ -19,9 +19,9 @@ pub struct PathNode {
 
 /// Graph obstacle (circular)
 pub struct PathObstacle {
-    xy: (i16, i16),
+    pub xy: (i16, i16),
     /// Radius, squared
-    radius2: u32,
+    pub radius2: u32,
 }
 
 /// Graph used for pathfinding
