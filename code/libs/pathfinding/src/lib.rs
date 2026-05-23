@@ -294,7 +294,7 @@ impl PathGraph {
                 // But it's better to do it here, only for nodes that need it
                 let neighbor_info = &mut node_infos[neighbor_index];
                 if neighbor_info.state == NodeState::Pending {
-                    if self.node_is_blocked(node) {
+                    if self.node_is_blocked(neighbor) {
                         neighbor_info.state = NodeState::Closed;
                     }
                 }
