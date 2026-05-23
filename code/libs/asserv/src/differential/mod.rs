@@ -208,7 +208,6 @@ impl<H: AsservHardware> Asserv<H> {
 
     /// Reset position, target, consigns
     pub fn reset_position(&mut self, xya: XYA) {
-        self.cs.motor_filter.reset();
         self.cs.reset_position(xya);
     }
 

@@ -100,17 +100,16 @@ impl<H: AsservHardware> ControlSystem<H> {
     pub fn reset_position(&mut self, xya: XYA) {
         self.position = xya;
         self.dist = 0.0;
-        self.target_dist = self.dist;
-        self.target_angle = self.position.a;
         self.speed_dist = 0.0;
         self.speed_angle = 0.0;
-        self.motor_filter.reset();
+        self.reset_targets();
     }
 
-    /// Reset current targets to current position
+    /// Reset current targets to current position, and filters accordingly
     pub fn reset_targets(&mut self) {
         self.target_dist = self.dist;
         self.target_angle = self.position.a;
+        self.motor_filter.reset(self.dist, self.position.a);
     }
 
     /// Set target distance (consign)
