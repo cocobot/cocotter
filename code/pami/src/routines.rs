@@ -98,7 +98,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
                         Err(err) => log::error!("Failed to get VLX sensor distance: {err:?}"),
                     }
 
-                    std::thread::sleep(Duration::from_millis(200));
+                    std::thread::sleep(Duration::from_millis(1000));
                 }
             })
             .expect("Failed to spawn VLX thread");
