@@ -321,7 +321,7 @@ impl PamiButtons for EspPamiButtons {
             0b10000 => DpadState::Left,
             _ => DpadState::None,
         };
-        let switches = (value >> 5) | if self.pin.is_high() { 0b1000 } else { 0 };
+        let switches = value.reverse_bits() | if self.pin.is_high() { 0b1000 } else { 0 };
         PamiButtonsState { dpad, switches }
     }
 }
