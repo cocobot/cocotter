@@ -1,4 +1,5 @@
 //! Common elements shared by all boards
+pub mod eurobot;
 pub mod hal;
 #[cfg(target_os = "espidf")]
 pub mod esp;
@@ -13,63 +14,6 @@ use std::time::{Duration, Instant};
 pub struct BatteryLevel {
     pub mv: u16,
     pub percent: u8,
-}
-
-
-/// Robot team
-#[derive(Clone, Copy, Default, PartialEq, Eq, Debug)]
-pub enum Team {
-    #[default]
-    None,
-    Left,
-    Right,
-}
-
-impl Team {
-    /// Return full name, lowercase
-    pub const fn name(self) -> &'static str {
-        match self {
-            Self::None => "none",
-            Self::Left => "jaune",
-            Self::Right => "bleu",
-
-        }
-    }
-
-    /// Return full name, uppercase
-    pub const fn name_upper(self) -> &'static str {
-        match self {
-            Self::None => "NONE",
-            Self::Left => "JAUNE",
-            Self::Right => "BLUE",
-
-        }
-    }
-
-    /// Return name as a single letter
-    pub const fn letter(self) -> char {
-        match self {
-            Self::None => '?',
-            Self::Left => 'J',
-            Self::Right => 'B',
-
-        }
-    }
-
-    /// Return team color
-    pub const fn color(self) -> Color {
-        match self {
-            Self::None => Color::new(0.0, 0.0, 0.0),
-            Self::Left => Color::new(0.8, 0.8, 0.0),
-            Self::Right => Color::new(0.0, 0.0, 1.0),
-        }
-    }
-}
-
-impl std::fmt::Display for Team {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.name())
-    }
 }
 
 

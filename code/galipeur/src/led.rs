@@ -1,5 +1,6 @@
 use std::time::Duration;
-use board_common::{Color, Team};
+use board_common::Color;
+use board_common::eurobot::Team;
 use board_sabotter::{SabotterBoard, SabotterLeds};
 use flume::{Receiver, Sender};
 use embedded_hal::digital::OutputPin;

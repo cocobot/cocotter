@@ -9,7 +9,7 @@ use embedded_graphics::{
     text::{Alignment, Baseline, Text, TextStyle, TextStyleBuilder},
 };
 use flume::{Receiver, Sender};
-use board_common::Team;
+use board_common::eurobot::Team;
 use board_pami::DpadState;
 use crate::events::*;
 

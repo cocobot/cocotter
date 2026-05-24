@@ -6,6 +6,12 @@ edition = "2024"
 [dependencies] 
 embedded-hal = "1.0"
 log = "0.4"
+amatheur = { path = "../../libs/amatheur" }
+rome = { path = "../../libs/rome", optional = true }
+
+[features]
+default = ["rome"]
+rome = ["dep:rome"]
 
 [target.'cfg(target_os = "espidf")'.dependencies]
 esp-idf-svc = { version = "0.52", features = ["experimental", "alloc"] }

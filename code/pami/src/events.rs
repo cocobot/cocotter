@@ -1,4 +1,4 @@
-pub use board_common::Team;
+pub use board_common::eurobot::Team;
 pub use board_pami::DpadState;
 
 

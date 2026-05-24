@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 use std::{thread::sleep, time::Duration};
 use asserv::holonomic::{Asserv, RobotSide, TableSide};
 use asserv::maths::XY;
-use board_common::Team;
+use board_common::eurobot::Team;
 use embedded_hal::digital::InputPin;
 use board_sabotter::{SabotterBoard, SabotterInputs};
 use flume::Sender;

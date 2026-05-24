@@ -9,7 +9,7 @@
 
 use std::time::Duration;
 
-use board_common::Team;
+use board_common::eurobot::Team;
 use board_sabotter::SabotterBoard;
 use cancaner::{ClampServo, ValveMode};
 

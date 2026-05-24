@@ -1,4 +1,4 @@
-use board_common::Team;
+use board_common::eurobot::Team;
 
 pub type MecaState = [MecaSideState; 3];
 

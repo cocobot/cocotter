@@ -3,7 +3,7 @@ mod proxy;
 mod state;
 mod worker;
 
-use board_common::Team;
+use board_common::eurobot::Team;
 pub use primitives::MecaPrimitives;
 pub use proxy::{ArmStatus, ClampStatus, ColorRawStatus, MecaProxy, TranslationStatus, Watcher};
 use cancaner::ClampServo;

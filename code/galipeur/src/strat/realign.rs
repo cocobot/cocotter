@@ -10,21 +10,20 @@
 //!
 
 use asserv::holonomic::{RobotSide, TableSide};
+use board_common::eurobot::TABLE_SIZE;
 use board_sabotter::SabotterBoard;
 
 use crate::sensors::Sensors;
 use crate::strat::errors::StrategyError;
 use crate::strat::utils::{arfast, AsservHelper};
 
-///TODO Damien: This should be moved in a shared crate between pami and galipeur
 /// Asserv-frame coordinates of the four table edges. In the asserv
-/// frame: `+X` points from the Down wall toward the Up wall (table
-/// length 2000 mm), `+Y` points from the Right wall toward the Left
-/// wall (table width 3000 mm).
-const ASSERV_X_AT_UP_WALL: f32 = 2000.0;
+/// frame: `+X` points from the Down wall toward the Up wall,
+/// `+Y` points from the Right wall toward the Left wall.
+const ASSERV_X_AT_UP_WALL: f32 = TABLE_SIZE.y;
 const ASSERV_X_AT_DOWN_WALL: f32 = 0.0;
-const ASSERV_Y_AT_LEFT_WALL: f32 = 1500.0;
-const ASSERV_Y_AT_RIGHT_WALL: f32 = -1500.0;
+const ASSERV_Y_AT_LEFT_WALL: f32 = TABLE_SIZE.x / 2.0;
+const ASSERV_Y_AT_RIGHT_WALL: f32 = -TABLE_SIZE.x / 2.0;
 
 fn wrap_pi(x: f32) -> f32 {
     ((x + core::f32::consts::PI).rem_euclid(core::f32::consts::TAU))
