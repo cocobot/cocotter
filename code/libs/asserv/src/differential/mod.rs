@@ -57,7 +57,7 @@ pub struct Asserv<H: AsservHardware> {
     order: TrajectoryOrder,
 
     // Movement direction
-    forward : bool,
+    forward: bool,
 }
 
 pub enum MovementDirection {
@@ -211,11 +211,11 @@ impl<H: AsservHardware> Asserv<H> {
         self.cs.reset_position(xya);
     }
 
-    pub fn set_movement_direction(&mut self, dir : MovementDirection) {
-        match dir {
-            MovementDirection::Forward =>  self.forward = true,
-            MovementDirection::Backward => self.forward = false,
-        }
+    pub fn set_movement_direction(&mut self, dir: MovementDirection) {
+        self.forward = match dir {
+            MovementDirection::Forward => true,
+            MovementDirection::Backward => false,
+        };
     }
 
     //
@@ -271,7 +271,7 @@ impl<H: AsservHardware> Asserv<H> {
                     if len > self.conf.xy_approach_window {
                         self.cs.set_target_a(current_a + da);
                     }
-                    self.cs.set_target_dist(if self.forward {self.cs.dist() + len} else {self.cs.dist() - len} );
+                    self.cs.set_target_dist(self.cs.dist() + if self.forward { len } else { -len });
                 }
             },
 
