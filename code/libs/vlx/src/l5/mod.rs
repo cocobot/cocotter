@@ -23,6 +23,51 @@ pub const DEFAULT_ADDR: u16 = 0x29;  // = VL53L5CX_DEFAULT_I2C_ADDRESS / 2
 pub struct VL53L5CX {
     address: u16,  // Never equal to DEFAULT_ADDR
     conf: Box<VL53L5CX_Configuration>,
+    orientation: Orientation,
+}
+
+/// Device orientation
+///
+/// Position of the black corner square when looking at the sensor.
+/// Used to return distance data zones in the correct order.
+#[derive(Clone, Copy)]
+pub enum Orientation {
+    TopLeft,
+    TopRight,
+    BottomRight,
+    BottomLeft,
+}
+
+impl Orientation {
+    /// Return a mapping from `DistanceData` index to device zone
+    const fn index_to_zone_4x4(self) -> &'static [u8; 16] {
+        match self {
+            Self::TopLeft => &[
+                12, 13, 14, 15,
+                 8,  9, 10, 11,
+                 4,  5,  6,  7,
+                 0,  1,  2,  3,
+            ],
+            Self::TopRight => &[
+                 0,  4,  8, 12,
+                 1,  5,  9, 13,
+                 2,  6, 10, 14,
+                 3,  7, 11, 15,
+            ],
+            Self::BottomRight => &[
+                 3,  2,  1,  0,
+                 7,  6,  5,  4,
+                11, 10,  9,  8,
+                15, 14, 13, 12,
+            ],
+            Self::BottomLeft => &[
+                15, 11,  7,  3,
+                14, 10,  6,  2,
+                13,  9,  5,  1,
+                12,  8,  4,  0,
+            ],
+        }
+    }
 }
 
 //SAFETY VL53L5CX_Configuration is unsafe because of `default_configuration` and `default_xtalk`
@@ -31,7 +76,7 @@ unsafe impl Send for VL53L5CX {}
 unsafe impl Sync for VL53L5CX {}
 
 impl VL53L5CX {
-    pub fn new(_driver: &VlxI2cDriver, address: u8) -> Self {
+    pub fn new(_driver: &VlxI2cDriver, address: u8, orientation: Orientation) -> Self {
         let address = address as u16;
         if address == DEFAULT_ADDR {
             panic!("Cannot use reserved default VLX address");
@@ -41,6 +86,7 @@ impl VL53L5CX {
         Self {
             address,
             conf: Box::default(),
+            orientation,
         }
     }
 
@@ -130,10 +176,13 @@ impl VlxSensor for VL53L5CX {
 
         // Extract all zone distances - VL53L5CX can be configured for different resolutions
         // Use u16::MAX for invalid measurement
+        let zone_mapping = self.orientation.index_to_zone_4x4();
         let distances: Vec<u16> = (0..(width * height) as usize).map(|i| {
             // Check if target is detected and status is valid (5 & 9 mean valid measurement)
-            if results.target_status[i] == 5 || results.target_status[i] == 9 {
-                results.distance_mm[i] as u16
+            let zone = zone_mapping[i] as usize;
+            if results.target_status[zone] == 5 || results.target_status[zone] == 9 {
+                //let zone_mapping = self.orientation.zone_mapping_4x4();
+                results.distance_mm[zone] as u16
             } else {
                 u16::MAX
             }
@@ -173,10 +222,11 @@ impl VlxSensor for VL53L5CX {
         } else {
             self.enable_thresholds(true)?;
             let single_zone = if alarms.len() == 1 && alarms[0].zone.is_none() { Some(&alarms[0]) } else { None };
+            let zone_mapping = self.orientation.index_to_zone_4x4();
             let mut thresholds: [VL53L5CX_DetectionThresholds; ALARMS_COUNT] = std::array::from_fn(|i| {
                 if let Some(alarm) = alarms.get(i).or(single_zone) {
                     let zone_num = alarm.zone.and_then(|z| self.zone_index(z.0, z.1)).unwrap_or(VL53L5CX_LAST_THRESHOLD);
-                    alarm_threshold(alarm.low, alarm.high, zone_num)
+                    alarm_threshold(alarm.low, alarm.high, zone_mapping[zone_num as usize])
                 } else {
                     default_threshold()
                 }

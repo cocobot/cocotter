@@ -88,7 +88,7 @@ impl PamiBoard for EspPamiBoard {
         // VLX sensor
         let vlx_i2c_driver = VlxI2cDriver::register(MutexDevice::new(i2c_driver_static));
         let vlx_sensor = PamiVlxSensor {
-            sensor: VL53L5CX::new(&vlx_i2c_driver, 0x31),
+            sensor: VL53L5CX::new(&vlx_i2c_driver, 0x31, vlx::l5::Orientation::TopRight),
             enable: PinDriver::output(peripherals.pins.gpio3).unwrap(),
         };
 

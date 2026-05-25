@@ -34,7 +34,7 @@ pub trait VlxSensor {
 pub struct DistanceData {
     width: u8,  // Grid width
     height: u8,  // Grid height
-    distances: Vec<u16>,  // Distance data, row-major (line by line)
+    distances: Vec<u16>,  // Distance data, row-major (line by line), from top left to bottom right
 }
 
 impl DistanceData {
