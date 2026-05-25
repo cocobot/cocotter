@@ -215,3 +215,15 @@ types:
     module: u8
     id: u8
     position: u16
+
+
+# PAMI
+70:
+  # Set VLX telemetry period in milliseconds, 0 to disable
+  VlxSetTmPeriod:
+    - u16
+  # VLX distances (assume 4x4 grid for now)
+  VlxTmDistances:
+    sensor: u8  # Sensor identifier
+    # Distance data, row-major (line by line), 0xFFFF if data is missing
+    distances: "[u16; 16]"

@@ -44,6 +44,7 @@ pub struct PamiRoutines<B: PamiBoard> {
     asserv_periodicity: Periodicity,
     asserv_tm_periodicity: Periodicity,
     battery_level_periodicity: Periodicity,
+    vlx_tm_periodicity: Option<Periodicity>,
 }
 
 
@@ -128,6 +129,7 @@ impl<B: PamiBoard> PamiRoutines<B> {
             asserv_periodicity: Periodicity::new(ASSERV_PERIOD),
             asserv_tm_periodicity: Periodicity::new(Duration::from_millis(100)),
             battery_level_periodicity: Periodicity::new(Duration::from_millis(2000)),
+            vlx_tm_periodicity: None,
         }
     }
 
@@ -277,7 +279,17 @@ impl<B: PamiBoard> PamiRoutines<B> {
             match rome::Message::decode(&data) {
                 Err(err) => log::error!("ROME RX error: {err:?}"),
                 Ok(message) => {
-                    if !self.asserv.on_rome_message(&message) {
+                    // Don't put message handling in a `on_message()` method to avoid borrowing issue.
+                    // The borrow checker cannot guess that our `on_message()` won't modify `rome_rx`.
+                    let handled = match message {
+                        rome::Message::VlxSetTmPeriod(period_ms) => {
+                            log::info!("Set VLX telemetry period: {}", period_ms);
+                            self.vlx_tm_periodicity = Some(Periodicity::new(Duration::from_millis(period_ms as u64)));
+                            true
+                        }
+                        _ => !self.asserv.on_rome_message(&message),
+                    };
+                    if !handled {
                         log::warn!("ROME: ignored message: {}", message.message_id());
                     }
                 },
@@ -313,6 +325,23 @@ impl<B: PamiBoard> PamiRoutines<B> {
             }
 
             self.battery_level = level;
+        }
+
+        // VLX telemetry, if enabled
+        if let Some(periodicity) = &mut self.vlx_tm_periodicity {
+            if periodicity.update(now) {
+                let mut distances = [u16::MAX; 16];
+                if let Some(sensor_data) = self.vlx_data.lock().unwrap().as_ref() {
+                    // Copy, `vlx_distances` into `distances`, truncate to the shortest
+                    for (src, dst) in sensor_data.all_distances().iter().zip(distances.iter_mut()) {
+                        *dst = *src;
+                    }
+                }
+                let message = rome::Message::VlxTmDistances { sensor: 0, distances };
+                if let Err(err) = self.rome_tx.send(message.encode()) {
+                    log::error!("BLE send error: {:?}", err);
+                }
+            }
         }
     }
 
