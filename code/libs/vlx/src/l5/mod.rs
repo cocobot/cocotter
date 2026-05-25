@@ -98,6 +98,10 @@ impl VlxSensor for VL53L5CX {
             // Note: 4x4 resolution is hardcoded in `resolution()`
             status_result!(vl53l5cx_set_resolution(&mut *self.conf, VL53L5CX_RESOLUTION_4X4))?;
 
+            // Use continuous ranging mode at 60Hz (fastest configuration)
+            status_result!(vl53l5cx_set_ranging_mode(&mut *self.conf, VL53L5CX_RANGING_MODE_CONTINUOUS))?;
+            status_result!(vl53l5cx_set_ranging_frequency_hz(&mut *self.conf, 60))?;
+
             // Set power mode to wake up
             status_result!(vl53l5cx_set_power_mode(&mut *self.conf, VL53L5CX_POWER_MODE_WAKEUP))?;
         }
