@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "cocotter_ic") (type "KiCad") (uri "${KIPRJMOD}/../../librairies/cocotter_ic.pretty") (options "") (descr ""))
+)
