@@ -1,0 +1,9 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "cocotter_resistor") (type "KiCad") (uri "${KIPRJMOD}/../../librairies/cocotter_resistor.pretty") (options "") (descr ""))
+	(lib (name "cocotter_ic") (type "KiCad") (uri "${KIPRJMOD}/../../librairies/cocotter_ic.pretty") (options "") (descr ""))
+	(lib (name "cocotter_capacitors") (type "KiCad") (uri "${KIPRJMOD}/../../librairies/cocotter_capacitors.pretty") (options "") (descr ""))
+	(lib (name "cocotter_diodes") (type "KiCad") (uri "${KIPRJMOD}/../../librairies/cocotter_diodes.pretty") (options "") (descr ""))
+	(lib (name "cocotter_transistors") (type "KiCad") (uri "${KIPRJMOD}/../../librairies/cocotter_transistors.pretty") (options "") (descr ""))
+	(lib (name "cocotter_connectors") (type "KiCad") (uri "${KIPRJMOD}/../../librairies/cocotter_connectors.pretty") (options "") (descr ""))
+)
